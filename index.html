@@ -786,6 +786,59 @@ a.row{color:inherit;text-decoration:none}
  .go-now::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);transform:translateX(-100%);animation:goShine 5s ease-in-out 1.5s infinite;pointer-events:none}}
 @keyframes goShine{0%{transform:translateX(-100%)}25%,100%{transform:translateX(100%)}}
 .ra-tips{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.95rem}
+/* Grafer */
+.radar{width:100%;max-width:360px;display:block;margin:0 auto;overflow:visible}
+.radar .g{fill:none;stroke:var(--hair);stroke-width:1}
+.radar .ref{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4}
+.radar .you{fill:color-mix(in srgb,var(--accent) 18%,transparent);stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round}
+.radar .you.s{fill:color-mix(in srgb,var(--green) 20%,transparent);stroke:var(--green)}
+.radar text{fill:var(--muted);font-size:11.5px;font-weight:500}
+.linec,.barc{width:100%;display:block;overflow:visible}
+.linec .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.linec .pt{fill:var(--tile);stroke:var(--accent);stroke-width:2}.linec .pt.last{fill:var(--accent)}
+.linec .goal{stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4}
+.linec text,.barc text{font-size:11px;fill:var(--muted);font-variant-numeric:tabular-nums}
+.linec .vl,.barc .vl{fill:var(--ink);font-weight:600}
+.barc .b{fill:var(--muted);opacity:.45}.barc .b.over{fill:var(--accent);opacity:1}
+.barc .ref{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.hbars{gap:12px}
+.hb{display:grid;grid-template-columns:minmax(0,7.5rem) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.9rem}
+.hb span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hb .tr{height:10px;border-radius:980px;background:var(--seg,var(--hair));overflow:hidden}
+.hb .tr i{display:block;height:100%;border-radius:980px;background:var(--ink)}
+.hb b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+@media (prefers-reduced-motion:no-preference){
+ .radar .you{transform-box:view-box;transform-origin:160px 132px;animation:radIn 1.1s var(--spring) both}
+ .linec .ln{stroke-dasharray:1;animation:lnIn 1.1s var(--ease) both}
+ .barc .b{transform-box:fill-box;transform-origin:bottom;animation:barIn 1.1s var(--spring) both;animation-delay:calc(var(--i)*50ms)}
+ .hb .tr i{transform-origin:left;animation:barW 1.1s var(--ease) both;animation-delay:calc(var(--i)*50ms)}
+}
+@keyframes radIn{from{transform:scale(0);opacity:0}}
+@keyframes lnIn{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+@keyframes barIn{from{transform:scaleY(0)}}
+@keyframes barW{from{transform:scaleX(0)}}
+/* Loppanalys och passertider */
+.ra-big{font-size:clamp(3rem,15vw,4.2rem);font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;margin-top:4px}
+.ra-sub{font-size:.95rem;color:var(--muted);margin-top:8px}.ra-sub b{font-weight:600;font-variant-numeric:tabular-nums}
+.ra-h{display:grid;gap:2px}.ra-h h3{font-size:1.25rem;letter-spacing:-.03em}
+.ra-ic{width:40px;height:40px;border-radius:12px;background:var(--card);display:grid;place-items:center}
+.ra-ic i{width:10px;height:10px;border-radius:980px;background:var(--accent)}.ra-ic.s i{background:var(--green)}.ra-ic.ok{color:var(--good)}
+.ra-ic svg{width:22px;height:22px}
+.rnd{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;padding:12px 16px;position:relative}
+.rnd+.rnd::before{content:"";position:absolute;top:0;left:56px;right:0;height:1px;background:var(--hair)}
+.rnd .n{width:28px;height:28px;border-radius:980px;background:var(--card);display:grid;place-items:center;font-size:.8rem;font-weight:600}
+.rnd .c{display:grid;gap:3px;min-width:0}
+.rnd .ln{display:flex;align-items:baseline;gap:8px;min-width:0}
+.rnd .ln span{flex:1;min-width:0;color:var(--muted);font-size:.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rnd .ln b{font-weight:600;font-variant-numeric:tabular-nums}
+.rnd .ln small{width:52px;text-align:right;font-weight:600;font-size:.88rem;font-variant-numeric:tabular-nums}
+.rnd .cum{min-width:64px;text-align:right;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.pace-hot{gap:2px;margin-bottom:10px}
+.pace-hot .pv{display:flex;align-items:baseline;gap:6px;position:relative}
+.pace-hot .pv b{font-size:clamp(2.8rem,14vw,4rem);font-weight:800;letter-spacing:-.05em;line-height:1}
+.pace-hot .pv i{font-style:normal;font-size:1.2rem;font-weight:600;color:#fff}
+.pace-hot p{font-size:1rem;font-weight:600;color:#fff;margin-top:8px;position:relative;line-height:1.4}
+.pace-hot .eb{font-size:.8rem;font-weight:600;letter-spacing:.04em;color:#fff;position:relative}
 .sg-card{display:grid;gap:6px}.sg-card h3{font-size:1.15rem}.sg-card ul{margin:6px 0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
 .lg-rpe{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .lg-rpe button{border:0;background:var(--tile);border-radius:12px;min-height:56px;display:grid;place-content:center;gap:0;cursor:pointer;color:var(--ink)}
@@ -1122,12 +1175,15 @@ a.row{color:inherit;text-decoration:none}
 
     <div id="pl-lopp" hidden>
     <div class="sechead" style="margin-top:6px"><h2>Splittider</h2><span class="small" id="p-pace"></span></div>
+    <div class="tile hot pace-hot"><span class="eb">LÖPTEMPO</span><div class="pv"><b id="p-pace-big">0:00</b><i>/km</i></div><p>Snittet för de åtta kilometerna. Första kilometern går lite fortare när benen är pigga.</p></div>
     <div class="card">
       <div class="stack" id="p-stack" aria-hidden="true"></div>
       <div class="legend"><span><i style="background:var(--run)"></i>Löpning <b id="l-run"></b></span><span><i style="background:var(--sta)"></i>Stationer <b id="l-sta"></b></span><span><i style="background:var(--rox)"></i>Roxzone <b id="l-rox"></b></span></div>
-      <details class="more"><summary>Visa alla 16 splittider</summary><div class="splits" id="p-splits"></div></details>
       <p class="small">Uppskattning utifrån hur tiden brukar fördelas. Använd den som riktmärke.</p>
     </div>
+    <div class="sechead"><h2>Del för del</h2><span class="small">Passera</span></div>
+    <div class="group" id="p-splits"></div>
+    <p class="small" style="margin-top:8px">Passertiderna räknar med Roxzone. Samma mål används i tidtagningen.</p>
 
     <div id="dbl-wrap" hidden>
       <div class="sechead"><h2>Så delar ni arbetet</h2><span class="small" id="dbl-sum"></span></div>
@@ -1228,6 +1284,7 @@ a.row{color:inherit;text-decoration:none}
     <div id="load"></div>
     <div class="sechead"><h2>Din form</h2><button class="linkbtn" id="form-info">Så fungerar det</button></div>
     <div class="card formcard" id="form"></div>
+    <div id="stats"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><span class="small" id="lb-note"></span></div>
     <div id="comm"></div>
@@ -1780,7 +1837,9 @@ function renderSplits(){
   $("#p-time").textContent=fmt(t.T);$("#p-pace").textContent=`${fmt(t.pace)} /km i snitt`;
   $("#p-stack").innerHTML=`<div style="flex-grow:${t.runs};background:var(--hot)"></div><div style="flex-grow:${t.sta};background:linear-gradient(135deg,var(--green),var(--green2))"></div><div style="flex-grow:${t.rox};background:linear-gradient(135deg,var(--cyan),var(--cyan2))"></div>`;
   $("#l-run").textContent=fmt(t.runs);$("#l-sta").textContent=fmt(t.sta);$("#l-rox").textContent=fmt(t.rox);
-  $("#p-splits").innerHTML=S.map((s,i)=>`<div class="split r"><span>Löpning ${i+1}</span><span>${fmt(t.rn[i])}</span></div><div class="split"><span>${s.n}</span><span>${fmt(t.st[i])}</span></div>`).join("");
+  {const pb=$("#p-pace-big");if(pb)pb.textContent=fmt(t.pace)}
+  {const sg=segs();let cum=0;
+   $("#p-splits").innerHTML=S.map((s,i)=>{cum+=sg[2*i].tg+sg[2*i+1].tg;return `<div class="rnd"><span class="n">${i+1}</span><div class="c"><div class="ln"><span>Löpning</span><b>${fmt(t.rn[i])}</b></div><div class="ln"><span>${s.n}</span><b>${fmt(t.st[i])}</b></div></div><span class="cum" aria-label="Passera ${fmt(cum)}">${fmt(cum)}</span></div>`}).join("")}
 }
 const daysLeft=()=>Math.round((new Date(set.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);
 const DAYS={1:[2],2:[1,4],3:[1,3,5],4:[0,2,4,6],5:[0,1,3,5,6]};
@@ -2787,7 +2846,7 @@ function renderLoad(){const el=$("#load");if(!el)return;const ws=weekStart(today
   const avg=(wk[1]+wk[2]+wk[3]+wk[4])/4,r=avg?wk[0]/avg:null,day=(new Date().getDay()+6)%7;
   const txt=!avg?"Logga några veckor, så jämför VARV. veckan med din vanliga träning.":r>1.3?"Du ligger klart över din vanliga nivå. Se till att få vila och sömn.":r>=.8?"Du ligger nära din vanliga nivå.":day<3?"Veckan har precis börjat, så siffran stiger när du tränar.":"Du ligger under din vanliga nivå den här veckan.";
   el.innerHTML=`<div class="sechead"><h2>Belastning</h2><span class="small">Minuter × känsla</span></div><div class="card"><div class="facts3"><div><small>Den här veckan</small><b>${Math.round(wk[0])}</b></div><div><small>Snitt, 4 veckor</small><b>${Math.round(avg)}</b></div><div><small>Skillnad</small><b>${r==null?"–":(r>=1?"+":"−")+Math.abs(Math.round((r-1)*100))+" %"}</b></div></div><p class="small">${txt}</p></div>`}
-function renderProgress(){try{renderLoad()}catch(e){}if(typeof syncProfile==="function"&&MYPROF)syncProfile();PROG=progress();renderForm();sparkHome();renderMedals();checkNewMedals();if(DBH&&ME)renderComm()}
+function renderProgress(){try{renderLoad()}catch(e){}try{renderStats()}catch(e){}if(typeof syncProfile==="function"&&MYPROF)syncProfile();PROG=progress();renderForm();sparkHome();renderMedals();checkNewMedals();if(DBH&&ME)renderComm()}
 
 /* ============ Genomgång ============ */
 const TOUR=[
@@ -3431,19 +3490,72 @@ function renderRace(){try{renderRaceHist()}catch(e){}
 const raceLogs=()=>sortedLogs().filter(l=>l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16&&l.race.sp.every(x=>+x>=0));
 const spSum=(a,odd)=>a.reduce((t,x,i)=>t+(odd==null||(i%2===1)===odd?+x:0),0);
 function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs();el.innerHTML=L.length?`<div class="sechead"><h2>Loppanalys</h2></div><div class="group">${L.slice(0,12).map(l=>{const t=spSum(l.race.sp),g=spSum(l.race.tg||[]),d=t-g;return `<button class="row" data-rav="${esc(l.id)}"><div class="badge">${new Date(l.date+"T12:00:00").getDate()}<br>${MON[new Date(l.date+"T12:00:00").getMonth()]}</div><div><h3>${fmt(t)}</h3><p>${esc(clsName(l.race.cls)||"Hyrox")}${g?` · <span class="${d<=0?"ahead":"behind"}">${fmtD(d)}</span> mot målet`:""}</p></div><span class="chev">›</span></button>`}).join("")}</div>`:""}
+/* Grafer: radar, linje och staplar som SVG i appens färger */
+const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
+const stShort=s=>STSHORT[s.id]||s.n;
+function radarSvg(lab,ser,aria){const n=lab.length,R=92,cx=160,cy=132,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]};
+  const poly=(v,c)=>`<polygon class="${c}" points="${v.map((r,i)=>pt(i,Math.max(.04,Math.min(1,r))).map(x=>x.toFixed(1)).join(",")).join(" ")}"/>`;
+  const rings=[.25,.5,.75,1].map(r=>poly(lab.map(()=>r),"g")).join("");
+  const spokes=lab.map((_,i)=>{const [x,y]=pt(i,1);return `<line class="g" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`}).join("");
+  const txt=lab.map((l,i)=>{const [x,y]=pt(i,1.2),an=Math.abs(x-cx)<6?"middle":x<cx?"end":"start";return `<text x="${x.toFixed(1)}" y="${(y+4).toFixed(1)}" text-anchor="${an}">${esc(l)}</text>`}).join("");
+  return `<svg class="radar" viewBox="0 0 320 264" role="img" aria-label="${esc(aria)}">${rings}${spokes}${ser.map(s=>poly(s.v,s.c)).join("")}${txt}</svg>`}
+function lineSvg(pts,goal,aria){if(!pts.length)return"";const W=320,H=150,L=8,Rt=8,T=18,B=24;const ys=pts.map(p=>p.y).concat(goal?[goal]:[]),lo=Math.min(...ys),hi=Math.max(...ys),pad=Math.max(30,(hi-lo)*.15),a=lo-pad,b=hi+pad;
+  const X=i=>pts.length<2?W/2:L+i*(W-L-Rt)/(pts.length-1),Y=v=>T+(v-a)/(b-a)*(H-T-B);
+  const d=pts.map((p,i)=>`${i?"L":"M"}${X(i).toFixed(1)} ${Y(p.y).toFixed(1)}`).join(" "),last=pts[pts.length-1];
+  return `<svg class="linec" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${goal?`<line class="goal" x1="${L}" x2="${W-Rt}" y1="${Y(goal).toFixed(1)}" y2="${Y(goal).toFixed(1)}"/><text class="gl" x="${W-Rt}" y="${(Y(goal)-6).toFixed(1)}" text-anchor="end">Mål ${fmt(goal)}</text>`:""}
+   ${pts.length>1?`<path class="ln" d="${d}" pathLength="1"/>`:""}${pts.map((p,i)=>`<circle class="pt${i===pts.length-1?" last":""}" cx="${X(i).toFixed(1)}" cy="${Y(p.y).toFixed(1)}" r="${i===pts.length-1?5:3.5}"/>`).join("")}
+   ${pts.map((p,i)=>`<text class="xl" x="${X(i).toFixed(1)}" y="${H-6}" text-anchor="${pts.length<2?"middle":i===0?"start":i===pts.length-1?"end":"middle"}">${esc(p.x)}</text>`).filter((_,i)=>pts.length<=6||i===0||i===pts.length-1||i%Math.ceil(pts.length/5)===0).join("")}
+   <text class="vl" x="${X(pts.length-1).toFixed(1)}" y="${(Y(last.y)-10).toFixed(1)}" text-anchor="${pts.length<2?"middle":"end"}">${fmt(last.y)}</text></svg>`}
+function barsSvg(vals,refs,aria){const W=320,H=150,T=24,B=22,n=vals.length,gw=(W-8)/n,bw=Math.min(26,gw*.56),all=vals.concat(refs.filter(x=>x!=null)),hi=Math.max(...all)*1.04,lo=Math.min(...all)*.86;
+  const Y=v=>T+(1-(v-lo)/(hi-lo))*(H-T-B);
+  return `<svg class="barc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${vals.map((v,i)=>{const x=4+i*gw+(gw-bw)/2,y=Y(v),r=refs[i];return `<rect class="b${r!=null&&v>r?" over":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${(H-B-y).toFixed(1)}" rx="5" style="--i:${i}"/>${r!=null?`<line class="ref" x1="${(x-4).toFixed(1)}" x2="${(x+bw+4).toFixed(1)}" y1="${Y(r).toFixed(1)}" y2="${Y(r).toFixed(1)}"/>`:""}<text class="xl" x="${(x+bw/2).toFixed(1)}" y="${H-6}" text-anchor="middle">${i+1}</text><text class="vl" x="${(x+bw/2).toFixed(1)}" y="${(Math.min(y,r!=null?Y(r):y)-7).toFixed(1)}" text-anchor="middle">${fmt(v)}</text>`}).join("")}</svg>`}
+const svgIco={check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`};
 function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)return;const sp=l.race.sp.map(Number),tg=(l.race.tg||[]).map(Number),names=segs().map(x=>x.n),o=cmp&&L.find(x=>x.id===cmp),hasT=tg.length===16;
-  const tot=spSum(sp),run=spSum(sp,false),sta=spSum(sp,true),lost=hasT?sp.map((x,i)=>({n:names[i],d:x-tg[i]})).sort((a,b)=>b.d-a.d):[];
+  const ref=o?o.race.sp.map(Number):hasT?tg:null,refName=o?"loppet du valde":"planen";
+  const tot=spSum(sp),run=spSum(sp,false),sta=spSum(sp,true),dTot=ref?tot-spSum(ref):null;
+  const lost=ref?sp.map((x,i)=>({i,n:names[i],x,r:ref[i],d:x-ref[i]})).sort((a,b)=>b.d-a.d):[];
+  const top=lost.filter(x=>Math.round(x.d)>0).slice(0,3),topSum=top.reduce((a,x)=>a+x.d,0);
   const firstRun=(sp[0]+sp[2]+sp[4]+sp[6])/4,lastRun=(sp[8]+sp[10]+sp[12]+sp[14])/4,fade=Math.round(lastRun-firstRun);
-  const tips=[];if(lost[0]&&lost[0].d>0)tips.push(`Mest tid förlorade du på ${lost[0].n} (${fmtD(lost[0].d)})${lost[1]&&lost[1].d>0?` och ${lost[1].n} (${fmtD(lost[1].d)})`:""}.`);
-  const best=lost[lost.length-1];if(best&&best.d<0)tips.push(`Starkast mot målet var ${best.n} (${fmtD(best.d)}).`);
-  tips.push(fade>10?`Löpningen blev i snitt ${fade} s långsammare per kilometer i andra halvan.`:fade<-5?`Du höll i dig: andra halvans löpning gick ${-fade} s snabbare per kilometer.`:"Du höll jämnt tempo på löpningen genom hela loppet.");
+  const best=lost.length?lost[lost.length-1]:null;
+  const good=[];if(best&&Math.round(best.d)<0)good.push(`Starkast var ${best.n}, <b class="ahead">${fmtD(best.d)}</b> mot ${refName}.`);
+  if(fade<=10)good.push(fade<-5?`Du höll i dig: andra halvans löpning gick ${-fade} s snabbare per kilometer.`:"Du höll jämnt tempo på löpningen genom hela loppet.");
+  const fadeTxt=fade>10?`Löpningen blev i snitt ${fade} s långsammare per kilometer i andra halvan.`:"";
+  const worstSt=lost.find(x=>x.i%2===1&&Math.round(x.d)>0),stIdx=worstSt?(worstSt.i-1)/2:-1;
   const opts=L.filter(x=>x.id!==id);
-  openSheet(`<div><span class="small">${esc(clsName(l.race.cls)||"Hyrox")} · ${esc(fmtDM(l.date))}</span><h2>${fmt(tot)}</h2></div>
-   <div class="facts3"><div><small>Löpning</small><b>${fmt(run)}</b></div><div><small>Stationer</small><b>${fmt(sta)}</b></div><div><small>Mot målet</small><b class="${hasT?(tot-spSum(tg)<=0?"ahead":"behind"):""}">${hasT?fmtD(tot-spSum(tg)):"–"}</b></div></div>
-   <div class="card"><ul class="ra-tips">${tips.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>
+  const radar=ref?radarSvg(S.map(stShort),[{v:S.map(()=>.5),c:"ref"},{v:S.map((s,i)=>{const k=ref[2*i+1]/Math.max(1,sp[2*i+1]);return (k-.6)/.8}),c:"you s"}],"Stationerna mot "+refName+". Den streckade ringen är "+refName+", utanför är snabbare."):"";
+  const rounds=S.map((s,i)=>{const a=2*i,b=2*i+1,da=ref?sp[a]-ref[a]:null,db=ref?sp[b]-ref[b]:null,dl=d=>d==null?"":`<small class="${Math.round(d)<=0?"ahead":"behind"}">${fmtD(d)}</small>`;
+    return `<div class="rnd"><span class="n">${i+1}</span><div class="c"><div class="ln"><span>Löpning</span><b>${fmt(sp[a])}</b>${dl(da)}</div><div class="ln"><span>${esc(names[b])}</span><b>${fmt(sp[b])}</b>${dl(db)}</div></div><span></span></div>`}).join("");
+  openSheet(`<div><span class="small">${esc(clsName(l.race.cls)||"Hyrox")} · ${esc(fmtDM(l.date))}</span><h2 class="ra-big">${fmt(tot)}</h2>${ref?`<p class="ra-sub"><b class="${dTot<=0?"ahead":"behind"}">${fmtD(dTot)}</b> mot ${o?"loppet "+esc(fmtDM(o.date))+" ("+fmt(spSum(ref))+")":"målet "+fmt(spSum(ref))}</p>`:""}</div>
+   <div class="facts3"><div><small>Löpning</small><b>${fmt(run)}</b>${ref?`<small class="${run-spSum(ref,false)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(run-spSum(ref,false))}</small>`:""}</div><div><small>Stationer</small><b>${fmt(sta)}</b>${ref?`<small class="${sta-spSum(ref,true)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(sta-spSum(ref,true))}</small>`:""}</div><div><small>Snittempo</small><b>${fmt(run/8)}</b><small>/km</small></div></div>
    ${opts.length?`<div class="field"><label for="ra-cmp">Jämför med</label><select id="ra-cmp"><option value="">Målet</option>${opts.map(x=>`<option value="${esc(x.id)}"${o&&o.id===x.id?" selected":""}>${esc(fmtDM(x.date))} · ${fmt(spSum(x.race.sp))}</option>`).join("")}</select></div>`:""}
-   <div class="card"><div class="splits">${sp.map((x,i)=>{const ref=o?+o.race.sp[i]:hasT?tg[i]:null,d=ref==null?null:x-ref;return `<div class="split${i%2?"":" r"}"><span>${esc(names[i])}</span><span>${fmt(x)}${d==null?"":`<small class="${d<=0?"ahead":"behind"}">${fmtD(d)}</small>`}</span></div>`}).join("")}</div><p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment inkluderar en del av Roxzone-tiden."} Tiden mäts när du trycker.</p></div>`,()=>{
-    const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null)})}
+   ${top.length?`<div class="ra-h"><h3>Var tiden gick</h3>${dTot>0?`<p class="small">${top.length===1?"En del":top.length===2?"Två delar":"Tre delar"} står för ${fmt(topSum)} av ${fmt(dTot)}.</p>`:""}</div>
+   <div class="group">${top.map(x=>`<div class="row"><span class="ra-ic${x.i%2?" s":""}"><i></i></span><div><h3>${esc(x.n)}</h3><p>${fmt(x.x)} mot ${o?"":"planerade "}${fmt(x.r)}</p></div><span class="amt behind" style="font-weight:600">${fmtD(x.d)}</span></div>`).join("")}${fadeTxt?`<div class="row"><span class="ra-ic"><i></i></span><div><h3>Andra halvan</h3><p>${fadeTxt}</p></div><span></span></div>`:""}</div>`:""}
+   ${good.length?`<div class="group"><div class="row"><span class="ra-ic ok">${svgIco.check}</span><div><p style="color:var(--ink);font-size:.95rem">${good.join(" ")}</p></div><span></span></div></div>`:""}
+   ${radar?`<div class="ra-h"><h3>Stationerna</h3><p class="small">Streckad ring är ${refName}. Längre ut är snabbare.</p></div><div class="card">${radar}</div>`:""}
+   <div class="ra-h"><h3>Löpningen</h3><p class="small">${ref?"Strecket visar "+refName+". Rosa staplar gick långsammare.":"Tid per kilometer."}</p></div>
+   <div class="card">${barsSvg([0,2,4,6,8,10,12,14].map(i=>sp[i]),[0,2,4,6,8,10,12,14].map(i=>ref?ref[i]:null),"Tid för varje kilometer")}</div>
+   <div class="ra-h"><h3>Del för del</h3></div>
+   <div class="group">${rounds}</div>
+   ${stIdx>=0?`<button class="pill block" id="ra-train">Öva på ${esc(S[stIdx].n)}</button>`:""}
+   <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment inkluderar en del av Roxzone-tiden."} Tiden mäts när du trycker.</p>`,()=>{
+    const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
+    const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)}})}
+/* Statistik under Logg, Form */
+function renderStats(){const el=$("#stats");if(!el)return;const now=evD(today()),inDays=(l,d)=>l.date&&(now-evD(l.date))/864e5<d;
+  const L6=LOGS.filter(l=>inDays(l,42)),cnt=S.map(s=>L6.filter(l=>(l.stations||[]).includes(s.n)).length),mx=Math.max(1,...cnt);
+  const weak=S.map((s,i)=>({s,c:cnt[i]})).sort((a,b)=>a.c-b.c)[0];
+  const L4=LOGS.filter(l=>inDays(l,28)),byT={};L4.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});
+  const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
+  const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
+  const hasAny=L6.length||R.length;
+  el.innerHTML=!hasAny?`<div class="sechead"><h2>Statistik</h2></div><div class="card"><p class="small">Logga några pass, så fylls graferna här.</p></div>`:
+  `${L6.length?`<div class="sechead"><h2>Stationsbalans</h2><span class="small">Senaste 6 veckorna</span></div>
+   <div class="card">${radarSvg(S.map(stShort),[{v:cnt.map(c=>c/mx),c:"you s"}],"Hur ofta varje station finns med i dina pass de senaste sex veckorna")}
+   <p class="small">${weak&&weak.c<mx?`Minst tränat: <b style="color:var(--ink)">${esc(weak.s.n)}</b>, ${weak.c} av ${L6.length} pass.`:"Du tränar alla stationer lika ofta."}</p></div>`:""}
+   ${types.length?`<div class="sechead"><h2>Tid per passtyp</h2><span class="small">Senaste 4 veckorna</span></div>
+   <div class="card hbars">${types.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/tmax*100)}%;--i:${i}"></i></div><b>${m} min</b></div>`).join("")}</div>`:""}
+   ${pts.length?`<div class="sechead"><h2>Dina lopp</h2><span class="small">${pts.length} sparade</span></div>
+   <div class="card">${lineSvg(pts,set.target*60,"Sluttid för dina sparade lopp och simuleringar")}<p class="small">Högre upp är snabbare. Den streckade linjen är din måltid.</p></div>`:""}`}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rav]");if(b)openRaceAn(b.dataset.rav)});
 function startTick(){clearInterval(tick);tick=setInterval(()=>{if(!RACE||RACE.end){clearInterval(tick);return}if(location.hash==="#race")renderRace();else $("#tab-live").hidden=false},250)}
 $("#rc-next").onclick=async()=>{

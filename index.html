@@ -831,22 +831,11 @@ a.row{color:inherit;text-decoration:none}
 .lg-tplform{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
 .lg-tplbtn{justify-self:center}
 .lg-sec[hidden]{display:none}
-/* Levande varv på Hem */
-.lapband{position:relative;display:grid;align-content:center;justify-items:center;gap:1px;width:100%;height:92px;color:inherit;text-decoration:none;text-align:center}
-.lapband[hidden]{display:none}
-.lapband svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.lapband rect{fill:none;stroke-width:6;vector-effect:non-scaling-stroke}
-.lp-bg{stroke:var(--seg)}
-.lp-fg{stroke:var(--green);stroke-linecap:round;stroke-dasharray:0 100;transition:stroke-dasharray 1.1s var(--ease)}
-.lp-c{stroke:url(#lapg);stroke-linecap:round;stroke-dasharray:5 95;animation:lapgo 6s linear infinite}
-@keyframes lapgo{to{stroke-dashoffset:-100}}
-.lp-t{position:relative;display:flex;align-items:baseline;gap:6px;font-size:.92rem;font-weight:500}
-.lp-t b{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.lp-s{position:relative;font-size:.82rem;color:var(--muted)}
+/* Hem */
 .wd{animation:wdin .5s var(--spring) both}
 .wd:nth-child(2){animation-delay:.05s}.wd:nth-child(3){animation-delay:.1s}.wd:nth-child(4){animation-delay:.15s}.wd:nth-child(5){animation-delay:.2s}.wd:nth-child(6){animation-delay:.25s}.wd:nth-child(7){animation-delay:.3s}
 @keyframes wdin{from{opacity:0;transform:translateY(8px) scale(.85)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.lp-c,.wd{animation:none}.lp-c{stroke:none}.lp-fg{transition:none}}
+@media (prefers-reduced-motion:reduce){.wd{animation:none}}
 #tv-seg button{font-size:.82rem;padding-inline:2px}
 /* Hem för den som redan är igång */
 .hello{display:none}
@@ -854,17 +843,27 @@ a.row{color:inherit;text-decoration:none}
 .back .hero .wrap{justify-items:start;gap:14px}
 .back .hero-big,.back .hero .sub,.back .hero .divchip{display:none}
 .back .hello{display:grid;gap:4px}
-.back .hello h1{font-size:2rem;font-weight:700;letter-spacing:-.035em;line-height:1.1;background:none;-webkit-text-fill-color:currentColor;color:var(--ink);animation:none}
+.back .hello h1{font-size:2.2rem;font-weight:700;letter-spacing:-.035em;line-height:1.12;padding-bottom:.08em;background:linear-gradient(90deg,#ff2d55,#ff5a36,#ff7a3d,#ffa25c,#ff7a3d,#ff5a36,#ff2d55);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:hellopan 9s linear infinite,hellofade .9s var(--ease) both}
+@keyframes hellopan{from{background-position:0% 50%}to{background-position:150% 50%}}
+@keyframes hellofade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.back .hello h1{animation:none}}
 .back .hello .eyebrow:first-letter{text-transform:uppercase}
 .weekcard{display:grid;gap:12px;color:inherit;text-decoration:none}
 .weekstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
-.wd{display:grid;gap:6px;justify-items:center}
+.wd{display:grid;gap:6px;justify-items:center;background:none;border:0;padding:0;font:inherit;cursor:pointer;min-height:58px;color:inherit}
 .wd small{font-size:.72rem;font-weight:600;color:var(--muted)}
-.wd i{font-style:normal;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;font-size:.86rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
-.wd.plan i{background:var(--bg);color:var(--ink)}
-.wd.done i{background:var(--green);color:#fff}
+.wd i{position:relative;font-style:normal;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:var(--seg);font-size:.86rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;transition:background .25s}
+.wd.plan i::after{content:"";position:absolute;bottom:4px;width:4px;height:4px;border-radius:50%;background:var(--muted)}
+.wd.pass i,.wd-legend .k-pass{background:linear-gradient(135deg,#ff7a3d,#ff5a36)}
+.wd.rest i,.wd-legend .k-rest{background:#0a8fb0}
+.wd.active i,.wd-legend .k-active{background:#3cc4d8}
+.wd.pass i,.wd.rest i{color:#fff}.wd.active i{color:#06343f}
+.wd.pass.now i,.wd.rest.now i{color:#fff}.wd.active.now i{color:#06343f}
+.wd-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
+.wd-legend span{display:inline-flex;align-items:center;gap:5px}
+.wd-legend i{width:9px;height:9px;border-radius:50%;display:block}
+.day-t:first-letter{text-transform:uppercase}
 .wd.now i{box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
-.wd.done.now i{color:#fff}
 .wd.now small{color:var(--ink)}
 .plansum{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .plansum p{font-size:.92rem;line-height:1.35;min-width:0}
@@ -900,10 +899,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="wrap">
       <div class="brandbar"><svg xmlns="http://www.w3.org/2000/svg" class="brandmark" role="img" aria-label="VARV." viewBox="0 0 1357 360"><defs><linearGradient id="hlg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><g transform="scale(0.3515625)"><path d="M1024.0 512.0 L1023.9 631.2 L1023.7 669.3 L1023.4 697.0 L1022.9 719.5 L1022.2 738.8 L1021.5 755.8 L1020.6 771.1 L1019.5 785.2 L1018.3 798.1 L1016.9 810.2 L1015.5 821.5 L1013.8 832.1 L1012.0 842.1 L1010.1 851.6 L1008.0 860.7 L1005.8 869.3 L1003.4 877.5 L1000.9 885.3 L998.2 892.8 L995.4 900.0 L992.4 906.9 L989.2 913.5 L985.9 919.9 L982.4 926.0 L978.7 931.8 L974.9 937.4 L970.9 942.8 L966.7 948.0 L962.3 953.0 L957.7 957.7 L953.0 962.3 L948.0 966.7 L942.8 970.9 L937.4 974.9 L931.8 978.7 L926.0 982.4 L919.9 985.9 L913.5 989.2 L906.9 992.4 L900.0 995.4 L892.8 998.2 L885.3 1000.9 L877.5 1003.4 L869.3 1005.8 L860.7 1008.0 L851.6 1010.1 L842.1 1012.0 L832.1 1013.8 L821.5 1015.5 L810.2 1016.9 L798.1 1018.3 L785.2 1019.5 L771.1 1020.6 L755.8 1021.5 L738.8 1022.2 L719.5 1022.9 L697.0 1023.4 L669.3 1023.7 L631.2 1023.9 L512.0 1024.0 L392.8 1023.9 L354.7 1023.7 L327.0 1023.4 L304.5 1022.9 L285.2 1022.2 L268.2 1021.5 L252.9 1020.6 L238.8 1019.5 L225.9 1018.3 L213.8 1016.9 L202.5 1015.5 L191.9 1013.8 L181.9 1012.0 L172.4 1010.1 L163.3 1008.0 L154.7 1005.8 L146.5 1003.4 L138.7 1000.9 L131.2 998.2 L124.0 995.4 L117.1 992.4 L110.5 989.2 L104.1 985.9 L98.0 982.4 L92.2 978.7 L86.6 974.9 L81.2 970.9 L76.0 966.7 L71.0 962.3 L66.3 957.7 L61.7 953.0 L57.3 948.0 L53.1 942.8 L49.1 937.4 L45.3 931.8 L41.6 926.0 L38.1 919.9 L34.8 913.5 L31.6 906.9 L28.6 900.0 L25.8 892.8 L23.1 885.3 L20.6 877.5 L18.2 869.3 L16.0 860.7 L13.9 851.6 L12.0 842.1 L10.2 832.1 L8.5 821.5 L7.1 810.2 L5.7 798.1 L4.5 785.2 L3.4 771.1 L2.5 755.8 L1.8 738.8 L1.1 719.5 L0.6 697.0 L0.3 669.3 L0.1 631.2 L0.0 512.0 L0.1 392.8 L0.3 354.7 L0.6 327.0 L1.1 304.5 L1.8 285.2 L2.5 268.2 L3.4 252.9 L4.5 238.8 L5.7 225.9 L7.1 213.8 L8.5 202.5 L10.2 191.9 L12.0 181.9 L13.9 172.4 L16.0 163.3 L18.2 154.7 L20.6 146.5 L23.1 138.7 L25.8 131.2 L28.6 124.0 L31.6 117.1 L34.8 110.5 L38.1 104.1 L41.6 98.0 L45.3 92.2 L49.1 86.6 L53.1 81.2 L57.3 76.0 L61.7 71.0 L66.3 66.3 L71.0 61.7 L76.0 57.3 L81.2 53.1 L86.6 49.1 L92.2 45.3 L98.0 41.6 L104.1 38.1 L110.5 34.8 L117.1 31.6 L124.0 28.6 L131.2 25.8 L138.7 23.1 L146.5 20.6 L154.7 18.2 L163.3 16.0 L172.4 13.9 L181.9 12.0 L191.9 10.2 L202.5 8.5 L213.8 7.1 L225.9 5.7 L238.8 4.5 L252.9 3.4 L268.2 2.5 L285.2 1.8 L304.5 1.1 L327.0 0.6 L354.7 0.3 L392.8 0.1 L512.0 0.0 L631.2 0.1 L669.3 0.3 L697.0 0.6 L719.5 1.1 L738.8 1.8 L755.8 2.5 L771.1 3.4 L785.2 4.5 L798.1 5.7 L810.2 7.1 L821.5 8.5 L832.1 10.2 L842.1 12.0 L851.6 13.9 L860.7 16.0 L869.3 18.2 L877.5 20.6 L885.3 23.1 L892.8 25.8 L900.0 28.6 L906.9 31.6 L913.5 34.8 L919.9 38.1 L926.0 41.6 L931.8 45.3 L937.4 49.1 L942.8 53.1 L948.0 57.3 L953.0 61.7 L957.7 66.3 L962.3 71.0 L966.7 76.0 L970.9 81.2 L974.9 86.6 L978.7 92.2 L982.4 98.0 L985.9 104.1 L989.2 110.5 L992.4 117.1 L995.4 124.0 L998.2 131.2 L1000.9 138.7 L1003.4 146.5 L1005.8 154.7 L1008.0 163.3 L1010.1 172.4 L1012.0 181.9 L1013.8 191.9 L1015.5 202.5 L1016.9 213.8 L1018.3 225.9 L1019.5 238.8 L1020.6 252.9 L1021.5 268.2 L1022.2 285.2 L1022.9 304.5 L1023.4 327.0 L1023.7 354.7 L1023.9 392.8Z" fill="url(#hlg)"/><path d="M512,332.0 H632.0 A180.0,180.0 0 0 1 632.0,692.0 H392.0 A180.0,180.0 0 0 1 392.0,332.0 H512" fill="none" stroke="#ffffff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611.0"/><circle cx="343.5" cy="338.7" r="58" fill="#ffffff"/></g><path d="M527.4355869293213 289.130859375 449.7695426940918 70.869140625H493.1475143432617L531.6724042892456 183.84979248046875Q537.2212152481079 201.21398448944092 543.8209156990051 222.986798286438Q550.4206161499023 244.75961208343506 558.7180833816528 272.1217203140259H547.2173433303833Q555.2218418121338 244.75961208343506 561.6917591094971 222.986798286438Q568.1616764068604 201.21398448944092 573.5059957504272 183.84979248046875L610.8590106964111 70.869140625H653.7119846343994L577.504919052124 289.130859375Z M660.1914176940918 289.130859375 737.8574619293213 70.869140625H788.3908519744873L865.8160696029663 289.130859375H821.6810712814331L784.300518989563 176.15020751953125Q778.4253368377686 157.37038135528564 772.0605978965759 136.59542083740234Q765.6958589553833 115.82046031951904 757.6913604736328 87.87827968597412H768.7889823913574Q760.6684694290161 115.82046031951904 754.2457232475281 136.59542083740234Q747.82297706604 157.37038135528564 741.7433032989502 176.15020751953125L703.2184133529663 289.130859375ZM706.9556245803833 237.93564319610596V205.21698474884033H819.1098699569702V237.93564319610596Z M888.3367576599121 289.130859375V70.869140625H973.9831962585449Q998.110918045044 70.869140625 1015.6940140724182 79.41884279251099Q1033.2771100997925 87.96854496002197 1042.8079643249512 103.70681762695312Q1052.3388185501099 119.44509029388428 1052.3388185501099 141.0245704650879Q1052.3388185501099 162.31401443481445 1042.2800340652466 177.89350032806396Q1032.2212495803833 193.47298622131348 1014.0674510002136 201.90667390823364Q995.913652420044 210.3403615951538 971.4683570861816 210.3403615951538H912.0343246459961V177.50568866729736H971.8310632705688Q984.5986642837524 177.50568866729736 993.8295402526855 173.03058385849Q1003.0604162216187 168.55547904968262 1008.0496826171875 160.33769130706787Q1013.0389490127563 152.11990356445312 1013.0389490127563 141.0245704650879Q1013.0389490127563 129.78275299072266 1008.0054440498352 121.6824460029602Q1002.9719390869141 113.58213901519775 993.741063117981 109.10703420639038Q984.5101871490479 104.63192939758301 971.6541090011597 104.63192939758301H928.3936538696289V289.130859375ZM1012.9024066925049 289.130859375 962.2562923431396 190.63828468322754H1004.9587049484253L1056.5997400283813 289.130859375Z M1146.6894931793213 289.130859375 1069.0234489440918 70.869140625H1112.4014205932617L1150.9263105392456 183.84979248046875Q1156.475121498108 201.21398448944092 1163.0748219490051 222.986798286438Q1169.6745223999023 244.75961208343506 1177.9719896316528 272.1217203140259H1166.4712495803833Q1174.4757480621338 244.75961208343506 1180.945665359497 222.986798286438Q1187.4155826568604 201.21398448944092 1192.7599020004272 183.84979248046875L1230.1129169464111 70.869140625H1272.9658908843994L1196.758825302124 289.130859375Z M1313.3611059188843 291.7371082305908Q1303.7716722488403 291.7371082305908 1297.0038151741028 284.96925115585327Q1290.2359580993652 278.2013940811157 1290.2359580993652 268.6119604110718Q1290.2359580993652 258.93404960632324 1297.0038151741028 252.210431098938Q1303.7716722488403 245.48681259155273 1313.3611059188843 245.48681259155273Q1323.0390167236328 245.48681259155273 1329.762635231018 252.210431098938Q1336.4862537384033 258.93404960632324 1336.4862537384033 268.6119604110718Q1336.4862537384033 278.2013940811157 1329.762635231018 284.96925115585327Q1323.0390167236328 291.7371082305908 1313.3611059188843 291.7371082305908Z" fill="currentColor"/></svg></div>
       <div class="hello" id="h-hello" hidden><span class="eyebrow" id="h-date"></span><h1 id="h-greet"></h1></div>
-      <a class="lapband" id="h-lap" href="#plan" hidden aria-label="Veckans framsteg"><svg viewBox="0 0 358 92" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="lapg" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient></defs>
-        <rect class="lp-bg" x="5" y="5" width="348" height="82" rx="41" pathLength="100"/><rect class="lp-fg" id="lap-fg" x="5" y="5" width="348" height="82" rx="41" pathLength="100"/><rect class="lp-c" x="5" y="5" width="348" height="82" rx="41" pathLength="100"/></svg>
-        <span class="lp-t"><b id="lap-n">0</b><span id="lap-l"></span></span><span class="lp-s" id="lap-s"></span></a>
-      <h1 class="hero-big">8 × 1 km.</h1>
+            <h1 class="hero-big">8 × 1 km.</h1>
       <p class="sub">Ett lopp. Åtta stationer. Samma bana över hela världen.</p>
       <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
           </div>
@@ -913,7 +909,7 @@ a.row{color:inherit;text-decoration:none}
     <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Nytt på Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Din plan börjar enkelt och bygger upp formen stegvis.</p></a><div class="today" id="today"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg">Logg</a></div>
-    <a class="card weekcard" href="#plan" aria-label="Veckans pass"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p></a>
+    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-legend" aria-hidden="true"><span><i class="k-pass"></i>Pass</span><span><i class="k-rest"></i>Vila</span><span><i class="k-active"></i>Aktiv vila</span></div></div>
     <div class="tiles" style="margin-top:10px" hidden>
       <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
       <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
@@ -1217,7 +1213,7 @@ a.row{color:inherit;text-decoration:none}
 
 <script>
 /* ============ Felrapporter ============ */
-const APPVER="2026-11-02h";
+const APPVER="2026-11-02j";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2721,9 +2717,9 @@ let LGDRAFT=null;try{const d=JSON.parse(localStorage.getItem("varv-draft")||"nul
 function keepDraft(){try{if(LG&&!LG.live&&!LG.fromLive&&!LG.edit&&!LG.saved&&(LG.items.length||(LG.note||"").trim())){const d=Object.assign({},LG,{view:"main",pick:[],q:"",delArm:false});LGDRAFT=d;localStorage.setItem("varv-draft",JSON.stringify({at:Date.now(),lg:d}))}}catch(e){}}
 function dropDraft(){LGDRAFT=null;try{localStorage.removeItem("varv-draft")}catch(e){}}
 function openLogger(o){o=o||{};const ed=o.edit;
-  if(LIVE&&!ed&&!o.afterLive){LIVE.open=true;saveLive();renderLive();liveWake();return}
-  if(!ed&&!o.type&&!o.stations&&LGDRAFT){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
-  LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:today(),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
+  if(LIVE&&!ed&&!o.date){LIVE.open=true;saveLive();renderLive();liveWake();return}
+  if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
+  LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:(o.date||today()),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
     rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};
   if(ed&&!ed.items&&ed.stations)ed.stations.forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x,true))});
@@ -2986,22 +2982,48 @@ function renderLog(){
 
 /* ============ Hem ============ */
 function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
-  const mon=new Date(weekStart(today())+"T12:00:00"),td=today(),P=progress();let planned=0,done=0;
+  const mon=new Date(weekStart(today())+"T12:00:00"),td=today(),P=progress(),rd=set.restDays||{};let rests=0;
   el.innerHTML=DN.map((n,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);const ds=iso(d);
-    const pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),dn=LOGS.some(l=>l.date===ds);if(pl)planned++;if(dn)done++;
-    return `<span class="wd${dn?" done":pl?" plan":""}${ds===td?" now":""}"><small>${n[0]}</small><i aria-hidden="true">${dn?"✓":d.getDate()}</i></span>`}).join("");
-  $("#h-weektxt").textContent=`${P.weekVarv} varv den här veckan`+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(weekStats().streak?` · ${weekStats().streak} veckor i rad`:"")}
-function renderLap(){const a=$("#h-lap");if(!a)return;a.hidden=!set.onboarded;if(!set.onboarded)return;
-  const st=weekStats(),pct=Math.min(100,Math.round(st.now.n/Math.max(1,set.per)*100)),d=daysLeft(),me=myEvent();
-  $("#lap-n").textContent=`${st.now.n}/${set.per}`;$("#lap-l").textContent="pass i veckan";
-  $("#lap-s").textContent=!set.noRace&&d>=0?`${d} ${d===1?"dag":"dagar"} till ${me?me.c:"loppet"}`:"Varje pass tar dig ett varv närmare";
-  const f=$("#lap-fg");f.style.strokeDasharray=`${pct} 100`}
+    const pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),dn=LOGS.some(l=>l.date===ds),r=rd[ds];if(r&&!dn)rests++;
+    const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
+    return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
+  const st=weekStats().streak;
+  $("#h-weektxt").textContent=`${P.weekVarv} varv den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} veckor i rad`:"")}
+function saveRestDay(ds,v){const m=Object.assign({},set.restDays||{});if(v)m[ds]=v;else delete m[ds];
+  const lim=new Date();lim.setDate(lim.getDate()-400);const li=iso(lim);Object.keys(m).forEach(k=>{if(k<li)delete m[k]});set.restDays=m;saveSet();renderHome()}
+function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
+  const title=new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
+  const ses=[];PLAN.forEach(w=>w.ses.forEach(x=>{if(x.date===ds)ses.push(x)}));
+  const planH=ses.length?`<div class="group">${ses.map(x=>`<a class="row" href="#plan"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></a>`).join("")}</div>`:"";
+  if(future){openSheet(`<div><span class="small">Kommande dag</span><h2 class="day-t">${esc(title)}</h2></div>${planH||`<p class="small">Inget pass planerat den här dagen.</p>`}`);return}
+  const st={k:r?r.k:null,what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
+  const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=!st.k};
+  openSheet(`<div><span class="small">${ds===td?"I dag":"Den här dagen"}</span><h2 class="day-t">${esc(title)}</h2></div>
+   ${logs.length?`<div class="group">${logs.map(l=>`<button class="row" data-dlog="${esc(l.id)}"><div><h3>${esc(l.type)}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
+   <button class="pill block" id="dy-log">Logga pass</button>
+   <div class="field"><span class="lbl">Eller markera vila</span><div class="seg" id="dy-seg" role="group" aria-label="Vila"><button type="button" data-rk="rest">Vilodag</button><button type="button" data-rk="active">Aktiv vila</button></div></div>
+   <div id="dy-active" hidden style="display:grid;gap:14px">
+     <div class="chips" id="dy-what">${["Promenad","Cykling","Yoga","Rörlighet","Annat"].map(w=>`<button type="button" class="chip" data-w="${w}">${w}</button>`).join("")}</div>
+     <div class="grid2"><div class="field"><label for="dy-km">Distans (km)</label><input type="text" id="dy-km" inputmode="decimal" autocomplete="off" placeholder="Valfritt" value="${esc(String(st.km).replace(".",","))}"></div>
+     <div class="field"><label for="dy-min">Tid (min)</label><input type="text" id="dy-min" inputmode="numeric" autocomplete="off" placeholder="Valfritt" value="${esc(st.min)}"></div></div></div>
+   <button class="pill ghost block" id="dy-save" hidden>Spara</button>
+   ${r?`<button class="linkbtn" id="dy-clear" style="justify-self:center;color:var(--bad)">Ta bort markeringen</button>`:""}`,()=>{
+    draw();
+    $("#dy-log").onclick=()=>{closeSheet();setTimeout(()=>openLogger({date:ds}),320)};
+    $("#dy-seg").onclick=e=>{const b=e.target.closest("[data-rk]");if(b){st.k=b.dataset.rk;draw()}};
+    $("#dy-what").onclick=e=>{const b=e.target.closest("[data-w]");if(b){st.what=b.dataset.w;draw()}};
+    document.querySelectorAll("#sheet-in [data-dlog]").forEach(b=>b.onclick=()=>{const id=b.dataset.dlog;closeSheet();setTimeout(()=>openEditLog(id),320)});
+    $("#dy-save").onclick=()=>{let v={k:st.k};if(st.k==="active"){const km=parseFloat($("#dy-km").value.replace(",",".")),min=parseInt($("#dy-min").value,10);v.what=st.what;if(km>0)v.km=Math.min(300,Math.round(km*10)/10);if(min>0)v.min=Math.min(1440,min)}
+      saveRestDay(ds,v);closeSheet();toast(st.k==="active"?"Aktiv vila är sparad.":"Vilodagen är sparad.");HAPTIC("success")};
+    const c=$("#dy-clear");if(c)c.onclick=()=>{saveRestDay(ds,null);closeSheet();toast("Markeringen är borttagen.")};
+  })}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-wday]");if(b)openDay(b.dataset.wday)});
 function renderHome(){
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
     $("#h-greet").textContent=(h<5?"God natt":h<10?"God morgon":h<18?"Hej":"God kväll")+(n?", "+n:"")+"."}}
-  try{renderWeekStrip();renderLap()}catch(e){}
+  try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag kvar":"dagar kvar";
   $("#h-racedate").textContent=new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});

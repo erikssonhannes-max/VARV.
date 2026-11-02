@@ -4954,6 +4954,45 @@ const NAME_OK=v=>/^[\p{L}][\p{L}' .-]{1,59}$/u.test(v)&&/\p{L}{2}/u.test(v);
 /* Tider skrivs med bara siffror. Kolon sätts in automatiskt: 515 blir 5:15, 12930 blir 1:29:30. */
 function tmFormat(v,max){const d=String(v).replace(/\D/g,"").replace(/^0+(?=\d{3})/,"").slice(0,max);return d.length<3?d:d.length<5?d.slice(0,-2)+":"+d.slice(-2):d.slice(0,-4)+":"+d.slice(-4,-2)+":"+d.slice(-2)}
 document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.tm)return;const f=tmFormat(t.value,+t.dataset.tm||5);if(f!==t.value){t.value=f;try{t.setSelectionRange(f.length,f.length)}catch(x){}}},true);
+/* Inmatning: varje fält tar bara emot de tecken och den längd som förväntas.
+   Sifferfält tar bara siffror, namn bara bokstäver, och fritext får en maxlängd utan styrtecken.
+   Regeln gäller alla fält i appen, även de som läggs till senare. */
+function inKind(i){if(i.dataset.kind)return i.dataset.kind;if(i.dataset.tm)return "tm";
+  const im=(i.getAttribute("inputmode")||"").toLowerCase(),ac=(i.getAttribute("autocomplete")||"").toLowerCase(),t=i.type;
+  if(i.tagName==="TEXTAREA")return "long";if(t==="email")return "email";if(t==="password")return "pw";if(t==="url")return "url";
+  if(im==="numeric")return "int";if(im==="decimal")return "dec";if(ac==="name")return "name";if(ac==="nickname")return "user";
+  if(i.id==="fa-in")return "handle";if(i.id==="dl-in")return "word";if(t==="text"||t==="search")return "text";return null}
+function inDigits(i){if(i.dataset.digits)return +i.dataset.digits;const f=i.dataset.f||i.dataset.lf;if(f)return {m:5,r:4,c:4,kg:3}[f]||5;
+  const ml=+i.getAttribute("maxlength");return ml>0&&ml<12?ml:5}
+const CTRL=/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F​-‏‪-‮⁦-⁩]/g;
+function inClean(v,k,i){switch(k){
+  case "int":return v.replace(/\D/g,"").slice(0,inDigits(i));
+  case "dec":{const x=v.replace(/[^\d.,]/g,""),m=x.match(/^(\d*)([.,]?)(\d*)/)||["","","",""];return m[1].slice(0,inDigits(i))+(m[2]||"")+m[3].replace(/[.,]/g,"").slice(0,2)}
+  case "name":return v.replace(/[^\p{L}\p{M}' .-]/gu,"").replace(/\s{2,}/g," ").replace(/^[\s.'-]+/,"").slice(0,60);
+  case "user":return v.replace(/[^A-Za-z0-9ÅÄÖåäöÉé_.]/g,"").slice(0,20);
+  case "handle":return v.replace(/[^\p{L}\p{N}_.# ]/gu,"").slice(0,30);
+  case "word":return v.replace(/[^\p{L}]/gu,"").slice(0,10);
+  case "email":return v.replace(/[\s<>"'(),;:\\[\]]/g,"").slice(0,254);
+  case "pw":return v.replace(CTRL,"").slice(0,72);
+  case "url":return v.replace(/[\s<>"'`]/g,"").slice(0,300);
+  case "long":return v.replace(CTRL,"");
+  case "text":return v.replace(CTRL,"").replace(/[\r\n\t<>]/g,"");
+  default:return v}}
+document.addEventListener("input",e=>{const t=e.target;if(e.isComposing||!(t instanceof HTMLInputElement||t instanceof HTMLTextAreaElement))return;
+  const k=inKind(t);if(!k||k==="tm")return;const old=t.value,nv=inClean(old,k,t);if(nv===old)return;
+  let pos=null;try{pos=t.selectionStart}catch(x){}t.value=nv;try{if(pos!=null){const p=Math.max(0,Math.min(nv.length,pos-(old.length-nv.length)));t.setSelectionRange(p,p)}}catch(x){}},true);
+/* Sifferfält görs om till textfält med sifferknappsats, så att bokstäver, e, minus och för många siffror inte går att skriva.
+   Fält utan maxlängd får en. */
+function hardenInputs(root){if(!root||!root.querySelectorAll)return;
+  root.querySelectorAll('input[type="number"]').forEach(i=>{const mx=i.getAttribute("max"),dec=i.getAttribute("inputmode")==="decimal"||/\./.test(i.getAttribute("step")||"");
+    i.type="text";i.setAttribute("inputmode",dec?"decimal":"numeric");if(!i.dataset.digits)i.dataset.digits=mx?String(Math.floor(Math.abs(+mx))).length:4;i.setAttribute("autocomplete","off")});
+  root.querySelectorAll('input[type="text"]:not([maxlength]),input[type="search"]:not([maxlength]),input:not([type]):not([maxlength])').forEach(i=>{const k=inKind(i);
+    if(k==="text"||k==="handle")i.setAttribute("maxlength",k==="handle"?"30":"100");else if(k==="word")i.setAttribute("maxlength","10")});
+  root.querySelectorAll('textarea:not([maxlength])').forEach(i=>i.setAttribute("maxlength","500"));
+  root.querySelectorAll('input[type="email"]:not([maxlength])').forEach(i=>i.setAttribute("maxlength","254"));
+  root.querySelectorAll('input[type="password"]:not([maxlength])').forEach(i=>i.setAttribute("maxlength","72"))}
+hardenInputs(document);
+new MutationObserver(ms=>{for(const m of ms)for(const n of m.addedNodes)if(n.nodeType===1){if(n.matches&&n.matches("input,textarea"))hardenInputs(n.parentNode||n);else hardenInputs(n)}}).observe(document.documentElement,{childList:true,subtree:true});
 const pastBest=()=>{const r=(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(x=>+x.t).filter(t=>t>0);return r.length?Math.min(...r):0};
 const bestRace=()=>{const a=[+PRS.race||0,pastBest()].filter(t=>t>0);return a.length?Math.min(...a):0};
 function onbClose(){if(!ONB_ON)return;ONB_ON=false;$("#onb").hidden=true;gateInert(false);document.body.style.overflow=""}
@@ -5006,7 +5045,7 @@ function openOnb(){
           if(!r.d)return ["Välj datum för lopp "+(j+1)+".","#ob-rd"+j]}
         return st.races.some(r=>r.t)?null:["Fyll i minst en tid, eller välj Nej."]}},
     body:{eye:"Din form",h:"Några siffror om dig.",p:"Allt är valfritt. Ju mer du fyller i, desto mer träffsäkra blir tempo och pulszoner.",skip:"Hoppa över",
-      html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="numeric"${im?` data-tm="${im}"`:` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
+      html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="${id==="ob-w"?"decimal":"numeric"}"${im?` data-tm="${im}"`:` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
         return `<div class="grid2">${f("ob-w","Vikt (kg)",st.weight,"75",30,250)}${f("ob-ht","Längd (cm)",st.height,"178",120,230)}</div>
         <div class="grid2">${f("ob-vo2","VO2max",st.vo2,"48",20,95)}${f("ob-rhr","Vilopuls",st.rhr,"55",30,120)}</div>
         <div class="grid2">${f("ob-max","Maxpuls",st.maxhr,st.age?String(220-st.age):"190",120,230)}${f("ob-pace","Snittempo per km",st.pace,"5:15",0,0,"4")}</div>

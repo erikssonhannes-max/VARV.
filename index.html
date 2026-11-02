@@ -1280,7 +1280,7 @@ a.row{color:inherit;text-decoration:none}
       <div class="field"><label for="pf-in-w">Vikt (kg)</label><input type="number" id="pf-in-w" inputmode="decimal" min="30" max="250" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-vo2">VO2max</label><input type="number" id="pf-in-vo2" inputmode="numeric" min="20" max="95" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-rhr">Vilopuls</label><input type="number" id="pf-in-rhr" inputmode="numeric" min="30" max="120" placeholder="Valfritt"></div>
-      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="decimal" placeholder="5:15"></div></div>
+      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="numeric" data-tm="4" placeholder="5:15"></div></div>
       <div class="chiprow"><button class="divchip" data-open="test">Gör om starttestet</button><button class="divchip" data-open="hr">Pulszoner</button></div>
     </div>
     <div class="group" style="margin-top:28px"><button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, kopplingar, hjälp och dina data</p></div><span class="chev">›</span></button></div>
@@ -2849,7 +2849,7 @@ function renderPRs(){
 function openPR(k){
   const n=(PRKEYS.find(x=>x[0]===k)||[])[1];const v=PRS[k];
   openSheet(`<div><span class="small">Personligt rekord</span><h2>${n}</h2></div>
-   <div class="field"><label for="pr-in">Tid, skriv m:ss eller h:mm:ss</label><input type="text" id="pr-in" inputmode="decimal" placeholder="${k==="race"?"1:29:30":"4:15"}" value="${v?fmt(v):""}"></div>
+   <div class="field"><label for="pr-in">Tid, skriv bara siffror</label><input type="text" id="pr-in" inputmode="numeric" data-tm="${k==="race"?5:4}" placeholder="${k==="race"?"1:29:30":"4:15"}" value="${v?fmt(v):""}"></div>
    <div class="grid2">${v?`<button class="pill ghost" id="pr-del">Ta bort</button>`:"<span></span>"}<button class="pill" id="pr-save">Spara</button></div>`,()=>{
     const inp=$("#pr-in");setTimeout(()=>inp.focus(),320);
     $("#pr-save").onclick=()=>{const s=parseT(inp.value);if(!s){toast("Skriv tiden som m:ss, till exempel 4:15");return}const better=!PRS[k]||s<PRS[k];PRS[k]=s;savePRs();renderPRs();closeSheet();toast(better?"Nytt rekord sparat":"Rekordet är uppdaterat");if(better)setTimeout(confetti,250)};
@@ -3332,8 +3332,8 @@ function renderHome(){try{renderGo()}catch(e){}
   $("#h-target").textContent=fmtHM(set.target);$("#h-pace").textContent=fmt(t.pace);
   {const hn=$("#h-new");if(hn)hn.hidden=set.level!=="ny"}
   $("#h-week").textContent=`${st.now.n}/${set.per}`;$("#h-streak").textContent=st.streak;
-  const med=set.g==="w"?5780:5276,src=PRS.race||set.target*60,dm=Math.round((src-med)/60);
-  $("#h-med").innerHTML=`${PRS.race?"Ditt rekord":"Din måltid"} är <b style="color:var(--ink);font-weight:600">${dm===0?"lika med":Math.abs(dm)+" min "+(dm<0?"snabbare än":"långsammare än")}</b> mediantiden i Open ${set.g==="w"?"dam, 1:36":"herr, 1:28"}.`;
+  const med=set.g==="w"?5780:5276,src=bestRace()||set.target*60,dm=Math.round((src-med)/60);
+  $("#h-med").innerHTML=`${bestRace()?"Ditt rekord":"Din måltid"} är <b style="color:var(--ink);font-weight:600">${dm===0?"lika med":Math.abs(dm)+" min "+(dm<0?"snabbare än":"långsammare än")}</b> mediantiden i Open ${set.g==="w"?"dam, 1:36":"herr, 1:28"}.`;
   const me=myEvent();if(!set.noRace)$("#h-racedate").textContent=(me?me.c+" · ":"")+$("#h-racedate").textContent;
   renderNear();
   const el=$("#today");
@@ -3831,7 +3831,7 @@ function renderProfile(){
   $("#pf-av").innerHTML=avatarHtml();
   $("#pf-name").textContent=pName()||"Din profil";
   const s=evD(set.since);$("#pf-sub").textContent=`Tränar med VARV. sedan ${MONL[s.getMonth()]} ${s.getFullYear()}`;
-  $("#pf-stats").innerHTML=`<div class="tile"><b>${LOGS.length}</b><span>pass loggade</span></div><div class="tile"><b>${String(hrs).replace(".",",")} h</b><span>träningstid</span></div><div class="tile"><b>${PRS.race?fmt(PRS.race):"–"}</b><span>bästa Hyrox-tid</span></div><div class="tile"><b>${st.streak}</b><span>veckor i rad</span></div>`;
+  $("#pf-stats").innerHTML=`<div class="tile"><b>${LOGS.length}</b><span>pass loggade</span></div><div class="tile"><b>${String(hrs).replace(".",",")} h</b><span>träningstid</span></div><div class="tile"><b>${bestRace()?fmt(bestRace()):"–"}</b><span>bästa Hyrox-tid</span></div><div class="tile"><b>${st.streak}</b><span>veckor i rad</span></div>`;
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
@@ -4099,15 +4099,20 @@ const GOAL_IC={friends:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
   plan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></svg>`};
 const SEXES=[["w","Kvinna"],["m","Man"],["x","Annat"]];
 let ONB_ON=false;
+/* Tider skrivs med bara siffror. Kolon sätts in automatiskt: 515 blir 5:15, 12930 blir 1:29:30. */
+function tmFormat(v,max){const d=String(v).replace(/\D/g,"").replace(/^0+(?=\d{3})/,"").slice(0,max);return d.length<3?d:d.length<5?d.slice(0,-2)+":"+d.slice(-2):d.slice(0,-4)+":"+d.slice(-4,-2)+":"+d.slice(-2)}
+document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.tm)return;const f=tmFormat(t.value,+t.dataset.tm||5);if(f!==t.value){t.value=f;try{t.setSelectionRange(f.length,f.length)}catch(x){}}});
+const pastBest=()=>{const r=(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(x=>+x.t).filter(t=>t>0);return r.length?Math.min(...r):0};
+const bestRace=()=>{const a=[+PRS.race||0,pastBest()].filter(t=>t>0);return a.length?Math.min(...a):0};
 function onbClose(){if(!ONB_ON)return;ONB_ON=false;$("#onb").hidden=true;gateInert(false);document.body.style.overflow=""}
 function openOnb(){
   const evs=evUpcoming().filter(e=>evIn(e)>=21).sort((a,b)=>(a.r==="norden"?0:1)-(b.r==="norden"?0:1)||a.s.localeCompare(b.s)).slice(0,6);
   const st={age:set.age||null,sex:set.sex||null,level:set.level||null,goals:new Set(Array.isArray(set.goals)?set.goals:[]),
-    ev:null,date:"",none:false,target:set.target||90,goalSet:false,cls:{fmt:set.fmt||"singel",k:set.k||"open",g:null},
+    ev:null,date:"",none:false,other:false,target:set.target||90,goalSet:false,noGoal:false,cls:{fmt:set.fmt||"singel",k:set.k||"open",g:null},
     past:Array.isArray(set.pastRaces)&&set.pastRaces.length?true:null,races:(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(r=>({n:r.n||"",d:r.d||"",t:r.t?fmt(r.t):""})),
     weight:set.weight||null,height:set.height||null,vo2:set.vo2||null,rhr:set.rhr||null,maxhr:set.maxhr||null,pace:set.pace?fmt(set.pace):""};
   let i=0;
-  const steps=()=>["about","goals"].concat(st.goals.has("race")?["race"]:[],["past","body"],SB&&SBUSER?["push"]:[]);
+  const steps=()=>["about","goals"].concat(st.goals.has("race")?["race"]:[],st.goals.has("race")||st.goals.has("plan")?["goal"]:[],["past","body"],SB&&SBUSER?["push"]:[]);
   const num=id=>{const e=$(id);if(!e)return undefined;const v=e.value.trim().replace(",",".");return v===""?null:+v};
   const seg=(k,opts,cur,dis)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-${k}="${v}" aria-pressed="${cur===v}"${dis?" disabled":""}>${l}</button>`).join("")}</div>`;
   const pushState=()=>!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
@@ -4123,20 +4128,25 @@ function openOnb(){
       read(){},ok:()=>st.goals.size?null:["Välj minst ett mål."]},
     race:{eye:"Ditt lopp",h:"Vilket lopp siktar du på?",p:"Planen räknar baklänges från loppdagen.",
       html:()=>{const c=st.cls,g=c.g||(st.sex==="w"||st.sex==="m"?st.sex:set.g);return `<div class="lg-grp">${evs.map(e=>`<button type="button" class="lg-pk" data-sev="${e.i}" aria-pressed="${st.ev===e.i}"><span class="lg-dot" aria-hidden="true"></span><span><b style="font-weight:600">${esc(e.c)}</b><br><span class="small">${evRange(e)}</span></span><span class="lg-ck">${st.ev===e.i?"✓":""}</span></button>`).join("")}
-         <label class="lg-pk st-date" aria-pressed="${!!st.date}"><span class="lg-dot" aria-hidden="true"></span><span>${st.date?"Eget datum: "+new Date(st.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long",year:"numeric"}):"Annat lopp eller datum"}</span><span class="lg-ck">${st.date?"✓":""}</span><input type="date" id="ob-d" min="${today()}" aria-label="Datum för loppet"></label>
+         <button type="button" class="lg-pk" data-sother aria-pressed="${st.other}"><span class="lg-dot" aria-hidden="true"></span><span>Annat lopp eller eget datum</span><span class="lg-ck">${st.other?"✓":""}</span></button>
          <button type="button" class="lg-pk" data-snone aria-pressed="${st.none}"><span class="lg-dot" aria-hidden="true"></span><span>Inte bestämt än</span><span class="lg-ck">${st.none?"✓":""}</span></button></div>
-        <div class="field"><span class="lbl">Din klass</span>${seg("fmt",[["singel","Singel"],["doubles","Doubles"],["mixed","Mixed"]],c.fmt)}${seg("k",[["open","Open"],["pro","Pro"]],c.k,c.fmt==="mixed")}${seg("g",[["w","Dam"],["m","Herr"]],g)}</div>
-        <div class="field"><span class="lbl">Vilken tid vill du klara?</span><div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i minuter"></div>
-        <div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${st.target===v}">${l}</button>`).join("")}</div></div>`},
-      read(){},ok:()=>st.ev==null&&!st.date&&!st.none?["Välj ett lopp, ett datum eller Inte bestämt än."]:null},
+        ${st.other?`<div class="card"><div class="field"><label for="ob-d">När är loppet?</label><input type="date" id="ob-d" min="${today()}" value="${esc(st.date)}"><span class="small">Till exempel ett lopp som inte finns i listan, en simulering eller en dag du vill vara i form till.</span></div></div>`:""}
+        ${st.none?`<p class="ob-note">Ingen fara. Du får en plan på tolv veckor, och du kan välja lopp senare under Tävla.</p>`:""}
+        <div class="field"><span class="lbl">Din klass</span>${seg("fmt",[["singel","Singel"],["doubles","Doubles"],["mixed","Mixed"]],c.fmt)}${seg("k",[["open","Open"],["pro","Pro"]],c.k,c.fmt==="mixed")}${seg("g",[["w","Dam"],["m","Herr"]],g)}<span class="small">Klassen avgör vikterna på stationerna och vilken topplista du hamnar på.</span></div>`},
+      read(){},ok:()=>st.other&&!st.date?["Välj datum för loppet.","#ob-d"]:st.ev==null&&!st.other&&!st.none?["Välj ett lopp, Annat lopp eller Inte bestämt än."]:null},
+    goal:{eye:"Måltid",h:"Har du en måltid du satsar på?",p:"Tiden du vill gå i mål på i ett helt Hyrox-lopp. Planen sätter tempot för löpningen och stationerna utifrån den.",
+      html:()=>`<div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${!st.noGoal&&st.goalSet&&st.target===v}">${l}</button>`).join("")}<button type="button" class="chip" data-sng aria-pressed="${st.noGoal}">Vet inte än</button></div>
+        ${st.noGoal?`<p class="ob-note">Då utgår planen från din nivå, ungefär ${fmtHM(LEVEL_TARGET[st.level]||90)}. Du kan sätta en måltid när som helst under Plan, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
+        :`<div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i timmar och minuter"><span class="small">Dra för att välja en egen tid</span></div>`}`,
+      read(){},ok:()=>st.goalSet||st.noGoal?null:["Välj en tid, dra i reglaget eller välj Vet inte än."]},
     past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår planen från var du står i dag.",
       html:()=>`${seg("past",[["ja","Ja"],["nej","Nej, inte än"]],st.past===true?"ja":st.past===false?"nej":"")}
         ${st.past?`<div class="ob-races">${st.races.map((r,j)=>`<div class="card ob-rc"><div class="ob-rch"><b>Lopp ${j+1}</b>${st.races.length>1?`<button class="linkbtn" type="button" data-rm="${j}">Ta bort</button>`:""}</div>
           <div class="field"><label for="ob-rn${j}">Vilket lopp</label><input type="text" id="ob-rn${j}" maxlength="60" placeholder="Till exempel Stockholm 2025" value="${esc(r.n)}"></div>
           <div class="grid2"><div class="field"><label for="ob-rd${j}">Datum</label><input type="date" id="ob-rd${j}" max="${today()}" value="${esc(r.d)}"></div>
-          <div class="field"><label for="ob-rt${j}">Tid</label><input type="text" id="ob-rt${j}" inputmode="decimal" placeholder="1:29:30" value="${esc(r.t)}"></div></div></div>`).join("")}
+          <div class="field"><label for="ob-rt${j}">Tid</label><input type="text" id="ob-rt${j}" inputmode="numeric" data-tm="5" placeholder="1:29:30" value="${esc(r.t)}"></div></div></div>`).join("")}
           <button class="pill ghost block" type="button" data-add>+ Lägg till ett lopp till</button>
-          <p class="ob-note">Dina tider finns på results.hyrox.com om du inte minns dem. Du kan lägga till fler senare under Rekord.</p></div>`:""}`,
+          <p class="ob-note">Skriv bara siffror, till exempel 12930 för 1:29:30. Dina tider finns på results.hyrox.com om du inte minns dem.</p></div>`:""}`,
       read(){st.races.forEach((r,j)=>{const n=$("#ob-rn"+j);if(!n)return;r.n=n.value.trim();r.d=$("#ob-rd"+j).value;r.t=$("#ob-rt"+j).value.trim()})},
       ok(){if(st.past===null)return ["Välj Ja eller Nej."];if(!st.past)return null;
         for(let j=0;j<st.races.length;j++){const r=st.races[j];if(!r.n&&!r.d&&!r.t)continue;
@@ -4144,11 +4154,11 @@ function openOnb(){
           if(!r.d)return ["Välj datum för lopp "+(j+1)+".","#ob-rd"+j]}
         return st.races.some(r=>r.t)?null:["Fyll i minst en tid, eller välj Nej."]}},
     body:{eye:"Din form",h:"Några siffror om dig.",p:"Allt är valfritt. Ju mer du fyller i, desto mer träffsäkra blir tempo och pulszoner.",skip:"Hoppa över",
-      html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="${im||"numeric"}"${im?"":` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
+      html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="numeric"${im?` data-tm="${im}"`:` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
         return `<div class="grid2">${f("ob-w","Vikt (kg)",st.weight,"75",30,250)}${f("ob-ht","Längd (cm)",st.height,"178",120,230)}</div>
         <div class="grid2">${f("ob-vo2","VO2max",st.vo2,"48",20,95)}${f("ob-rhr","Vilopuls",st.rhr,"55",30,120)}</div>
-        <div class="grid2">${f("ob-max","Maxpuls",st.maxhr,st.age?String(220-st.age):"190",120,230)}${f("ob-pace","Snittempo per km",st.pace,"5:15",0,0,"decimal")}</div>
-        <p class="ob-note">Vet du inte? Klockor som Garmin, Apple Watch och Polar visar VO2max, vilopuls och maxpuls. Snittempot är vad du brukar springa på ett vanligt lugnt pass.</p>`},
+        <div class="grid2">${f("ob-max","Maxpuls",st.maxhr,st.age?String(220-st.age):"190",120,230)}${f("ob-pace","Snittempo per km",st.pace,"5:15",0,0,"4")}</div>
+        <p class="ob-note">Vet du inte? Klockor som Garmin, Apple Watch och Polar visar VO2max, vilopuls och maxpuls. Snittempot är vad du brukar springa på ett vanligt lugnt pass. Skriv bara siffror, till exempel 515 för 5:15.</p>`},
       read(){[["weight","#ob-w"],["height","#ob-ht"],["vo2","#ob-vo2"],["rhr","#ob-rhr"],["maxhr","#ob-max"]].forEach(([k,id])=>{const v=num(id);if(v!==undefined)st[k]=v});const p=$("#ob-pace");if(p)st.pace=p.value.trim()},
       ok(){const R=[["weight",30,250,"Vikten","#ob-w"],["height",120,230,"Längden","#ob-ht"],["vo2",20,95,"VO2max","#ob-vo2"],["rhr",30,120,"Vilopulsen","#ob-rhr"],["maxhr",120,230,"Maxpulsen","#ob-max"]];
         for(const [k,a,b,n,id] of R)if(st[k]!=null&&!(st[k]>=a&&st[k]<=b))return [`${n} ser inte rätt ut. Skriv ett värde mellan ${a} och ${b}, eller lämna tomt.`,id];
@@ -4186,15 +4196,13 @@ function openOnb(){
     saveAbout({age:st.age,height:st.height,level:st.level});
     if(st.goals.has("race")){const c=st.cls,ev=st.ev!=null?EVENTS[st.ev]:null;
       set.fmt=c.fmt;set.k=c.fmt==="mixed"?"open":c.k;set.g=c.g||(st.sex==="w"||st.sex==="m"?st.sex:set.g);
-      set.noRace=!ev&&!st.date;if(ev)set.race=raceKey(ev);else delete set.race;set.date=ev?ev.s:st.date||freeDate();set.target=st.target}
-    else{if(st.sex==="w"||st.sex==="m")set.g=st.sex;set.noRace=true;delete set.race;set.date=freeDate();if(lvlChanged||!set.onboarded)set.target=LEVEL_TARGET[st.level]||90}
+      set.noRace=!ev&&!st.date;if(ev)set.race=raceKey(ev);else delete set.race;set.date=ev?ev.s:st.date||freeDate();set.target=st.noGoal?(LEVEL_TARGET[st.level]||90):st.target}
+    else{if(st.sex==="w"||st.sex==="m")set.g=st.sex;set.noRace=true;delete set.race;set.date=freeDate();if(st.goalSet)set.target=st.target;else if(lvlChanged||!set.onboarded||st.noGoal)set.target=LEVEL_TARGET[st.level]||90}
     set.planStart=today();
     const races=st.past?st.races.filter(r=>r.t).map(r=>({n:r.n.slice(0,60),d:r.d,t:parseRes(r.t)})).sort((a,b)=>b.d.localeCompare(a.d)):[];
     set.pastRaces=races;
     set.weight=st.weight;set.height=st.height;set.vo2=st.vo2;set.rhr=st.rhr;set.maxhr=st.maxhr;set.pace=st.pace?parseRes(st.pace):null;
     set.onboarded=true;saveSet();
-    const best=races.length?Math.min(...races.map(r=>r.t)):0;
-    if(best&&(!PRS.race||best<PRS.race)){PRS.race=best;try{await savePRs()}catch(e){}}
     refreshSettingsUI();renderPlan();renderHome();renderPRs();
     onbClose();HAPTIC("success");toast("Din plan är klar");
     if(simInvWaiting())setTimeout(openInvite,450);else if(passWaiting())setTimeout(openSharedPass,450);
@@ -4203,14 +4211,15 @@ function openOnb(){
   body.onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;const d=b.dataset,v=V[steps()[i]];v.read();
     if(d.sx)st.sex=d.sx;else if(d.lv){st.level=d.lv;if(!st.goalSet)st.target=LEVEL_TARGET[st.level]}
     else if(d.gl){st.goals.has(d.gl)?st.goals.delete(d.gl):st.goals.add(d.gl);render();return}
-    else if(d.sev){st.ev=+d.sev;st.date="";st.none=false}else if(d.snone!==undefined){st.none=true;st.ev=null;st.date=""}
-    else if(d.sg){st.target=+d.sg;st.goalSet=true}else if(d.fmt){st.cls.fmt=d.fmt}else if(d.k){st.cls.k=d.k}else if(d.g){st.cls.g=d.g}
+    else if(d.sev){st.ev=+d.sev;st.date="";st.none=false;st.other=false}else if(d.snone!==undefined){st.none=true;st.ev=null;st.date="";st.other=false}
+    else if(d.sother!==undefined){st.other=true;st.ev=null;st.none=false;draw();const di=$("#ob-d");if(di){di.focus({preventScroll:true});di.closest(".card").scrollIntoView({block:"center",behavior:RM()?"auto":"smooth"});try{di.showPicker()}catch(x){}}return}
+    else if(d.sg){st.target=+d.sg;st.goalSet=true;st.noGoal=false}else if(d.sng!==undefined){st.noGoal=true;st.goalSet=false;st.target=LEVEL_TARGET[st.level]||90}else if(d.fmt){st.cls.fmt=d.fmt}else if(d.k){st.cls.k=d.k}else if(d.g){st.cls.g=d.g}
     else if(d.past){st.past=d.past==="ja";if(st.past&&!st.races.length)st.races.push({n:"",d:"",t:""})}
     else if(d.add!==undefined){if(st.races.length<10)st.races.push({n:"",d:"",t:""});draw();const n=$("#ob-rn"+(st.races.length-1));if(n)n.focus();return}
     else if(d.rm){st.races.splice(+d.rm,1)}else return;
     say("");draw()};
-  body.onchange=e=>{if(e.target.id==="ob-d"&&e.target.value){st.date=e.target.value;st.ev=null;st.none=false;draw()}};
-  body.oninput=e=>{if(msg.textContent)say("");if(e.target.id==="ob-g"){st.goalSet=true;st.target=+e.target.value;$("#ob-gv").textContent=fmtHM(st.target);$$("#ob-body [data-sg]").forEach(c=>c.setAttribute("aria-pressed",+c.dataset.sg===st.target))}};
+  body.onchange=e=>{if(e.target.id==="ob-d"){st.date=e.target.value;say("")}};
+  body.oninput=e=>{if(msg.textContent)say("");if(e.target.id==="ob-g"){st.goalSet=true;st.noGoal=false;st.target=+e.target.value;$("#ob-gv").textContent=fmtHM(st.target);$$("#ob-body [data-sg]").forEach(c=>c.setAttribute("aria-pressed",+c.dataset.sg===st.target))}};
   body.onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();go.click()}};
   go.onclick=()=>busy(go,async()=>{const k=steps()[i];
     if(k==="push"&&pushState()==="ask"){await pushOn()}

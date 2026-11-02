@@ -23,6 +23,10 @@ Sätt upp det så här:
 
 Inloggningssätt: e-post och lösenord, kod eller länk via e-post, glömt lösenord och Google.
 
+## Övningsbiblioteket
+
+`data/exercises.json` byggs med `scripts/build-exercises.py` från [free-exercise-db](https://github.com/yuhonas/free-exercise-db) (public domain) och egna tillägg i skriptet.
+
 ## Konto, integritet och säkerhet
 
 - På hemsidan måste man skapa konto efter startanimationen. Man godkänner villkoren, samtycker till att träningsdata sparas och intygar att man är 16 år eller äldre. Samtycket sparas på kontot.

@@ -45,6 +45,15 @@ Tummar upp, loppkalender och felrapporter
     Lopp läggs till och ändras i Table Editor → events. Appen hämtar listan när den startar. Sätt hidden till true för att dölja ett lopp.
     Felrapporter syns på teamets sida under fliken Fel.
 
+Vänförfrågningar och notiscenter
+
+    Kör supabase/notiscenter.sql i Supabase. Kräver profiler.sql, notiser.sql och varv-2.sql.
+
+Säkerhet och stabil statistik
+
+    Kör supabase/stats.sql igen (koden ändras inte) och därefter supabase/varv-3.sql. Kräver filerna ovan. Går att köra igen.
+    varv-3.sql städar profildata från användarna och begränsar felrapporter till 300 i timmen.
+
 Kopplingar att ansöka om
 
     Strava: skapa en app på strava.com/settings/api. Callback-domän varvtraining.com. Ge client id och secret till den som bygger kopplingen.

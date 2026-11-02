@@ -1097,7 +1097,7 @@ a.row{color:inherit;text-decoration:none}
 
 <script>
 /* ============ Felrapporter ============ */
-const APPVER="2026-10-30b";
+const APPVER="2026-11-02a";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -1191,6 +1191,7 @@ const fmt=sec=>{sec=Math.max(0,Math.round(sec));const h=Math.floor(sec/3600),m=M
 const fmtD=sec=>(Math.round(sec)<0?"−":"+")+fmt(Math.abs(sec));
 const fmtHM=min=>`${Math.floor(min/60)}:${String(min%60).padStart(2,"0")}`;
 const parseT=s=>{const p=String(s).trim().replace(/[.,]/g,":").split(":").map(Number);if(!p.length||p.some(isNaN))return null;return p.reduce((a,b)=>a*60+b,0)||null};
+const num=v=>{const n=+v;return Number.isFinite(n)?n:0};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const RM=()=>{try{return matchMedia("(prefers-reduced-motion: reduce)").matches}catch(e){return false}};
 function toast(t,o){const el=$("#toast");el.textContent=t;el.classList.toggle("act",!!(o&&o.action));
@@ -2096,17 +2097,17 @@ async function viewProfile(uid){
   if(!p){openSheet(`<div class="pv-head">${avImg(basic&&basic.avatar_url,basic&&basic.username,"pv-av")}<h2>${handleHtml(basic)}</h2><p class="small">Profilen visas bara för vänner som ${esc(basic?basic.username:"användaren")} har lagt till. Be hen lägga till dig också.</p></div>${friendBtns(uid,me)}`,()=>bindFriendBtns(uid));return}
   if(p.partner_id&&!NAMES[p.partner_id]){const {data:n}=await SB.rpc("varv_names",{p_ids:[p.partner_id]});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   const st=p.stats||{},nr=p.next_race,prs=p.prs||{};
-  let nrTxt="–",nrSub="";if(nr&&nr.date){const d=Math.round((new Date(nr.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);nrTxt=nr.name||evD(nr.date).toLocaleDateString("sv-SE",{day:"numeric",month:"short"});nrSub=d>=0?(d===0?"i dag":`om ${d} d`):""}
+  let nrTxt="–",nrSub="";if(nr&&isDay(nr.date)){const d=Math.round((new Date(nr.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);nrTxt=nr.name||evD(nr.date).toLocaleDateString("sv-SE",{day:"numeric",month:"short"});nrSub=d>=0?(d===0?"i dag":`om ${d} d`):""}
   const partner=p.partner_id&&NAMES[p.partner_id];
-  const prRows=[["km","1 km löpning"],...S.map(x=>[x.id,x.n])].map(([k,n])=>`<div><span>${esc(n)}</span><b class="${prs[k]?"":"none"}">${prs[k]?fmt(prs[k]):"–"}</b></div>`).join("");
+  const prRows=[["km","1 km löpning"],...S.map(x=>[x.id,x.n])].map(([k,n])=>`<div><span>${esc(n)}</span><b class="${num(prs[k])?"":"none"}">${num(prs[k])?fmt(num(prs[k])):"–"}</b></div>`).join("");
   openSheet(`<div class="pv-head">${avImg(p.avatar_url,p.username,"pv-av")}<h2>${handleHtml(p)}</h2>
      <div class="pv-chips">${p.experience?`<span class="hot">${esc(expTxt(p.experience))}</span>`:""}${p.best_division?`<span>${esc(p.best_division)}</span>`:""}${st.tier?`<span>${esc(st.tier)}</span>`:""}</div></div>
-   <div class="pv3"><div><small>Tävlingar</small><b>${p.races_count||0}</b><span>genomförda</span></div><div><small>Bästa tid</small><b>${p.best_time?fmt(p.best_time):"–"}</b><span>hel Hyrox</span></div><div><small>Nästa</small><b>${esc(nrTxt)}</b><span>${esc(nrSub)}</span></div></div>
+   <div class="pv3"><div><small>Tävlingar</small><b>${num(p.races_count)}</b><span>genomförda</span></div><div><small>Bästa tid</small><b>${num(p.best_time)?fmt(num(p.best_time)):"–"}</b><span>hel Hyrox</span></div><div><small>Nästa</small><b>${esc(nrTxt)}</b><span>${esc(nrSub)}</span></div></div>
    <div><h4 style="margin-bottom:8px">Personliga rekord</h4><div class="pvlist">${prRows}</div></div>
    <div><h4 style="margin-bottom:8px">Träning</h4><div class="pvlist">
-     <div><span>Pass totalt</span><b>${st.sessions||0}</b></div><div><span>Träningstid</span><b>${String(st.hours||0).replace(".",",")} h</b></div>
-     <div><span>Pass denna vecka</span><b>${st.week||0}</b></div><div><span>Veckor i rad</span><b>${st.streak||0}</b></div>
-     <div><span>Varv och nivå</span><b>${st.varv||0} · ${esc(st.tier||"Start")}</b></div><div><span>Utmärkelser</span><b>${st.medals||0}</b></div></div></div>
+     <div><span>Pass totalt</span><b>${num(st.sessions)}</b></div><div><span>Träningstid</span><b>${String(num(st.hours)).replace(".",",")} h</b></div>
+     <div><span>Pass denna vecka</span><b>${num(st.week)}</b></div><div><span>Veckor i rad</span><b>${num(st.streak)}</b></div>
+     <div><span>Varv och nivå</span><b>${num(st.varv)} · ${esc(st.tier||"Start")}</b></div><div><span>Utmärkelser</span><b>${num(st.medals)}</b></div></div></div>
    <div><h4 style="margin-bottom:8px">Doubles-partner</h4>${partner?`<button class="row" style="background:var(--tile);border-radius:18px" data-prof="${esc(partner.user_id)}">${avImg(partner.avatar_url,partner.username)}<div><h3>${handleHtml(partner)}</h3><p>Tryck för att se profilen</p></div><span class="chev">›</span></button>`:`<div class="pvlist"><div><span>Ingen partner vald</span></div></div>`}</div>
    ${me?`<button class="pill block" id="pv-edit">Redigera profil</button>`:friendBtns(uid,me)}`,()=>{
     bindFriendBtns(uid);const e=$("#pv-edit");if(e)e.onclick=openEditProfile;
@@ -2265,7 +2266,7 @@ async function loadProfiles(ids){
   try{const ps=await USR.profiles(miss);Object.assign(PROF,ps)}catch(e){}
 }
 function pname(id){return id===ME?"Du":(PROF[id]&&PROF[id].name)||"Träningskompis"}
-function wkVal(d,k){return d&&d.week===weekStart(today())?(d[k]||0):0}
+function wkVal(d,k){return d&&d.week===weekStart(today())?num(d[k]):0}
 let LBV="friends";
 function boardAll(){const B=Object.assign({},BOARD);if(ME)B[ME]=boardDoc();return B}
 function topMeds(d){return (d.top||[]).map(id=>MEDALS.find(m=>m.id===id)).filter(Boolean)}
@@ -2279,7 +2280,7 @@ async function renderComm(){
   let list=rows;if(LBV==="all"&&rows.length>25){list=rows.slice(0,25);const mi=rows.findIndex(r=>r.id===ME);if(mi>=25)list.push(rows[mi])}
   const rank=id=>rows.findIndex(r=>r.id===id)+1;
   const P=set.partner&&BOARD[set.partner]?BOARD[set.partner]:null;const me=B[ME];
-  const col=(name,d)=>`<div class="col"><h4>${esc(name)}</h4><div class="kv"><span>Varv</span><b>${wkVal(d,"wv")}</b></div><div class="kv"><span>Pass</span><b>${wkVal(d,"n")}</b></div><div class="kv"><span>I rad</span><b>${d.streak||0} v</b></div><div class="kv"><span>Rekord</span><b>${d.race?fmt(d.race):"–"}</b></div></div>`;
+  const col=(name,d)=>`<div class="col"><h4>${esc(name)}</h4><div class="kv"><span>Varv</span><b>${wkVal(d,"wv")}</b></div><div class="kv"><span>Pass</span><b>${wkVal(d,"n")}</b></div><div class="kv"><span>I rad</span><b>${num(d.streak)} v</b></div><div class="kv"><span>Rekord</span><b>${num(d.race)?fmt(num(d.race)):"–"}</b></div></div>`;
   const row=r=>{const pr=PROF[r.id],k=rank(r.id),t=TIERS[r.d.tier||0]||TIERS[0];return `<button class="row${r.id===ME?" lbme":""}" data-person="${esc(r.id)}"><span class="rk">${pr&&pr.avatarUrl?`<img class="av" src="${esc(pr.avatarUrl)}" alt="">`:`<span class="av"></span>`}<i class="${k<=3&&wkVal(r.d,"wv")?"r"+k:"rn"}">${k}</i></span><div><h3>${esc(pname(r.id))}${r.id===set.partner?" · partner":""}${r.id===ME&&!set.share?' <span class="small">· bara du ser dig</span>':""}</h3><p>${t.n} · ${r.d.med||0} ${r.d.med===1?"utmärkelse":"utmärkelser"}</p></div><span class="amt"><b style="color:var(--ink)">${wkVal(r.d,"wv")}</b>&nbsp;varv</span></button>`};
   el.innerHTML=`<div class="seg" id="lb-seg" role="group" aria-label="Visa" style="margin-bottom:12px"><button data-lb="friends" aria-pressed="${LBV==="friends"}">Vänner</button><button data-lb="all" aria-pressed="${LBV==="all"}">Alla</button></div>
   <div class="group">${list.map(row).join("")}</div>
@@ -2294,9 +2295,9 @@ $("#comm").addEventListener("click",e=>{const b=e.target.closest("[data-person]"
   if(id===ME){$("#lvl-btn")&&openLevels();return}
   const d=BOARD[id];const isP=set.partner===id,isF=(set.friends||[]).includes(id),me=boardDoc();
   const cmp=(lbl,a,b,hi)=>{const w=hi===undefined?0:(a>b?1:b>a?2:0);return `<span>${lbl}</span><b class="${w===1?"win":""}">${hi==="t"?TIERS[a].n:a}</b><b class="${w===2?"win":""}">${hi==="t"?TIERS[b].n:b}</b>`};
-  openSheet(`<div><span class="small">${isF?"Vän":"Träningskompis"}</span><h2>${esc(pname(id))}</h2>${d?`<p class="small">${esc(d.div||"")}${d.race?" · rekord "+fmt(d.race):""}${d.target?" · måltid "+fmtHM(d.target):""}</p>`:""}</div>
+  openSheet(`<div><span class="small">${isF?"Vän":"Träningskompis"}</span><h2>${esc(pname(id))}</h2>${d?`<p class="small">${esc(d.div||"")}${num(d.race)?" · rekord "+fmt(num(d.race)):""}${num(d.target)?" · måltid "+fmtHM(num(d.target)):""}</p>`:""}</div>
    ${d?`<div class="card"><div class="cmpgrid"><span></span><span class="h">Du</span><span class="h">${esc(pname(id).split(" ")[0])}</span>
-     ${cmp("Varv denna vecka",wkVal(me,"wv"),wkVal(d,"wv"),1)}${cmp("Pass denna vecka",wkVal(me,"n"),wkVal(d,"n"),1)}${cmp("Nivå",me.tier||0,d.tier||0,"t")}${cmp("Utmärkelser",me.med||0,d.med||0,1)}${cmp("Veckor i rad",me.streak||0,d.streak||0,1)}</div>
+     ${cmp("Varv denna vecka",wkVal(me,"wv"),wkVal(d,"wv"),1)}${cmp("Pass denna vecka",wkVal(me,"n"),wkVal(d,"n"),1)}${cmp("Nivå",me.tier||0,TIERS[d.tier]?d.tier:0,"t")}${cmp("Utmärkelser",me.med||0,num(d.med),1)}${cmp("Veckor i rad",me.streak||0,num(d.streak),1)}</div>
      ${topMeds(d).length?`<div class="lbmeds" style="justify-content:center;gap:10px">${topMeds(d).map(m=>medHTML(m,{on:true,sz:"sm"})).join("")}</div>`:""}</div>`:`<p class="small">Syns inte i topplistan just nu.</p>`}
    <button class="pill block" id="pf-fr">${isF?"Ta bort som vän":"Lägg till som vän"}</button>
    <button class="pill ghost block" id="pp">${isP?"Ta bort som partner":"Välj som partner"}</button>`,()=>{
@@ -3143,12 +3144,13 @@ async function loadFriendData(force){
   }
   FRC=out;return out;
 }
+const isDay=d=>typeof d==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(d);
 function raceLine(nr,partnerId){
   const ev=nr.date?(EVENTS.find(e=>e.c===nr.name&&e.s<=nr.date&&nr.date<=e.e)||(nr.name?null:EVENTS.find(e=>e.s<=nr.date&&nr.date<=e.e))):null;
   const where=nr.name||(ev&&ev.c)||"Lopp";const when=ev?evRange(ev):nr.date?new Date(nr.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short",year:"numeric"}):"";
   const venue=nr.venue||(ev&&ev.v)||"";const div=nr.div||"";
   const dbl=/Doubles/.test(div)&&partnerId&&NAMES[partnerId]?` med ${esc(NAMES[partnerId].username)}`:"";
-  return {where,when,ev,sub:[venue,div?esc(div)+dbl:""].filter(Boolean).join(" · ")};
+  return {where,when,ev,sub:[venue?esc(venue):"",div?esc(div)+dbl:""].filter(Boolean).join(" · ")};
 }
 async function renderFriends(force){
   const el=$("#fr-body");if(!el)return;
@@ -3163,7 +3165,7 @@ async function renderFriends(force){
     .sort((a,b)=>b.wv-a.wv||b.n-a.n);
   const myNr=profilePayload().next_race;
   const races=[];if(myNr&&myNr.date>=today())races.push({u:me,nr:myNr,pid:MYPROF.partner_id});
-  Object.values(D.profs).forEach(p=>{if(p.next_race&&p.next_race.date&&p.next_race.date>=today())races.push({u:p,nr:p.next_race,pid:p.partner_id})});
+  Object.values(D.profs).forEach(p=>{if(p.next_race&&isDay(p.next_race.date)&&p.next_race.date>=today())races.push({u:p,nr:p.next_race,pid:p.partner_id})});
   races.sort((a,b)=>a.nr.date.localeCompare(b.nr.date));
   const waiting=FRQ_OUT.map(r=>r.to_user);
   const kindTxt={lopp:"tävlade",rekord:"satte rekord",pass:"tränade"};

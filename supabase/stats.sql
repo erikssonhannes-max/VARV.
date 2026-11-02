@@ -18,6 +18,25 @@ insert into private.stats_token (token)
 select replace(gen_random_uuid()::text, '-', '')
 where not exists (select 1 from private.stats_token);
 
+-- Tolkar ett datum från en användares pass. Ogiltiga datum blir null i stället
+-- för att stoppa hela statistiken.
+create or replace function private.varv_date(p text)
+returns date
+language plpgsql
+immutable
+set search_path = ''
+as $$
+begin
+  if p !~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$' then
+    return null;
+  end if;
+  return p::date;
+exception when others then
+  return null;
+end;
+$$;
+revoke all on function private.varv_date(text) from public, anon, authenticated;
+
 create or replace function public.varv_dashboard(p_token text)
 returns jsonb
 language plpgsql
@@ -33,11 +52,15 @@ begin
   end if;
 
   with logs as (
-    select d.user_id, (d.data->>'date')::date as day
-    from public.user_docs d
-    where d.id not in ('meta', 'settings')
-      and coalesce(d.data->>'hidden', 'false') <> 'true'
-      and d.data->>'date' ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'
+    select x.user_id, x.day
+    from (
+      select d.user_id, private.varv_date(d.data->>'date') as day
+      from public.user_docs d
+      where d.id not in ('meta', 'settings')
+        and coalesce(d.data->>'hidden', 'false') <> 'true'
+    ) x
+    -- Datum långt bort är felaktiga och får inte blåsa upp månadslistan.
+    where x.day between date '2020-01-01' and today + 366
   ),
   users as (
     select u.id, (u.created_at at time zone 'Europe/Stockholm')::date as day

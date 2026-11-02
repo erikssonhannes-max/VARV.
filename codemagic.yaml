@@ -1,0 +1,58 @@
+# VARV. – bygger appen i molnet med Codemagic (codemagic.io).
+# Appen byggs av samma filer som webbsidan: app/scripts/kopiera-webb.mjs kopierar dem till app/www.
+# Byggen startas för hand i Codemagic, så att inga byggminuter går åt i onödan.
+
+workflows:
+  # Testversion för Android. Ger en APK-fil som går att installera direkt på en Android-telefon.
+  # Kräver ingen inloggning hos Google.
+  android-test:
+    name: Android – testversion (APK)
+    instance_type: linux_x2
+    max_build_duration: 30
+    environment:
+      node: 22
+      java: 21
+    scripts:
+      - name: Installera
+        script: cd app && npm ci
+      - name: Kopiera webbfilerna och synka
+        script: cd app && npm run web && npx cap sync android
+      - name: Bygg APK
+        script: cd app/android && chmod +x gradlew && ./gradlew assembleDebug
+    artifacts:
+      - app/android/app/build/outputs/apk/debug/*.apk
+
+  # iPhone till TestFlight. Kräver en gång i Codemagic:
+  #   1. Teams → Integrations → Developer Portal: lägg till en App Store Connect API-nyckel med namnet "VARV App Store".
+  #   2. Appen skapad i App Store Connect med Bundle ID com.varvtraining.app.
+  ios-testflight:
+    name: iPhone – TestFlight
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    integrations:
+      app_store_connect: VARV App Store
+    environment:
+      node: 22
+      xcode: latest
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.varvtraining.app
+    scripts:
+      - name: Installera
+        script: cd app && npm ci
+      - name: Kopiera webbfilerna och synka
+        script: cd app && npm run web && npx cap sync ios
+      - name: Signering
+        script: xcode-project use-profiles
+      - name: Byggnummer
+        script: |
+          # Varje bygge får ett nytt nummer, som TestFlight kräver. BUILD_NUMBER räknas upp av Codemagic.
+          cd app/ios/App && agvtool new-version -all $((BUILD_NUMBER + 1))
+      - name: Bygg
+        script: xcode-project build-ipa --project "app/ios/App/App.xcodeproj" --scheme "App"
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true

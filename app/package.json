@@ -1,0 +1,24 @@
+{
+  "name": "varv-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "VARV. som app för iPhone och Android, byggd med Capacitor av samma filer som webbsidan.",
+  "scripts": {
+    "web": "node scripts/kopiera-webb.mjs",
+    "sync": "npm run web && npx cap sync",
+    "ios": "npm run sync && npx cap open ios",
+    "android": "npm run sync && npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/android": "8.6.0",
+    "@capacitor/app": "8.1.2",
+    "@capacitor/core": "8.6.0",
+    "@capacitor/ios": "8.6.0",
+    "@capacitor/splash-screen": "8.0.2",
+    "@capacitor/status-bar": "8.0.4"
+  },
+  "devDependencies": {
+    "@capacitor/assets": "^4.0.0",
+    "@capacitor/cli": "8.6.0"
+  }
+}

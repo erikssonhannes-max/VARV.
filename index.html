@@ -1582,6 +1582,17 @@ a.row{color:inherit;text-decoration:none}
 </nav></div>
 
 <script>
+/* ============ Appläget ============ */
+/* I appen för iPhone och Android (Capacitor) körs samma kod som på webben. IS_NATIVE styr de få saker som skiljer. */
+const IS_NATIVE=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==="function"&&window.Capacitor.isNativePlatform());
+const SITE="https://varvtraining.com/";
+if(IS_NATIVE){document.documentElement.classList.add("native");
+  // Länkar som öppnas i ny flik, till exempel villkoren, öppnas från webbsidan i telefonens webbläsare.
+  document.addEventListener("click",e=>{const a=e.target.closest&&e.target.closest('a[target="_blank"]');if(!a)return;const h=a.getAttribute("href")||"";
+    if(h&&!/^[a-z]+:/i.test(h)){e.preventDefault();window.open(new URL(h.replace(/^\.?\//,""),SITE).href,"_blank")}},true);
+  // Androids bakåtknapp stänger en öppen ruta först, och går sedan bakåt i appen.
+  try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
+    if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
 const APPVER="2026-11-02o";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
@@ -2245,7 +2256,7 @@ var SB=null,SBUSER=null,SBCOL=null,SBSETOK=false,SBGOOGLE=false;
 const SB_CACHE="varv-sb-cache";
 function loadScript(src){return new Promise((ok,no)=>{const s=document.createElement("script");s.src=src;s.onload=ok;s.onerror=no;document.head.append(s)})}
 function sbConf(){const c=window.VARV_SUPABASE;return c&&/^https:\/\/[^/]+/.test(c.url||"")&&c.anonKey&&!/DITT-PROJEKT|DIN_PUBLIKA/.test(c.url+c.anonKey)?c:null}
-function sbRedirect(){return location.origin+location.pathname}
+function sbRedirect(){return IS_NATIVE?SITE:location.origin+location.pathname}
 function sbCollection(uid){
   let docs=new Map(),subs=[];
   const T=()=>SB.from("user_docs");
@@ -4948,7 +4959,7 @@ async function pushOff(){
   set.push=Object.assign({},set.push||{},{on:false});saveSet();toast("Notiserna är avstängda");
 }
 function renderNotis(){
-  const el=$("#pf-push");if(!el)return;const on=!!(set.push&&set.push.on),p=pushPrefs();
+  const el=$("#pf-push");if(!el)return;if(IS_NATIVE){el.innerHTML=`<p class="small" style="padding:4px 2px">Notiser i appen kommer snart. Tills vidare kan du slå på dem i webbversionen på varvtraining.com.</p>`;return}const on=!!(set.push&&set.push.on),p=pushPrefs();
   el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet och när de du följer tränar.",on)
    +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
      <div class="field"><label for="pu-h">Tid för påminnelser</label><select id="pu-h">${Array.from({length:17},(_,i)=>i+5).map(h=>`<option value="${h}"${h===(+set.hour||8)?" selected":""}>${String(h).padStart(2,"0")}:00</option>`).join("")}</select></div></div>`:"");
@@ -5049,10 +5060,10 @@ function openOnb(){
     past:Array.isArray(set.pastRaces)&&set.pastRaces.length?true:null,races:(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(r=>({n:r.n||"",d:r.d||"",t:r.t?fmt(r.t):""})),
     weight:set.weight||null,height:set.height||null,vo2:set.vo2||null,rhr:set.rhr||null,maxhr:set.maxhr||null,pace:set.pace?fmt(set.pace):""};
   let i=0;
-  const steps=()=>["about","goals"].concat(st.goals.has("race")?["race"]:[],st.goals.has("race")||st.goals.has("plan")?["goal"]:[],["past","body"],SB&&SBUSER?["push"]:[]);
+  const steps=()=>["about","goals"].concat(st.goals.has("race")?["race"]:[],st.goals.has("race")||st.goals.has("plan")?["goal"]:[],["past","body"],SB&&SBUSER&&!IS_NATIVE?["push"]:[]);
   const num=id=>{const e=$(id);if(!e)return undefined;const v=e.value.trim().replace(",",".");return v===""?null:+v};
   const seg=(k,opts,cur,dis)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-${k}="${v}" aria-pressed="${cur===v}"${dis?" disabled":""}>${l}</button>`).join("")}</div>`;
-  const pushState=()=>!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
+  const pushState=()=>IS_NATIVE?"none":!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
   const V={
     about:{eye:"Om dig",h:"Berätta lite om dig.",p:"Det styr måltiden, pulszonerna och vilken klass du jämförs med.",
       html:()=>`${set.name?"":`<div class="field"><label for="ob-name">Namn</label><input type="text" id="ob-name" autocomplete="name" maxlength="60" placeholder="För- och efternamn" value="${esc(st.name)}"><span class="small">Visas för dem du tränar med. Går inte att ändra senare.</span></div>`}<div class="field"><label for="ob-age">Ålder</label><input type="number" id="ob-age" inputmode="numeric" min="16" max="90" placeholder="År" value="${st.age||""}"></div>
@@ -5370,7 +5381,9 @@ function route(){
 window.addEventListener("hashchange",route);
 
 /* ============ Utseende ============ */
-function applyTheme(){const t=set.theme;if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme}
+function applyTheme(){const t=set.theme;if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;statusBar()}
+function statusBar(){if(!IS_NATIVE)return;try{const SBar=window.Capacitor.Plugins.StatusBar;if(!SBar)return;const t=set.theme,dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);SBar.setStyle({style:dark?"DARK":"LIGHT"})}catch(e){}}
+try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",statusBar)}catch(e){}
 function themeSeg(){const t=set.theme||"auto";return `<div class="field"><label>Utseende</label><div class="seg" id="pf-theme" role="group" aria-label="Utseende">${[["auto","Automatiskt"],["light","Ljust"],["dark","Mörkt"]].map(([k,l])=>`<button type="button" data-th="${k}" aria-pressed="${k===t}">${l}</button>`).join("")}</div></div>`}
 document.addEventListener("click",e=>{const b=e.target.closest("#pf-theme [data-th]");if(!b)return;set.theme=b.dataset.th==="auto"?null:b.dataset.th;saveSet();applyTheme();
   document.querySelectorAll("#pf-theme button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
@@ -5383,8 +5396,10 @@ route();
 if(!window.claude)initSupabase();
 (async()=>{await initDb();try{if(window.claude&&window.claude.use){MCP=await window.claude.use("mcp");renderStrava();if(MCP&&set.strava){await FIRST;syncStrava(false)}}}catch(e){}})();
 (async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false;renderGarmin()}}catch(e){}})();
-if(!window.claude&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
-if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
+if(!window.claude&&!IS_NATIVE&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
+if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(IS_NATIVE){try{const f=new File([data],filename,{type:/\.ics$/.test(filename)?"text/calendar":"application/octet-stream"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:filename});return {status:"saved"}}}catch(e){if(e&&e.name==="AbortError")return {status:"cancelled"}}
+    toast("Det går inte att spara filer i appen än. Använd webbversionen på varvtraining.com.");return {status:"failed"}}if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
 renderComm();renderGarmin();renderAvatar();renderEvents();setFdView(["flow","top"].includes(set.fdsub)?set.fdsub:"flow");
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);

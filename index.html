@@ -816,6 +816,17 @@ a.row{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:reduce){.po-pop.on{opacity:1;transition:opacity .4s .5s}}
 @keyframes popIn{0%{opacity:0;transform:scale(.3)}30%{opacity:1;transform:scale(1.12)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
 @keyframes likeB{50%{transform:scale(1.3)}}
+.po-com{width:44px;height:44px;border:0;background:none;color:var(--ink);display:grid;place-items:center;border-radius:12px;padding:0;margin-left:auto;cursor:pointer}
+.po-cm{padding:0 16px 12px;display:grid;gap:4px;justify-items:start}
+.po-c{font-size:.88rem;line-height:1.4;overflow-wrap:anywhere}.po-c b{font-weight:600}
+.po-more,.po-add{border:0;background:none;padding:2px 0;color:var(--muted);font:inherit;font-size:.86rem;cursor:pointer;min-height:28px;text-align:left}
+.cm-list{display:grid;gap:14px;max-height:50vh;overflow:auto}
+.cm-row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+.cm-row p{font-size:.95rem;line-height:1.4;overflow-wrap:anywhere}.cm-row b{font-weight:600}.cm-row small{color:var(--muted);font-size:.78rem}
+.cm-del{font-size:.78rem;padding:0;min-height:0}
+.cm-f{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+.cm-f textarea{width:100%;resize:none;border:1px solid var(--hair);background:var(--card);color:var(--ink);border-radius:12px;padding:10px 12px;font:inherit;font-size:1rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 /* Hitta vänner: svepkort */
 .deck{position:relative;height:310px;margin:4px 0 26px}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -834,6 +845,26 @@ a.row{color:inherit;text-decoration:none}
 .hm{display:block;aspect-ratio:1;border-radius:3px;background:var(--seg);min-width:0}
 .hm.l-1{background:transparent}.hm.l1{background:color-mix(in srgb,var(--accent) 28%,var(--seg))}.hm.l2{background:color-mix(in srgb,var(--accent) 52%,var(--seg))}.hm.l3{background:color-mix(in srgb,var(--accent) 76%,var(--seg))}.hm.l4{background:var(--accent)}
 .heat-leg{display:flex;gap:4px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:.72rem;color:var(--muted)}.heat-leg .hm{width:11px;height:11px;aspect-ratio:auto}
+/* Statistik, översikt */
+.st-week{gap:10px}
+.st-wh{display:flex;justify-content:space-between;align-items:baseline}
+.st-wv{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}.st-wv b{font-size:clamp(2.4rem,11vw,3rem);font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}.st-wv span{font-weight:600;font-size:1.05rem}.st-wv small{color:var(--muted);font-size:.9rem;margin-left:4px}
+.st-bar{position:relative;height:10px;border-radius:980px;background:var(--seg)}.st-bar i{display:block;height:100%;border-radius:980px;background:var(--hot)}
+.st-bar .mk{position:absolute;top:-4px;width:2px;height:18px;background:var(--ink);border-radius:2px;transform:translateX(-1px)}
+.st-per{margin:16px 0 10px}
+.st-tiles .tile{gap:2px}.st-d{font-size:.78rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}.st-d.ahead{color:var(--good)}.st-d.behind{color:var(--bad)}
+.st-note{margin:8px 0 0}
+.st-ic{color:var(--ink)}.st-ic.g{color:var(--good)}.st-ic.a{color:var(--link)}.st-ic.c{color:var(--cyan)}.st-ic.m{color:var(--muted)}.st-ic b{font-size:.9rem}
+.st-ins .row,.st-list .row{text-align:left}
+.st-list{margin-top:10px}.st-eq{color:var(--muted)}.st-r{display:flex;align-items:center;gap:6px}.st-r b{font-weight:600;font-variant-numeric:tabular-nums}
+.st-int{display:flex;height:14px;border-radius:980px;overflow:hidden;gap:2px;background:var(--seg)}.st-int i{display:block;min-width:0}
+.st-int .e,.st-intl .e{background:var(--cyan)}.st-int .m,.st-intl .m{background:var(--muted)}.st-int .h,.st-intl .h{background:var(--accent)}
+.st-intl{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.88rem}.st-intl span{display:flex;align-items:center;gap:6px}.st-intl i{width:12px;height:12px;border-radius:3px}.st-intl b{font-weight:600;font-variant-numeric:tabular-nums}
+.st-wd{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;text-align:center}
+.st-wd>div{display:grid;gap:4px;justify-items:center}.st-wd .v{font-size:.8rem;font-weight:600;font-variant-numeric:tabular-nums}.st-wd .d{font-size:.72rem;color:var(--muted)}
+.st-wd .c{display:flex;align-items:flex-end;width:100%;max-width:26px;height:80px;border-radius:6px;background:var(--seg);overflow:hidden}.st-wd .c i{display:block;width:100%;background:var(--ink);border-radius:6px}
+.hm.td{outline:2px solid var(--ink);outline-offset:-1px}
+@media (prefers-reduced-motion:no-preference){.st-bar i{animation:barW 1.1s var(--ease) both;transform-origin:left}.st-wd .c i{animation:barIn 1.1s var(--spring) both;transform-origin:bottom;animation-delay:calc(var(--i)*50ms)}}
 /* Grafer */
 .radar{width:100%;max-width:360px;display:block;margin:0 auto;overflow:visible}
 .radar .g{fill:none;stroke:var(--hair);stroke-width:1}
@@ -851,7 +882,7 @@ a.row{color:inherit;text-decoration:none}
 .barc .b{fill:var(--muted);opacity:.45}.barc .b.over{fill:var(--accent);opacity:1}
 .barc .ref{stroke:var(--ink);stroke-width:2;stroke-linecap:round}
 .hbars{gap:12px}
-.hb{display:grid;grid-template-columns:minmax(0,7.5rem) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.9rem}
+.hb{display:grid;grid-template-columns:minmax(0,10rem) minmax(0,1fr) auto;gap:10px;align-items:center;font-size:.9rem}
 .hb span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hb .tr{height:10px;border-radius:980px;background:var(--seg,var(--hair));overflow:hidden}
 .hb .tr i{display:block;height:100%;border-radius:980px;background:var(--ink)}
@@ -969,7 +1000,7 @@ a.row{color:inherit;text-decoration:none}
 .near-when{font-size:.85rem;font-weight:600;color:var(--accent);margin-top:auto;padding-top:8px}
 .near-card.mine{box-shadow:inset 0 0 0 2px var(--accent)}
 .near-foot{margin-top:8px}.near-foot .linkbtn{font-size:inherit}
-.nt-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:calc(max(16px,env(safe-area-inset-right,0px)) + 88px);z-index:30;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--tile);text-decoration:none;box-shadow:0 0 0 2px var(--bg)}
+.nt-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:calc(max(16px,env(safe-area-inset-right,0px)) + 48px);z-index:30;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--tile);text-decoration:none;box-shadow:0 0 0 2px var(--bg)}
 .nt-btn.on{background:var(--ink);color:var(--bg)}
 .nt-count{position:absolute;top:-4px;right:-6px;min-width:19px;height:19px;padding:0 5px;border-radius:980px;background:var(--accent);color:#fff;font-size:.68rem;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 2px var(--bg);font-variant-numeric:tabular-nums}
 .nt-count[hidden]{display:none}
@@ -1344,13 +1375,13 @@ a.row{color:inherit;text-decoration:none}
     </div>
     <div class="lgv" data-v="form">
     <div id="st-top"></div>
-    <div id="load"></div>
+    <div id="load" hidden></div>
     <div class="sechead"><h2>Din form</h2><button class="linkbtn" id="form-info">Så fungerar det</button></div>
     <div class="card formcard" id="form"></div>
     <div id="stats"></div>
 
-    <div class="sechead"><h2>Den här veckan</h2><span class="small" id="lb-note"></span></div>
-    <div id="comm"></div>
+    <div hidden><div class="sechead"><h2>Den här veckan</h2><span class="small" id="lb-note"></span></div>
+    <div id="comm"></div></div>
 
 
     <div id="ex-sec" hidden><div class="sechead"><h2>Övningar</h2><span class="small" id="ex-count"></span></div>
@@ -1454,7 +1485,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="tr-foot"><button class="pill ghost" id="tr-back">Tillbaka</button><button class="pill" id="tr-next">Nästa</button></div>
   </div></div>
 <a class="nt-btn" id="nt-btn" href="#notiser" aria-label="Notiser" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="nt-count" hidden></span></a>
-<a class="fr-btn" id="fr-btn" href="#feed" aria-label="Följer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
+<a class="fr-btn" id="fr-btn" href="#feed" aria-label="Följer" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
 <a class="logo-btn" id="logo-btn" href="#hem" aria-label="Till startsidan"></a>
 <a class="avatar-btn" id="avatar-btn" href="#profil" aria-label="Din profil"><span>V</span></a>
 
@@ -2921,7 +2952,7 @@ const TOUR=[
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
  {v:"logg",lg:"form",t:'.tab[data-v="logg"]',h:"Statistik",p:"Sista fliken. All din data: träningsprofil, stationsbalans, aktivitet vecka för vecka och dina lopp."},
  {v:"logg",lg:"form",t:"#form",h:"Statistik: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
- {v:"logg",lg:"form",t:"#comm",h:"Statistik: veckan",p:"Jämför veckans varv med dem du följer. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
+ {v:"logg",lg:"form",t:"#st-top",h:"Statistik: veckan",p:"Hur veckan går mot ditt snitt, perioden du väljer och konkreta saker att tänka på, till exempel stationen du tränat minst."},
  {v:"logg",lg:"form",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
  {v:"hem",c:1,end:1,h:"Du är redo.",p:"Logga ditt första pass så börjar formkurvan stiga. Lycka till med träningen."}];
 let TI=0,TON=false;
@@ -3527,7 +3558,7 @@ function renderHome(){try{renderGo()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-    $("#h-greet").textContent=n?`Hej, ${n}.`:"Hej.";$("#h-msg").textContent=dayMsg(h,"")}}
+    $("#h-greet").textContent=greetLine(h,n);$("#h-msg").textContent=dayMsg(h,"")}}
   try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";
@@ -3645,59 +3676,98 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
    <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment inkluderar en del av Roxzone-tiden."} Tiden mäts när du trycker.</p>`,()=>{
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
     const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)}})}
-/* Statistik: översikt med grafer */
-const PROFAX=["Löpning","Stationer","Styrka","Motor","Uthållighet","Intensitet"];
-const PROFMAP={"Intervaller":[0,5],"Lugn distans":[0,4],"Löpning och stationer":[0,1],"Styrka och stationer":[2,1],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[0,1,2,3,4,5]};
-function weekBarsSvg(vals,labels,aria){const W=320,H=140,T=20,B=22,n=vals.length,gw=(W-8)/n,bw=Math.min(18,gw*.6),hi=Math.max(30,...vals)*1.1,avg=vals.reduce((a,b)=>a+b,0)/n;
+/* Statistik: tydlig översikt med period, insikter och grafer */
+const STPER=[[28,"4 veckor"],[84,"12 veckor"],[182,"6 månader"]];
+function stPer(){const d=+set.stper;return STPER.some(p=>p[0]===d)?d:28}
+function stLogs(from,to){return LOGS.filter(l=>l&&l.date&&l.date>=from&&l.date<=to)}
+const dAgo=n=>{const d=new Date(today()+"T12:00:00");d.setDate(d.getDate()-n);return iso(d)};
+const hrs=m=>(m/60).toLocaleString("sv-SE",{maximumFractionDigits:1});
+const sgn=(v,fmtf)=>v>0?"+"+fmtf(v):v<0?"−"+fmtf(-v):"±0";
+function weekBarsSvg(vals,labels,aria){const W=320,H=140,T=20,B=22,n=vals.length,gw=(W-8)/n,bw=Math.min(18,gw*.6),hi=Math.max(30,...vals)*1.12,done=vals.slice(0,-1),avg=done.length?done.reduce((a,b)=>a+b,0)/done.length:0;
   const Y=v=>T+(1-v/hi)*(H-T-B);
   return `<svg class="barc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${vals.map((v,i)=>{const x=4+i*gw+(gw-bw)/2,y=Y(v),last=i===n-1;return `<rect class="b${last?" over":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,H-B-y).toFixed(1)}" rx="4" style="--i:${i}"/>${labels[i]?`<text class="xl" x="${(x+bw/2).toFixed(1)}" y="${H-6}" text-anchor="middle">${esc(labels[i])}</text>`:""}${last?`<text class="vl" x="${(x+bw/2).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle">${Math.round(v)}</text>`:""}`}).join("")}
-   <line class="ref" x1="4" x2="${W-4}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" style="stroke-dasharray:4 4;stroke-width:1.5;stroke:var(--muted)"/><text class="xl" x="4" y="${(Y(avg)-6).toFixed(1)}">Snitt ${Math.round(avg)}</text></svg>`}
+   ${avg?`<line class="ref" x1="4" x2="${W-4}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" style="stroke-dasharray:4 4;stroke-width:1.5;stroke:var(--muted)"/><text class="xl" x="4" y="${(Y(avg)-6).toFixed(1)}">Snitt ${Math.round(avg)} min</text>`:""}</svg>`}
 function heatHtml(minsByDay,weeks){const ws=weekStart(today());const start=new Date(ws+"T12:00:00");start.setDate(start.getDate()-7*(weeks-1));
   const mx=Math.max(1,...Object.values(minsByDay));const cells=[];
   for(let d=0;d<7;d++)for(let w=0;w<weeks;w++){const x=new Date(start);x.setDate(x.getDate()+w*7+d);const k=iso(x),m=minsByDay[k]||0,fut=k>today();
     const lv=fut?-1:!m?0:m<mx*.25?1:m<mx*.5?2:m<mx*.75?3:4;
-    cells.push(`<i class="hm l${lv}" style="grid-row:${d+1};grid-column:${w+2}" title="${esc(fmtDM(k))}: ${m} min"></i>`)}
+    cells.push(`<i class="hm l${lv}${k===today()?" td":""}" style="grid-row:${d+1};grid-column:${w+2}" title="${esc(fmtDM(k))}: ${m} min"></i>`)}
   return `<div class="heat" style="grid-template-columns:auto repeat(${weeks},minmax(0,1fr))" role="img" aria-label="Träningsminuter per dag de senaste ${weeks} veckorna">${DN.map((n,i)=>i%2?"":`<span class="hd" style="grid-row:${i+1};grid-column:1">${n}</span>`).join("")}${cells.join("")}</div>
    <div class="heat-leg" aria-hidden="true"><span>Mindre</span><i class="hm l0"></i><i class="hm l1"></i><i class="hm l2"></i><i class="hm l3"></i><i class="hm l4"></i><span>Mer</span></div>`}
-function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el)return;const now=evD(today()),inDays=(l,d)=>l.date&&(now-evD(l.date))/864e5<d&&l.date<=today();
-  const L30=LOGS.filter(l=>inDays(l,30)),L6=LOGS.filter(l=>inDays(l,42)),L4=LOGS.filter(l=>inDays(l,28));
-  const min30=L30.reduce((a,l)=>a+(+l.min||0),0),rpe30=L30.length?L30.reduce((a,l)=>a+(+l.rpe||3),0)/L30.length:0;
-  const P=PROG||progress();
-  if(top)top.innerHTML=`<div class="tiles st-tiles"><div class="tile"><span>Pass, 30 dagar</span><b>${L30.length}</b></div><div class="tile"><span>Timmar, 30 dagar</span><b>${(min30/60).toLocaleString("sv-SE",{maximumFractionDigits:1})}</b></div><div class="tile"><span>Snittkänsla</span><b>${L30.length?rpe30.toLocaleString("sv-SE",{maximumFractionDigits:1}):"–"}<small> av 5</small></b></div><div class="tile"><span>Varv totalt</span><b>${Math.round(P.varv||0).toLocaleString("sv-SE")}</b></div></div>`;
-  if(!LOGS.length){el.innerHTML=`<div class="sechead"><h2>Grafer</h2></div><div class="card"><p class="small">Logga några pass, så fylls graferna här.</p></div>`;return}
-  // Träningsprofil
-  const prof=PROFAX.map(()=>0);L6.forEach(l=>{const ax=PROFMAP[l.type];const m=+l.min||0;if(ax)ax.forEach(i=>prof[i]+=m/ax.length);if(+l.rpe>=4)prof[5]+=m*.5});
-  const pmx=Math.max(1,...prof);
-  // Stationsbalans
-  const cnt=S.map(s=>L6.filter(l=>(l.stations||[]).includes(s.n)).length),mx=Math.max(1,...cnt),weak=S.map((s,i)=>({s,c:cnt[i]})).sort((a,b)=>a.c-b.c)[0];
-  // Minuter per vecka, 12 veckor
-  const ws=weekStart(today()),wk=Array(12).fill(0);LOGS.forEach(l=>{if(!l.date||l.date>today())return;const w=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(w>=0&&w<12)wk[11-w]+=(+l.min||0)});
-  const wl=wk.map((_,i)=>{const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*(11-i));return i%3===2?`v${isoWeek(d)}`:""});
-  // Aktivitetskarta
-  const byDay={};LOGS.forEach(l=>{if(l.date)byDay[l.date]=(byDay[l.date]||0)+(+l.min||0)});
+const stIc={st:'<path d="M9 8a3 3 0 0 1 6 0"/><path d="M7.5 9.5h9L18 19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19z"/>',bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',cal:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',flag:'<path d="M6 21V4h11l-2 4 2 4H6"/>',up:'<path d="M5 15l7-7 7 7"/>'};
+const icoSvg=k=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${stIc[k]}</svg>`;
+function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return;
+  const per=stPer(),td=today(),from=dAgo(per-1),pFrom=dAgo(2*per-1),pTo=dAgo(per);
+  const Lp=stLogs(from,td),Lq=stLogs(pFrom,pTo);
+  const sum=(L,f)=>L.reduce((a,l)=>a+f(l),0),mins=L=>sum(L,l=>+l.min||0),rpe=L=>L.length?sum(L,l=>+l.rpe||3)/L.length:0;
+  // Veckan
+  const ws=weekStart(td),wkM=Array(13).fill(0),wkN=Array(13).fill(0);LOGS.forEach(l=>{if(!l||!l.date||l.date>td)return;const w=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(w>=0&&w<13){wkM[12-w]+=(+l.min||0);wkN[12-w]++}});
+  const thisM=wkM[12],thisN=wkN[12],avg4=(wkM[8]+wkM[9]+wkM[10]+wkM[11])/4,pct=avg4?Math.round(thisM/avg4*100):null,day=(new Date().getDay()+6)%7;
+  const wkTxt=!avg4?"Logga några veckor, så jämför VARV. veckan med ditt vanliga snitt.":pct>=130?"Klart mer än vanligt. Se till att få vila och sömn.":pct>=85?"Du ligger i nivå med ditt vanliga snitt.":day<3?"Veckan har precis börjat.":`Du har ${Math.max(0,Math.round(avg4-thisM))} min kvar till ditt snitt.`;
+  // Svit: veckor i rad med minst ett pass
+  let streak=0;for(let i=12;i>=0;i--){if(wkN[i])streak++;else if(i===12)continue;else break}
+  const weeksTr=new Set(Lp.map(l=>weekStart(l.date))).size,weeksAll=Math.ceil(per/7);
+  // Stationer
+  const cnt=S.map(s=>Lp.filter(l=>(l.stations||[]).includes(s.n)).length),mx=Math.max(1,...cnt);
+  const lastR=raceLogs()[0],prevR=raceLogs()[1],hasT=lastR&&Array.isArray(lastR.race.tg)&&lastR.race.tg.length===16;
+  const rv=hasT?S.map((_,i)=>{const sp=+lastR.race.sp[2*i+1],tg=+lastR.race.tg[2*i+1];return sp>0?((tg/sp)-.6)/.8:0}):null;
+  const weak=S.map((s,i)=>({s,i,c:cnt[i]})).sort((a,b)=>a.c-b.c)[0];
   // Intensitet
-  const RW=["Mycket lätt","Lätt","Måttligt","Hårt","Max"],rc=[0,0,0,0,0];L4.forEach(l=>{const r=Math.min(5,Math.max(1,Math.round(+l.rpe||3)));rc[r-1]+=(+l.min||0)});const rmx=Math.max(1,...rc);
-  // Passtyper
-  const byT={};L4.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
-  // Veckodagar
-  const wd=[0,0,0,0,0,0,0];L6.forEach(l=>{wd[(new Date(l.date+"T12:00:00").getDay()+6)%7]++});const wdm=Math.max(1,...wd);
-  // Lopp
+  const easyM=sum(Lp.filter(l=>(+l.rpe||3)<=2),l=>+l.min||0),modM=sum(Lp.filter(l=>(+l.rpe||3)===3),l=>+l.min||0),hardM=sum(Lp.filter(l=>(+l.rpe||3)>=4),l=>+l.min||0),totM=Math.max(1,easyM+modM+hardM);
+  const hp=Math.round(hardM/totM*100),ep=Math.round(easyM/totM*100),mp=Math.max(0,100-hp-ep);
+  // Insikter
+  const ins=[];
+  if(Lp.length&&weak&&weak.c<mx)ins.push({ic:"st",c:"g",h:`Träna mer ${weak.s.n}`,p:`Med i ${weak.c} av ${Lp.length} pass, minst av alla stationer.`,go:`data-st="${weak.i}"`});
+  if(Lp.length>=3)ins.push(hp>35?{ic:"bolt",c:"a",h:"Mycket hård träning",p:`${hp} % av tiden var hård. Lägg in fler lugna pass så orkar du mer när det gäller.`}
+    :hp<10?{ic:"bolt",c:"c",h:"Nästan bara lugnt",p:`Bara ${hp} % av tiden var hård. Ett intervallpass i veckan ger mer fart.`}
+    :{ic:"bolt",c:"g",h:"Bra balans i intensiteten",p:`${hp} % hårt och ${ep+mp} % lugnt eller måttligt.`});
+  if(Lp.length)ins.push({ic:"cal",c:weeksTr>=weeksAll-1?"g":"m",h:`${weeksTr} av ${weeksAll} veckor med träning`,p:streak>1?`${streak} veckor i rad just nu.`:"Jämnhet slår enstaka stora veckor."});
+  if(lastR&&prevR){const d=spSum(lastR.race.sp)-spSum(prevR.race.sp);ins.push({ic:"flag",c:d<=0?"g":"a",h:d<=0?`${fmt(-d)} snabbare än förra loppet`:`${fmt(d)} långsammare än förra loppet`,p:`${fmt(spSum(lastR.race.sp))} den ${fmtDM(lastR.date)} mot ${fmt(spSum(prevR.race.sp))} den ${fmtDM(prevR.date)}.`,go:`data-rav="${esc(lastR.id)}"`})}
+  const dl=(v,u,flip)=>{if(!Lq.length)return `<small class="st-d">–</small>`;const c=Math.abs(v)<1e-9?"":(v>0)!==!!flip?"ahead":"behind";return `<small class="st-d ${c}">${sgn(v,u)} mot förra</small>`};
+  const per2=STPER.find(p=>p[0]===per)[1];
+  top.innerHTML=`<div class="card st-week"><div class="st-wh"><span class="lbl">Den här veckan</span><span class="small">${thisN} ${thisN===1?"pass":"pass"}</span></div>
+     <div class="st-wv"><b>${Math.round(thisM)}</b><span>min</span>${avg4?`<small>av ${Math.round(avg4)} i snitt</small>`:""}</div>
+     <div class="st-bar" role="img" aria-label="${avg4?`${pct} procent av ditt veckosnitt`:"Inget snitt än"}"><i style="width:${avg4?Math.min(100,pct):0}%"></i>${avg4?`<span class="mk" style="left:${Math.min(100,10000/Math.max(100,pct))}%"></span>`:""}</div>
+     <p class="small">${wkTxt}</p></div>
+   <div class="seg st-per" id="st-per" role="group" aria-label="Period">${STPER.map(([d,l])=>`<button data-per="${d}" aria-pressed="${d===per}">${l}</button>`).join("")}</div>
+   <div class="tiles st-tiles">
+    <div class="tile"><span>Pass</span><b>${Lp.length}</b>${dl(Lp.length-Lq.length,v=>v)}</div>
+    <div class="tile"><span>Timmar</span><b>${hrs(mins(Lp))}</b>${dl((mins(Lp)-mins(Lq))/60,v=>hrs(v*60))}</div>
+    <div class="tile"><span>Snittkänsla</span><b>${Lp.length?rpe(Lp).toLocaleString("sv-SE",{maximumFractionDigits:1}):"–"}<small> av 5</small></b>${Lp.length&&Lq.length?`<small class="st-d">${sgn(Math.round((rpe(Lp)-rpe(Lq))*10)/10,v=>v.toLocaleString("sv-SE"))} mot förra</small>`:`<small class="st-d">–</small>`}</div>
+    <div class="tile"><span>Veckor i rad</span><b>${streak}</b><small class="st-d">med minst ett pass</small></div>
+   </div>
+   <p class="small st-note">Siffrorna gäller de senaste ${per2.toLowerCase()} och jämförs med perioden innan.</p>
+   ${ins.length?`<div class="sechead"><h2>Att tänka på</h2></div><div class="group st-ins">${ins.map(x=>`<${x.go?"button":"div"} class="row" ${x.go||""}><span class="ra-ic st-ic ${x.c}">${icoSvg(x.ic)}</span><div><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></div>${x.go?`<span class="chev">›</span>`:"<span></span>"}</${x.go?"button":"div"}>`).join("")}</div>`:""}`;
+  $("#st-per").onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.stper=+b.dataset.per;saveSet();renderStats()};
+  if(!LOGS.length){el.innerHTML=`<div class="card"><h3>Här fylls din statistik</h3><p class="small">Logga ditt första pass, så visar VARV. hur du tränar, vilka stationer du missar och hur loppen går.</p><a class="pill block" href="#logg" data-lg="pass">Logga ett pass</a></div>`;return}
+  // Grafer
+  const byDay={};LOGS.forEach(l=>{if(l&&l.date)byDay[l.date]=(byDay[l.date]||0)+(+l.min||0)});
+  const wl=wkM.slice(1).map((_,i)=>{const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*(11-i));return i%3===2?`v${isoWeek(d)}`:""});
+  const byT={};Lp.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
+  const wd=[0,0,0,0,0,0,0];Lp.forEach(l=>{wd[(new Date(l.date+"T12:00:00").getDay()+6)%7]++});const wdm=Math.max(1,...wd);
   const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
+  const stRows=S.map((s,i)=>{const sp=hasT?+lastR.race.sp[2*i+1]:null,tg=hasT?+lastR.race.tg[2*i+1]:null,d=hasT?sp-tg:null;
+    return `<button class="row st-row" data-st="${i}"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3><p>${cnt[i]} ${cnt[i]===1?"pass":"pass"}${hasT?` · senaste loppet ${fmt(sp)}`:""}</p></div><span class="st-r">${hasT?(Math.round(d)===0?`<b class="st-eq">±0:00</b>`:`<b class="${d<0?"ahead":"behind"}">${fmtD(d)}</b>`):""}<span class="chev">›</span></span></button>`}).join("");
   const hb=(rows,max,unit)=>`<div class="card hbars">${rows.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/max*100)}%;--i:${i}"></i></div><b>${Math.round(m)}${unit}</b></div>`).join("")}</div>`;
-  const lastR=raceLogs()[0],rv=lastR&&Array.isArray(lastR.race.tg)&&lastR.race.tg.length===16?S.map((_,i)=>{const sp=+lastR.race.sp[2*i+1],tg=+lastR.race.tg[2*i+1];return sp>0?((tg/sp)-.6)/.8:0}):null;
-  el.innerHTML=`${L6.length||rv?`<div class="sechead"><h2>Stationerna</h2><span class="small">I loppets ordning</span></div>
-   <div class="card">${radarSvg(S.map(stShort),[...(rv?[{v:S.map(()=>.5),c:"ref"},{v:rv,c:"you"}]:[]),...(L6.length?[{v:cnt.map(c=>c/mx),c:"you s"}]:[])],"De åtta stationerna i ett Hyrox-lopp: hur ofta du tränat dem och hur du presterade i ditt senaste lopp")}
-   <div class="rd-leg">${L6.length?`<span><i class="g"></i>Träning, 6 veckor</span>`:""}${rv?`<span><i class="a"></i>Senaste loppet, ${esc(fmtDM(lastR.date))}</span><span><i class="d"></i>Måltid</span>`:""}</div>
-   <p class="small">${L6.length&&weak&&weak.c<mx?`Minst tränat: <b style="color:var(--ink)">${esc(weak.s.n)}</b>, ${weak.c} av ${L6.length} pass. `:""}${rv?`Utanför den streckade ringen var du snabbare än målet.`:""}</p></div>`:""}
-   <div class="sechead"><h2>Aktivitet</h2><span class="small">Senaste 16 veckorna</span></div>
-   <div class="card">${heatHtml(byDay,16)}</div>
+  el.innerHTML=`<div class="sechead"><h2>Stationerna</h2><span class="small">I loppets ordning</span></div>
+   <div class="card">${radarSvg(S.map(stShort),[...(rv?[{v:S.map(()=>.5),c:"ref"},{v:rv,c:"you"}]:[]),{v:cnt.map(c=>c/mx),c:"you s"}],"De åtta stationerna i ett Hyrox-lopp: hur ofta du tränat dem och hur du presterade i ditt senaste lopp")}
+   <div class="rd-leg"><span><i class="g"></i>Träning, ${per2.toLowerCase()}</span>${rv?`<span><i class="a"></i>Senaste loppet, ${esc(fmtDM(lastR.date))}</span><span><i class="d"></i>Måltid</span>`:""}</div>
+   <p class="small">Längre ut betyder mer träning${rv?", eller snabbare än målet i loppet":""}. Tryck på en station nedan för teknik och övningar.</p></div>
+   <div class="group st-list">${stRows}</div>
+   <div class="sechead"><h2>Aktivitet</h2><span class="small">16 veckor</span></div>
+   <div class="card">${heatHtml(byDay,16)}<p class="small">Varje ruta är en dag. Mörkare betyder fler minuter.</p></div>
    <div class="sechead"><h2>Minuter per vecka</h2><span class="small">12 veckor</span></div>
-   <div class="card">${weekBarsSvg(wk,wl,"Träningsminuter per vecka de senaste tolv veckorna")}<p class="small">Den rosa stapeln är den här veckan.</p></div>
-   ${L4.length?`<div class="sechead"><h2>Intensitet</h2><span class="small">Minuter, 4 veckor</span></div>${hb(RW.map((w,i)=>[w,rc[i]]),rmx," min")}
-   <div class="sechead"><h2>Tid per passtyp</h2><span class="small">Senaste 4 veckorna</span></div>${hb(types,tmax," min")}`:""}
-   ${L6.length?`<div class="sechead"><h2>Veckodagar</h2><span class="small">Pass, 6 veckor</span></div>${hb(DN.map((d,i)=>[d,wd[i]]),wdm,"")}`:""}
+   <div class="card">${weekBarsSvg(wkM.slice(1),wl,"Träningsminuter per vecka de senaste tolv veckorna")}<p class="small">Den rosa stapeln är den här veckan. Strecket är snittet för veckorna innan.</p></div>
+   ${Lp.length?`<div class="sechead"><h2>Intensitet</h2><span class="small">${per2}</span></div>
+   <div class="card"><div class="st-int" role="img" aria-label="${ep} procent lugnt, ${mp} procent måttligt, ${hp} procent hårt"><i class="e" style="flex-grow:${easyM}"></i><i class="m" style="flex-grow:${modM}"></i><i class="h" style="flex-grow:${hardM}"></i></div>
+    <div class="st-intl"><span><i class="e"></i>Lugnt <b>${ep} %</b></span><span><i class="m"></i>Måttligt <b>${mp} %</b></span><span><i class="h"></i>Hårt <b>${hp} %</b></span></div>
+    <p class="small">Bygger på känslan du loggar, 1–2 lugnt, 3 måttligt och 4–5 hårt. De flesta tjänar på att det mesta är lugnt.</p></div>
+   <div class="sechead"><h2>Tid per passtyp</h2><span class="small">${per2}</span></div>${hb(types,tmax," min")}
+   <div class="sechead"><h2>Veckodagar</h2><span class="small">Pass, ${per2.toLowerCase()}</span></div>
+   <div class="card"><div class="st-wd">${DN.map((d,i)=>`<div><span class="v">${wd[i]}</span><span class="c"><i style="height:${Math.round(wd[i]/wdm*100)}%;--i:${i}"></i></span><span class="d">${d}</span></div>`).join("")}</div></div>`:""}
    ${pts.length?`<div class="sechead"><h2>Dina lopp</h2><span class="small">${pts.length} sparade</span></div>
-   <div class="card">${lineSvg(pts,set.target*60,"Sluttid för dina sparade lopp och simuleringar")}<p class="small">Högre upp är snabbare. Den streckade linjen är din måltid.</p></div>`:""}`}
+   <div class="card">${lineSvg(pts,set.target*60,"Sluttid för dina sparade lopp och simuleringar")}<p class="small">Högre upp är snabbare. Den streckade linjen är din måltid. Tryck på ett lopp under Tävla för hela analysen.</p></div>`:""}`;
+}
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rav]");if(b)openRaceAn(b.dataset.rav)});
@@ -4194,7 +4264,10 @@ async function loadFriendData(force){
     (pr.data||[]).forEach(p=>{out.profs[p.user_id]=p;NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},{user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url})});
     if(ac.error)out.actOk=false;else out.acts=ac.data||[];
     if(out.acts.length){const {data:lk,error:le}=await SB.from("activity_likes").select("activity_id,user_id").in("activity_id",out.acts.map(a=>a.id));
-      if(!le){out.likeOk=true;(lk||[]).forEach(l=>{(out.likes[l.activity_id]=out.likes[l.activity_id]||[]).push(l.user_id)})}}
+      if(!le){out.likeOk=true;(lk||[]).forEach(l=>{(out.likes[l.activity_id]=out.likes[l.activity_id]||[]).push(l.user_id)})}
+      out.comments={};const {data:cm,error:ce}=await SB.from("activity_comments").select("id,activity_id,user_id,body,created_at").in("activity_id",out.acts.map(a=>a.id)).order("created_at",{ascending:true}).limit(500);
+      if(!ce){out.comOk=true;(cm||[]).forEach(c=>{(out.comments[c.activity_id]=out.comments[c.activity_id]||[]).push(c)});
+        const miss=[...new Set((cm||[]).map(c=>c.user_id))].filter(id=>id!==SBUSER.id&&!NAMES[id]);if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}}}
     const need=[...new Set(Object.values(out.profs).map(p=>p.partner_id).filter(x=>x&&!NAMES[x]))];
     if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   }
@@ -4289,6 +4362,20 @@ async function renderFriends(force){
 function frDot(){try{fdDot()}catch(e){}const b=$("#fr-btn");if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
 async function frCheck(){try{if(!SB||!SBUSER||!FRIENDS.length)return;await loadFriendData(true);frDot()}catch(e){}}
 
+/* Hälsning på Hem: efter tid på dygnet och om man tränat i dag */
+const GREET={
+ done:["Starkt jobbat","Ett pass närmare målet","Det där sitter i kroppen nu","Dagens jobb är gjort","Så bygger man form"],
+ doneLate:["Vila gott, du har förtjänat det","Bra jobbat i dag","Låt kroppen ta hand om resten"],
+ early:["Morgonpasset sätter tonen","Tidigt uppe, starkt hela dagen","Världen sover, du tränar","Börja dagen med ett varv"],
+ morning:["Dags att göra dagen","Bra dag att bli starkare","Ett pass i dag, en bättre tid sen"],
+ lunch:["Perfekt läge för ett lunchpass","Lunchpass och klar till eftermiddagen","Ladda om med ett pass"],
+ after:["Eftermiddagen är din","Ett pass före middagen","Byt skrivbordet mot banan"],
+ evening:["Avsluta dagen starkt","Kvällen är gjord för ett pass","Ett pass till, sen soffan"],
+ night:["Sömn är också träning","Vila nu, tävla sen","Kroppen bygger form när du sover"]};
+function greetLine(h,n){const done=LOGS.some(l=>l&&l.date===today());
+  const k=done?(h>=20||h<5?"doneLate":"done"):h>=5&&h<9?"early":h<11&&h>=9?"morning":h>=11&&h<14?"lunch":h>=14&&h<17?"after":h>=17&&h<22?"evening":"night";
+  const L=GREET[k],seed=[...today()+k].reduce((a,c)=>a+c.charCodeAt(0),0),t=L[seed%L.length];
+  return n?`${t}, ${n}.`:`${t}.`}
 /* ============ Feed: flöde, hitta vänner och topplista ============ */
 const FD_KIND={lopp:"Tävlade",rekord:"Nytt rekord",pass:"Tränade"};
 let FSUG=null;
@@ -4313,6 +4400,7 @@ async function renderFeed(force){
   const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att fylla flödet</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><button class="pill block" data-fd-go="find">Hitta vänner</button></div>`:"";
   el.innerHTML=empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
   el.onclick=e=>{const g=e.target.closest("[data-fd-go]");if(g){setFdView(g.dataset.fd||g.dataset.fdGo);saveSet();renderFeed();return}
+    const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return}
     const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return}
     const md=e.target.closest(".po-media");if(md){const now=Date.now();if(md._t&&now-md._t<320){md._t=0;fdLike(+md.dataset.id,D,true)}else md._t=now;return}
     const pr=e.target.closest("[data-prof]");if(pr)viewProfile(pr.dataset.prof)};
@@ -4327,9 +4415,31 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
      <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${esc(a.detail)}</span>`:""}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>
-   <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span></div>
-   ${fdWho(L)}
+   <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}</div>
+   ${fdWho(L)}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
+const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;
+const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");
+function fdComPrev(id,D){const C=D.comments[id]||[],last=C.slice(-2);
+  return `<div class="po-cm" id="po-cm${id}">${C.length>2?`<button class="po-more" data-com="${id}">Visa alla ${C.length} kommentarer</button>`:""}
+   ${last.map(c=>`<p class="po-c"><b>${esc(cName(c.user_id))}</b> ${esc(c.body)}</p>`).join("")}
+   <button class="po-add" data-com="${id}">${C.length?"Skriv en kommentar":"Bli först att kommentera"}</button></div>`}
+function openComments(id,D){const a=D.acts.find(x=>x.id===id);if(!a)return;const ownPost=a.user_id===SBUSER.id,p=ownPost?MYPROF:(NAMES[a.user_id]||{username:"Någon"});
+  const list=()=>{const C=D.comments[id]||[];return C.length?C.map(c=>{const pp=c.user_id===SBUSER.id?MYPROF:(NAMES[c.user_id]||{username:"Någon"}),can=c.user_id===SBUSER.id||ownPost;
+     return `<div class="cm-row">${avImg(pp.avatar_url,pp.username)}<div><p><b>${esc(cName(c.user_id))}</b> ${esc(c.body)}</p><small>${agoTxt(c.created_at)}${can?` · <button class="linkbtn cm-del" data-del="${c.id}">Ta bort</button>`:""}</small></div></div>`}).join(""):`<p class="small">Inga kommentarer än. Skriv något peppande.</p>`};
+  openSheet(`<div><span class="small">${ownPost?"Ditt inlägg":esc(p.username)} · ${esc(a.title||FD_KIND[a.kind]||"")}</span><h2>Kommentarer</h2></div>
+   <div class="cm-list" id="cm-list">${list()}</div>
+   <form id="cm-f" class="cm-f" novalidate><label class="sr" for="cm-in">Kommentar</label><textarea id="cm-in" rows="2" maxlength="300" placeholder="Skriv en kommentar" enterkeyhint="send"></textarea><button class="pill" id="cm-go" type="submit">Skicka</button></form>`,()=>{
+    const upd=()=>{$("#cm-list").innerHTML=list();const pv=$("#po-cm"+id);if(pv)pv.outerHTML=fdComPrev(id,D)};
+    const inp=$("#cm-in");inp.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#cm-f").requestSubmit()}};
+    $("#cm-f").onsubmit=async e=>{e.preventDefault();const t=inp.value.trim();if(!t)return;const b=$("#cm-go");if(b.disabled)return;b.disabled=true;
+      const {data,error}=await SB.from("activity_comments").insert({activity_id:id,body:t.slice(0,300)}).select("id,activity_id,user_id,body,created_at").maybeSingle();
+      b.disabled=false;if(error||!data){toast("Kunde inte skicka. Försök igen.");return}
+      (D.comments[id]=D.comments[id]||[]).push(data);inp.value="";HAPTIC("light");upd();const l=$("#cm-list");l.scrollTop=l.scrollHeight};
+    $("#cm-list").onclick=async e=>{const d=e.target.closest("[data-del]");if(!d)return;if(!d.dataset.c){d.dataset.c=1;d.textContent="Tryck igen för att ta bort";d.style.color="var(--bad)";return}
+      const cid=+d.dataset.del;const {error}=await SB.from("activity_comments").delete().eq("id",cid);if(error){toast("Kunde inte ta bort. Försök igen.");return}
+      D.comments[id]=(D.comments[id]||[]).filter(c=>c.id!==cid);upd();toast("Kommentaren är borttagen")};
+    setTimeout(()=>inp.focus({preventScroll:true}),350)})}
 function fdCount(L){return L.length?`${L.length} ${L.length===1?"tumme upp":"tummar upp"}`:"Bli först med en tumme upp"}
 function fdWho(L){const who=L.map(u=>u===SBUSER.id?"du":(NAMES[u]||{}).username).filter(Boolean);return who.length?`<p class="po-who">Gillas av <b>${esc(who[0])}</b>${who.length>1?` och ${who.length-1} till`:""}</p>`:""}
 function fdIcon(k){const d={lopp:'<path d="M6 21V4h11l-2 4 2 4H6"/>',rekord:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4M8.5 20h7M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/>',pass:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'}[k];

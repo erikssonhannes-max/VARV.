@@ -49,6 +49,12 @@ Vänförfrågningar och notiscenter
 
     Kör supabase/notiscenter.sql i Supabase. Kräver profiler.sql, notiser.sql och varv-2.sql.
 
+Simulations-race under Tävlingar
+
+    Kör supabase/simrace.sql i Supabase. Kräver profiler.sql och notiser.sql.
+    Race läggs till och ändras i Table Editor → sim_races: title, city och day krävs, url ska börja med https:// och leda till arrangörens anmälan. Sätt hidden till true för att dölja ett race.
+    Anmälan sker hos arrangören. Knappen i appen är en markering, inte en bokning.
+
 Säkerhet och stabil statistik
 
     Kör supabase/stats.sql igen (koden ändras inte) och därefter supabase/varv-3.sql. Kräver filerna ovan. Går att köra igen.

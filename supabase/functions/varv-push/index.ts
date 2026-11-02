@@ -123,10 +123,13 @@ async function runLike(activityId: number, liker: string) {
 }
 
 async function runRequest(from: string, to: string) {
-  return await notify([to], { title: `${await nameOf(from)} vill bli din vän`, body: "Godkänn eller avböj under ringklockan.", url: "/#notiser", tag: "req-" + from }, "request", from, null);
+  return await notify([to], { title: `${await nameOf(from)} vill följa dig`, body: "Godkänn eller avböj under ringklockan.", url: "/#notiser", tag: "req-" + from }, "request", from, null);
 }
 async function runAccept(from: string, to: string) {
-  return await notify([to], { title: `${await nameOf(from)} godkände din vänförfrågan`, body: "Nu ser ni varandras pass, lopp och veckans varv.", url: "/#vanner", tag: "acc-" + from }, "accept", from, null);
+  return await notify([to], { title: `${await nameOf(from)} godkände din förfrågan`, body: "Nu ser du personens pass, lopp och veckans varv.", url: "/#vanner", tag: "acc-" + from }, "accept", from, null);
+}
+async function runFollow(from: string, to: string) {
+  return await notify([to], { title: `${await nameOf(from)} började följa dig`, body: "Tryck för att se profilen.", url: "/#notiser", tag: "fol-" + from }, "follow", from, "friends");
 }
 
 async function runTest(user: string) {
@@ -137,6 +140,6 @@ Deno.serve(async (req) => {
   if (req.headers.get("x-varv-secret") !== Deno.env.get("CRON_SECRET")) return new Response("Nej", { status: 401 });
   const b = await req.json().catch(() => ({}));
   const n = b.kind === "daily" ? await runDaily() : b.kind === "activity" ? await runActivity(+b.id) : b.kind === "like" ? await runLike(+b.activity, String(b.user)) : b.kind === "test" ? await runTest(String(b.user))
-    : b.kind === "request" ? await runRequest(String(b.from), String(b.to)) : b.kind === "accept" ? await runAccept(String(b.from), String(b.to)) : 0;
+    : b.kind === "request" ? await runRequest(String(b.from), String(b.to)) : b.kind === "accept" ? await runAccept(String(b.from), String(b.to)) : b.kind === "follow" ? await runFollow(String(b.from), String(b.to)) : 0;
   return Response.json({ sent: n });
 });

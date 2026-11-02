@@ -60,6 +60,11 @@ Simulations-race under Tävlingar
     Egna race läggs till i Table Editor → sim_races: title, city och day krävs, url ska börja med https:// och leda till arrangörens anmälan. Sätt hidden till true för att dölja ett race.
     Anmälan sker hos arrangören. Knappen i appen är en markering, inte en bokning.
 
+Följare, blockering och anmälningar
+
+    Kör supabase/foljare.sql i Supabase och uppdatera sedan funktionen varv-push med supabase/functions/varv-push/index.ts.
+    Anmälningar syns på teamets sida under fliken Fel. Teamet behöver gå igenom dem regelbundet.
+
 Säkerhet och stabil statistik
 
     Kör supabase/stats.sql igen (koden ändras inte) och därefter supabase/varv-3.sql. Kräver filerna ovan. Går att köra igen.

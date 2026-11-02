@@ -837,6 +837,19 @@ a.row{color:inherit;text-decoration:none}
 @keyframes wdin{from{opacity:0;transform:translateY(8px) scale(.85)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.wd{animation:none}}
 #tv-seg button{font-size:.82rem;padding-inline:2px}
+/* Logotyp som tar en till startsidan */
+.logo-btn{color:var(--ink);text-decoration:none;position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);left:max(16px,env(safe-area-inset-left,0px));z-index:30;display:flex;align-items:center;height:38px;padding-right:8px}
+.logo-btn[hidden]{display:none}
+.logo-btn svg{height:24px;width:auto;display:block}
+.view:not(#v-hem) .pagehead{padding-top:66px}
+#v-hem .pagehead{padding-top:28px}
+.row.nob{grid-template-columns:minmax(0,1fr) auto}
+.fw-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fw-counts button{all:unset;cursor:pointer;background:var(--tile);border-radius:var(--r);padding:14px 16px;display:grid;gap:2px}
+.fw-counts b{font-size:1.5rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.fw-counts span{color:var(--muted);font-size:.86rem}
+.pv-more{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
+.pv-more .linkbtn{color:var(--muted)}
 /* Hem för den som redan är igång */
 .hello{display:none}
 .back .hero{text-align:left;padding-block:28px 14px}
@@ -884,7 +897,7 @@ a.row{color:inherit;text-decoration:none}
     <svg class="gt-ic" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="gtg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><rect width="1024" height="1024" rx="230" fill="url(#gtg)"/><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>
     <section class="gt-hero"><h1>Träna <span>smartare</span> för Hyrox.</h1><p>En plan byggd från din måltid, alla åtta stationer förklarade och tidtagning på racedagen. Gratis att börja.</p>
       <div class="gt-cta"><button class="pill" type="button" data-gtgo="up">Skapa konto</button><button class="pill ghost" type="button" data-gtgo="in">Logga in</button></div></section>
-    <div class="gt-feats"><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><b>Plan efter din måltid</b><p>Vecka för vecka, med tempo och pulszoner. Den anpassar sig efter det du faktiskt tränar.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c3 0 5 2.2 5 5.2V20H7v-7.8C7 9.2 9 7 12 7z"/><path d="M9.5 7.5V6a2.5 2.5 0 0 1 5 0v1.5"/></svg></span><div><b>Alla åtta stationer</b><p>Rätt vikter för din klass, teknik och de vanligaste misstagen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4"/></svg></span><div><b>Racedagen</b><p>Tidtagning med ljud, röst och vibration, och en kalender med lopp i hela världen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></span><div><b>Form och vänner</b><p>Se formen stiga, ta utmärkelser och jämför veckan med dina vänner.</p></div></div></div>
+    <div class="gt-feats"><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><b>Plan efter din måltid</b><p>Vecka för vecka, med tempo och pulszoner. Den anpassar sig efter det du faktiskt tränar.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c3 0 5 2.2 5 5.2V20H7v-7.8C7 9.2 9 7 12 7z"/><path d="M9.5 7.5V6a2.5 2.5 0 0 1 5 0v1.5"/></svg></span><div><b>Alla åtta stationer</b><p>Rätt vikter för din klass, teknik och de vanligaste misstagen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4"/></svg></span><div><b>Racedagen</b><p>Tidtagning med ljud, röst och vibration, och en kalender med lopp i hela världen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></span><div><b>Form och följare</b><p>Se formen stiga, ta utmärkelser och jämför veckan med dem du följer.</p></div></div></div>
     <div class="gt-head" id="gt-form"><span class="eyebrow" style="font-size:.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em">Kom igång</span><h2 id="gt-h">Skapa ditt konto.</h2><p id="gt-intro">Kontot sparar din plan, dina pass och rekord, och följer med mellan dina enheter. Det är gratis.</p></div>
     <div class="seg" role="group" aria-label="Konto"><button type="button" data-gt="up" aria-pressed="true">Skapa konto</button><button type="button" data-gt="in" aria-pressed="false">Logga in</button></div>
     <div id="gt-body"></div>
@@ -958,6 +971,7 @@ a.row{color:inherit;text-decoration:none}
 
     <div class="sechead"><h2>Regler att kunna</h2></div>
     <div class="group">
+      <a class="row" href="https://hyrox.com/rulebook/" target="_blank" rel="noopener"><div class="badge">§</div><div><h3>HYROX regelböcker</h3><p>De officiella reglerna för singel, doubles och relay.</p></div><span class="chev">↗</span></a>
       <div class="row"><div class="badge">2 min</div><div><h3>Fel båge i Roxzone</h3><p>In via IN, ut via UT. Fel båge ger 2 minuters tillägg varje gång.</p></div><span></span></div>
       <div class="row"><div class="badge">3 min</div><div><h3>Missad slädsträcka</h3><p>Varje 12,5 m-sträcka som saknas ger 3 minuters tillägg.</p></div><span></span></div>
       <div class="row"><div class="badge">2 min</div><div><h3>Egen kalk</h3><p>Kalk finns bara vid sled pull och farmers carry. Annan kalk ger tillägg.</p></div><span></span></div>
@@ -1117,14 +1131,14 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Vänner</span><h1>Tillsammans.</h1><p class="small">Veckans topplista, era lopp och vad dina vänner har tränat.</p></div>
+    <div class="pagehead"><span class="eyebrow">Följer</span><h1>Tillsammans.</h1><p class="small">Veckans topplista, era lopp och vad de du följer har tränat.</p></div>
     <div id="fr-body"></div>
   </div>
 </section>
 <!-- ================= NOTISER ================= -->
 <section class="view" id="v-notiser">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Notiser</span><h1>Det senaste.</h1><p class="small">Vänförfrågningar, påminnelser och vad dina vänner gör.</p></div>
+    <div class="pagehead"><span class="eyebrow">Notiser</span><h1>Det senaste.</h1><p class="small">Förfrågningar, påminnelser och vad de du följer gör.</p></div>
     <div id="nt-body"></div>
   </div>
 </section>
@@ -1165,6 +1179,8 @@ a.row{color:inherit;text-decoration:none}
       <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge" style="color:var(--ink)"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
       <a class="row" href="https://www.linkedin.com/company/varv" target="_blank" rel="noopener"><span class="badge" style="color:var(--ink)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.79 2.66 4.79 6.12v5.43h-4v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span><div><h3>LinkedIn</h3><p>Nyheter om VARV.</p></div><span class="chev">↗</span></a>
     </div>
+    <div class="sechead"><h2>Integritet</h2></div>
+    <div class="group"><button class="row" id="pf-blocked"><span class="badge">⊘</span><div><h3>Blockerade</h3><p>De du har blockerat kan inte se eller följa dig.</p></div><span class="chev">›</span></button></div>
     <div class="sechead"><h2>Hjälp</h2></div>
     <div class="group"><button class="row" id="pf-tour"><span class="badge">?</span><div><h3>Visa genomgången</h3><p>En snabb tur genom appens viktigaste delar.</p></div><span class="chev">›</span></button></div>
     <div class="sechead"><h2>Integritet och villkor</h2></div>
@@ -1194,7 +1210,8 @@ a.row{color:inherit;text-decoration:none}
     <div class="tr-foot"><button class="pill ghost" id="tr-back">Tillbaka</button><button class="pill" id="tr-next">Nästa</button></div>
   </div></div>
 <a class="nt-btn" id="nt-btn" href="#notiser" aria-label="Notiser" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="nt-count" hidden></span></a>
-<a class="fr-btn" id="fr-btn" href="#vanner" aria-label="Vänner"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
+<a class="fr-btn" id="fr-btn" href="#vanner" aria-label="Följer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
+<a class="logo-btn" id="logo-btn" href="#hem" aria-label="Till startsidan"></a>
 <a class="avatar-btn" id="avatar-btn" href="#profil" aria-label="Din profil"><span>V</span></a>
 
 <div id="log-holder" hidden></div>
@@ -1213,7 +1230,7 @@ a.row{color:inherit;text-decoration:none}
 
 <script>
 /* ============ Felrapporter ============ */
-const APPVER="2026-11-02j";
+const APPVER="2026-11-02k";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2062,7 +2079,7 @@ function renderGate(sentTo){
   body.innerHTML=`${SBGOOGLE?`<button class="pill ghost block au-g" id="gt-g" type="button">${GSVG} Fortsätt med Google</button><div class="au-or">eller med e-post</div>`:""}
    <form class="card" id="gt-f" novalidate>
      <div class="field"><label for="gt-mail">E-post</label><input type="email" id="gt-mail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></div>
-     ${up?`<div class="field"><label for="gt-name">Användarnamn</label><input type="text" id="gt-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" placeholder="Till exempel Hannes"><span class="small">Du får en fast fyrsiffrig kod, till exempel Hannes#4821, som vänner hittar dig med.</span></div>`:""}
+     ${up?`<div class="field"><label for="gt-name">Användarnamn</label><input type="text" id="gt-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" placeholder="Till exempel Hannes"><span class="small">Du får en fast fyrsiffrig kod, till exempel Hannes#4821, som andra hittar dig med.</span></div>`:""}
      <div class="field"><label for="gt-pw">Lösenord</label><input type="password" id="gt-pw" autocomplete="${up?"new-password":"current-password"}" ${up?'placeholder="Minst 8 tecken, bokstäver och siffror"':""} required></div>
      ${up?`<label class="gt-check" for="gt-terms"><input type="checkbox" id="gt-terms"><span>Jag godkänner <a href="legal/villkor.html" target="_blank" rel="noopener">användarvillkoren</a> och har läst <a href="legal/integritet.html" target="_blank" rel="noopener">integritetspolicyn</a>.</span></label>
      <label class="gt-check" for="gt-health"><input type="checkbox" id="gt-health"><span>Jag samtycker till att VARV. sparar mina träningsuppgifter, till exempel pass, känsla och puls, för att anpassa min plan. Jag kan ta tillbaka samtycket genom att radera kontot.</span></label>
@@ -2127,7 +2144,7 @@ async function deleteAccount(){
 }
 
 /* ============ Profiler, användarnamn#kod och vänner ============ */
-var MYPROF=null,FRIENDS=[],NAMES={};
+var MYPROF=null,FRIENDS=[],FOLLOWERS=[],BLOCKED=[],NAMES={};
 const EXP=[["ny","Ny på Hyrox"],["motionar","Motionär"],["erfaren","Erfaren"],["elit","Elit"]];
 const expTxt=k=>(EXP.find(e=>e[0]===k)||[])[1]||"";
 const NAME_RE=/^[A-Za-z0-9ÅÄÖåäöÉé_.]{2,20}$/;
@@ -2146,9 +2163,11 @@ async function loadMyProfile(){
 }
 async function loadFriends(){
   if(!SB||!SBUSER)return;
-  const {data}=await SB.from("friends").select("friend_id,created_at").eq("user_id",SBUSER.id).order("created_at",{ascending:false});
-  FRIENDS=(data||[]).map(r=>r.friend_id);
-  const ids=[...new Set(FRIENDS.concat(MYPROF&&MYPROF.partner_id?[MYPROF.partner_id]:[]))];
+  /* En rad (user_id, friend_id) betyder att friend_id följer user_id. FRIENDS är de jag följer. */
+  const {data}=await SB.from("friends").select("user_id,friend_id,created_at").or(`user_id.eq.${SBUSER.id},friend_id.eq.${SBUSER.id}`).order("created_at",{ascending:false});
+  FRIENDS=(data||[]).filter(r=>r.friend_id===SBUSER.id).map(r=>r.user_id);FOLLOWERS=(data||[]).filter(r=>r.user_id===SBUSER.id).map(r=>r.friend_id);
+  {const {data:bl,error:be}=await SB.from("blocks").select("blocked");BLOCKED=be?[]:(bl||[]).map(r=>r.blocked)}
+  const ids=[...new Set(FRIENDS.concat(FOLLOWERS,BLOCKED,MYPROF&&MYPROF.partner_id?[MYPROF.partner_id]:[]))];
   if(ids.length){const {data:n}=await SB.rpc("varv_names",{p_ids:ids});(n||[]).forEach(p=>{NAMES[p.user_id]=p})}
   loadSims(true);
 }
@@ -2177,45 +2196,42 @@ function renderSocial(){
   if(!av.querySelector(".pf-cam"))av.insertAdjacentHTML("beforeend",`<span class="pf-cam" aria-hidden="true">${CAM}</span>`);
   id.hidden=false;
   id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button><button class="divchip" id="pf-edit">Redigera profil</button>`;
-  $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Skicka det till dina vänner.")}catch(e){toast(handleTxt(MYPROF))}};
+  $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}};
   $("#pf-edit").onclick=openEditProfile;
-  const sub=[expTxt(MYPROF.experience),MYPROF.races_count?`${MYPROF.races_count} ${MYPROF.races_count===1?"tävling":"tävlingar"}`:"",MYPROF.is_public?"Profilen syns för alla":"Profilen syns för vänner"].filter(Boolean).join(" · ");
+  const sub=[expTxt(MYPROF.experience),MYPROF.races_count?`${MYPROF.races_count} ${MYPROF.races_count===1?"tävling":"tävlingar"}`:"",MYPROF.is_public?"Offentlig profil":"Privat profil"].filter(Boolean).join(" · ");
   $("#pf-sub").textContent=sub;
   const partner=MYPROF.partner_id&&NAMES[MYPROF.partner_id];
-  soc.innerHTML=`<div class="sechead"><h2>Vänner</h2><button class="linkbtn" id="fr-add">Lägg till vän</button></div>
-   ${FRIENDS.length?`<div class="group">${FRIENDS.map(fid=>{const p=NAMES[fid]||{username:"Okänd",tag:"0000"};return `<button class="row" data-prof="${esc(fid)}">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>${fid===MYPROF.partner_id?"Din Doubles-partner":"Tryck för att se profilen"}</p></div><span class="chev">›</span></button>`}).join("")}</div>`
-   :`<div class="card"><p class="small">Lägg till vänner med deras namn och kod, till exempel Johan#1234. Ditt är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>. När ni har lagt till varandra ser ni varandras profiler.</p></div>`}
-   <div class="fr-share"><button class="pill ghost" id="fr-link" type="button">Dela vänlänk</button><button class="pill ghost" id="fr-qr" type="button">Visa QR-kod</button></div>
+  soc.innerHTML=`<div class="sechead"><h2>Följare</h2><button class="linkbtn" id="fr-add">Hitta atleter</button></div>
+   <div class="fw-counts"><button type="button" id="fw-ers"><b>${FOLLOWERS.length}</b><span>följare</span></button><button type="button" id="fw-ing"><b>${FRIENDS.length}</b><span>följer</span></button></div>
+   <div class="fr-share"><button class="pill ghost" id="fr-link" type="button">Dela min profil</button><button class="pill ghost" id="fr-qr" type="button">Visa QR-kod</button></div>
    <button class="pill ghost block" id="pf-view" style="margin-top:10px">Visa min profil som andra ser den</button>`;
-  $("#fr-add").onclick=openAddFriend;$("#fr-link").onclick=shareFriendLink;$("#fr-qr").onclick=showFriendQR;$("#pf-view").onclick=()=>viewProfile(SBUSER.id);
+  $("#fr-add").onclick=openAddFriend;$("#fw-ers").onclick=()=>openPeople("followers");$("#fw-ing").onclick=()=>openPeople("following");$("#fr-link").onclick=shareFriendLink;$("#fr-qr").onclick=showFriendQR;$("#pf-view").onclick=()=>viewProfile(SBUSER.id);
   soc.querySelectorAll("[data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof));
 }
 function openAddFriend(){
-  openSheet(`<div><span class="small">Vänner</span><h2>Lägg till vän</h2><p class="small">Skriv vännens namn och kod, till exempel Johan#1234. Koden hittar hen under sin profil.</p></div>
-   <form id="fa-f" novalidate style="display:grid;gap:14px">
-     <div class="field"><label for="fa-in">Namn#kod</label><input type="text" id="fa-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Johan#1234"></div>
-     <p class="small au-msg" id="fa-msg" role="status" aria-live="polite"></p>
-     <button class="pill block" id="fa-go" type="submit">Skicka vänförfrågan</button>
-   </form>
+  openSheet(`<div><span class="small">Hitta atleter</span><h2>Sök och följ</h2><p class="small">Sök på ett namn bland offentliga profiler. Privata profiler hittar du med namn och kod, till exempel Johan#1234.</p></div>
+   <form id="fa-f" novalidate style="display:grid;gap:14px"><div class="field"><input type="text" inputmode="search" enterkeyhint="search" id="fa-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Namn eller namn#kod" aria-label="Sök"></div><button type="submit" id="fa-go" hidden></button></form>
+   <p class="small au-msg" id="fa-msg" role="status" aria-live="polite"></p><div id="fa-res" style="display:grid;gap:8px"></div>
    <div class="card"><p class="small">Ditt namn och kod: <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b></p></div>`,()=>{
-    const msg=$("#fa-msg"),say=(t,b)=>{msg.textContent=t;msg.classList.toggle("bad",!!b)};
-    $("#fa-f").onsubmit=e=>{e.preventDefault();busy($("#fa-go"),async()=>{
-      const m=$("#fa-in").value.trim().match(/^(.+?)\s*#\s*(\d{4})$/);
-      if(!m){say("Skriv både namn och kod, till exempel Johan#1234.",true);return}
-      const {data,error}=await SB.rpc("varv_find_user",{p_username:m[1],p_tag:m[2]});
-      if(error){say(sbErr(error),true);return}
-      const p=data&&data[0];if(!p){say("Hittar ingen med det namnet och koden. Kontrollera stavningen.",true);return}
-      if(p.user_id===SBUSER.id){say("Det där är du.",true);return}
-      NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p);const res=await sendFriendRequest(p.user_id);if(!res)return;closeSheet();return;
-      NAMES[p.user_id]=p;await loadFriends();closeSheet();renderSocial();FRC=null;if(location.hash==="#vanner")renderFriends(true);toast(e2?`${handleTxt(p)} är redan din vän`:`${handleTxt(p)} är tillagd`);HAPTIC("success")})};
-    setTimeout(()=>$("#fa-in").focus({preventScroll:true}),350);
+    const msg=$("#fa-msg"),res=$("#fa-res");let seq=0,tm=null;
+    const show=(rows,head)=>{rows.forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)});
+      res.innerHTML=rows.length?`${head?`<span class="lbl">${head}</span>`:""}${personRows(rows.map(r=>r.user_id),id=>{const r=rows.find(x=>x.user_id===id);return FRIENDS.includes(id)?"Du följer":r.common?`${r.common} av dem du följer följer`:r.is_public===false?"Privat profil":""})}`:"";bindPeople()};
+    const run=async()=>{const q=$("#fa-in").value.trim(),my=++seq;msg.textContent="";msg.classList.remove("bad");
+      if(q.length<2){const {data,error}=await SB.rpc("varv_suggest");if(my===seq)show(error?[]:data||[],"Förslag");return}
+      const m=q.match(/^(.+?)\s*#\s*(\d{4})$/);
+      const {data,error}=m?await SB.rpc("varv_find_user",{p_username:m[1],p_tag:m[2]}):await SB.rpc("varv_search_users",{p_q:q});if(my!==seq)return;
+      if(error){msg.textContent="Sökningen fungerar inte just nu.";msg.classList.add("bad");show([]);return}
+      const rows=(data||[]).filter(p=>p.user_id!==SBUSER.id);show(rows);if(!rows.length)msg.textContent=m?"Hittar ingen med det namnet och koden.":"Hittar ingen offentlig profil. Har personen en privat profil behöver du namn och kod."};
+    $("#fa-in").oninput=()=>{clearTimeout(tm);tm=setTimeout(run,250)};
+    $("#fa-f").onsubmit=e=>{e.preventDefault();clearTimeout(tm);run()};
+    run();setTimeout(()=>$("#fa-in").focus({preventScroll:true}),350);
   });
 }
 async function viewProfile(uid){
   const me=uid===SBUSER.id;
   const {data:p}=await SB.from("profiles").select("*").eq("user_id",uid).maybeSingle();
   const basic=p||NAMES[uid];
-  if(!p){openSheet(`<div class="pv-head">${avImg(basic&&basic.avatar_url,basic&&basic.username,"pv-av")}<h2>${handleHtml(basic)}</h2><p class="small">Profilen visas bara för vänner som ${esc(basic?basic.username:"användaren")} har lagt till. Be hen lägga till dig också.</p></div>${friendBtns(uid,me)}`,()=>bindFriendBtns(uid));return}
+  if(!p){openSheet(`<div class="pv-head">${avImg(basic&&basic.avatar_url,basic&&basic.username,"pv-av")}<h2>${handleHtml(basic)}</h2><p class="small">Privat profil. Följ för att se pass och lopp.</p></div>${friendBtns(uid,me)}`,()=>bindFriendBtns(uid));return}
   if(p.partner_id&&!NAMES[p.partner_id]){const {data:n}=await SB.rpc("varv_names",{p_ids:[p.partner_id]});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   const st=p.stats||{},nr=p.next_race,prs=p.prs||{};
   let nrTxt="–",nrSub="";if(nr&&isDay(nr.date)){const d=Math.round((new Date(nr.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);nrTxt=nr.name||evD(nr.date).toLocaleDateString("sv-SE",{day:"numeric",month:"short"});nrSub=d>=0?(d===0?"i dag":`om ${d} d`):""}
@@ -2223,7 +2239,7 @@ async function viewProfile(uid){
   const prRows=[["km","1 km löpning"],...S.map(x=>[x.id,x.n])].map(([k,n])=>`<div><span>${esc(n)}</span><b class="${num(prs[k])?"":"none"}">${num(prs[k])?fmt(num(prs[k])):"–"}</b></div>`).join("");
   openSheet(`<div class="pv-head">${avImg(p.avatar_url,p.username,"pv-av")}<h2>${handleHtml(p)}</h2>
      <div class="pv-chips">${p.experience?`<span class="hot">${esc(expTxt(p.experience))}</span>`:""}${p.best_division?`<span>${esc(p.best_division)}</span>`:""}${st.tier?`<span>${esc(st.tier)}</span>`:""}</div></div>
-   <div class="pv3"><div><small>Tävlingar</small><b>${num(p.races_count)}</b><span>genomförda</span></div><div><small>Bästa tid</small><b>${num(p.best_time)?fmt(num(p.best_time)):"–"}</b><span>hel Hyrox</span></div><div><small>Nästa</small><b>${esc(nrTxt)}</b><span>${esc(nrSub)}</span></div></div>
+   <div class="pv-fw" id="pv-fw" class="small"></div><div class="pv3"><div><small>Tävlingar</small><b>${num(p.races_count)}</b><span>genomförda</span></div><div><small>Bästa tid</small><b>${num(p.best_time)?fmt(num(p.best_time)):"–"}</b><span>hel Hyrox</span></div><div><small>Nästa</small><b>${esc(nrTxt)}</b><span>${esc(nrSub)}</span></div></div>
    <div><h4 style="margin-bottom:8px">Personliga rekord</h4><div class="pvlist">${prRows}</div></div>
    <div><h4 style="margin-bottom:8px">Träning</h4><div class="pvlist">
      <div><span>Pass totalt</span><b>${num(st.sessions)}</b></div><div><span>Träningstid</span><b>${String(num(st.hours)).replace(".",",")} h</b></div>
@@ -2232,20 +2248,44 @@ async function viewProfile(uid){
    <div><h4 style="margin-bottom:8px">Doubles-partner</h4>${partner?`<button class="row" style="background:var(--tile);border-radius:18px" data-prof="${esc(partner.user_id)}">${avImg(partner.avatar_url,partner.username)}<div><h3>${handleHtml(partner)}</h3><p>Tryck för att se profilen</p></div><span class="chev">›</span></button>`:`<div class="pvlist"><div><span>Ingen partner vald</span></div></div>`}</div>
    ${me?`<button class="pill block" id="pv-edit">Redigera profil</button>`:friendBtns(uid,me)}`,()=>{
     bindFriendBtns(uid);const e=$("#pv-edit");if(e)e.onclick=openEditProfile;
+    SB.rpc("varv_follow_counts",{p_id:uid}).then(({data})=>{const c=data&&data[0],el=$("#pv-fw");if(c&&el)el.innerHTML=`<p class="small" style="text-align:center">${num(c.followers)} följare · ${num(c.following)} följer</p>`},()=>{});
     document.querySelectorAll("#sheet-in [data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof));
   });
 }
 function friendBtns(uid,me){if(me)return "";
-  if(FRIENDS.includes(uid))return `<button class="pill ghost block" id="pv-rm">Ta bort som vän</button>`;
-  if(FRQ_IN.some(r=>r.from_user===uid))return `<div class="grid2"><button class="pill" id="pv-yes">Godkänn</button><button class="pill ghost" id="pv-no">Avböj</button></div>`;
-  if(FRQ_OUT.some(r=>r.to_user===uid))return `<button class="pill ghost block" id="pv-undo">Förfrågan skickad · Ångra</button>`;
-  return `<button class="pill block" id="pv-add">Skicka vänförfrågan</button>`}
+  const more=`<div class="pv-more">${FOLLOWERS.includes(uid)?`<button class="linkbtn" id="pv-rmf">Ta bort som följare</button>`:""}<button class="linkbtn" id="pv-block">Blockera</button><button class="linkbtn" id="pv-report">Anmäl</button></div>`;
+  let main;
+  if(FRQ_IN.some(r=>r.from_user===uid))main=`<div class="grid2"><button class="pill" id="pv-yes">Godkänn</button><button class="pill ghost" id="pv-no">Avböj</button></div>`;
+  else if(FRIENDS.includes(uid))main=`<button class="pill ghost block" id="pv-rm">Sluta följa</button>`;
+  else if(FRQ_OUT.some(r=>r.to_user===uid))main=`<button class="pill ghost block" id="pv-undo">Förfrågan skickad · Ångra</button>`;
+  else main=`<button class="pill block" id="pv-add">${FOLLOWERS.includes(uid)?"Följ tillbaka":"Följ"}</button>`;
+  return main+more}
 function bindFriendBtns(uid){
   const on=(id,f)=>{const b=$(id);if(b)b.onclick=()=>busy(b,async()=>{await f();closeSheet()})};
+  const arm=(id,txt,f)=>{const r=$(id);if(r)r.onclick=()=>{if(!r.dataset.c){r.dataset.c=1;r.textContent=txt;r.style.color="var(--bad)";return}busy(r,async()=>{if(await f())closeSheet()})}};
   on("#pv-add",()=>sendFriendRequest(uid));on("#pv-yes",()=>answerFriend(uid,true));on("#pv-no",()=>answerFriend(uid,false));on("#pv-undo",()=>cancelRequest(uid));
-  const r=$("#pv-rm");if(r)r.onclick=()=>{if(!r.dataset.c){r.dataset.c=1;r.textContent="Tryck igen för att ta bort";r.style.color="var(--bad)";return}
-    busy(r,async()=>{if(await removeFriend(uid)){closeSheet();toast("Ni är inte längre vänner")}})};
+  arm("#pv-rm","Tryck igen för att sluta följa",async()=>{const ok=await removeFriend(uid);if(ok)toast("Du följer inte längre "+((NAMES[uid]||{}).username||"personen")+".");return ok});
+  arm("#pv-rmf","Tryck igen för att ta bort",()=>socialRpc("varv_remove_follower",uid,"Följaren är borttagen."));
+  arm("#pv-block","Tryck igen för att blockera",()=>socialRpc("varv_block",uid,"Personen är blockerad."));
+  const rp=$("#pv-report");if(rp)rp.onclick=()=>openReport(uid);
 }
+async function socialRpc(fn,uid,msg){const {error}=await SB.rpc(fn,{p_other:uid});if(error){toast(sbErr(error));return false}
+  if(MYPROF&&MYPROF.partner_id===uid&&fn==="varv_block")MYPROF.partner_id=null;await loadFriends();await loadRequests();FRC=null;refreshSocialViews();if(msg)toast(msg);return true}
+function openReport(uid){const p=NAMES[uid]||{},R=[["trakasserier","Hot eller trakasserier"],["olampligt","Olämpligt namn eller bild"],["spam","Spam eller falskt konto"],["annat","Annat"]];let why=null;
+  openSheet(`<div><span class="small">Anmäl</span><h2>${esc(p.username||"Användare")}</h2><p class="small">Teamet går igenom anmälan. Personen får inte veta vem som anmälde.</p></div>
+   <div class="lg-grp" id="rp-why">${R.map(([k,l])=>`<button type="button" class="lg-pk" data-why="${k}" aria-pressed="false"><span class="lg-dot" aria-hidden="true"></span><span>${l}</span><span class="lg-ck"></span></button>`).join("")}</div>
+   <div class="field"><label for="rp-note">Beskriv gärna vad som hänt</label><textarea id="rp-note" rows="3" maxlength="500"></textarea></div>
+   <button class="pill block" id="rp-go" disabled>Skicka anmälan</button>`,()=>{
+    $("#rp-why").onclick=e=>{const b=e.target.closest("[data-why]");if(!b)return;why=b.dataset.why;$$("#rp-why button").forEach(x=>{const on=x===b;x.setAttribute("aria-pressed",on);x.querySelector(".lg-ck").textContent=on?"✓":""});$("#rp-go").disabled=false};
+    $("#rp-go").onclick=()=>busy($("#rp-go"),async()=>{const {data,error}=await SB.rpc("varv_report",{p_target:uid,p_reason:why,p_note:$("#rp-note").value});
+      if(error||data==="none"||data==="self"){toast("Kunde inte skicka. Försök igen.");return}if(data==="limit"){toast("Du har skickat många anmälningar i dag. Försök igen i morgon.");return}
+      closeSheet();toast("Tack. Anmälan är skickad.")})})}
+function personRows(ids,sub){return ids.length?`<div class="group">${ids.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<button class="row" data-prof="${esc(id)}">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3>${sub?`<p>${esc(sub(id))}</p>`:""}</div><span class="chev">›</span></button>`}).join("")}</div>`:""}
+function bindPeople(){document.querySelectorAll("#sheet-in [data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof))}
+function openPeople(kind){const ids=kind==="followers"?FOLLOWERS:FRIENDS;
+  openSheet(`<div><span class="small">${esc(MYPROF.username)}</span><h2>${kind==="followers"?"Följare":"Följer"}</h2></div>${personRows(ids,id=>id===MYPROF.partner_id?"Din Doubles-partner":FOLLOWERS.includes(id)&&FRIENDS.includes(id)?"Ni följer varandra":"")||`<div class="card"><p class="small">${kind==="followers"?"Ingen följer dig än.":"Du följer ingen än."}</p></div>`}`,bindPeople)}
+function openBlocked(){openSheet(`<div><span class="small">Inställningar</span><h2>Blockerade</h2></div>${BLOCKED.length?`<div class="group">${BLOCKED.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3></div><button class="linkbtn" data-unb="${esc(id)}">Avblockera</button></div>`}).join("")}</div>`:`<div class="card"><p class="small">Du har inte blockerat någon.</p></div>`}`,()=>{
+  document.querySelectorAll("#sheet-in [data-unb]").forEach(b=>b.onclick=()=>busy(b,async()=>{if(await socialRpc("varv_unblock",b.dataset.unb,"Blockeringen är borttagen."))closeSheet()}))})}
 function openEditProfile(){
   if(!MYPROF)return;let exp=MYPROF.experience||"",pub=!!MYPROF.is_public;
   const opts=FRIENDS.map(fid=>{const p=NAMES[fid];return p?`<option value="${esc(fid)}"${fid===MYPROF.partner_id?" selected":""}>${esc(handleTxt(p))}</option>`:""}).join("");
@@ -2255,8 +2295,8 @@ function openEditProfile(){
      <div class="field"><label for="ep-name">Användarnamn</label><input type="text" id="ep-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" value="${esc(MYPROF.username)}"><span class="small">Din kod #${esc(MYPROF.tag)} är fast och följer med om du byter namn.</span></div>
      <div class="field"><label>Hyrox-erfarenhet</label><div class="seg" id="ep-exp" role="group" aria-label="Hyrox-erfarenhet">${EXP.map(([k,l])=>`<button type="button" data-x="${k}" aria-pressed="${k===exp}">${l}</button>`).join("")}</div></div>
      <div class="field"><label for="ep-races">Genomförda tävlingar</label><input type="number" id="ep-races" inputmode="numeric" min="0" max="500" value="${MYPROF.races_count||0}"></div>
-     <div class="field"><label for="ep-partner">Doubles-partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Lägg till din partner som vän först.</span>`}</div>
-     ${swRow("ep-pub","Visa profilen för alla","Av: bara vänner du har lagt till ser din profil. Namn och kod syns alltid för den som söker på dem.",pub)}
+     <div class="field"><label for="ep-partner">Doubles-partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Följ din partner först.</span>`}</div>
+     ${swRow("ep-pub","Offentlig profil","På: alla inloggade kan hitta dig, se din profil och följa dig direkt. Av: bara de du godkänner får följa dig. Namn och kod syns alltid för den som söker på dem.",pub)}
      <p class="small au-msg" id="ep-msg" role="status" aria-live="polite"></p>
      <button class="pill block" id="ep-go" type="submit">Spara</button>
    </form>`,()=>{
@@ -2304,9 +2344,9 @@ const FRIEND_URL=p=>`https://varvtraining.com/?van=${encodeURIComponent(p.userna
   const rest=q.toString();history.replaceState(null,"",location.pathname+(rest?"?"+rest:"")+location.hash)}}catch(e){}})();
 function pendingFriend(){let v=null;try{v=sessionStorage.getItem("varv-van");if(v)sessionStorage.removeItem("varv-van")}catch(e){}
   const m=v&&v.match(/^(.+)-(\d{4})$/);if(!m||!MYPROF)return;if(m[1].toLowerCase()===MYPROF.username.toLowerCase()&&m[2]===MYPROF.tag)return;
-  setTimeout(()=>{openAddFriend();setTimeout(()=>{const i=$("#fa-in");if(i){i.value=m[1]+"#"+m[2];$("#fa-go").click()}},420)},600)}
+  setTimeout(()=>{openAddFriend();setTimeout(()=>{const i=$("#fa-in");if(i){i.value=m[1]+"#"+m[2];$("#fa-f").requestSubmit()}},420)},600)}
 async function shareFriendLink(){
-  const url=FRIEND_URL(MYPROF),text=`Lägg till mig som vän i VARV.: ${handleTxt(MYPROF)}`;
+  const url=FRIEND_URL(MYPROF),text=`Följ mig i VARV.: ${handleTxt(MYPROF)}`;
   try{if(navigator.share){await navigator.share({title:"VARV.",text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
   try{await navigator.clipboard.writeText(url);toast("Länken är kopierad")}catch(e){toast(url)}
 }
@@ -2314,7 +2354,7 @@ async function showFriendQR(){
   try{if(!window.qrcode)await loadScript("vendor/qrcode.js")}catch(e){toast("Kunde inte visa QR-koden.");return}
   const q=qrcode(0,"M");q.addData(FRIEND_URL(MYPROF));q.make();
   const svg=q.createSvgTag({cellSize:6,margin:2,scalable:true});
-  openSheet(`<div class="medpop"><span class="small">Lägg till mig som vän</span><div class="qrbox">${svg}</div><h2>${handleHtml(MYPROF)}</h2><p>Låt en kompis skanna koden med kameran. Hen kommer till VARV. och lägger till dig direkt.</p></div>
+  openSheet(`<div class="medpop"><span class="small">Följ mig</span><div class="qrbox">${svg}</div><h2>${handleHtml(MYPROF)}</h2><p>Låt en kompis skanna koden med kameran. Hen kommer till VARV. och lägger till dig direkt.</p></div>
     <button class="pill block" id="qr-share" type="button">Dela länken</button>`,()=>{$("#qr-share").onclick=shareFriendLink});
 }
 /* ============ Strava ============ */
@@ -2394,7 +2434,7 @@ function boardAll(){const B=Object.assign({},BOARD);if(ME)B[ME]=boardDoc();retur
 function topMeds(d){return (d.top||[]).map(id=>MEDALS.find(m=>m.id===id)).filter(Boolean)}
 async function renderComm(){
   const el=$("#comm");
-  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#vanner"><div><b>${P.weekVarv}</b><span>varv den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dina vänner, och vilka lopp de ska till.":"Logga in och lägg till vänner för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Öppna Vänner ›</span></a>`;$("#lb-note").textContent="";return}
+  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#vanner"><div><b>${P.weekVarv}</b><span>varv den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dem du följer, och vilka lopp de ska till.":"Logga in och följ andra för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Visa topplistan ›</span></a>`;$("#lb-note").textContent="";return}
   const B=boardAll(),fr=(set.friends||[]);
   await loadProfiles(Object.keys(B).concat(set.partner?[set.partner]:[]));
   let ids=LBV==="friends"?[ME,...fr.filter(i=>B[i])]:Object.keys(B);
@@ -2584,7 +2624,7 @@ const TOUR=[
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
  {v:"logg",lg:"pass",t:"#live-new",h:"Logg: starta ett pass",p:"Sista fliken. Bygg passet i förväg och logga i realtid, eller spara det i efterhand."},
  {v:"logg",lg:"form",t:"#form",h:"Logg: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
- {v:"logg",lg:"form",t:"#comm",h:"Logg: topplistan",p:"Jämför veckans varv med dina vänner. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
+ {v:"logg",lg:"form",t:"#comm",h:"Logg: topplistan",p:"Jämför veckans varv med dem du följer. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
  {v:"logg",lg:"pass",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
  {v:"hem",c:1,end:1,h:"Du är redo.",p:"Logga ditt första pass så börjar formkurvan stiga. Lycka till med träningen."}];
 let TI=0,TON=false;
@@ -2646,7 +2686,7 @@ function openPR(k){
 }
 $("#prs").onclick=e=>{const b=e.target.closest("[data-pr]");if(b)openPR(b.dataset.pr)};
 $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
-  openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k,n])=>`<button class="row" data-pk="${k}"><div><h3>${n}</h3><p>Mål ${fmt(tg[k])}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
+  openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k,n])=>`<button class="row nob" data-pk="${k}"><div><h3>${n}</h3><p>Mål ${fmt(tg[k])}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
     $("#pr-pick").onclick=e=>{const b=e.target.closest("[data-pk]");if(b)openPR(b.dataset.pk)}})};
 function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));if(v==="pass")try{drawRings(true)}catch(e){}}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
@@ -2994,12 +3034,12 @@ function saveRestDay(ds,v){const m=Object.assign({},set.restDays||{});if(v)m[ds]
 function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
   const title=new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
   const ses=[];PLAN.forEach(w=>w.ses.forEach(x=>{if(x.date===ds)ses.push(x)}));
-  const planH=ses.length?`<div class="group">${ses.map(x=>`<a class="row" href="#plan"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></a>`).join("")}</div>`:"";
+  const planH=ses.length?`<div class="group">${ses.map(x=>`<a class="row nob" href="#plan"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></a>`).join("")}</div>`:"";
   if(future){openSheet(`<div><span class="small">Kommande dag</span><h2 class="day-t">${esc(title)}</h2></div>${planH||`<p class="small">Inget pass planerat den här dagen.</p>`}`);return}
   const st={k:r?r.k:null,what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
   const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=!st.k};
   openSheet(`<div><span class="small">${ds===td?"I dag":"Den här dagen"}</span><h2 class="day-t">${esc(title)}</h2></div>
-   ${logs.length?`<div class="group">${logs.map(l=>`<button class="row" data-dlog="${esc(l.id)}"><div><h3>${esc(l.type)}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
+   ${logs.length?`<div class="group">${logs.map(l=>`<button class="row nob" data-dlog="${esc(l.id)}"><div><h3>${esc(l.type)}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
    <button class="pill block" id="dy-log">Logga pass</button>
    <div class="field"><span class="lbl">Eller markera vila</span><div class="seg" id="dy-seg" role="group" aria-label="Vila"><button type="button" data-rk="rest">Vilodag</button><button type="button" data-rk="active">Aktiv vila</button></div></div>
    <div id="dy-active" hidden style="display:grid;gap:14px">
@@ -3313,7 +3353,7 @@ const simById=id=>(SIMS||[]).find(s=>s.id===id);
 const simMine=id=>!!(SBUSER&&SIMGO.some(g=>g.race_id===id&&g.user_id===SBUSER.id));
 const simFriends=id=>SIMGO.filter(g=>g.race_id===id&&(!SBUSER||g.user_id!==SBUSER.id)).map(g=>(NAMES[g.user_id]||{}).username).filter(Boolean);
 const simCount=(id,n)=>n===1?"1 anmäld":n+" anmälda";
-function simFriendTxt(id){const f=simFriends(id);if(!f.length)return "";return f.length===1?f[0]+" ska dit":f.length===2?f[0]+" och "+f[1]+" ska dit":f[0]+" och "+(f.length-1)+" vänner till ska dit"}
+function simFriendTxt(id){const f=simFriends(id);if(!f.length)return "";return f.length===1?f[0]+" ska dit":f.length===2?f[0]+" och "+f[1]+" ska dit":f[0]+" och "+(f.length-1)+" till ska dit"}
 function simHtml(){
   if(!SIMS)return "";
   const up=SIMS.filter(s=>s.day>=today());
@@ -3351,7 +3391,7 @@ function openSim(id){const s=simById(id);if(!s)return;
    ${s.info?`<p class="small" style="white-space:pre-line">${esc(s.info)}</p>`:""}
    ${n||fr?`<p class="small">${n?simCount(id,n)+" i VARV.":""}${n&&fr?" · ":""}${esc(fr)}</p>`:""}
    ${link?`<a class="pill block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Anmäl dig hos arrangören ↗</a>`:`<p class="small">Arrangören har inte lagt ut någon anmälan än.</p>`}
-   <p class="small">${s.auto?"Uppgifterna är hämtade automatiskt från arrangörens sida, så kontrollera dem där innan du anmäler dig. ":""}Anmälan sker hos arrangören. Markera här när du är anmäld, så ser dina vänner att du ska dit.</p>
+   <p class="small">${s.auto?"Uppgifterna är hämtade automatiskt från arrangörens sida, så kontrollera dem där innan du anmäler dig. ":""}Anmälan sker hos arrangören. Markera här när du är anmäld, så ser dina följare att du ska dit.</p>
    <button class="pill ghost block" id="sim-go" aria-pressed="${mine}">${SBUSER?(mine?"Ta bort min markering":"Markera att jag är anmäld"):"Logga in för att markera"}</button>`,()=>{
     $("#sim-go").onclick=()=>{
       if(!SB||!SBUSER){closeSheet();openAuth();return}
@@ -3446,7 +3486,7 @@ function saveProfileFields(){set.name=$("#pf-in-name").value.trim().slice(0,60);
 $("#pf-in-lv").addEventListener("change",e=>{saveAbout({age:set.age,height:set.height,level:e.target.value});saveSet();renderPlan();renderHome();toast("Planen är uppdaterad.")});
 ["#pf-in-name","#pf-in-age","#pf-in-h","#pf-in-max"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
 function setPfMore(on){$("#pf-more").hidden=!on;$("#pf-main").hidden=on;window.scrollTo(0,0)}
-$("#pf-more-btn").onclick=()=>setPfMore(true);
+$("#pf-more-btn").onclick=()=>setPfMore(true);$("#pf-blocked").onclick=()=>{if(!SB||!SBUSER){toast("Logga in först.");return}openBlocked()};
 $("#pf-back").onclick=()=>{if(!$("#pf-more").hidden){setPfMore(false);return}if(history.length>1)history.back();else location.hash="#hem"};
 $("#pf-tour").onclick=()=>startTour();
 $("#pf-exp").onclick=async()=>{const data=JSON.stringify({app:"VARV.",v:1,exported:new Date().toISOString(),settings:set,logs:LOGS,prs:PRS},null,1);
@@ -3501,10 +3541,10 @@ function raceLine(nr,partnerId){
 }
 async function renderFriends(force){
   const el=$("#fr-body");if(!el)return;
-  if(!SB){el.innerHTML=`<div class="card"><p class="small">Vänner kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
-  if(!SBUSER){el.innerHTML=`<div class="card"><h3>Träna ihop med vänner</h3><p class="small">Logga in för att lägga till vänner, se veckans topplista och vilka lopp dina vänner ska till.</p><button class="pill block" id="fr-login">Logga in</button></div>`;$("#fr-login").onclick=()=>openAuth();return}
+  if(!SB){el.innerHTML=`<div class="card"><p class="small">Att följa andra kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
+  if(!SBUSER){el.innerHTML=`<div class="card"><h3>Träna ihop med andra</h3><p class="small">Logga in för att följa andra, se veckans topplista och vilka lopp de ska till.</p><button class="pill block" id="fr-login">Logga in</button></div>`;$("#fr-login").onclick=()=>openAuth();return}
   if(!MYPROF){el.innerHTML=`<div class="card"><p class="small">Profiler och vänner är inte uppsatta än. Kör supabase/profiler.sql i Supabase.</p></div>`;return}
-  if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar dina vänner…</p></div>`;
+  if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar…</p></div>`;
   const D=await loadFriendData(force);if(!D||location.hash!=="#vanner")return;
   const wk=weekStart(today()),P=PROG||progress();
   const me={user_id:SBUSER.id,username:MYPROF.username,tag:MYPROF.tag,avatar_url:MYPROF.avatar_url,wv:P.weekVarv,n:weekStats().now.n,me:true};
@@ -3517,26 +3557,26 @@ async function renderFriends(force){
   const waiting=FRQ_OUT.map(r=>r.to_user);
   const kindTxt={lopp:"tävlade",rekord:"satte rekord",pass:"tränade"};
   el.innerHTML=`
-   ${FRQ_IN.length?`<a class="card fr-reqcard" href="#notiser"><b>${FRQ_IN.length===1?esc((NAMES[FRQ_IN[0].from_user]||{username:"Någon"}).username)+" vill bli din vän":FRQ_IN.length+" vill bli din vän"}</b><span class="linkbtn">Svara ›</span></a>`:""}
-   ${FRIENDS.length?"":`<div class="card fr-empty"><h3>Lägg till din första vän</h3><p class="small">Skicka en vänförfrågan med vännens namn och kod, eller dela din länk. Ditt namn och kod är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>.</p></div>`}
+   ${FRQ_IN.length?`<a class="card fr-reqcard" href="#notiser"><b>${FRQ_IN.length===1?esc((NAMES[FRQ_IN[0].from_user]||{username:"Någon"}).username)+" vill följa dig":FRQ_IN.length+" vill följa dig"}</b><span class="linkbtn">Svara ›</span></a>`:""}
+   ${FRIENDS.length?"":`<div class="card fr-empty"><h3>Hitta någon att följa</h3><p class="small">Sök bland offentliga profiler, eller använd namn och kod. Dela din profil så att andra kan följa dig. Ditt namn och kod är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>.</p></div>`}
    <div class="sechead"><h2>Den här veckan</h2><span class="small">Varv</span></div>
    <div class="group">${board.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0" aria-label="Visa ${b.me?"din profil":esc(b.username)+"s profil"}"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3><p>${b.n} ${b.n===1?"pass":"pass"}</p></div></div><b class="fr-v">${b.wv}</b></div>`).join("")}</div>
    <p class="small fr-foot">Ett varv per tio minuters träning. Topplistan jämför flit, inte fart, och börjar om på måndag.</p>
    <div class="sechead"><h2>Kommande lopp</h2><a href="#race">Alla lopp</a></div>
    ${races.length?`<div class="group">${races.map(r=>{const L=raceLine(r.nr,r.pid);const same=!r.u.me&&myNr&&myNr.date===r.nr.date;const d=Math.round((evD(r.nr.date)-evD(today()))/864e5);
      return `<div class="row fr-race" data-prof="${esc(r.u.user_id)}" role="button" tabindex="0">${avImg(r.u.avatar_url,r.u.username)}<div><h3>${r.u.me?"Du":esc(r.u.username)} · ${esc(L.where)}</h3><p>${esc(L.when)}${L.sub?"<br>"+L.sub:""}</p>${same?`<span class="fr-same">Samma lopp som du</span>`:""}</div><span class="fr-days"><b>${d}</b>${d===1?"dag":"dagar"}</span></div>`}).join("")}</div>`
-     :`<div class="card"><p class="small">Ingen av er har valt ett lopp än. Välj ditt under Tävla, så syns det här för dina vänner.</p></div>`}
+     :`<div class="card"><p class="small">Ingen av er har valt ett lopp än. Välj ditt under Tävla, så syns det här för dina följare.</p></div>`}
    <div class="sechead"><h2>Senaste</h2></div>
    ${!D.actOk?`<div class="card"><p class="small">Aktiviteten är inte uppsatt än. Kör supabase/notiser.sql i Supabase.</p></div>`
-     :D.acts.length?`<div class="group" id="fr-feed">${D.acts.map(a=>{const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"En vän"});
+     :D.acts.length?`<div class="group" id="fr-feed">${D.acts.map(a=>{const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"});
        const L=D.likes[a.id]||[],liked=L.includes(SBUSER.id);
        const who=L.filter(u=>u!==SBUSER.id).map(u=>(NAMES[u]||{}).username).filter(Boolean);
        const like=!D.likeOk?"":mine?(L.length?`<p class="fr-got">${THUMB} ${esc(who.slice(0,2).join(" och "))}${who.length>2?` och ${who.length-2} till`:""}</p>`:"")
          :`<button class="fr-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}<span>${L.length||""}</span></button>`;
        return `<div class="row fr-act" data-prof="${esc(a.user_id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${mine?"Du":esc(p.username)} ${kindTxt[a.kind]||"tränade"}</h3><p>${esc([a.title,a.detail].filter(Boolean).join(" · "))}</p>${mine?like:""}</div><div class="fr-side"><span class="small fr-ago">${agoTxt(a.created_at)}</span>${mine?"":like}</div></div>`}).join("")}</div>`
-     :`<div class="card"><p class="small">Här syns det när dina vänner tränar och tävlar.</p></div>`}
-   ${waiting.length?`<div class="sechead"><h2>Väntar på svar</h2></div><div class="group">${waiting.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row" data-prof="${esc(id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på svar på din vänförfrågan</p></div><span class="chev">›</span></div>`}).join("")}</div>`:""}
-   <div class="fr-acts"><button class="pill block" id="fr-add2">Lägg till vän</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela vänlänk</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div>`;
+     :`<div class="card"><p class="small">Här syns det när de du följer tränar och tävlar.</p></div>`}
+   ${waiting.length?`<div class="sechead"><h2>Väntar på svar</h2></div><div class="group">${waiting.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row" data-prof="${esc(id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på godkännande</p></div><span class="chev">›</span></div>`}).join("")}</div>`:""}
+   <div class="fr-acts"><button class="pill block" id="fr-add2">Hitta atleter</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela min profil</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div>`;
   const fd=$("#fr-feed");if(fd)fd.onclick=async e=>{const b=e.target.closest("[data-like]");if(!b||b.disabled)return;const id=+b.dataset.like,L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);
     b.disabled=true;if(on)L.splice(L.indexOf(SBUSER.id),1);else{L.push(SBUSER.id);HAPTIC("light")}
     b.setAttribute("aria-pressed",!on);b.querySelector("span").textContent=L.length||"";b.classList.toggle("pop",!on);
@@ -3605,8 +3645,8 @@ async function pushOff(){
 }
 function renderNotis(){
   const el=$("#pf-push");if(!el)return;const on=!!(set.push&&set.push.on),p=pushPrefs();
-  el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet och när dina vänner tränar.",on)
-   +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-fr","Vänner","När en vän tränar eller tävlar.",p.friends)}
+  el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet och när de du följer tränar.",on)
+   +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
      <div class="field"><label for="pu-h">Tid för påminnelser</label><select id="pu-h">${Array.from({length:17},(_,i)=>i+5).map(h=>`<option value="${h}"${h===(+set.hour||8)?" selected":""}>${String(h).padStart(2,"0")}:00</option>`).join("")}</select></div></div>`:"");
   $("#pu-on").onclick=async()=>{const b=$("#pu-on");b.disabled=true;if(on)await pushOff();else await pushOn();b.disabled=false;renderNotis()};
   const tg=(id,k)=>{const b=$(id);if(b)b.onclick=()=>{const pr=pushPrefs();pr[k]=!pr[k];set.push.prefs=pr;saveSet();renderNotis();pushSave(null)}};
@@ -3792,22 +3832,23 @@ async function loadRequests(){if(!SB||!SBUSER)return;
 }
 async function sendFriendRequest(uid){
   const {data,error}=await SB.rpc("varv_request_friend",{p_to:uid});if(error){toast(sbErr(error));return null}
-  const p=NAMES[uid];const nm=p?p.username:"hen";
+  const p=NAMES[uid];const nm=p?p.username:"personen";
   await loadFriends();await loadRequests();FRC=null;
-  if(data==="accepted"){toast(`Du och ${nm} är nu vänner`);HAPTIC("success")}
-  else if(data==="sent"||data==="pending")toast(`Vänförfrågan skickad till ${nm}`);
-  else if(data==="friends")toast(`Ni är redan vänner`);
+  if(data==="following"||data==="accepted"||data==="friends"){toast(`Du följer nu ${nm}.`);HAPTIC("success")}
+  else if(data==="sent"||data==="pending")toast(`Förfrågan är skickad till ${nm}.`);
+  else if(data==="limit")toast("Du har skickat många förfrågningar. Försök igen senare.");
+  else if(data==="none")toast("Det gick inte att följa den här profilen.");
   refreshSocialViews();return data;
 }
 async function answerFriend(uid,yes){
   const {data,error}=await SB.rpc("varv_answer_friend",{p_from:uid,p_accept:yes});if(error){toast(sbErr(error));return}
   const p=NAMES[uid];await loadFriends();await loadRequests();FRC=null;
-  if(data==="accepted"){toast(`Du och ${p?p.username:"din vän"} är nu vänner`);HAPTIC("success")}else if(data==="declined")toast("Förfrågan är borttagen");
+  if(data==="accepted"){toast(`${p?p.username:"Personen"} följer dig nu.`);HAPTIC("success")}else if(data==="declined")toast("Förfrågan är borttagen.");
   await loadNotis();refreshSocialViews();
 }
-async function removeFriend(uid){const {error}=await SB.rpc("varv_remove_friend",{p_other:uid});if(error){toast(sbErr(error));return false}
+async function removeFriend(uid){let {error}=await SB.rpc("varv_unfollow",{p_other:uid});if(error){toast(sbErr(error));return false}
   if(MYPROF&&MYPROF.partner_id===uid)MYPROF.partner_id=null;await loadFriends();await loadRequests();FRC=null;refreshSocialViews();return true}
-async function cancelRequest(uid){await SB.from("friend_requests").delete().eq("from_user",SBUSER.id).eq("to_user",uid);await loadRequests();refreshSocialViews();toast("Förfrågan är återkallad")}
+async function cancelRequest(uid){await SB.from("friend_requests").delete().eq("from_user",SBUSER.id).eq("to_user",uid);await loadRequests();refreshSocialViews();toast("Förfrågan är återkallad.")}
 function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#vanner")renderFriends(true);if(h==="#notiser")renderNotiser();notiBadge()}
 
 /* ============ Notiscenter ============ */
@@ -3822,20 +3863,20 @@ async function loadNotis(){if(!SB||!SBUSER)return;
 function notiBadge(){const b=$("#nt-btn");if(!b)return;b.hidden=!SBUSER||location.hash==="#profil";
   const n=Math.max(NOTIS.filter(x=>!x.read_at).length,FRQ_IN.length);const c=b.querySelector(".nt-count");
   c.textContent=n>9?"9+":n;c.hidden=!n||location.hash==="#notiser";appBadge(n);b.setAttribute("aria-label",n?`Notiser, ${n} nya`:"Notiser");b.classList.toggle("on",location.hash==="#notiser")}
-const NT_ICON={plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"};
+const NT_ICON={follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"};
 function ntRow(n){const p=n.actor?NAMES[n.actor]:null,unread=!n.read_at;
   const ic=p?avImg(p.avatar_url,p.username):`<span class="nt-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${NT_ICON[n.kind]||NT_ICON.test}"/></svg></span>`;
   return `<button class="row nt-row${unread?" unread":""}" data-nt="${n.id}" data-url="${esc(n.url||"")}"${n.actor?` data-actor="${esc(n.actor)}"`:""}>${ic}<div><h3>${esc(n.title)}</h3>${n.body?`<p>${esc(n.body)}</p>`:""}<p class="nt-ago">${agoTxt(n.created_at)}</p></div>${unread?'<span class="nt-dot" aria-label="Ny"></span>':"<span></span>"}</button>`}
 function renderNotiser(){const el=$("#nt-body");if(!el)return;
-  if(!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för notiser</h3><p class="small">Här samlas vänförfrågningar, påminnelser och vad dina vänner gör.</p><button class="pill block" id="nt-login">Logga in</button></div>`;$("#nt-login").onclick=()=>openAuth();return}
+  if(!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för notiser</h3><p class="small">Här samlas förfrågningar, påminnelser och vad de du följer gör.</p><button class="pill block" id="nt-login">Logga in</button></div>`;$("#nt-login").onclick=()=>openAuth();return}
   const td=today(),isToday=n=>iso(new Date(n.created_at))===td,list=NOTIS.filter(n=>!(n.kind==="request"&&FRQ_IN.some(r=>r.from_user===n.actor)));
   const nyt=list.filter(isToday),old=list.filter(n=>!isToday(n));
-  el.innerHTML=`${FRQ_IN.length?`<div class="sechead"><h2>Vänförfrågningar</h2><span class="small">${FRQ_IN.length}</span></div>
-     <div class="group">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req" data-req="${esc(r.from_user)}">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Vill bli din vän · ${agoTxt(r.created_at)}</p></div>
+  el.innerHTML=`${FRQ_IN.length?`<div class="sechead"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div>
+     <div class="group">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req" data-req="${esc(r.from_user)}">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Förfrågan · ${agoTxt(r.created_at)}</p></div>
        <div class="nt-acts"><button class="pill nt-yes" data-yes="${esc(r.from_user)}">Godkänn</button><button class="pill ghost nt-no" data-no="${esc(r.from_user)}" aria-label="Avböj ${esc(p.username)}">Avböj</button></div></div>`}).join("")}</div>`:""}
    ${!NOTIS_OK?`<div class="card"><p class="small">Notiscentret är inte uppsatt än.</p></div>`
      :list.length?`${nyt.length?`<div class="sechead"><h2>I dag</h2></div><div class="group">${nyt.map(ntRow).join("")}</div>`:""}${old.length?`<div class="sechead"><h2>Tidigare</h2></div><div class="group">${old.map(ntRow).join("")}</div>`:""}`
-     :FRQ_IN.length?"":`<div class="card nt-empty"><h3>Inga notiser än</h3><p class="small">Här samlas vänförfrågningar, påminnelser om dagens pass, nedräkningen till loppet och vad dina vänner gör.</p></div>`}
+     :FRQ_IN.length?"":`<div class="card nt-empty"><h3>Inga notiser än</h3><p class="small">Här samlas förfrågningar, påminnelser om dagens pass, nedräkningen till loppet och vad de du följer gör.</p></div>`}
    ${FRQ_OUT.length?`<div class="sechead"><h2>Skickade förfrågningar</h2></div><div class="group">${FRQ_OUT.map(r=>{const p=NAMES[r.to_user]||{username:"Okänd",tag:"0000"};return `<div class="row nt-out" data-req="${esc(r.to_user)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på svar</p></div><button class="linkbtn" data-undo="${esc(r.to_user)}">Ångra</button></div>`}).join("")}</div>`:""}`;
   el.onclick=async e=>{const b=e.target.closest("button");
     if(!b){const r=e.target.closest("[data-req]");if(r)viewProfile(r.dataset.req);return}if(b.disabled)return;
@@ -3873,7 +3914,7 @@ function route(){
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
-  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="profil"){renderProfile();renderNotis()}if(v==="vanner")renderFriends();if(v==="notiser")renderNotiser();frDot();notiBadge();
+  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="profil"){renderProfile();renderNotis()}if(v==="vanner")renderFriends();if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
   if(v==="logg"){drawRings(true);renderLog()}
 }
@@ -3901,6 +3942,7 @@ GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   else if(!set.toured)setTimeout(maybeTour,Math.max(0,wait-400));
   if(LIVE){renderLive();liveTickStart();if(LIVE.open)liveWake()}});
 bindLive();
+{const m=document.querySelector(".brandmark"),l=$("#logo-btn");if(m&&l){const c=m.cloneNode(true);c.removeAttribute("aria-label");c.setAttribute("aria-hidden","true");l.innerHTML=c.outerHTML.replace(/hlg/g,"hlgb")}}
 /* Startanimation */
 (()=>{const sp=document.getElementById("splash");if(!sp)return;let done=false;
   const end=()=>{if(done)return;done=true;sp.remove();const v=document.querySelector(".view.on");if(v&&!RM()){v.classList.remove("on");void v.offsetWidth;v.classList.add("on")}

@@ -148,7 +148,7 @@ td small{display:block;color:var(--muted);font-size:.78rem}
     <div id="v-fel" hidden>
       <div class="tiles" id="ftiles"></div>
       <div id="f-setup" class="card" hidden><p>Felrapporterna är inte uppsatta än. Kör <b>supabase/varv-2.sql</b> i Supabase och ladda om sidan.</p></div>
-      <div id="f-list"></div>
+      <h2 style="margin:18px 0 8px;font-size:1.15rem">Anmälningar</h2><div id="r-list"><p class="small">Laddar…</p></div><h2 style="margin:18px 0 8px;font-size:1.15rem">Fel</h2><div id="f-list"></div>
       <p class="small" style="margin-top:8px">Fel som har hänt i appen hos användare de senaste 30 dagarna, utan namn eller e-post. Samma fel räknas ihop.</p>
     </div>
 
@@ -295,7 +295,13 @@ async function finCall(fn,body){
   if(!r.ok){let t="";try{t=(await r.json()).message||""}catch(e){}if(r.status===404){const e=new Error("setup");e.setup=true;throw e}throw new Error(/Fel kod/.test(t)?"Fel kod.":"Kunde inte spara. Försök igen.")}
   return r.json();
 }
+const RWHY={trakasserier:"Hot eller trakasserier",olampligt:"Olämpligt namn eller bild",spam:"Spam eller falskt konto",annat:"Annat"};
+function drawReports(d){const L=$("#r-list"),I=d.items||[];L.innerHTML=I.length?I.map(r=>`<div class="card" style="margin-bottom:8px;${r.status==="ny"?"":"opacity:.6"}"><b>${esc(r.target_name||"Borttaget konto")}</b> <span class="small">· ${esc(RWHY[r.reason]||r.reason)} · ${esc(String(r.created_at).slice(0,10))} · ${esc(r.total)} anmälning(ar) totalt</span>${r.note?`<p class="small" style="margin-top:6px;white-space:pre-line">${esc(r.note)}</p>`:""}${r.status==="ny"?`<p style="margin-top:8px"><button type="button" data-rdone="${esc(r.id)}">Markera som hanterad</button></p>`:""}</div>`).join(""):`<div class="card"><p class="small">Inga anmälningar.</p></div>`;
+  L.querySelectorAll("[data-rdone]").forEach(b=>b.onclick=async()=>{b.disabled=true;try{drawReports(await finCall("varv_report_done",{p_token:getCode(),p_id:+b.dataset.rdone}))}catch(e){b.disabled=false}})}
+async function loadReports(){const L=$("#r-list");if(!$("#demo").hidden){L.innerHTML=`<div class="card"><p class="small">Inga anmälningar i exempeldatan.</p></div>`;return}const c=getCode();if(!c)return;
+  try{drawReports(await finCall("varv_reports",{p_token:c}))}catch(e){L.innerHTML=`<div class="card"><p class="small">Anmälningar är inte uppsatta än. Kör <b>supabase/foljare.sql</b> i Supabase.</p></div>`}}
 async function loadErr(){
+  loadReports();
   const L=$("#f-list"),T=$("#ftiles");
   if(!$("#demo").hidden){T.innerHTML=`<div class="tile"><small>Fel senaste 7 dagarna</small><b>0</b></div>`;L.innerHTML=`<div class="card"><p class="small">Inga fel i exempeldatan.</p></div>`;return}
   const c=getCode();if(!c)return;

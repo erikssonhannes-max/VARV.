@@ -781,7 +781,7 @@ a.row{color:inherit;text-decoration:none}
 .sg-pick .k[aria-pressed="true"]{background:linear-gradient(135deg,var(--cyan),var(--cyan2))}.sg-pick .s[aria-pressed="true"]{background:linear-gradient(135deg,var(--green),var(--green2))}.sg-pick .b[aria-pressed="true"]{background:linear-gradient(135deg,var(--accent),var(--accent2))}
 .sg-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0}.sg-nums div{background:var(--tile);border-radius:12px;padding:8px;text-align:center}.sg-nums b{display:block;font-size:1.5rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}.sg-nums small{color:var(--muted);font-size:.74rem}
 .pre-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pre{border:0;cursor:pointer;background:var(--tile);color:var(--ink);border-radius:18px;padding:14px;min-height:112px;display:grid;gap:3px;text-align:left;align-content:space-between;font:inherit;border-left:4px solid var(--accent)}.pre.k{border-left-color:var(--cyan)}.pre.s{border-left-color:var(--green)}
-.pre small{color:var(--muted);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.pre-pr{font-style:normal;color:var(--accent);font-weight:600;font-size:.84rem}.bm-card{gap:10px}.bm-top{display:grid;gap:2px}.bm-top b{font-size:2rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.bm-tries{display:flex;gap:8px;flex-wrap:wrap}.bm-tries span{background:var(--card);border-radius:10px;padding:6px 10px;font-weight:600;font-variant-numeric:tabular-nums;display:grid;font-size:.95rem}.bm-tries span.on{color:var(--accent)}.bm-tries small{color:var(--muted);font-weight:400;font-size:.75rem}.pre em{font-style:normal;color:var(--muted);font-size:.84rem;line-height:1.3;margin-top:-1px}#pre-f{margin-bottom:2px}.pre b{font-size:1.1rem;font-weight:600;letter-spacing:-.02em;line-height:1.2}.pre span{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
+.pre small{color:var(--muted);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.pf-fixed{font-size:16px;color:var(--ink);background:var(--card);border-radius:12px;padding:11px 12px;min-height:44px;box-sizing:border-box;display:flex;align-items:center;opacity:.85}.pf-name-set{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}.pf-name-set[hidden]{display:none}.pf-name-set .pill{min-height:44px;padding:10px 18px}.pre-pr{font-style:normal;color:var(--accent);font-weight:600;font-size:.84rem}.bm-card{gap:10px}.bm-top{display:grid;gap:2px}.bm-top b{font-size:2rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.bm-tries{display:flex;gap:8px;flex-wrap:wrap}.bm-tries span{background:var(--card);border-radius:10px;padding:6px 10px;font-weight:600;font-variant-numeric:tabular-nums;display:grid;font-size:.95rem}.bm-tries span.on{color:var(--accent)}.bm-tries small{color:var(--muted);font-weight:400;font-size:.75rem}.pre em{font-style:normal;color:var(--muted);font-size:.84rem;line-height:1.3;margin-top:-1px}#pre-f{margin-bottom:2px}.pre b{font-size:1.1rem;font-weight:600;letter-spacing:-.02em;line-height:1.2}.pre span{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:no-preference){.go-now,.go,.go-chip,.pre{transition:transform .15s ease}.go-now:active,.go:active,.go-chip:active,.pre:active,.sg-pick button:active{transform:scale(.97)}
  .go-now::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);transform:translateX(-100%);animation:goShine 5s ease-in-out 1.5s infinite;pointer-events:none}}
 @keyframes goShine{0%{transform:translateX(-100%)}25%,100%{transform:translateX(100%)}}
@@ -1075,7 +1075,7 @@ a.row{color:inherit;text-decoration:none}
   </header>
 
   <div class="wrap">
-    <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Nytt på Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Din plan börjar enkelt och bygger upp formen stegvis.</p></a><div class="today" id="today" hidden></div>
+    <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Ny till Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Din plan börjar enkelt och bygger upp formen stegvis.</p></a><div class="today" id="today" hidden></div>
     <div id="h-go"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg">Logg</a></div>
@@ -1331,7 +1331,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="group" id="pf-acc"></div>
     <div class="sechead"><h2>Om mig</h2></div>
     <div class="card">
-      <div class="field"><label for="pf-in-name">Namn</label><input type="text" id="pf-in-name" autocomplete="name" maxlength="60"></div>
+      <div class="field"><label for="pf-in-name">Namn</label><div class="pf-fixed" id="pf-name-fixed" hidden></div><div class="pf-name-set" id="pf-name-set"><input type="text" id="pf-in-name" autocomplete="name" maxlength="60"><button type="button" class="pill" id="pf-name-save">Spara</button></div><span class="small" id="pf-name-note"></span></div>
       <div class="grid2"><div class="field"><label for="pf-in-age">Ålder</label><input type="number" id="pf-in-age" inputmode="numeric" min="16" max="90" placeholder="30"></div>
       <div class="field"><label for="pf-in-h">Längd (cm)</label><input type="number" id="pf-in-h" inputmode="numeric" min="120" max="230" placeholder="175"></div>
       <div class="field"><label for="pf-in-max">Maxpuls</label><input type="number" id="pf-in-max" inputmode="numeric" min="120" max="230" placeholder="Valfritt"></div>
@@ -4031,8 +4031,9 @@ function renderProfile(){
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
    :`<div class="row"><span class="badge">✓</span><div><h3>Sparas på den här enheten</h3><p>Allt ligger kvar i webbläsaren. Exportera dina data nedan för att flytta dem till en annan enhet. Inloggning med Google är på väg.</p></div><span></span></div>`;
-  const nm=$("#pf-in-name");if(document.activeElement!==nm)nm.value=set.name||"";
-  nm.placeholder=(MEINFO&&MEINFO.name)||"Ditt namn";
+  const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=!fixed;$("#pf-name-fixed").textContent=set.name||"";$("#pf-name-set").hidden=fixed;
+  $("#pf-name-note").textContent=fixed?"Namnet går inte att ändra.":"Skriv ditt namn. Det går inte att ändra efteråt.";
+  if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";
   $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-lv").value=set.level||"mellan";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||"";{const pe=$("#pf-in-pace");if(document.activeElement!==pe)pe.value=set.pace?fmt(set.pace):""}
   $("#pf-set").innerHTML=themeSeg()+swRow("pf-sw-sound","Ljud","Pip i tidtagningen",set.cues.sound)+swRow("pf-sw-voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+swRow("pf-sw-hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false);
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
@@ -4043,12 +4044,15 @@ function renderProfile(){
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
-function saveProfileFields(){set.name=$("#pf-in-name").value.trim().slice(0,60);set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
+function saveProfileFields(){set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
   {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);
    const pv=$("#pf-in-pace").value.trim(),pp=pv?parseRes(pv):null;if(!pv)set.pace=null;else if(pp&&pp>=150&&pp<=720)set.pace=pp}saveSet();renderAvatar();$("#pf-av").innerHTML=avatarHtml();$("#pf-name").textContent=pName()||"Din profil"}
+$("#pf-name-save").onclick=()=>{const v=$("#pf-in-name").value.trim().replace(/\s+/g," ").slice(0,60);
+  if(!NAME_OK(v)){toast("Skriv ditt för- och efternamn med bokstäver.");$("#pf-in-name").focus();return}
+  set.name=v;saveSet();renderAvatar();renderProfile();renderHome();toast("Namnet är sparat");HAPTIC("success")};
 $("#pf-in-sex").addEventListener("change",e=>{set.sex=e.target.value||null;if(set.sex==="w"||set.sex==="m"){set.g=set.sex;refreshDivision()}saveSet()});
 $("#pf-in-lv").addEventListener("change",e=>{saveAbout({age:set.age,height:set.height,level:e.target.value});saveSet();renderPlan();renderHome();toast("Planen är uppdaterad.")});
-["#pf-in-name","#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr","#pf-in-pace"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
+["#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr","#pf-in-pace"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
 function setPfMore(on){$("#pf-more").hidden=!on;$("#pf-main").hidden=on;window.scrollTo(0,0)}
 $("#pf-more-btn").onclick=()=>setPfMore(true);$("#pf-blocked").onclick=()=>{if(!SB||!SBUSER){toast("Logga in först.");return}openBlocked()};
 $("#pf-back").onclick=()=>{if(!$("#pf-more").hidden){setPfMore(false);return}if(history.length>1)history.back();else location.hash="#hem"};
@@ -4058,7 +4062,7 @@ $("#pf-exp").onclick=async()=>{const data=JSON.stringify({app:"VARV.",v:1,export
 $("#pf-imp-file").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   try{const d=JSON.parse(await f.text());if(!d||d.app!=="VARV."||!Array.isArray(d.logs))throw 0;
     const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace","bench"];
-    keep.forEach(k=>{if(d.settings&&d.settings[k]!==undefined)set[k]=d.settings[k]});set.per=(set.days||[]).length||set.per;saveSet();
+    keep.forEach(k=>{if(k==="name"&&set.name)return;if(d.settings&&d.settings[k]!==undefined)set[k]=d.settings[k]});set.per=(set.days||[]).length||set.per;saveSet();
     let n=0;for(const l of d.logs){if(!l||!l.date||LOGS.some(x=>x.id===l.id))continue;const b=Object.assign({},l);const id=b.id||("l"+Date.now()+n);delete b.id;
       if(mode==="db"&&col){try{await col.doc(id).set(b)}catch(err){}}else LOGS.push(Object.assign({id},b));n++}
     Object.entries(d.prs||{}).forEach(([k,v])=>{if(+v>0&&(!PRS[k]||v<PRS[k]))PRS[k]=+v});await savePRs();
@@ -4294,6 +4298,7 @@ const GOAL_IC={friends:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColo
   plan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></svg>`};
 const SEXES=[["w","Kvinna"],["m","Man"],["x","Annat"]];
 let ONB_ON=false;
+const NAME_OK=v=>/^[\p{L}][\p{L}' .-]{1,59}$/u.test(v)&&/\p{L}{2}/u.test(v);
 /* Tider skrivs med bara siffror. Kolon sätts in automatiskt: 515 blir 5:15, 12930 blir 1:29:30. */
 function tmFormat(v,max){const d=String(v).replace(/\D/g,"").replace(/^0+(?=\d{3})/,"").slice(0,max);return d.length<3?d:d.length<5?d.slice(0,-2)+":"+d.slice(-2):d.slice(0,-4)+":"+d.slice(-4,-2)+":"+d.slice(-2)}
 document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.tm)return;const f=tmFormat(t.value,+t.dataset.tm||5);if(f!==t.value){t.value=f;try{t.setSelectionRange(f.length,f.length)}catch(x){}}},true);
@@ -4302,7 +4307,7 @@ const bestRace=()=>{const a=[+PRS.race||0,pastBest()].filter(t=>t>0);return a.le
 function onbClose(){if(!ONB_ON)return;ONB_ON=false;$("#onb").hidden=true;gateInert(false);document.body.style.overflow=""}
 function openOnb(){
   const evs=evUpcoming().filter(e=>evIn(e)>=21).sort((a,b)=>(a.r==="norden"?0:1)-(b.r==="norden"?0:1)||a.s.localeCompare(b.s)).slice(0,6);
-  const st={age:set.age||null,sex:set.sex||null,level:set.level||null,goals:new Set(Array.isArray(set.goals)?set.goals:[]),
+  const st={name:set.name||(MEINFO&&MEINFO.name)||"",age:set.age||null,sex:set.sex||null,level:set.level||null,goals:new Set(Array.isArray(set.goals)?set.goals:[]),
     ev:null,date:"",none:false,other:false,target:set.target||90,goalSet:false,noGoal:false,cls:{fmt:set.fmt||"singel",k:set.k||"open",g:null},
     past:Array.isArray(set.pastRaces)&&set.pastRaces.length?true:null,races:(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(r=>({n:r.n||"",d:r.d||"",t:r.t?fmt(r.t):""})),
     weight:set.weight||null,height:set.height||null,vo2:set.vo2||null,rhr:set.rhr||null,maxhr:set.maxhr||null,pace:set.pace?fmt(set.pace):""};
@@ -4313,11 +4318,11 @@ function openOnb(){
   const pushState=()=>!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
   const V={
     about:{eye:"Om dig",h:"Berätta lite om dig.",p:"Det styr planen, pulszonerna och vilken klass du jämförs med.",
-      html:()=>`<div class="field"><label for="ob-age">Ålder</label><input type="number" id="ob-age" inputmode="numeric" min="16" max="90" placeholder="År" value="${st.age||""}"></div>
+      html:()=>`${set.name?"":`<div class="field"><label for="ob-name">Namn</label><input type="text" id="ob-name" autocomplete="name" maxlength="60" placeholder="För- och efternamn" value="${esc(st.name)}"><span class="small">Visas för dem du tränar med. Går inte att ändra senare.</span></div>`}<div class="field"><label for="ob-age">Ålder</label><input type="number" id="ob-age" inputmode="numeric" min="16" max="90" placeholder="År" value="${st.age||""}"></div>
         <div class="field"><span class="lbl">Kön</span>${seg("sx",SEXES,st.sex)}</div>
         <div class="field"><span class="lbl">Din nivå</span>${seg("lv",LEVELS.map(([k,l])=>[k,l]),st.level)}<span class="small">${(LEVELS.find(x=>x[0]===st.level)||[])[2]||"Styr hur tungt planen läggs upp."}</span></div>`,
-      read(){const a=num("#ob-age");if(a!==undefined)st.age=a},
-      ok:()=>!(st.age>=16&&st.age<=90)?["Fyll i din ålder. Du behöver vara minst 16 år.","#ob-age"]:!st.sex?["Välj kön."]:!st.level?["Välj din nivå."]:null},
+      read(){const a=num("#ob-age");if(a!==undefined)st.age=a;const nm=$("#ob-name");if(nm)st.name=nm.value.trim().replace(/\s+/g," ").slice(0,60)},
+      ok:()=>!set.name&&!NAME_OK(st.name)?["Skriv ditt för- och efternamn.","#ob-name"]:!(st.age>=16&&st.age<=90)?["Fyll i din ålder. Du behöver vara minst 16 år.","#ob-age"]:!st.sex?["Välj kön."]:!st.level?["Välj din nivå."]:null},
     goals:{eye:"Ditt mål",h:"Vad vill du få ut av VARV.?",p:"Välj ett eller flera.",
       html:()=>`<div class="ob-goals">${GOALS.map(([k,t,s])=>`<button type="button" class="ob-goal" data-gl="${k}" aria-pressed="${st.goals.has(k)}"><span class="ob-ic">${GOAL_IC[k]}</span><span><b>${t}</b><small>${s}</small></span><span class="ob-ck" aria-hidden="true">${st.goals.has(k)?"✓":""}</span></button>`).join("")}</div>`,
       read(){},ok:()=>st.goals.size?null:["Välj minst ett mål."]},
@@ -4387,7 +4392,7 @@ function openOnb(){
   }
   async function finish(){
     const lvlChanged=set.level!==st.level;
-    set.age=st.age;set.sex=st.sex;set.goals=[...st.goals];
+    if(!set.name&&NAME_OK(st.name))set.name=st.name;set.age=st.age;set.sex=st.sex;set.goals=[...st.goals];
     saveAbout({age:st.age,height:st.height,level:st.level});
     if(st.goals.has("race")){const c=st.cls,ev=st.ev!=null?EVENTS[st.ev]:null;
       set.fmt=c.fmt;set.k=c.fmt==="mixed"?"open":c.k;set.g=c.g||(st.sex==="w"||st.sex==="m"?st.sex:set.g);
@@ -4422,7 +4427,7 @@ function openOnb(){
   sk.onclick=()=>next(true);
   $("#ob-back").onclick=()=>{if(!i)return;V[steps()[i]].read();i--;render()};
   ONB_ON=true;closeSheet();el.hidden=false;gateInert(true);document.body.style.overflow="hidden";render();
-  setTimeout(()=>{const a=$("#ob-age");if(a&&!a.value)a.focus({preventScroll:true})},400);
+  setTimeout(()=>{const a=$("#ob-name")&&!$("#ob-name").value?$("#ob-name"):$("#ob-age");if(a&&!a.value)a.focus({preventScroll:true})},400);
 }
 
 /* ============ Framsteg per övning ============ */

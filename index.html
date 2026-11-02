@@ -3463,7 +3463,7 @@ function dayMsg(h,n){
 }
 function renderHome(){try{renderGo()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
-  {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
+  {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
     $("#h-greet").textContent=n?`Hej, ${n}.`:"Hej.";$("#h-msg").textContent=dayMsg(h,"")}}
   try{renderWeekStrip()}catch(e){}

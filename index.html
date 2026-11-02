@@ -830,13 +830,27 @@ a.row{color:inherit;text-decoration:none}
 .fd-new{margin-bottom:14px}.fd-new svg{margin-right:2px}
 .po-h{justify-content:space-between}.po-who2{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px;min-width:0}
 .po-del{font-size:.82rem}
-.po-img{padding:0;min-height:0;aspect-ratio:4/5;background:var(--card)}.po-img img{width:100%;height:100%;object-fit:cover;display:block;-webkit-user-drag:none}
+.po-img{padding:0;min-height:0;background:var(--card)}.po-img img{width:100%;height:auto;max-height:85vh;object-fit:cover;display:block;-webkit-user-drag:none}
 .po-cap{padding:0 16px 10px;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere}.po-cap b{font-weight:600}
 .cp-pick{display:grid;place-items:center;aspect-ratio:4/3;border-radius:16px;background:var(--tile);border:1.5px dashed var(--hair);cursor:pointer;overflow:hidden;position:relative}
-.cp-pick.has{border:0;aspect-ratio:4/5}.cp-pick img{width:100%;height:100%;object-fit:cover}
+.cp-pick.has{border:0}.cp-pick img{width:100%;height:100%;object-fit:cover}
 .cp-empty{display:grid;justify-items:center;gap:4px;color:var(--muted);text-align:center;padding:20px}.cp-empty svg{width:34px;height:34px;color:var(--ink)}.cp-empty b{color:var(--ink);font-weight:600}.cp-empty small{font-size:.82rem}
 .cp-chg{position:absolute;bottom:12px;right:12px;background:rgba(0,0,0,.6);color:#fff;font-size:.85rem;font-weight:600;padding:8px 14px;border-radius:980px}
 .cp-pick:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+/* Beskärning */
+.crop{position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
+.cr-top{display:flex;align-items:center;justify-content:space-between;padding:8px 8px}.cr-top b{font-size:1.05rem;font-weight:600}
+.cr-btn{min-height:44px;padding:0 14px;border:0;background:none;color:#fff;font:inherit;font-size:1rem;cursor:pointer;border-radius:980px}.cr-ok{font-weight:600;color:#fff;background:var(--hot)}
+.cr-stage{position:relative;overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.cr-img{position:absolute;left:50%;top:50%;max-width:none;pointer-events:none;-webkit-user-drag:none}
+.cr-frame{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);box-shadow:0 0 0 9999px rgba(0,0,0,.62);outline:1.5px solid rgba(255,255,255,.9);pointer-events:none;
+ background-image:linear-gradient(rgba(255,255,255,.28) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.28) 1px,transparent 1px);background-size:33.333% 33.333%;background-position:-1px -1px}
+.cr-frame.round{border-radius:50%;background-image:none}
+.cr-bot{display:grid;gap:12px;padding:14px 16px 18px;justify-items:center}
+.cr-ar{width:100%;max-width:340px;background:rgba(255,255,255,.14)}.cr-ar button{color:#fff}.cr-ar button[aria-pressed="true"]{background:#fff;color:#111114}
+.cr-zl{display:flex;align-items:center;gap:10px;width:100%;max-width:340px;color:rgba(255,255,255,.8)}.cr-z{flex:1;accent-color:#fff}
+.cr-hint{font-size:.82rem;color:rgba(255,255,255,.7);text-align:center}
+.cp-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Hitta vänner: svepkort */
 .deck{position:relative;height:310px;margin:4px 0 26px}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -2649,15 +2663,48 @@ function openEditProfile(){
       Object.assign(MYPROF,upd);await loadFriends();renderProfile();try{renderHome()}catch(e){}closeSheet();toast("Profilen är sparad");HAPTIC("success")})};
   });
 }
+/* Beskärning: dra för att flytta, nyp eller dra i reglaget för att zooma */
+function cropImage(file,o){o=o||{};const ratios=o.ratios||[[1,"1:1"]];let ar=o.ratio||ratios[0][0];
+  return new Promise(async done=>{let url;try{url=URL.createObjectURL(file)}catch(e){done(null);return}
+    const img=new Image();img.src=url;try{await img.decode()}catch(e){URL.revokeObjectURL(url);toast("Kunde inte läsa bilden. Prova en annan.");done(null);return}
+    const iw=img.naturalWidth,ih=img.naturalHeight,ov=document.createElement("div");ov.className="crop";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-label","Beskär bilden");
+    ov.innerHTML=`<div class="cr-top"><button class="cr-btn" data-cr="no">Avbryt</button><b>Beskär</b><button class="cr-btn cr-ok" data-cr="ok">Klar</button></div>
+     <div class="cr-stage"><img class="cr-img" alt="" draggable="false"><div class="cr-frame${o.round?" round":""}"></div></div>
+     <div class="cr-bot">${ratios.length>1?`<div class="seg cr-ar" role="group" aria-label="Format">${ratios.map(([r,l])=>`<button data-ar="${r}" aria-pressed="${r===ar}">${l}</button>`).join("")}</div>`:""}
+      <label class="cr-zl"><span class="sr">Zoom</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5"/></svg><input type="range" class="cr-z" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5M11 8.5v5"/></svg></label>
+      <p class="cr-hint">Dra för att flytta. Nyp eller dra i reglaget för att zooma.</p></div>`;
+    document.body.appendChild(ov);document.body.style.overflow="hidden";
+    const st=ov.querySelector(".cr-stage"),im=ov.querySelector(".cr-img"),fr=ov.querySelector(".cr-frame"),zr=ov.querySelector(".cr-z");im.src=url;
+    let fw=0,fh=0,base=1,z=1,tx=0,ty=0;
+    const layout=()=>{const W=st.clientWidth,H=st.clientHeight,pad=24,m=Math.min(W-pad*2,(H-pad*2)*ar);fw=Math.max(80,m);fh=fw/ar;if(fh>H-pad*2){fh=H-pad*2;fw=fh*ar}
+      fr.style.width=fw+"px";fr.style.height=fh+"px";base=Math.max(fw/iw,fh/ih);clamp();draw()};
+    const clamp=()=>{const s=base*z,hw=(iw*s-fw)/2,hh=(ih*s-fh)/2;tx=Math.max(-hw,Math.min(hw,tx));ty=Math.max(-hh,Math.min(hh,ty))};
+    const draw=()=>{const s=base*z;im.style.width=iw*s+"px";im.style.height=ih*s+"px";im.style.transform=`translate(-50%,-50%) translate(${tx}px,${ty}px)`;zr.value=z};
+    const zoomTo=(nz,cx,cy)=>{nz=Math.max(1,Math.min(4,nz));const k=nz/z;tx=cx-(cx-tx)*k;ty=cy-(cy-ty)*k;z=nz;clamp();draw()};
+    const P=new Map();let last=null;
+    st.addEventListener("pointerdown",e=>{st.setPointerCapture(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});last=null});
+    st.addEventListener("pointermove",e=>{if(!P.has(e.pointerId))return;const prev=P.get(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});
+      if(P.size===1){tx+=e.clientX-prev.x;ty+=e.clientY-prev.y;clamp();draw()}
+      else if(P.size===2){const [a,b]=[...P.values()],d=Math.hypot(a.x-b.x,a.y-b.y),r=st.getBoundingClientRect(),cx=(a.x+b.x)/2-r.left-r.width/2,cy=(a.y+b.y)/2-r.top-r.height/2;if(last)zoomTo(z*d/last,cx,cy);last=d}});
+    const up=e=>{P.delete(e.pointerId);last=null};st.addEventListener("pointerup",up);st.addEventListener("pointercancel",up);
+    st.addEventListener("wheel",e=>{e.preventDefault();const r=st.getBoundingClientRect();zoomTo(z*Math.exp(-e.deltaY/400),e.clientX-r.left-r.width/2,e.clientY-r.top-r.height/2)},{passive:false});
+    zr.oninput=()=>zoomTo(+zr.value,0,0);
+    ov.querySelectorAll("[data-ar]").forEach(b=>b.onclick=()=>{ar=+b.dataset.ar;ov.querySelectorAll("[data-ar]").forEach(x=>x.setAttribute("aria-pressed",x===b));z=1;tx=ty=0;layout()});
+    const close=r=>{removeEventListener("resize",layout);ov.remove();document.body.style.overflow="";URL.revokeObjectURL(url);done(r)};
+    const key=e=>{if(e.key==="Escape"){ov.removeEventListener("keydown",key);close(null)}};ov.addEventListener("keydown",key);
+    ov.querySelector('[data-cr="no"]').onclick=()=>close(null);
+    ov.querySelector('[data-cr="ok"]').onclick=async()=>{const s=base*z,ix=fw/2+tx-iw*s/2,iy=fh/2+ty-ih*s/2,sx=-ix/s,sy=-iy/s,sw=fw/s,sh=fh/s;
+      const maxW=o.maxW||1280,k=Math.min(1,maxW/sw),W=Math.round(sw*k),H=Math.round(sh*k),c=document.createElement("canvas");c.width=W;c.height=H;
+      const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(img,sx,sy,sw,sh,0,0,W,H);
+      const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",o.q||.85));HAPTIC("light");close(blob?{blob,ratio:ar}:null)};
+    addEventListener("resize",layout);requestAnimationFrame(layout);setTimeout(()=>ov.querySelector('[data-cr="ok"]').focus(),50)})}
+
 /* Profilbild: beskärs till en kvadrat och krymps innan den laddas upp */
 async function uploadAvatar(file){
   if(!file||!SBUSER)return;
   if(file.size>15e6){toast("Bilden är för stor. Välj en mindre bild.");return}
   try{
-    const url=URL.createObjectURL(file);const img=new Image();img.src=url;await img.decode();
-    const sz=Math.min(img.naturalWidth,img.naturalHeight),c=document.createElement("canvas");c.width=c.height=320;
-    c.getContext("2d").drawImage(img,(img.naturalWidth-sz)/2,(img.naturalHeight-sz)/2,sz,sz,0,0,320,320);URL.revokeObjectURL(url);
-    const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",.85));
+    const cr=await cropImage(file,{round:true,maxW:480});if(!cr)return;const blob=cr.blob;
     toast("Laddar upp…");
     const path=SBUSER.id+"/avatar.jpg";
     const {error}=await SB.storage.from("avatars").upload(path,blob,{upsert:true,contentType:"image/jpeg",cacheControl:"3600"});
@@ -4427,21 +4474,22 @@ async function shrinkImg(file){const url=URL.createObjectURL(file);try{const img
     const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);blob=await new Promise(r=>c.toBlob(r,"image/jpeg",q));
     if(blob&&blob.size<1.8e6)break;max=Math.round(max*.8);q=Math.max(.6,q-.06)}return blob}finally{URL.revokeObjectURL(url)}}
 function openComposer(){if(!SB||!SBUSER){openAuth();return}
-  const recent=LOGS.filter(l=>l&&l.date&&l.date<=today()&&(evD(today())-evD(l.date))/864e5<3).sort((a,b)=>String(b.date+(b.created||"")).localeCompare(String(a.date+(a.created||"")))).slice(0,3);
-  const opts=recent.map((l,i)=>({k:"l"+i,t:l.type||"Träning",d:`${+l.min||0} min${l.date===today()?"":" · "+fmtDM(l.date)}`})).concat([{k:"x",t:"Delade en bild",d:""}]);
-  let pick=opts[0].k,blob=null,prev=null;
+  let blob=null,prev=null;
   openSheet(`<div><span class="small">Feed</span><h2>Nytt inlägg</h2></div>
    <label class="cp-pick" id="cp-pick" for="cp-file"><span class="cp-empty">${CAMI}<b>Välj en bild</b><small>Ta ett foto eller välj från biblioteket</small></span></label>
    <input type="file" id="cp-file" accept="image/*" class="sr">
-   <div class="field"><span class="lbl">Gäller</span><div class="chiprow" id="cp-opts">${opts.map(o=>`<button type="button" class="chip" data-o="${o.k}" aria-pressed="${o.k===pick}">${esc(o.t)}${o.d?` · ${esc(o.d)}`:""}</button>`).join("")}</div></div>
-   <div class="field"><label for="cp-txt">Text</label><textarea id="cp-txt" rows="3" maxlength="160" placeholder="Hur kändes passet?"></textarea></div>
+   <div class="cp-tools" id="cp-tools" hidden><button type="button" class="pill ghost" id="cp-crop">Beskär</button><button type="button" class="pill ghost" id="cp-new">Byt bild</button></div>
+   <div class="field"><label for="cp-txt">Text</label><textarea id="cp-txt" rows="3" maxlength="160" placeholder="Skriv något om passet"></textarea></div>
    <button class="pill block" id="cp-go">Dela</button>
    <p class="small">Syns för dem som följer dig. Bilden sparas med en slumpad länk, precis som profilbilder.</p>`,()=>{
     const f=$("#cp-file"),pk=$("#cp-pick");
-    f.onchange=()=>{const x=f.files&&f.files[0];if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}
-      if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(x);blob=x;pk.classList.add("has");pk.innerHTML=`<img src="${prev}" alt="Vald bild"><span class="cp-chg">Byt bild</span>`};
-    $("#cp-opts").onclick=e=>{const b=e.target.closest("[data-o]");if(!b)return;pick=b.dataset.o;$$("#cp-opts [data-o]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.o===pick))};
-    $("#cp-go").onclick=()=>busy($("#cp-go"),async()=>{const txt=$("#cp-txt").value.trim(),o=opts.find(x=>x.k===pick)||opts[opts.length-1];
+    let orig=null,ratio=.8;
+    const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
+      ratio=cr.ratio;blob=cr.blob;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);pk.classList.add("has");pk.style.aspectRatio=String(ratio);pk.innerHTML=`<img src="${prev}" alt="Vald bild">`;$("#cp-tools").hidden=false;return true};
+    f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}
+      if(await crop(x))orig=x};
+    $("#cp-crop").onclick=()=>{if(orig)crop(orig)};$("#cp-new").onclick=()=>f.click();
+    $("#cp-go").onclick=()=>busy($("#cp-go"),async()=>{const txt=$("#cp-txt").value.trim();
       if(!blob&&!txt){toast("Lägg till en bild eller skriv något.");return}
       let image_url=null;
       if(blob){const small=await shrinkImg(blob).catch(()=>null);if(!small){toast("Kunde inte läsa bilden. Prova en annan.");return}
@@ -4449,7 +4497,7 @@ function openComposer(){if(!SB||!SBUSER){openAuth();return}
         const {error}=await SB.storage.from("posts").upload(path,small,{contentType:"image/jpeg",cacheControl:"31536000",upsert:false});
         if(error){toast("Kunde inte ladda upp bilden. Försök igen.");return}
         image_url=SB.storage.from("posts").getPublicUrl(path).data.publicUrl}
-      const just=o.k==="x",title=(just?"Delade en bild":o.t).slice(0,80),detail=(just?txt:[o.d,txt].filter(Boolean).join(" · ")).replace(/\s+/g," ").slice(0,160)||null;
+      const title=blob?"Delade en bild":"Delade ett inlägg",detail=txt.replace(/\s+/g," ").slice(0,160)||null;
       const {error}=await SB.from("activity").insert({kind:"pass",title,detail,image_url});
       if(error){toast("Kunde inte dela. Försök igen.");return}
       if(prev)URL.revokeObjectURL(prev);closeSheet();HAPTIC("success");toast("Inlägget är delat");FRC=null;set.fdsub="flow";saveSet();renderFeed(true)})})}

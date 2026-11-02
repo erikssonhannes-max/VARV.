@@ -786,6 +786,54 @@ a.row{color:inherit;text-decoration:none}
  .go-now::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);transform:translateX(-100%);animation:goShine 5s ease-in-out 1.5s infinite;pointer-events:none}}
 @keyframes goShine{0%{transform:translateX(-100%)}25%,100%{transform:translateX(100%)}}
 .ra-tips{margin:0;padding-left:18px;display:grid;gap:6px;font-size:.95rem}
+/* Feed */
+.post{background:var(--tile);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.po-h{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;min-height:44px}
+.po-h b{display:block;font-size:.98rem;font-weight:600;letter-spacing:-.01em}.po-h small{color:var(--muted);font-size:.8rem}
+.po-media{position:relative;margin:0 10px;border-radius:16px;min-height:210px;padding:52px 18px 18px;display:flex;flex-direction:column;justify-content:flex-end;gap:4px;background:var(--card);user-select:none;-webkit-user-select:none;touch-action:manipulation;overflow:hidden}
+.po-media.k-lopp{background:linear-gradient(160deg,color-mix(in srgb,var(--accent) 20%,var(--card)),var(--card) 72%)}
+.po-media.k-rekord{background:linear-gradient(160deg,color-mix(in srgb,var(--green) 20%,var(--card)),var(--card) 72%)}
+.po-k{position:absolute;top:14px;left:16px;display:flex;gap:6px;align-items:center;font-size:.75rem;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.k-lopp .po-k{color:var(--link)}.k-rekord .po-k{color:var(--good)}
+.po-big{font-size:clamp(3rem,16vw,4.4rem);font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;margin-bottom:6px}
+.po-t{font-size:1.1rem;font-weight:600;letter-spacing:-.02em}
+.po-d{font-size:.92rem;color:var(--muted);line-height:1.4}
+.po-pop{position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none}
+.po-pop svg{width:96px;height:96px;fill:var(--accent);stroke:#fff;stroke-width:1.2;filter:drop-shadow(0 8px 22px rgba(0,0,0,.25))}
+.po-a{display:flex;align-items:center;gap:4px;padding:6px 10px 2px}
+.post>.po-a:last-child{padding-bottom:10px}
+.po-like,.po-own{width:44px;height:44px;border:0;background:none;color:var(--ink);display:grid;place-items:center;border-radius:12px;padding:0}
+.po-like{cursor:pointer}.po-own{color:var(--muted)}
+.po-like svg,.po-own svg{width:26px;height:26px}
+.po-like[aria-pressed="true"]{color:var(--accent)}.po-like[aria-pressed="true"] svg{fill:color-mix(in srgb,var(--accent) 25%,transparent)}
+.po-n{font-weight:600;font-size:.95rem;font-variant-numeric:tabular-nums}
+.po-who{padding:0 16px 14px;font-size:.88rem;color:var(--muted)}.po-who b{color:var(--ink);font-weight:600}
+.fd-empty{margin-bottom:14px}
+@media (prefers-reduced-motion:no-preference){
+ .po-pop.on{animation:popIn .9s var(--spring) both}
+ .po-like.pop svg{animation:likeB .45s var(--spring)}
+}
+@media (prefers-reduced-motion:reduce){.po-pop.on{opacity:1;transition:opacity .4s .5s}}
+@keyframes popIn{0%{opacity:0;transform:scale(.3)}30%{opacity:1;transform:scale(1.12)}60%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
+@keyframes likeB{50%{transform:scale(1.3)}}
+/* Hitta vänner: svepkort */
+.deck{position:relative;height:360px;margin:4px 0 26px}
+.sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.sw-card.top{background:var(--tile);cursor:grab}.sw-card.drag{transition:none;cursor:grabbing}
+.sw-card.out-r{transform:translateX(130%) rotate(18deg)!important;opacity:0}.sw-card.out-l{transform:translateX(-130%) rotate(-18deg)!important;opacity:0}
+.sw-img{width:120px;height:120px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:2.4rem;font-weight:700;overflow:hidden;color:var(--ink)}.sw-img img{width:100%;height:100%;object-fit:cover}
+.sw-name{font-size:1.6rem;letter-spacing:-.03em;font-weight:700}.sw-name span{color:var(--muted);font-weight:500;font-size:1rem;margin-left:4px}
+.sw-why{color:var(--muted);font-size:.95rem;max-width:26ch}
+.sw-tag{position:absolute;top:22px;padding:6px 12px;border-radius:10px;font-weight:700;font-size:.85rem;letter-spacing:.04em;text-transform:uppercase;border:2px solid currentColor;background:var(--tile)}
+.sw-tag.yes{left:20px;color:var(--good);opacity:var(--yes,0);transform:rotate(-8deg)}.sw-tag.no{right:20px;color:var(--bad);opacity:var(--no,0);transform:rotate(8deg)}
+.deck-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Statistik */
+.st-tiles{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:6px}.st-tiles b small{font-size:.9rem;font-weight:500;color:var(--muted);letter-spacing:0}
+.heat{display:grid;grid-template-rows:repeat(7,auto);gap:3px;align-items:center}
+.heat .hd{font-size:.68rem;color:var(--muted);padding-right:6px}
+.hm{display:block;aspect-ratio:1;border-radius:3px;background:var(--seg);min-width:0}
+.hm.l-1{background:transparent}.hm.l1{background:color-mix(in srgb,var(--accent) 28%,var(--seg))}.hm.l2{background:color-mix(in srgb,var(--accent) 52%,var(--seg))}.hm.l3{background:color-mix(in srgb,var(--accent) 76%,var(--seg))}.hm.l4{background:var(--accent)}
+.heat-leg{display:flex;gap:4px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:.72rem;color:var(--muted)}.heat-leg .hm{width:11px;height:11px;aspect-ratio:auto}
 /* Grafer */
 .radar{width:100%;max-width:360px;display:block;margin:0 auto;overflow:visible}
 .radar .g{fill:none;stroke:var(--hair);stroke-width:1}
@@ -1075,26 +1123,26 @@ a.row{color:inherit;text-decoration:none}
   </header>
 
   <div class="wrap">
-    <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Ny till Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Din plan börjar enkelt och bygger upp formen stegvis.</p></a><div class="today" id="today" hidden></div>
+    <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Ny till Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Börja enkelt och logga dina pass, så växer statistiken.</p></a><div class="today" id="today" hidden></div>
     <div id="h-go"></div>
 
-    <div class="sechead"><h2>Den här veckan</h2><a href="#logg">Logg</a></div>
+    <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
     <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-legend" aria-hidden="true"><span><i class="k-pass"></i>Pass</span><span><i class="k-rest"></i>Vila</span><span><i class="k-active"></i>Aktiv vila</span></div></div>
     <div class="tiles" style="margin-top:10px" hidden>
       <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
       <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
     </div>
 
-    <div class="sechead"><h2>Ditt lopp</h2><a href="#plan" data-plan-edit>Ändra</a></div>
+    <div class="sechead"><h2>Ditt lopp</h2><a href="#race" data-tv-go="run">Ändra</a></div>
     <div class="tiles">
-      <a class="tile wide tap" id="h-race" href="#plan"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
+      <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
       <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
-      <a class="tile tap" href="#plan"><b id="h-target">1:30</b><span>måltid</span></a>
-      <a class="tile tap" href="#plan"><b id="h-pace">–</b><span>snittempo per km</span></a>
+      <a class="tile tap" href="#race" data-tv-go="run"><b id="h-target">1:30</b><span>måltid</span></a>
+      <a class="tile tap" href="#race" data-tv-go="run"><b id="h-pace">–</b><span>snittempo per km</span></a>
     </div>
     <p class="small" id="h-med" style="margin-top:10px"></p>
 
-    <div class="sechead"><h2>Din form</h2><a href="#logg" data-lg="form">Framsteg</a></div>
+    <div class="sechead"><h2>Din form</h2><a href="#logg" data-lg="form">Statistik</a></div>
     <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din form och nivå"></a>
 
     <div class="sechead"><h2>Tävlingar nära dig</h2><a href="#race" data-tv-go="kal">Alla tävlingar</a></div>
@@ -1145,17 +1193,6 @@ a.row{color:inherit;text-decoration:none}
     <div class="card plansum"><p id="p-sum"></p><button class="linkbtn" id="p-edit-btn" aria-expanded="false" aria-controls="p-edit">Ändra plan</button></div>
 
     <div id="p-edit" hidden>
-    <div class="card">
-      <div class="target"><span class="t" id="p-time">1:30:00</span><span class="small">Måltid</span></div>
-      <input type="range" id="p-range" min="55" max="150" step="1" value="90" aria-label="Måltid i minuter">
-      <div class="field"><label for="p-date">Tävlingsdag</label><input type="date" id="p-date"><a class="small" href="#race" data-tv-go="kal" style="color:var(--link);text-decoration:none">Välj bland kommande tävlingar ›</a></div>
-      <div class="field"><span class="lbl" id="p-dayl">Träningsdagar</span><div class="daypick" id="p-days"></div></div>
-      <div class="chiprow">
-        <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
-        <button class="divchip" data-open="test">Starttest</button>
-        <button class="divchip" data-open="hr" id="hr-chip">Pulszoner</button>
-      </div>
-    </div>
 
     </div>
 
@@ -1174,7 +1211,7 @@ a.row{color:inherit;text-decoration:none}
     </div>
 
     <div id="pl-lopp" hidden>
-    <div class="sechead" style="margin-top:6px"><h2>Splittider</h2><span class="small" id="p-pace"></span></div>
+    <div class="sechead" style="margin-top:6px"><h2>Splittider</h2></div>
     <div class="tile hot pace-hot"><span class="eb">LÖPTEMPO</span><div class="pv"><b id="p-pace-big">0:00</b><i>/km</i></div><p>Snittet för de åtta kilometerna. Första kilometern går lite fortare när benen är pigga.</p></div>
     <div class="card">
       <div class="stack" id="p-stack" aria-hidden="true"></div>
@@ -1208,6 +1245,17 @@ a.row{color:inherit;text-decoration:none}
   </div>
 </section>
 
+<!-- ================= FEED ================= -->
+<section class="view" id="v-feed">
+  <div class="wrap">
+    <div class="pagehead"><span class="eyebrow">Feed</span><h1>Flödet.</h1><p>Ditt och dina vänners senaste träning. Ge en tumme upp när någon kämpar.</p></div>
+    <div class="seg" id="fd-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-fd="flow">Flöde</button><button data-fd="find">Hitta vänner</button><button data-fd="top">Topplista</button></div>
+    <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
+    <div class="fdv" data-v="find" hidden><div id="fd-find"></div></div>
+    <div class="fdv" data-v="top" hidden><div id="fr-body"></div></div>
+  </div>
+</section>
+
 <!-- ================= RACE ================= -->
 <section class="view" id="v-race">
   <div class="wrap">
@@ -1216,6 +1264,19 @@ a.row{color:inherit;text-decoration:none}
     <div id="tv-kal"></div>
     <div id="tv-sim" hidden><div id="ev-sim"></div><p class="small" style="margin-top:14px">Simuleringar arrangeras av gym och klubbar, inte av HYROX. VARV. letar upp dem varje vecka och länkar till arrangörens anmälan. Saknas ett race? Lägg in det själv under Egna race, eller tipsa oss på hej@varvtraining.com.</p></div>
     <div id="tv-run" hidden>
+    <div class="sechead" style="margin-top:4px"><h2>Ditt mål</h2><span class="small" id="p-pace"></span></div>
+    <div class="card">
+      <div class="target"><span class="t" id="p-time">1:30:00</span><span class="small">Måltid</span></div>
+      <input type="range" id="p-range" min="55" max="150" step="1" value="90" aria-label="Måltid i minuter">
+      <div class="field"><label for="p-date">Tävlingsdag</label><input type="date" id="p-date"><a class="small" href="#race" data-tv-go="kal" style="color:var(--link);text-decoration:none">Välj bland kommande tävlingar ›</a></div>
+      <div class="field" hidden><span class="lbl" id="p-dayl">Träningsdagar</span><div class="daypick" id="p-days"></div></div>
+      <div class="chiprow">
+        <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
+        <button class="divchip" data-open="test">Starttest</button>
+        <button class="divchip" data-open="hr" id="hr-chip">Pulszoner</button>
+      </div>
+    </div>
+    <div class="sechead"><h2>Tidtagning</h2></div>
 
     <div class="clock">
       <span class="seglbl" id="rc-lbl">Redo</span>
@@ -1255,12 +1316,12 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= LOGG ================= -->
 <section class="view" id="v-logg">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Framsteg</span><h1>Träningslogg.</h1><p class="small" id="store-note">Laddar…</p></div>
-    <button class="pill block" id="lg-new" style="margin-bottom:12px">Nytt pass</button><div id="lg-prep"></div>
-    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="pass">Pass</button><button data-lgv="form">Form</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
+    <div class="pagehead"><span class="eyebrow">Din data</span><h1>Statistik.</h1><p class="small" id="store-note">Laddar…</p></div>
+    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
     <div class="card strava" id="strava" hidden></div>
 
-    <div class="lgv" data-v="pass">
+    <div class="lgv" data-v="pass" hidden>
+    <button class="pill block" id="lg-new" style="margin-bottom:12px">Nytt pass</button><div id="lg-prep"></div>
     <div class="card">
       <div class="ringwrap">
         <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
@@ -1280,7 +1341,8 @@ a.row{color:inherit;text-decoration:none}
     <div class="filters" id="filters"></div>
     <div class="group" id="hist"></div>
     </div>
-    <div class="lgv" data-v="form" hidden>
+    <div class="lgv" data-v="form">
+    <div id="st-top"></div>
     <div id="load"></div>
     <div class="sechead"><h2>Din form</h2><button class="linkbtn" id="form-info">Så fungerar det</button></div>
     <div class="card formcard" id="form"></div>
@@ -1308,7 +1370,7 @@ a.row{color:inherit;text-decoration:none}
 <section class="view" id="v-vanner">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Följer</span><h1>Tillsammans.</h1><p class="small">Topplistor, era lopp och vad de du följer har tränat.</p></div>
-    <div id="fr-body"></div>
+    
   </div>
 </section>
 <!-- ================= NOTISER ================= -->
@@ -1391,7 +1453,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="tr-foot"><button class="pill ghost" id="tr-back">Tillbaka</button><button class="pill" id="tr-next">Nästa</button></div>
   </div></div>
 <a class="nt-btn" id="nt-btn" href="#notiser" aria-label="Notiser" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="nt-count" hidden></span></a>
-<a class="fr-btn" id="fr-btn" href="#vanner" aria-label="Följer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
+<a class="fr-btn" id="fr-btn" href="#feed" aria-label="Följer"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
 <a class="logo-btn" id="logo-btn" href="#hem" aria-label="Till startsidan"></a>
 <a class="avatar-btn" id="avatar-btn" href="#profil" aria-label="Din profil"><span>V</span></a>
 
@@ -1404,9 +1466,9 @@ a.row{color:inherit;text-decoration:none}
 <div class="tabbar"><nav aria-label="Huvudmeny">
   <a class="tab" href="#hem" data-v="hem"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z"/></svg>Hem</a>
   <a class="tab" href="#stationer" data-v="stationer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><ellipse cx="12" cy="12" rx="9" ry="6"/><circle cx="3" cy="12" r="1.6" fill="currentColor"/><circle cx="21" cy="12" r="1.6" fill="currentColor"/><circle cx="12" cy="6" r="1.6" fill="currentColor"/><circle cx="12" cy="18" r="1.6" fill="currentColor"/></svg>Stationer</a>
-  <a class="tab" href="#plan" data-v="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></svg>Plan</a>
+  <a class="tab" href="#feed" data-v="feed"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="17" height="11" rx="2.5"/><path d="M3.5 18.5h17M3.5 21h11"/></svg>Feed<span class="live" id="tab-feed" hidden></span></a>
   <a class="tab" href="#race" data-v="race"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7.5 2.5l4.5 8 4.5-8"/><circle cx="12" cy="15.5" r="5.5"/><path d="M12 13.2v4.6"/></svg>Tävla<span class="live" id="tab-live" hidden></span></a>
-  <a class="tab" href="#logg" data-v="logg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Logg</a>
+  <a class="tab" href="#logg" data-v="logg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Statistik</a>
 </nav></div>
 
 <script>
@@ -1605,7 +1667,7 @@ function openTest(first){
       $("#t-calc").hidden=true;
       const done=goal=>{set.test={km,ski,wb,date:today()};if(age)set.age=age;set.onboarded=true;set.target=goal;if(!LOGS.length)set.planStart=today();$("#p-range").value=goal;saveSet();
         let ch=false;if(!PRS.km||km<PRS.km){PRS.km=km;ch=true}if(ski&&(!PRS.ski||ski<PRS.ski)){PRS.ski=ski;ch=true}if(ch)savePRs();
-        renderSplits();renderPlan();renderHome();renderPRs();closeSheet();toast(`Måltid ${fmtHM(goal)}, planen är uppdaterad`);setTimeout(confetti,300);setTimeout(maybeTour,1400)};
+        renderSplits();renderPlan();renderHome();renderPRs();closeSheet();toast(`Måltid ${fmtHM(goal)}, den är sparad`);setTimeout(confetti,300);setTimeout(maybeTour,1400)};
       $("#t-now").onclick=()=>done(tm);$("#t-goal").onclick=()=>done(Math.max(55,Math.round(tm*.93)));
       $("#t-res").scrollIntoView({behavior:"auto",block:"nearest"});
     };
@@ -1923,7 +1985,7 @@ function computeAdapt(base){
   if(PRS.km&&(!set.test||PRS.km<set.test.km-2)){const est=Math.max(55,Math.min(150,Math.round(PRS.km*1.25*8/.5/60)));if(Math.abs(est-set.target)>=3)res.suggest=est}
   return res;
 }
-let PLAN=[],ADAPT=null;
+let PLAN=[],ADAPT=null;const NOPLAN=true;
 function curWeekIdx(){const t=today();let idx=0;PLAN.forEach((w,i)=>{if(w.start<=t)idx=i});return idx}
 /* Ett loggat pass räknas bara för ett planerat pass: först det det är kopplat till, annars det första av samma typ. Strava-pass har egna namn och matchas på dagen. */
 function sesDone(w,s){const end=wEnd(w.start),inW=LOGS.filter(l=>l.date>=w.start&&l.date<=end),keys=new Set(w.ses.map(x=>x.key+"@"+set.date));
@@ -1944,7 +2006,7 @@ function renderAdapt(){
   $("#p-test").innerHTML=set.test?"":`<div class="group"><button class="row" data-open="test"><div class="badge">1 km</div><div><h3>Gör starttestet</h3><p>Ger en måltid och ett tempo som passar just dig.</p></div><span class="chev">›</span></button></div>`;
   const b=$("#ad-sug");if(b)b.onclick=()=>{set.target=a.suggest;$("#p-range").value=a.suggest;saveSet();renderSplits();renderPlan();renderHome();renderPRs();toast("Måltiden är uppdaterad")};
 }
-function renderPlan(){planChanged();
+function renderPlan(){if(NOPLAN){PLAN=[];return}planChanged();
   const base=buildPlan();ADAPT=computeAdapt(base);PLAN=buildPlan(ADAPT);
   const days=daysLeft();const cw=curWeekIdx();
   {const me=myEvent();$("#p-sum").textContent=[fmtHM(set.target)+" måltid",set.noRace?"Inget lopp valt":(me?me.c+" ":"")+new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}),divText()].join(" · ")}
@@ -2386,7 +2448,7 @@ async function loadMyProfile(){
   const {data,error}=await SB.from("profiles").select("*").eq("user_id",SBUSER.id).maybeSingle();
   if(error||!data){MYPROF=null;if(location.hash==="#profil")renderProfile();return}
   MYPROF=data;MEINFO=Object.assign({},MEINFO||{},{avatarUrl:data.avatar_url||(MEINFO&&MEINFO.avatarUrl)||""});
-  await loadFriends();renderAvatar();try{renderHome()}catch(e){}if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#vanner")renderFriends(true);planChanged();
+  await loadFriends();renderAvatar();try{renderHome()}catch(e){}if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#feed")renderFeed(true);planChanged();
 }
 async function loadFriends(){
   if(!SB||!SBUSER)return;
@@ -2663,7 +2725,7 @@ function boardAll(){const B=Object.assign({},BOARD);if(ME)B[ME]=boardDoc();retur
 function topMeds(d){return (d.top||[]).map(id=>MEDALS.find(m=>m.id===id)).filter(Boolean)}
 async function renderComm(){
   const el=$("#comm");
-  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#vanner"><div><b>${P.weekVarv}</b><span>varv den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dem du följer, och vilka lopp de ska till.":"Logga in och följ andra för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Visa topplistan ›</span></a>`;$("#lb-note").textContent="";return}
+  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#feed"><div><b>${P.weekVarv}</b><span>varv den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dem du följer, och vilka lopp de ska till.":"Logga in och följ andra för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Visa topplistan ›</span></a>`;$("#lb-note").textContent="";return}
   const B=boardAll(),fr=(set.friends||[]);
   await loadProfiles(Object.keys(B).concat(set.partner?[set.partner]:[]));
   let ids=LBV==="friends"?[ME,...fr.filter(i=>B[i])]:Object.keys(B);
@@ -2718,7 +2780,6 @@ const MEDALS=[
  {id:"s4",n:"Fyra i rad",d:"Träna fyra veckor i rad.",f:"green",t:"4",u:"v",k:"streak",v:4},
  {id:"s12",n:"Tolv i rad",d:"Träna tolv veckor i rad.",f:"green",t:"12",u:"v",k:"streak",v:12},
  {id:"all8",n:"Alla åtta",d:"Träna alla åtta stationer minst en gång.",f:"green",t:"8",k:"st",v:8},
- {id:"plan10",n:"Följer planen",d:"Gör tio pass från din plan.",f:"hot",i:"list",k:"plan",v:10},
  {id:"pr1",n:"Första rekordet",d:"Spara ett personligt rekord.",f:"gold",i:"watch",k:"pr",v:1},
  {id:"pr5",n:"Rekordjägare",d:"Ha rekord på fem olika moment.",f:"gold",i:"star",k:"pr",v:5},
  {id:"race",n:"I mål",d:"Spara din tid från en hel Hyrox.",f:"gold",i:"cup",k:"race",v:1},
@@ -2853,14 +2914,14 @@ function renderProgress(){try{renderLoad()}catch(e){}try{renderStats()}catch(e){
 const TOUR=[
  {v:"hem",c:1,h:()=>`Välkommen${pName()?", "+pName().split(" ")[0]:""}.`,p:"Här är en snabb tur genom VARV., i samma ordning som flikarna längst ned. Det tar under en minut, och du kan hoppa över när du vill."},
  {v:"hem",t:"#h-go",h:"Hem: kör igång",p:"Här börjar du: dagens pass, ett eget pass, ett förslag eller ett färdigt pass. Du kan också förbereda ett pass eller logga i efterhand."},
- {v:"hem",t:"#h-race",h:"Hem: ditt lopp",p:"Nedräkningen till loppet och din måltid. Tryck för att byta lopp eller ändra måltid, så räknas planen om."},
+ {v:"hem",t:"#h-race",h:"Hem: ditt lopp",p:"Nedräkningen till loppet och din måltid. Tryck för att byta lopp eller ändra måltid."},
  {v:"stationer",t:'.tab[data-v="stationer"]',h:"Stationer",p:"Nästa flik. Alla åtta stationer med vikter för just din klass, teknik och de vanligaste misstagen."},
- {v:"plan",t:'.tab[data-v="plan"]',h:"Plan",p:"Ditt schema vecka för vecka, byggt från din måltid och dina träningsdagar. Det anpassar sig efter det du faktiskt loggar."},
+ {v:"feed",t:'.tab[data-v="feed"]',h:"Feed",p:"Ditt och dina vänners senaste pass, lopp och rekord. Ge en tumme upp, och hitta nya att följa genom att svepa bland förslagen."},
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
- {v:"logg",lg:"pass",t:"#lg-new",h:"Logg: nytt pass",p:"Sista fliken. Träna nu, förbered ett pass, få ett förslag eller logga i efterhand."},
- {v:"logg",lg:"form",t:"#form",h:"Logg: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
- {v:"logg",lg:"form",t:"#comm",h:"Logg: topplistan",p:"Jämför veckans varv med dem du följer. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
- {v:"logg",lg:"pass",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
+ {v:"logg",lg:"form",t:'.tab[data-v="logg"]',h:"Statistik",p:"Sista fliken. All din data: träningsprofil, stationsbalans, aktivitet vecka för vecka och dina lopp."},
+ {v:"logg",lg:"form",t:"#form",h:"Statistik: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
+ {v:"logg",lg:"form",t:"#comm",h:"Statistik: veckan",p:"Jämför veckans varv med dem du följer. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
+ {v:"logg",lg:"form",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
  {v:"hem",c:1,end:1,h:"Du är redo.",p:"Logga ditt första pass så börjar formkurvan stiga. Lycka till med träningen."}];
 let TI=0,TON=false;
 const TICON='<svg class="tr-icon" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="trg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><rect width="1024" height="1024" rx="230" fill="url(#trg)"/><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>';
@@ -2928,7 +2989,7 @@ $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(
 function setPlanEdit(on){$("#p-edit").hidden=!on;$("#p-edit-btn").setAttribute("aria-expanded",on);$("#p-edit-btn").textContent=on?"Stäng":"Ändra plan"}
 $("#p-edit-btn").onclick=()=>setPlanEdit($("#p-edit").hidden);
 document.addEventListener("click",e=>{const a=e.target.closest("[data-lg],[data-plan-edit]");if(!a)return;if(a.dataset.lg)setLgView(a.dataset.lg);if("planEdit" in a.dataset)setPlanEdit(true)});
-setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"pass");
+setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
 
 /* ============ Logg-UI ============ */
 /* ============ Logga pass ============ */
@@ -3001,7 +3062,7 @@ function prepRows(){return (set.tpls||[]).slice().reverse().map(t=>`<div class="
 function renderPrep(){try{renderGo()}catch(e){}const el=$("#lg-prep");if(!el)return;el.innerHTML=(set.tpls||[]).length?`<span class="lbl">Förberedda pass</span><div class="lg-grp prep-l">${prepRows()}</div>`:""}
 const GOI={now:'<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',sug:'<path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="currentColor" stroke="none"/>',pre:'<path d="M13 2L5 13h6l-1 9 8-11h-6z" fill="currentColor" stroke="none"/>',prep:'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>',after:'<path d="M4 12.5l5 5L20 6.5"/>'};
 const goIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GOI[k]}</svg>`;
-function goPlan(){try{const w=PLAN[curWeekIdx()];if(!w||daysLeft()<=0)return null;const n=nextPass(w);return n.tod||n.late?{w,s:n.tod||n.late,late:!n.tod}:null}catch(e){return null}}
+function goPlan(){if(NOPLAN)return null;try{const w=PLAN[curWeekIdx()];if(!w||daysLeft()<=0)return null;const n=nextPass(w);return n.tod||n.late?{w,s:n.tod||n.late,late:!n.tod}:null}catch(e){return null}}
 function goHtml(){const prep=(set.tpls||[]).slice().reverse(),pl=goPlan();
   return `${pl?`<button class="go-now" data-go="plan"><span class="go-ic">${goIc("now")}</span><span><small class="go-k">${pl.late?"Att ta igen":"Dagens rekommenderade pass"}</small><b>${esc(pl.s.t)}.</b><small>${pl.s.m} min · Tryck för att se övningarna</small></span></button>`:`<button class="go-now" data-go="now"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Välj övningar och starta klockan</small></span></button>`}
    <div class="go-grid">${pl?`<button class="go g-own" data-go="now"><span class="go-ic">${goIc("now")}</span><b>Eget pass</b><small>Välj övningar och starta klockan</small></button>`:""}<button class="go g-sug" data-go="sug"><span class="go-ic">${goIc("sug")}</span><b>Ge mig ett pass</b><small>Kondition, styrka eller båda</small></button>
@@ -3470,7 +3531,7 @@ function renderHome(){try{renderGo()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";
   $("#h-racedate").textContent=new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-  {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar av planen";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#plan")}
+  {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#plan")}
   $("#h-target").textContent=fmtHM(set.target);$("#h-pace").textContent=fmt(t.pace);
   {const hn=$("#h-new");if(hn)hn.hidden=set.level!=="ny"}
   $("#h-week").textContent=`${st.now.n}/${set.per}`;$("#h-streak").textContent=st.streak;
@@ -3583,22 +3644,62 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
    <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment inkluderar en del av Roxzone-tiden."} Tiden mäts när du trycker.</p>`,()=>{
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
     const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)}})}
-/* Statistik under Logg, Form */
-function renderStats(){const el=$("#stats");if(!el)return;const now=evD(today()),inDays=(l,d)=>l.date&&(now-evD(l.date))/864e5<d;
-  const L6=LOGS.filter(l=>inDays(l,42)),cnt=S.map(s=>L6.filter(l=>(l.stations||[]).includes(s.n)).length),mx=Math.max(1,...cnt);
-  const weak=S.map((s,i)=>({s,c:cnt[i]})).sort((a,b)=>a.c-b.c)[0];
-  const L4=LOGS.filter(l=>inDays(l,28)),byT={};L4.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});
-  const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
+/* Statistik: översikt med grafer */
+const PROFAX=["Löpning","Stationer","Styrka","Motor","Uthållighet","Intensitet"];
+const PROFMAP={"Intervaller":[0,5],"Lugn distans":[0,4],"Löpning och stationer":[0,1],"Styrka och stationer":[2,1],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[0,1,2,3,4,5]};
+function weekBarsSvg(vals,labels,aria){const W=320,H=140,T=20,B=22,n=vals.length,gw=(W-8)/n,bw=Math.min(18,gw*.6),hi=Math.max(30,...vals)*1.1,avg=vals.reduce((a,b)=>a+b,0)/n;
+  const Y=v=>T+(1-v/hi)*(H-T-B);
+  return `<svg class="barc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${vals.map((v,i)=>{const x=4+i*gw+(gw-bw)/2,y=Y(v),last=i===n-1;return `<rect class="b${last?" over":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,H-B-y).toFixed(1)}" rx="4" style="--i:${i}"/>${labels[i]?`<text class="xl" x="${(x+bw/2).toFixed(1)}" y="${H-6}" text-anchor="middle">${esc(labels[i])}</text>`:""}${last?`<text class="vl" x="${(x+bw/2).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle">${Math.round(v)}</text>`:""}`}).join("")}
+   <line class="ref" x1="4" x2="${W-4}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" style="stroke-dasharray:4 4;stroke-width:1.5;stroke:var(--muted)"/><text class="xl" x="4" y="${(Y(avg)-6).toFixed(1)}">Snitt ${Math.round(avg)}</text></svg>`}
+function heatHtml(minsByDay,weeks){const ws=weekStart(today());const start=new Date(ws+"T12:00:00");start.setDate(start.getDate()-7*(weeks-1));
+  const mx=Math.max(1,...Object.values(minsByDay));const cells=[];
+  for(let d=0;d<7;d++)for(let w=0;w<weeks;w++){const x=new Date(start);x.setDate(x.getDate()+w*7+d);const k=iso(x),m=minsByDay[k]||0,fut=k>today();
+    const lv=fut?-1:!m?0:m<mx*.25?1:m<mx*.5?2:m<mx*.75?3:4;
+    cells.push(`<i class="hm l${lv}" style="grid-row:${d+1};grid-column:${w+2}" title="${esc(fmtDM(k))}: ${m} min"></i>`)}
+  return `<div class="heat" style="grid-template-columns:auto repeat(${weeks},minmax(0,1fr))" role="img" aria-label="Träningsminuter per dag de senaste ${weeks} veckorna">${DN.map((n,i)=>i%2?"":`<span class="hd" style="grid-row:${i+1};grid-column:1">${n}</span>`).join("")}${cells.join("")}</div>
+   <div class="heat-leg" aria-hidden="true"><span>Mindre</span><i class="hm l0"></i><i class="hm l1"></i><i class="hm l2"></i><i class="hm l3"></i><i class="hm l4"></i><span>Mer</span></div>`}
+function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el)return;const now=evD(today()),inDays=(l,d)=>l.date&&(now-evD(l.date))/864e5<d&&l.date<=today();
+  const L30=LOGS.filter(l=>inDays(l,30)),L6=LOGS.filter(l=>inDays(l,42)),L4=LOGS.filter(l=>inDays(l,28));
+  const min30=L30.reduce((a,l)=>a+(+l.min||0),0),rpe30=L30.length?L30.reduce((a,l)=>a+(+l.rpe||3),0)/L30.length:0;
+  const P=PROG||progress();
+  if(top)top.innerHTML=`<div class="tiles st-tiles"><div class="tile"><span>Pass, 30 dagar</span><b>${L30.length}</b></div><div class="tile"><span>Timmar, 30 dagar</span><b>${(min30/60).toLocaleString("sv-SE",{maximumFractionDigits:1})}</b></div><div class="tile"><span>Snittkänsla</span><b>${L30.length?rpe30.toLocaleString("sv-SE",{maximumFractionDigits:1}):"–"}<small> av 5</small></b></div><div class="tile"><span>Varv totalt</span><b>${Math.round(P.varv||0).toLocaleString("sv-SE")}</b></div></div>`;
+  if(!LOGS.length){el.innerHTML=`<div class="sechead"><h2>Grafer</h2></div><div class="card"><p class="small">Logga några pass, så fylls graferna här.</p></div>`;return}
+  // Träningsprofil
+  const prof=PROFAX.map(()=>0);L6.forEach(l=>{const ax=PROFMAP[l.type];const m=+l.min||0;if(ax)ax.forEach(i=>prof[i]+=m/ax.length);if(+l.rpe>=4)prof[5]+=m*.5});
+  const pmx=Math.max(1,...prof);
+  // Stationsbalans
+  const cnt=S.map(s=>L6.filter(l=>(l.stations||[]).includes(s.n)).length),mx=Math.max(1,...cnt),weak=S.map((s,i)=>({s,c:cnt[i]})).sort((a,b)=>a.c-b.c)[0];
+  // Minuter per vecka, 12 veckor
+  const ws=weekStart(today()),wk=Array(12).fill(0);LOGS.forEach(l=>{if(!l.date||l.date>today())return;const w=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(w>=0&&w<12)wk[11-w]+=(+l.min||0)});
+  const wl=wk.map((_,i)=>{const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*(11-i));return i%3===2?`v${isoWeek(d)}`:""});
+  // Aktivitetskarta
+  const byDay={};LOGS.forEach(l=>{if(l.date)byDay[l.date]=(byDay[l.date]||0)+(+l.min||0)});
+  // Intensitet
+  const RW=["Mycket lätt","Lätt","Måttligt","Hårt","Max"],rc=[0,0,0,0,0];L4.forEach(l=>{const r=Math.min(5,Math.max(1,Math.round(+l.rpe||3)));rc[r-1]+=(+l.min||0)});const rmx=Math.max(1,...rc);
+  // Passtyper
+  const byT={};L4.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
+  // Veckodagar
+  const wd=[0,0,0,0,0,0,0];L6.forEach(l=>{wd[(new Date(l.date+"T12:00:00").getDay()+6)%7]++});const wdm=Math.max(1,...wd);
+  // Lopp
   const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
-  const hasAny=L6.length||R.length;
-  el.innerHTML=!hasAny?`<div class="sechead"><h2>Statistik</h2></div><div class="card"><p class="small">Logga några pass, så fylls graferna här.</p></div>`:
-  `${L6.length?`<div class="sechead"><h2>Stationsbalans</h2><span class="small">Senaste 6 veckorna</span></div>
+  const hb=(rows,max,unit)=>`<div class="card hbars">${rows.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/max*100)}%;--i:${i}"></i></div><b>${Math.round(m)}${unit}</b></div>`).join("")}</div>`;
+  el.innerHTML=`${L6.length?`<div class="sechead"><h2>Träningsprofil</h2><span class="small">Senaste 6 veckorna</span></div>
+   <div class="card">${radarSvg(PROFAX,[{v:prof.map(v=>v/pmx),c:"you"}],"Hur din träningstid fördelas på löpning, stationer, styrka, motor, uthållighet och intensitet")}
+   <p class="small">${(()=>{const lo=PROFAX[prof.indexOf(Math.min(...prof))];return `Mest tid på <b style="color:var(--ink)">${PROFAX[prof.indexOf(Math.max(...prof))].toLowerCase()}</b>, minst på <b style="color:var(--ink)">${lo.toLowerCase()}</b>.`})()}</p></div>
+   <div class="sechead"><h2>Stationsbalans</h2><span class="small">Senaste 6 veckorna</span></div>
    <div class="card">${radarSvg(S.map(stShort),[{v:cnt.map(c=>c/mx),c:"you s"}],"Hur ofta varje station finns med i dina pass de senaste sex veckorna")}
    <p class="small">${weak&&weak.c<mx?`Minst tränat: <b style="color:var(--ink)">${esc(weak.s.n)}</b>, ${weak.c} av ${L6.length} pass.`:"Du tränar alla stationer lika ofta."}</p></div>`:""}
-   ${types.length?`<div class="sechead"><h2>Tid per passtyp</h2><span class="small">Senaste 4 veckorna</span></div>
-   <div class="card hbars">${types.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/tmax*100)}%;--i:${i}"></i></div><b>${m} min</b></div>`).join("")}</div>`:""}
+   <div class="sechead"><h2>Aktivitet</h2><span class="small">Senaste 16 veckorna</span></div>
+   <div class="card">${heatHtml(byDay,16)}</div>
+   <div class="sechead"><h2>Minuter per vecka</h2><span class="small">12 veckor</span></div>
+   <div class="card">${weekBarsSvg(wk,wl,"Träningsminuter per vecka de senaste tolv veckorna")}<p class="small">Den rosa stapeln är den här veckan.</p></div>
+   ${L4.length?`<div class="sechead"><h2>Intensitet</h2><span class="small">Minuter, 4 veckor</span></div>${hb(RW.map((w,i)=>[w,rc[i]]),rmx," min")}
+   <div class="sechead"><h2>Tid per passtyp</h2><span class="small">Senaste 4 veckorna</span></div>${hb(types,tmax," min")}`:""}
+   ${L6.length?`<div class="sechead"><h2>Veckodagar</h2><span class="small">Pass, 6 veckor</span></div>${hb(DN.map((d,i)=>[d,wd[i]]),wdm,"")}`:""}
    ${pts.length?`<div class="sechead"><h2>Dina lopp</h2><span class="small">${pts.length} sparade</span></div>
    <div class="card">${lineSvg(pts,set.target*60,"Sluttid för dina sparade lopp och simuleringar")}<p class="small">Högre upp är snabbare. Den streckade linjen är din måltid.</p></div>`:""}`}
+function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
+
 document.addEventListener("click",e=>{const b=e.target.closest("[data-rav]");if(b)openRaceAn(b.dataset.rav)});
 function startTick(){clearInterval(tick);tick=setInterval(()=>{if(!RACE||RACE.end){clearInterval(tick);return}if(location.hash==="#race")renderRace();else $("#tab-live").hidden=false},250)}
 $("#rc-next").onclick=async()=>{
@@ -4133,7 +4234,7 @@ function openResult(id,pre){const x=id?resAll().find(r=>r.id===id):null;if(id&&!
    <div class="field"><label for="rs-n">Lopp eller plats</label><input type="text" id="rs-n" maxlength="50" value="${x?esc(x.name||""):""}" placeholder="Valfritt, till exempel Stockholm"></div>
    <button class="pill block" id="rs-save">${x?"Spara ändringarna":"Spara tiden"}</button>${x?'<button class="pill ghost block" id="rs-del">Ta bort tiden</button>':""}`,()=>{
     const dk=()=>$$("#rs-kind [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));dk();$("#rs-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(b){k=b.dataset.k;dk()}};
-    const after=()=>{saveSet();closeSheet();if(location.hash==="#vanner")renderFriends()};
+    const after=()=>{saveSet();closeSheet();if(location.hash==="#feed")renderFriends()};
     $("#rs-save").onclick=()=>{const t=parseRes($("#rs-t").value);if(!t||t<600||t>36000){toast("Skriv tiden med siffror, till exempel 11230 för 1:12:30.");$("#rs-t").focus();return}
       const d=$("#rs-d").value;if(!isDay(d)||d>today()){toast("Välj ett datum som har varit.");return}
       const r={id:x?x.id:"r"+Date.now().toString(36),kind:k,cls:$("#rs-cls").value,t,date:d,name:$("#rs-n").value.trim().slice(0,50)||null};const list=Array.isArray(set.results)?set.results:[];
@@ -4149,7 +4250,7 @@ async function renderFriends(force){
   if(!SBUSER){el.innerHTML=`<div class="card"><h3>Träna ihop med andra</h3><p class="small">Logga in för att följa andra, se veckans topplista och vilka lopp de ska till.</p><button class="pill block" id="fr-login">Logga in</button></div>`;$("#fr-login").onclick=()=>openAuth();return}
   if(!MYPROF){el.innerHTML=`<div class="card"><p class="small">Profiler och vänner är inte uppsatta än. Kör supabase/profiler.sql i Supabase.</p></div>`;return}
   if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar…</p></div>`;
-  const D=await loadFriendData(force);if(!D||location.hash!=="#vanner")return;
+  const D=await loadFriendData(force);if(!D||location.hash!=="#feed")return;
   const wk=weekStart(today()),P=PROG||progress();
   const me={user_id:SBUSER.id,username:MYPROF.username,tag:MYPROF.tag,avatar_url:MYPROF.avatar_url,wv:P.weekVarv,n:weekStats().now.n,me:true};
   const board=[me].concat(Object.values(D.profs).map(p=>{const s=p.stats||{};const cur=s.wk===wk;return {user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url,wv:cur?(+s.wv||0):0,n:cur?(+s.week||0):0}}))
@@ -4172,15 +4273,6 @@ async function renderFriends(force){
    ${races.length?`<div class="group">${races.map(r=>{const L=raceLine(r.nr,r.pid);const same=!r.u.me&&myNr&&myNr.date===r.nr.date;const d=Math.round((evD(r.nr.date)-evD(today()))/864e5);
      return `<div class="row fr-race" data-prof="${esc(r.u.user_id)}" role="button" tabindex="0">${avImg(r.u.avatar_url,r.u.username)}<div><h3>${r.u.me?"Du":esc(r.u.username)} · ${esc(L.where)}</h3><p>${esc(L.when)}${L.sub?"<br>"+L.sub:""}</p>${same?`<span class="fr-same">Samma lopp som du</span>`:""}</div><span class="fr-days"><b>${d}</b>${d===1?"dag":"dagar"}</span></div>`}).join("")}</div>`
      :`<div class="card"><p class="small">Ingen av er har valt ett lopp än. Välj ditt under Tävla, så syns det här för dina följare.</p></div>`}
-   <div class="sechead"><h2>Senaste</h2></div>
-   ${!D.actOk?`<div class="card"><p class="small">Aktiviteten är inte uppsatt än. Kör supabase/notiser.sql i Supabase.</p></div>`
-     :D.acts.length?`<div class="group" id="fr-feed">${D.acts.map(a=>{const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"});
-       const L=D.likes[a.id]||[],liked=L.includes(SBUSER.id);
-       const who=L.filter(u=>u!==SBUSER.id).map(u=>(NAMES[u]||{}).username).filter(Boolean);
-       const like=!D.likeOk?"":mine?(L.length?`<p class="fr-got">${THUMB} ${esc(who.slice(0,2).join(" och "))}${who.length>2?` och ${who.length-2} till`:""}</p>`:"")
-         :`<button class="fr-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}<span>${L.length||""}</span></button>`;
-       return `<div class="row fr-act" data-prof="${esc(a.user_id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${mine?"Du":esc(p.username)} ${kindTxt[a.kind]||"tränade"}</h3><p>${esc([a.title,a.detail].filter(Boolean).join(" · "))}</p>${mine?like:""}</div><div class="fr-side"><span class="small fr-ago">${agoTxt(a.created_at)}</span>${mine?"":like}</div></div>`}).join("")}</div>`
-     :`<div class="card"><p class="small">Här syns det när de du följer tränar och tävlar.</p></div>`}
    ${waiting.length?`<div class="sechead"><h2>Väntar på svar</h2></div><div class="group">${waiting.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row" data-prof="${esc(id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på godkännande</p></div><span class="chev">›</span></div>`}).join("")}</div>`:""}
    <div class="fr-acts"><button class="pill block" id="fr-add2">Hitta atleter</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela min profil</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div></div>`;
   const fd=$("#fr-feed");if(fd)fd.onclick=async e=>{const b=e.target.closest("[data-like]");if(!b||b.disabled)return;const id=+b.dataset.like,L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);
@@ -4194,8 +4286,103 @@ async function renderFriends(force){
   $("#fr-add2").onclick=openAddFriend;$("#fr-link2").onclick=shareFriendLink;$("#fr-qr2").onclick=showFriendQR;
   const top=D.acts[0];if(top){set.frSeen=top.created_at;saveSet()}frDot();
 }
-function frDot(){const b=$("#fr-btn");if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#vanner"))}
+function frDot(){try{fdDot()}catch(e){}const b=$("#fr-btn");if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
 async function frCheck(){try{if(!SB||!SBUSER||!FRIENDS.length)return;await loadFriendData(true);frDot()}catch(e){}}
+
+/* ============ Feed: flöde, hitta vänner och topplista ============ */
+const FD_KIND={lopp:"Tävlade",rekord:"Nytt rekord",pass:"Tränade"};
+let FSUG=null;
+function setFdView(v){set.fdsub=v;$$("#v-feed .fdv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#fd-seg [data-fd]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.fd===v))}
+$("#fd-seg").onclick=e=>{const b=e.target.closest("[data-fd]");if(!b)return;setFdView(b.dataset.fd);saveSet();renderFeed()};
+function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FRC.acts.find(a=>SBUSER&&a.user_id!==SBUSER.id);t.hidden=!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed")}
+function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
+function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p class="small">Logga in för att följa andra, se deras pass och ge tumme upp.</p><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
+async function renderFeed(force){
+  setFdView(["flow","find","top"].includes(set.fdsub)?set.fdsub:"flow");
+  const v=set.fdsub;
+  if(v==="top"){renderFriends(force);return}
+  const el=v==="find"?$("#fd-find"):$("#fd-flow");if(!el)return;
+  if(!SB){el.innerHTML=`<div class="card"><p class="small">Flödet kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
+  if(!SBUSER){fdLogin(el,v==="find"?"Hitta vänner":"Ditt träningsflöde");return}
+  if(!MYPROF){el.innerHTML=`<div class="card"><p class="small">Profiler är inte uppsatta än.</p></div>`;return}
+  if(v==="find"){renderFind(force);return}
+  if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar flödet…</p></div>`;
+  const D=await loadFriendData(force);if(!D||location.hash!=="#feed"||set.fdsub!=="flow")return;
+  if(!D.actOk){el.innerHTML=`<div class="card"><p class="small">Flödet är inte uppsatt än.</p></div>`;return}
+  const posts=D.acts.filter(a=>a.user_id===SBUSER.id||!BLOCKED.includes(a.user_id));
+  const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att fylla flödet</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><button class="pill block" data-fd-go="find">Hitta vänner</button></div>`:"";
+  el.innerHTML=empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
+  el.onclick=e=>{const g=e.target.closest("[data-fd-go]");if(g){setFdView(g.dataset.fd||g.dataset.fdGo);saveSet();renderFeed();return}
+    const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return}
+    const md=e.target.closest(".po-media");if(md){const now=Date.now();if(md._t&&now-md._t<320){md._t=0;fdLike(+md.dataset.id,D,true)}else md._t=now;return}
+    const pr=e.target.closest("[data-prof]");if(pr)viewProfile(pr.dataset.prof)};
+  const top=D.acts.find(a=>a.user_id!==SBUSER.id);if(top){set.frSeen=top.created_at;saveSet()}fdDot();frDot();
+}
+function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),k=FD_KIND[a.kind]?a.kind:"pass";
+  return `<article class="post" data-act="${a.id}">
+   <header class="po-h" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small>${FD_KIND[k]} · ${agoTxt(a.created_at)}</small></div></header>
+   <div class="po-media k-${k}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
+     <span class="po-k">${fdIcon(k)}${esc(FD_KIND[k])}</span>
+     ${big?`<b class="po-big">${esc(big)}</b>`:""}
+     <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${esc(a.detail)}</span>`:""}
+     <span class="po-pop" aria-hidden="true">${THUMB}</span>
+   </div>
+   <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span></div>
+   ${fdWho(L)}
+  </article>`}
+function fdCount(L){return L.length?`${L.length} ${L.length===1?"tumme upp":"tummar upp"}`:"Bli först med en tumme upp"}
+function fdWho(L){const who=L.map(u=>u===SBUSER.id?"du":(NAMES[u]||{}).username).filter(Boolean);return who.length?`<p class="po-who">Gillas av <b>${esc(who[0])}</b>${who.length>1?` och ${who.length-1} till`:""}</p>`:""}
+function fdIcon(k){const d={lopp:'<path d="M6 21V4h11l-2 4 2 4H6"/>',rekord:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4M8.5 20h7M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/>',pass:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'}[k];
+  return `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`}
+async function fdLike(id,D,dbl){const art=document.querySelector(`.post[data-act="${id}"]`);if(!art)return;const a=D.acts.find(x=>x.id===id);if(!a||a.user_id===SBUSER.id)return;
+  const L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);if(dbl&&on){fdPop(art);return}
+  const b=art.querySelector(".po-like");if(!b||b.disabled)return;b.disabled=true;
+  const upd=()=>{const x=L.includes(SBUSER.id);b.setAttribute("aria-pressed",x);b.setAttribute("aria-label",x?"Ta bort tumme upp":"Ge tumme upp");$("#po-n"+id).innerHTML=fdCount(L);const w=art.querySelector(".po-who");const h=fdWho(L);if(w)w.outerHTML=h||"";else if(h)art.insertAdjacentHTML("beforeend",h)};
+  if(on)L.splice(L.indexOf(SBUSER.id),1);else{L.push(SBUSER.id);HAPTIC("light");fdPop(art);b.classList.remove("pop");void b.offsetWidth;b.classList.add("pop")}upd();
+  const {error}=on?await SB.from("activity_likes").delete().eq("activity_id",id).eq("user_id",SBUSER.id):await SB.from("activity_likes").insert({activity_id:id});
+  if(error&&error.code!=="23505"){if(on)L.push(SBUSER.id);else L.splice(L.indexOf(SBUSER.id),1);upd();toast("Kunde inte spara. Försök igen.")}
+  b.disabled=false}
+function fdPop(art){const p=art.querySelector(".po-pop");if(!p)return;p.classList.remove("on");void p.offsetWidth;p.classList.add("on")}
+
+/* Hitta vänner: förslag som man sveper */
+async function renderFind(force){const el=$("#fd-find");if(!el)return;
+  if(!FSUG||force){if(!FSUG)el.innerHTML=`<div class="card"><p class="small">Letar efter förslag…</p></div>`;const {data,error}=await SB.rpc("varv_suggest");FSUG=error?[]:(data||[]);FSUG.forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)})}
+  if(location.hash!=="#feed"||set.fdsub!=="find")return;
+  const skip=set.sugSkip||[],waiting=FRQ_OUT.map(r=>r.to_user);
+  const list=FSUG.filter(p=>!FRIENDS.includes(p.user_id)&&!waiting.includes(p.user_id)&&!skip.includes(p.user_id)&&!BLOCKED.includes(p.user_id));
+  const deck=list.slice(0,3).reverse();
+  el.innerHTML=`<div class="sechead" style="margin-top:0"><h2>Du kanske känner</h2><span class="small">${list.length?list.length+" förslag":""}</span></div>
+   ${deck.length?`<div class="deck" id="deck">${deck.map((p,i)=>fdCard(p,i===deck.length-1,deck.length-1-i)).join("")}</div>
+   <div class="deck-btns"><button class="pill ghost" id="dk-no">Hoppa över</button><button class="pill" id="dk-yes">Följ</button></div>
+   <p class="small" style="text-align:center;margin-top:10px">Svep höger för att följa, vänster för att hoppa över.</p>`
+   :`<div class="card"><h3>Inga fler förslag just nu</h3><p class="small">Förslagen bygger på vilka dina vänner följer. Sök på ett namn, eller dela din profil så att andra hittar dig.</p>${skip.length?`<button class="linkbtn" id="dk-reset">Visa hoppade förslag igen</button>`:""}</div>`}
+   <div class="sechead"><h2>Fler sätt</h2></div>
+   <div class="fr-acts"><button class="pill ghost block" id="fd-search">Sök på namn</button><div class="grid2"><button class="pill ghost" id="fd-link">Dela min profil</button><button class="pill ghost" id="fd-qr">Visa QR-kod</button></div></div>
+   <div class="card" style="margin-top:12px"><p class="small">Ditt namn och kod: <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b></p></div>`;
+  $("#fd-search").onclick=openAddFriend;$("#fd-link").onclick=shareFriendLink;$("#fd-qr").onclick=showFriendQR;
+  const rs=$("#dk-reset");if(rs)rs.onclick=()=>{set.sugSkip=[];saveSet();renderFind()};
+  if(!deck.length)return;
+  const topP=deck[deck.length-1],card=$("#deck .sw-card.top");
+  const decide=async yes=>{if(card.dataset.done)return;card.dataset.done=1;card.classList.add(yes?"out-r":"out-l");HAPTIC(yes?"success":"light");
+    if(!yes){set.sugSkip=(set.sugSkip||[]).concat(topP.user_id).slice(-300);saveSet()}
+    setTimeout(()=>renderFind(),RM()?0:320);
+    if(yes)await sendFriendRequest(topP.user_id)};
+  $("#dk-yes").onclick=()=>decide(true);$("#dk-no").onclick=()=>decide(false);
+  card.querySelector("[data-prof]").onclick=e=>{e.stopPropagation();viewProfile(topP.user_id)};
+  let x0=null,dx=0,id=null;
+  card.addEventListener("pointerdown",e=>{if(e.target.closest("button"))return;x0=e.clientX;dx=0;id=e.pointerId;card.setPointerCapture(id);card.classList.add("drag")});
+  card.addEventListener("pointermove",e=>{if(x0==null)return;dx=e.clientX-x0;card.style.transform=`translateX(${dx}px) rotate(${dx/18}deg)`;card.style.setProperty("--yes",Math.max(0,Math.min(1,dx/110)));card.style.setProperty("--no",Math.max(0,Math.min(1,-dx/110)))});
+  const up=()=>{if(x0==null)return;x0=null;card.classList.remove("drag");if(Math.abs(dx)>100){card.style.transform="";decide(dx>0)}else{card.style.transform="";card.style.setProperty("--yes",0);card.style.setProperty("--no",0)}};
+  card.addEventListener("pointerup",up);card.addEventListener("pointercancel",up);
+}
+function fdCard(p,top,depth){const why=+p.common?`${p.common} av dem du följer följer ${esc(p.username)}`:"Tränar också med VARV.";
+  return `<div class="sw-card${top?" top":""}" style="--d:${depth}" ${top?"":'aria-hidden="true"'}>
+   <span class="sw-tag yes" aria-hidden="true">Följ</span><span class="sw-tag no" aria-hidden="true">Hoppa över</span>
+   <div class="sw-av">${avImg(p.avatar_url,p.username,"sw-img")}</div>
+   <b class="sw-name">${esc(p.username)}<span>#${esc(p.tag||"")}</span></b>
+   <p class="sw-why">${why}</p>
+   ${top?`<button class="linkbtn" data-prof="${esc(p.user_id)}">Visa profil</button>`:""}
+  </div>`}
 
 /* ============ Aktivitet för vänner ============ */
 async function postActivity(kind,title,detail){
@@ -4289,7 +4476,7 @@ function saveAbout(st){set.age=st.age;set.height=st.height;set.level=st.level;
   if(SB&&SBUSER&&MYPROF){const x=LEVEL_EXP[st.level];MYPROF.experience=x;SB.from("profiles").update({experience:x}).eq("user_id",SBUSER.id).then(()=>{},()=>{})}}
 /* Användare som startade före frågorna fyller i dem en gång. */
 function openAbout(){const st={age:set.age||null,height:set.height||null,level:set.level||null};
-  openSheet(`<div><span class="small">En sak till</span><h2>Om dig.</h2><p class="small">Dina svar anpassar planen och pulszonerna.</p></div><div style="display:grid;gap:18px">${aboutFields(st)}</div><button class="pill block" id="ab-go">Spara</button>`,()=>{
+  openSheet(`<div><span class="small">En sak till</span><h2>Om dig.</h2><p class="small">Dina svar anpassar måltiden och pulszonerna.</p></div><div style="display:grid;gap:18px">${aboutFields(st)}</div><button class="pill block" id="ab-go">Spara</button>`,()=>{
     aboutBind(st);$("#ab-go").onclick=()=>{if(!aboutOk(st))return;saveAbout(st);saveSet();refreshSettingsUI();renderPlan();renderHome();closeSheet();toast("Planen är uppdaterad.");HAPTIC("success")}})}
 /* ============ Första start: ett steg i taget efter inloggningen ============ */
 const GOALS=[["friends","Träna med vänner","Följ varandra, jämför veckan och peppa varandra."],["race","Träna inför ett lopp","En plan fram till loppdagen med tempo och splittider."],["plan","Få ett träningsschema","Pass vecka för vecka som anpassar sig efter dig."]];
@@ -4317,7 +4504,7 @@ function openOnb(){
   const seg=(k,opts,cur,dis)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-${k}="${v}" aria-pressed="${cur===v}"${dis?" disabled":""}>${l}</button>`).join("")}</div>`;
   const pushState=()=>!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
   const V={
-    about:{eye:"Om dig",h:"Berätta lite om dig.",p:"Det styr planen, pulszonerna och vilken klass du jämförs med.",
+    about:{eye:"Om dig",h:"Berätta lite om dig.",p:"Det styr måltiden, pulszonerna och vilken klass du jämförs med.",
       html:()=>`${set.name?"":`<div class="field"><label for="ob-name">Namn</label><input type="text" id="ob-name" autocomplete="name" maxlength="60" placeholder="För- och efternamn" value="${esc(st.name)}"><span class="small">Visas för dem du tränar med. Går inte att ändra senare.</span></div>`}<div class="field"><label for="ob-age">Ålder</label><input type="number" id="ob-age" inputmode="numeric" min="16" max="90" placeholder="År" value="${st.age||""}"></div>
         <div class="field"><span class="lbl">Kön</span>${seg("sx",SEXES,st.sex)}</div>
         <div class="field"><span class="lbl">Din nivå</span>${seg("lv",LEVELS.map(([k,l])=>[k,l]),st.level)}<span class="small">${(LEVELS.find(x=>x[0]===st.level)||[])[2]||"Styr hur tungt planen läggs upp."}</span></div>`,
@@ -4336,10 +4523,10 @@ function openOnb(){
       read(){},ok:()=>st.other&&!st.date?["Välj datum för loppet.","#ob-d"]:st.ev==null&&!st.other&&!st.none?["Välj ett lopp, Annat lopp eller Inte bestämt än."]:null},
     goal:{eye:"Måltid",h:"Har du en måltid du satsar på?",p:"Tiden du vill gå i mål på i ett helt Hyrox-lopp. Planen sätter tempot för löpningen och stationerna utifrån den.",
       html:()=>`<div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${!st.noGoal&&st.goalSet&&st.target===v}">${l}</button>`).join("")}<button type="button" class="chip" data-sng aria-pressed="${st.noGoal}">Vet inte än</button></div>
-        ${st.noGoal?`<p class="ob-note">Då utgår planen från din nivå, ungefär ${fmtHM(LEVEL_TARGET[st.level]||90)}. Du kan sätta en måltid när som helst under Plan, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
+        ${st.noGoal?`<p class="ob-note">Då utgår måltiden från din nivå, ungefär ${fmtHM(LEVEL_TARGET[st.level]||90)}. Du kan sätta en måltid när som helst under Plan, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
         :`<div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i timmar och minuter"><span class="small">Dra för att välja en egen tid</span></div>`}`,
       read(){},ok:()=>st.goalSet||st.noGoal?null:["Välj en tid, dra i reglaget eller välj Vet inte än."]},
-    past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår planen från var du står i dag.",
+    past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår måltiden från var du står i dag.",
       html:()=>`${seg("past",[["ja","Ja"],["nej","Nej, inte än"]],st.past===true?"ja":st.past===false?"nej":"")}
         ${st.past?`<div class="ob-races">${st.races.map((r,j)=>`<div class="card ob-rc"><div class="ob-rch"><b>Lopp ${j+1}</b>${st.races.length>1?`<button class="linkbtn" type="button" data-rm="${j}">Ta bort</button>`:""}</div>
           <div class="field"><label for="ob-rn${j}">Vilket lopp</label><input type="text" id="ob-rn${j}" maxlength="60" placeholder="Till exempel Stockholm 2025" value="${esc(r.n)}"></div>
@@ -4559,7 +4746,7 @@ async function answerFriend(uid,yes){
 async function removeFriend(uid){let {error}=await SB.rpc("varv_unfollow",{p_other:uid});if(error){toast(sbErr(error));return false}
   if(MYPROF&&MYPROF.partner_id===uid)MYPROF.partner_id=null;await loadFriends();await loadRequests();FRC=null;refreshSocialViews();return true}
 async function cancelRequest(uid){await SB.from("friend_requests").delete().eq("from_user",SBUSER.id).eq("to_user",uid);await loadRequests();refreshSocialViews();toast("Förfrågan är återkallad.")}
-function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#vanner")renderFriends(true);if(h==="#notiser")renderNotiser();notiBadge()}
+function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#feed")renderFeed(true);if(h==="#notiser")renderNotiser();notiBadge()}
 
 /* ============ Notiscenter ============ */
 let NOTIS=[],NOTIS_OK=true;
@@ -4618,13 +4805,14 @@ function appBadge(n){try{if("setAppBadge" in navigator){n?navigator.setAppBadge(
     if(dy>120||fast){sh.style.transform="";closeSheet()}else sh.style.transform="";y0=null})})();
 
 /* ============ Routing ============ */
-const VIEWS=["hem","stationer","plan","race","logg","vanner","notiser","profil"];
+const VIEWS=["hem","stationer","feed","race","logg","notiser","profil"];
 function route(){
+  {const h=location.hash.slice(1);if(h==="vanner"||h==="plan"){history.replaceState(null,"","#feed")}}
   const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
-  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="profil"){renderProfile();renderNotis()}if(v==="vanner")renderFriends();if(v==="notiser")renderNotiser();frDot();notiBadge();
+  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=true;if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
   if(v==="logg"){drawRings(true);renderLog()}
 }
@@ -4645,7 +4833,7 @@ if(!window.claude)initSupabase();
 (async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false;renderGarmin()}}catch(e){}})();
 if(!window.claude&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
 if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
-renderComm();renderGarmin();renderAvatar();renderEvents();
+renderComm();renderGarmin();renderAvatar();renderEvents();setFdView(["flow","find","top"].includes(set.fdsub)?set.fdsub:"flow");
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
   else if(set.onboarded&&passWaiting())setTimeout(openSharedPass,wait);

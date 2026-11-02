@@ -721,6 +721,12 @@ a.row{color:inherit;text-decoration:none}
 .lg-n{font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
 .lg-sx{width:36px;height:36px;border-radius:50%;border:0;background:none;color:var(--muted);font-size:1.3rem;cursor:pointer}.lg-sx:disabled{opacity:.25;cursor:default}
 .lg-add{justify-self:start;border:0;background:none;color:var(--link);font-weight:600;font-size:.95rem;padding:8px 0;min-height:40px;cursor:pointer}
+.prep{display:grid;grid-template-columns:minmax(0,1fr) auto 32px;gap:8px;align-items:center;padding:8px 12px}
+.prep+.prep{border-top:1px solid var(--hair)}
+.prep-n{border:0;background:none;color:var(--ink);text-align:left;cursor:pointer;display:grid;gap:1px;padding:4px 0;min-height:44px;font:inherit;min-width:0}
+.prep-go{border:0;border-radius:980px;background:var(--card);color:var(--link);font-weight:600;font-size:.92rem;padding:0 14px;min-height:38px;cursor:pointer}
+#lg-prep{margin-bottom:14px;display:grid;gap:6px}
+.sg-card{display:grid;gap:6px}.sg-card h3{font-size:1.15rem}.sg-card ul{margin:6px 0;padding-left:18px;display:grid;gap:4px;font-size:.95rem}
 .lg-rpe{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .lg-rpe button{border:0;background:var(--tile);border-radius:12px;min-height:56px;display:grid;place-content:center;gap:0;cursor:pointer;color:var(--ink)}
 .lg-rpe b{font-size:1.15rem;font-variant-numeric:tabular-nums}.lg-rpe span{font-size:.7rem;color:var(--muted);min-height:1em}
@@ -748,6 +754,7 @@ a.row{color:inherit;text-decoration:none}
 .fr-lb + .fr-lb::before{left:52px}
 .fr-who{display:flex;align-items:center;gap:12px;min-width:0}.fr-who>div{min-width:0}
 .fr-rank{font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;text-align:center}
+.fr-seg{margin-bottom:14px}.fr-cls{margin-bottom:12px}
 .fr-lb:first-child .fr-rank{color:var(--accent)}
 .fr-lb.me h3{color:var(--accent)}
 .fr-v{font-size:1.5rem;font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
@@ -1123,7 +1130,7 @@ a.row{color:inherit;text-decoration:none}
 <section class="view" id="v-logg">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Framsteg</span><h1>Träningslogg.</h1><p class="small" id="store-note">Laddar…</p></div>
-    <div class="grid2" style="margin-bottom:12px"><button class="pill" id="live-new">Starta pass</button><button class="pill ghost" id="log-new">Logga pass</button></div>
+    <button class="pill block" id="lg-new" style="margin-bottom:12px">Nytt pass</button><div id="lg-prep"></div>
     <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="pass">Pass</button><button data-lgv="form">Form</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
     <div class="card strava" id="strava" hidden></div>
 
@@ -1172,7 +1179,7 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Följer</span><h1>Tillsammans.</h1><p class="small">Veckans topplista, era lopp och vad de du följer har tränat.</p></div>
+    <div class="pagehead"><span class="eyebrow">Följer</span><h1>Tillsammans.</h1><p class="small">Topplistor, era lopp och vad de du följer har tränat.</p></div>
     <div id="fr-body"></div>
   </div>
 </section>
@@ -1417,14 +1424,15 @@ function confetti(){
 }
 
 /* ============ Ark ============ */
+var SHEETGEN=0;
 function openSheet(html,mount){
   {const lf=$("#logform"),sin=$("#sheet-in");if(lf&&sin.contains(lf))$("#log-holder").append(lf)}
   $("#sheet-in").innerHTML=`<div class="shtop"><span></span><span class="grab"></span><button class="close" id="sh-x" aria-label="Stäng">✕</button></div>`+html;
   const sh=$("#sheet"),sc=$("#scrim");sh.hidden=false;sc.hidden=false;sh.scrollTop=0;
-  requestAnimationFrame(()=>{sh.classList.add("on");sc.classList.add("on")});
+  const gen=++SHEETGEN;requestAnimationFrame(()=>{if(gen===SHEETGEN){sh.classList.add("on");sc.classList.add("on")}});
   $("#sh-x").onclick=closeSheet;if(mount)mount();setTimeout(()=>$("#sheet").focus({preventScroll:true}),50);
 }
-function closeSheet(){const sh=$("#sheet"),sc=$("#scrim");if(sh.hidden)return;if($("#lg"))keepDraft();sh.classList.remove("on");sc.classList.remove("on");setTimeout(()=>{if(!sh.classList.contains("on")){sh.hidden=true;sc.hidden=true}},300)}
+function closeSheet(){const sh=$("#sheet"),sc=$("#scrim");if(sh.hidden)return;SHEETGEN++;if($("#lg"))keepDraft();sh.classList.remove("on");sc.classList.remove("on");setTimeout(()=>{if(!sh.classList.contains("on")){sh.hidden=true;sc.hidden=true}},300)}
 $("#scrim").onclick=closeSheet;
 document.addEventListener("keydown",e=>{if(e.key==="Escape")closeSheet()});
 
@@ -2260,6 +2268,7 @@ async function loadFriends(){
 function profilePayload(){
   const st=weekStats(),P=PROG||progress(),me=myEvent();
   const prs={};PRKEYS.forEach(([k])=>{if(k!=="race"&&PRS[k])prs[k]=PRS[k]});
+  resAll().forEach(x=>{const k=(x.kind==="race"?"r:":"s:")+x.cls;if(!prs[k]||x.t<prs[k])prs[k]=x.t});
   const bt=PRS.race&&PRS.race>=600&&PRS.race<=36000?PRS.race:null;
   return {best_time:bt,best_division:divText().slice(0,60),prs,
     next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:me?me.s:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
@@ -2708,7 +2717,7 @@ const TOUR=[
  {v:"stationer",t:'.tab[data-v="stationer"]',h:"Stationer",p:"Nästa flik. Alla åtta stationer med vikter för just din klass, teknik och de vanligaste misstagen."},
  {v:"plan",t:'.tab[data-v="plan"]',h:"Plan",p:"Ditt schema vecka för vecka, byggt från din måltid och dina träningsdagar. Det anpassar sig efter det du faktiskt loggar."},
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
- {v:"logg",lg:"pass",t:"#live-new",h:"Logg: starta ett pass",p:"Sista fliken. Bygg passet i förväg och logga i realtid, eller spara det i efterhand."},
+ {v:"logg",lg:"pass",t:"#lg-new",h:"Logg: nytt pass",p:"Sista fliken. Träna nu, förbered ett pass, få ett förslag eller logga i efterhand."},
  {v:"logg",lg:"form",t:"#form",h:"Logg: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
  {v:"logg",lg:"form",t:"#comm",h:"Logg: topplistan",p:"Jämför veckans varv med dem du följer. Det är flit som räknas, inte fart, och du väljer själv om du syns."},
  {v:"logg",lg:"pass",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
@@ -2842,9 +2851,67 @@ let LG=null;
 let LGDRAFT=null;try{const d=JSON.parse(localStorage.getItem("varv-draft")||"null");if(d&&Date.now()-d.at<12*3600e3)LGDRAFT=d.lg}catch(e){}
 function keepDraft(){try{if(LG&&!LG.live&&!LG.fromLive&&!LG.edit&&!LG.saved&&(LG.items.length||(LG.note||"").trim())){const d=Object.assign({},LG,{view:"main",pick:[],q:"",delArm:false});LGDRAFT=d;localStorage.setItem("varv-draft",JSON.stringify({at:Date.now(),lg:d}))}}catch(e){}}
 function dropDraft(){LGDRAFT=null;try{localStorage.removeItem("varv-draft")}catch(e){}}
+/* ============ Nytt pass: ett ställe för allt ============ */
+function tplSave(name,items,type){const clean=items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,sets:i.sets.map(x=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(x[f])&&!(f==="t"&&i.k!=="t"))o[f]=x[f]});return o})}));
+  set.tpls=(set.tpls||[]).filter(x=>x.name!==name).concat([{id:"t"+Date.now().toString(36),name,type:type||null,items:clean}]).slice(-30);saveSet()}
+function liveFrom(items,type,hint){if(LIVE){openLogger();toast("Du har redan ett pass igång.");return}
+  openLogger({type:type||"Styrka och stationer",forLive:true});LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));if(hint)LG.hint=hint;startLive()}
+function buildFrom(items,type,o){openLogger(Object.assign({type:type||"Styrka och stationer",kicker:"Nytt pass"},o));LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));renderLG()}
+function prepRows(){return (set.tpls||[]).slice().reverse().map(t=>`<div class="prep"><button type="button" class="prep-n" data-prep-edit="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"} · Ändra</span></button><button type="button" class="prep-go" data-prep-go="${esc(t.id)}">Starta</button><button type="button" class="lg-x" data-prep-del="${esc(t.id)}" aria-label="Ta bort ${esc(t.name)}">✕</button></div>`).join("")}
+function renderPrep(){const el=$("#lg-prep");if(!el)return;el.innerHTML=(set.tpls||[]).length?`<span class="lbl">Förberedda pass</span><div class="lg-grp prep-l">${prepRows()}</div>`:""}
+function openHub(){if(LIVE){openLogger();return}
+  const w=PLAN[curWeekIdx()],np=w&&daysLeft()>0?nextPass(w):null,n=np&&(np.tod||np.late);
+  const row=(id,ico,h,p)=>`<button class="row" id="${id}"><span class="badge">${ico}</span><div><h3>${h}</h3><p>${p}</p></div><span class="chev">›</span></button>`;
+  openSheet(`<div><span class="small">Nytt pass</span><h2>Vad vill du göra?</h2></div>
+   ${n?`<div class="group">${row("hb-plan","★",n===np.tod?"Dagens pass":"Att ta igen",`${esc(n.t)}, ${n.m} min enligt din plan`)}</div>`:""}
+   <div class="group">${row("hb-now","▶","Träna nu","Välj övningar och starta klockan")}${row("hb-sug","✦","Ge mig ett förslag","Välj kondition, styrka eller båda")}${row("hb-prep","✎","Förbered till gymmet","Bygg passet nu och starta det när du är där")}${row("hb-after","✓","Logga i efterhand","Skriv in det du redan har kört")}</div>
+   ${(set.tpls||[]).length?`<div class="field"><span class="lbl">Förberedda pass</span><div class="lg-grp prep-l">${prepRows()}</div></div>`:""}`,()=>{
+    const b=$("#hb-plan");if(b)b.onclick=()=>prefill({type:n.t,min:n.m,stations:n.s||[],note:`Vecka ${w.w}`,plan:n.key+"@"+set.date,start:true});
+    $("#hb-now").onclick=()=>openLogger({forLive:true,kicker:"Träna nu"});
+    $("#hb-prep").onclick=()=>openLogger({forLive:true,kicker:"Förbered till gymmet"});
+    $("#hb-after").onclick=()=>openLogger({kicker:"Logga i efterhand"});
+    $("#hb-sug").onclick=()=>openSuggest()})}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-prep-go],[data-prep-edit],[data-prep-del]");if(!b)return;const d=b.dataset,t=(set.tpls||[]).find(x=>x.id===(d.prepGo||d.prepEdit||d.prepDel));if(!t)return;
+  if(d.prepGo){liveFrom(t.items,t.type,t.hint);return}
+  if(d.prepEdit){buildFrom(t.items,t.type,{forLive:true,kicker:"Förberett pass"});LG.tplName=t.name;return}
+  if(!b.dataset.arm){b.dataset.arm=1;b.textContent="?";b.style.color="var(--bad)";setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent="✕";b.style.color=""}},3000);return}
+  set.tpls=set.tpls.filter(x=>x.id!==t.id);saveSet();renderPrep();const row=b.closest(".prep");if(row&&$("#hb-now"))row.remove();toast("Passet är borttaget.")});
+/* Förslag: byggs av dina senaste vikter, din nivå och de stationer du tränat minst på sistone. */
+function staleStations(){const seen={};sortedLogs().slice().reverse().forEach(l=>(l.items||[]).forEach(i=>{if(i.st)seen[i.ex]=l.date}));
+  return EX.filter(x=>x.st).sort((a,b)=>(seen[a.id]||"").localeCompare(seen[b.id]||""))}
+function suggest(focus,min,v){const lvl=set.level||"mellan",ny=lvl==="ny",n=min<=30?0:min<=45?1:2,X=id=>EX.find(e=>e.id===id);
+  const kg=id=>{const l=lastItem(id),o=l&&l.sets.filter(x=>nz(x.kg)).pop();if(o)return o.kg;const std=exStd(id);if(std&&std.kg)return ny?Math.round(std.kg*.7/5)*5||std.kg:std.kg;return null};
+  const mk=(id,count,val)=>{const x=X(id),k=kg(id),one=Object.assign({},val);if(x.w&&k)one.kg=k;return {ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:Array.from({length:Math.max(1,count)},()=>Object.assign({},one))}};
+  const half=(id,count)=>{const std=exStd(id)||{};return mk(id,count,std.r?{r:Math.round(std.r/2)}:{m:Math.round(std.m/2)})};
+  const lift=(id,sets)=>{if(id==="plank")return mk(id,sets,{t:45});const r={chin:ny?5:6,pushup:12,situp:15}[id]||(ny?10:8);return mk(id,sets,{r})};
+  const SP=[["squat","bench","brow","rdl","wlunge","plank"],["dead","ohp","chin","bss","kbs","plank"],["front","pushup","brow","hip","thr","situp"]][v%3];
+  const stale=staleStations(),a=ny?[3,4,5]:[3,5,6],sets=ny?3:4;
+  if(focus==="styrka")return {name:["Styrka: helkropp","Styrka: drag och ben","Styrka: press och höft"][v%3],type:"Styrka och stationer",hint:"Sänk vikten om tekniken brister. Vila 1–2 minuter mellan seten.",items:SP.slice(0,[4,5,6][n]).map((id,i)=>lift(id,i<2?sets:3))};
+  if(focus==="kondition"){const k=v%3;
+    if(k===0){const it=[mk("run",a[n],{m:1000})];if(n)it.push(mk("row",n+1,{m:500}));return {name:"Löpintervaller",type:"Intervaller",hint:"Spring hårt men jämnt. Vila 90 sekunder mellan sträckorna.",items:it}}
+    if(k===1){const it=[mk("ski",a[n],{m:500}),mk("row",a[n],{m:500})];if(n===2)it.push(mk("run",1,{m:2000}));return {name:"Maskinpass",type:"Motor (SkiErg/rodd)",hint:"Växla mellan maskinerna i jämnt hårt tempo. Vila en minut mellan.",items:it}}
+    const c=[3,4,5][n];return {name:"Löpning och stationer",type:"Kompromisslöpning",hint:"Varva: 1 km löpning och sedan en station, utan att vila länge.",items:[mk("run",c,{m:1000})].concat(stale.slice(0,2).map(x=>half(x.id,c)))}}
+  return {name:"Kondition och styrka",type:"Styrka och stationer",hint:"Kör löpningen först, sedan styrkan och till sist stationerna.",items:[mk("run",[2,3,4][n],{m:1000})].concat(SP.slice(0,[2,3,3][n]).map(id=>lift(id,3))).concat(stale.slice(0,[1,2,3][n]).map(x=>half(x.id,2)))}}
+function openSuggest(){const st={f:set.sugF||"bada",m:set.sugM||45,v:LOGS.length};
+  openSheet(`<div><span class="small">Förslag från VARV.</span><h2>Vad vill du träna?</h2></div>
+   <div class="seg" id="sg-f" role="group" aria-label="Fokus"><button data-f="kondition">Kondition</button><button data-f="styrka">Styrka</button><button data-f="bada">Båda</button></div>
+   <div class="seg" id="sg-m" role="group" aria-label="Tid"><button data-m="30">30 min</button><button data-m="45">45 min</button><button data-m="60">60 min</button></div>
+   <div id="sg-out"></div>
+   <button class="pill block" id="sg-go">Starta nu</button>
+   <div class="grid2"><button class="pill ghost" id="sg-edit">Anpassa</button><button class="pill ghost" id="sg-save">Spara till senare</button></div>
+   <button class="linkbtn" id="sg-next" style="justify-self:center">Visa ett annat förslag</button>`,()=>{
+    let cur=null;const draw=()=>{cur=suggest(st.f,st.m,st.v);$$("#sg-f [data-f]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.f===st.f));$$("#sg-m [data-m]").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.m===st.m));
+      $("#sg-out").innerHTML=`<div class="card sg-card"><h3>${esc(cur.name)}</h3><span class="small">Omkring ${st.m} min</span><ul>${cur.items.map(i=>`<li>${esc(itemTxt(i))}</li>`).join("")}</ul><p class="small">${esc(cur.hint)}${(set.level||"mellan")==="ny"?" Du väljer själv vikterna, börja lätt.":""}</p></div>`};
+    $("#sg-f").onclick=e=>{const b=e.target.closest("[data-f]");if(b){st.f=b.dataset.f;set.sugF=st.f;saveSet();draw()}};
+    $("#sg-m").onclick=e=>{const b=e.target.closest("[data-m]");if(b){st.m=+b.dataset.m;set.sugM=st.m;saveSet();draw()}};
+    $("#sg-next").onclick=()=>{st.v++;draw()};
+    $("#sg-go").onclick=()=>liveFrom(cur.items,cur.type,cur.hint);
+    $("#sg-edit").onclick=()=>{buildFrom(cur.items,cur.type,{forLive:true,kicker:"Anpassa förslaget"});LG.hint=cur.hint;LG.tplName=cur.name};
+    $("#sg-save").onclick=()=>{tplSave(cur.name,cur.items,cur.type);const t=set.tpls[set.tpls.length-1];t.hint=cur.hint;saveSet();renderPrep();closeSheet();toast("Passet är sparat. Du hittar det under Logg.")};
+    draw()})}
 function openLogger(o){o=o||{};const ed=o.edit;
   if(LIVE&&!ed&&!o.date){LIVE.open=true;saveLive();renderLive();liveWake();return}
-  if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
+  if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT&&!o.forLive){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
   LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:(o.date||today()),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
     rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};
@@ -2878,21 +2945,19 @@ function renderLG(){const r=$("#lg");if(!r)return;
       <button type="button" class="lg-add" data-as="${i}">+ Lägg till set</button></div>`}).join("");
   r.innerHTML=`<div><span class="small">${esc(LG.kicker)}</span><h2>${LG.edit?"Ändra pass":LG.forLive?"Bygg ditt pass":LG.fromLive?"Spara passet":"Logga pass"}</h2></div>
    ${LG.draft?`<div class="lg-draft"><span>Du fortsätter där du slutade.</span><button type="button" class="linkbtn" data-fresh>Börja om</button></div>`:""}
-   <section class="lg-sec"${LG.forLive?" hidden":""}><div class="chips lg-day"><button type="button" class="chip" data-day="${td}" aria-pressed="${LG.date===td}">Idag</button><button type="button" class="chip" data-day="${yd}" aria-pressed="${LG.date===yd}">Igår</button>
-     <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
-     <div class="lg-step"><button type="button" data-min="-5" aria-label="5 minuter kortare">−</button><label><input type="text" id="lg-minv" inputmode="numeric" value="${LG.min}" aria-label="Minuter"><span>min</span></label><button type="button" data-min="5" aria-label="5 minuter längre">+</button></div></section>
    <section class="lg-sec"><div class="lg-h"><h3>Övningar</h3>${LG.items.length?`<span class="small">${LG.items.length}</span>`:""}</div>
-     ${!LG.items.length&&(set.tpls||[]).length?`<span class="lbl">Mina mallar</span><div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button><button type="button" class="lg-x" data-tpldel="${esc(t.id)}" aria-label="Ta bort mallen ${esc(t.name)}">✕</button></div>`).join("")}</div>`:""}
-     ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Du kan ändra allt under passet.":"Välj vad du tränade. Värdena fylls i från förra gången."}</p>
+     ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Du kan ändra allt under passet.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
+       ${(set.tpls||[]).length?`<div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button></div>`).join("")}</div>`:""}
        <div class="chips">${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
      <button type="button" class="pill ghost block" id="lg-open">+ Lägg till övning</button></section>
-   <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>${!LG.typeSet&&LG.items.length?`<p class="small">Föreslås utifrån dina övningar.</p>`:""}</section>
+   <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">När och hur länge?</span><div class="chips lg-day"><button type="button" class="chip" data-day="${td}" aria-pressed="${LG.date===td}">Idag</button><button type="button" class="chip" data-day="${yd}" aria-pressed="${LG.date===yd}">Igår</button>
+     <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
+     <div class="lg-step"><button type="button" data-min="-5" aria-label="5 minuter kortare">−</button><label><input type="text" id="lg-minv" inputmode="numeric" value="${LG.min}" aria-label="Minuter"><span>min</span></label><button type="button" data-min="5" aria-label="5 minuter längre">+</button></div></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div></section>
-   <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note>+ Lägg till anteckning</button>`}</section>
-   <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på mallen" value="${esc(LG.tplName||"")}" aria-label="Namn på mallen"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
-     ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Starta passet</button><button type="button" class="pill ghost block" id="lg-save">Logga i efterhand</button>`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>`}
-     ${!LG.edit&&!LG.fromLive&&!LG.forLive&&LG.items.length&&LG.date===today()?`<button type="button" class="pill ghost block" id="lg-start">Starta passet nu</button>`:""}
-     ${LG.items.length&&!LG.showTpl?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara som mall</button>`:""}
+   <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
+     ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
+   <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
+     ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Starta nu</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
      ${LG.edit?`<button type="button" class="pill ghost block" id="lg-del"${LG.delArm?' style="color:var(--bad)"':""}>${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}</div>`;
 }
 function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new Set(LG.items.map(i=>i.ex));
@@ -2920,12 +2985,10 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
   if(t.id==="lg-open"){LG.view="pick";LG.pick=[];LG.q="";renderLG();$("#sheet").scrollTop=0;return}
   if(t.id==="lg-back"){if(LG.live){closeSheet();renderLive();return}LG.view="main";renderLG();return}
   if(t.id==="lg-start"){startLive();return}
-  if(t.id==="lg-tplopen"){LG.showTpl=true;renderLG();const n=$("#lg-tplname");if(n)n.focus();return}
+  if(t.id==="lg-tplopen"){LG.showTpl=true;if(!LG.tplName)LG.tplName=lgType();renderLG();const n=$("#lg-tplname");if(n)n.focus();return}
   if(t.id==="lg-tplsave"){const nm=(LG.tplName||"").trim();if(!nm){toast("Ge mallen ett namn.");return}
-    const items=LG.items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,sets:i.sets.map(x=>{const o={};["m","r","c","kg"].forEach(f=>{if(nz(x[f]))o[f]=x[f]});return o})}));
-    set.tpls=(set.tpls||[]).filter(x=>x.name!==nm).concat([{id:"t"+Date.now().toString(36),name:nm,type:LG.typeSet?LG.type:null,items}]).slice(-30);saveSet();LG.showTpl=false;LG.tplName="";renderLG();toast("Mallen är sparad.");return}
+    tplSave(nm,LG.items,LG.typeSet?LG.type:null);const lv=LG.forLive;LG.saved=true;dropDraft();renderPrep();if(lv){closeSheet();toast("Passet är sparat. Du hittar det under Logg.");return}LG.showTpl=false;LG.tplName="";renderLG();toast("Passet är sparat.");return}
   if(d.tpl){const x=(set.tpls||[]).find(y=>y.id===d.tpl);if(x){LG.items=JSON.parse(JSON.stringify(x.items));if(x.type){LG.type=x.type;LG.typeSet=true}renderLG()}return}
-  if(d.tpldel){set.tpls=(set.tpls||[]).filter(y=>y.id!==d.tpldel);saveSet();renderLG();return}
   if(t.id==="lg-addsel"){const n0=LG.items.length;LG.pick.forEach(id=>{const x=exDesc(id);if(x)LG.items.push(newItem(x))});LG.pick=[];if(LG.live){LG.view="main";saveLive();closeSheet();renderLive();return}LG.view="main";renderLG();
     const el=$(`#lg .lg-ex[data-i="${n0}"]`);if(el)setTimeout(()=>el.scrollIntoView({behavior:RM()?"auto":"smooth",block:"center"}),60);return}
   if(d.musc){LG.musc=LG.musc===d.musc?null:d.musc;renderLG();const c=document.querySelector(`#lg [data-musc="${d.musc}"]`);if(c)c.scrollIntoView({block:"center"});return}
@@ -2946,6 +3009,7 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
   if(d.rs){const [i,j]=d.rs.split(":").map(Number);LG.items[i].sets.splice(j,1);renderLG();return}
   if(d.type){LG.type=d.type;LG.typeSet=true;renderLG();return}
   if(d.rpe){LG.rpe=+d.rpe;lg$$("#lg .lg-rpe button").forEach(b=>b.setAttribute("aria-pressed",b===t));return}
+  if(d.showtype!==undefined){LG.showType=true;renderLG();return}
   if(d.note!==undefined){LG.showNote=true;renderLG();const n=$("#lg-note");if(n)n.focus();return}
   if(t.id==="lg-save"){saveLG(t);return}
   if(t.id==="lg-del"){if(!LG.delArm){LG.delArm=true;renderLG();return}delWithUndo(LG.edit);closeSheet();return}
@@ -3013,7 +3077,7 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
      <div class="lv-setbtns"><button type="button" class="linkbtn" data-ladd="${i}">+ Lägg till set</button>${it.sets.length>1&&!it.sets[it.sets.length-1].done?`<button type="button" class="linkbtn lv-muted" data-lsub="${i}">Ta bort sista setet</button>`:""}</div></div>`}).join("");
   v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="small">${done} av ${all} set</span><button type="button" class="linkbtn" id="lv-pause">${LIVE.pausedAt?"Fortsätt":"Pausa"}</button></div>
     <div class="lv-clock"><b id="lv-time">${fmt(liveElapsed())}</b><div class="progress lv-prog"><i style="width:${all?Math.round(done/all*100):0}%"></i></div></div>
-    <div class="lv-list">${list}<button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>
+    <div class="lv-list">${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}${list}<button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>
       <button type="button" class="linkbtn lv-cancel" id="lv-cancel">${LIVEARM==="cancel"?"Tryck igen för att slänga passet":"Avbryt passet"}</button></div>
     <div class="lv-foot"><div class="lv-rest" id="lv-rest" hidden><span>Vila</span><b id="lv-rest-t"></b><button type="button" data-lrest="-15" aria-label="15 sekunder kortare">−15</button><button type="button" data-lrest="15" aria-label="15 sekunder längre">+15</button><button type="button" data-lrest="0">Hoppa över</button></div>
       <button type="button" class="pill block" id="lv-end">Avsluta passet</button></div>`;
@@ -3063,8 +3127,7 @@ async function fixPRs(oldItems){let ch=false;const keys=new Set();
   if(ch){await savePRs();try{renderPRs()}catch(e){}}}
 function prefill(o){openLogger({type:o.type,min:o.min,note:o.note,plan:o.plan,stations:o.stations,kicker:"Från din plan",fresh:o.fresh,forLive:o.forLive});if(o.start&&LG.items.length)startLive()}
 function openLogSheet(){openLogger()}
-$("#log-new").onclick=()=>openLogger();
-$("#live-new").onclick=()=>openLogger({forLive:true,kicker:"Nytt pass"});
+$("#lg-new").onclick=()=>openHub();
 let filt="Alla";
 $("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;renderLog()};
 $("#hist").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.edit)openEditLog(e.target.dataset.edit)});
@@ -3083,7 +3146,7 @@ function weekStats(){
 }
 let HN=10;
 function renderLog(){
-  noteStore();const st=weekStats(),goal=set.per;
+  noteStore();renderPrep();const st=weekStats(),goal=set.per;
   const wk=PLAN[curWeekIdx()];const mg=wk?wk.ses.reduce((a,x)=>a+x.m,0):goal*50;
   $("#r-count").textContent=`${st.now.n}/${goal}`;$("#r-min").textContent=`${st.now.min} av ${mg} min`;
   RINGS={a:Math.min(1,st.now.n/goal),b:Math.min(1,st.now.min/mg)};drawRings();
@@ -3101,7 +3164,7 @@ function renderLog(){
   let lastWk="";const wkSum={};list.forEach(l=>{const k=weekStart(l.date);wkSum[k]=wkSum[k]||{n:0,m:0};wkSum[k].n++;wkSum[k].m+=+l.min||0});
   $("#hist").innerHTML=list.length?list.slice(0,HN).map(l=>{const d=new Date(l.date+"T12:00:00"),wk=weekStart(l.date),cw=weekStart(today());
     let head="";if(wk!==lastWk){lastWk=wk;const w=wkSum[wk];head=`<div class="hist-wk"><b>${wk===cw?"Den här veckan":"Vecka "+getWeek(wk)}</b><span>${w.n} pass · ${w.m} min</span></div>`}
-    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(itemTxt).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Tryck Logga pass ovan, eller Logga passet i din plan.</div>`;
+    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(itemTxt).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Tryck Nytt pass ovan för att komma igång.</div>`;
   {let mb=$("#hist-more");if(!mb){mb=document.createElement("button");mb.id="hist-more";mb.className="pill ghost block";mb.style.marginTop="10px";$("#hist").after(mb);mb.onclick=()=>{HN+=20;renderLog()}}mb.hidden=list.length<=HN;mb.textContent=`Visa fler pass (${list.length-HN} till)`}
   renderProgress();try{renderExList()}catch(e){}
 }
@@ -3221,7 +3284,7 @@ $("#rc-next").onclick=async()=>{
     await addLog({date:today(),type:"Racesimulering",min:Math.max(1,Math.round(total/60)),rpe:5,stations:S.map(s=>s.n),note:`Sluttid ${fmt(total)} mot målet ${fmtHM(RACE.target)}`,created:Date.now()});
     {const ev=myEvent();if(ev&&evLive(ev))postActivity("lopp",ev.c,`${fmt(total)} · ${divText()}`);else postActivity("pass","Racesimulering",`Sluttid ${fmt(total)}`)}
     if(!PRS.race||total<PRS.race){PRS.race=Math.round(total);await savePRs();toast("Sparat, och nytt rekord för hel Hyrox")}else toast("Loppet är sparat i loggen");
-    RACE=null;saveRace();renderRace();b.disabled=false;return}
+    {const ev=myEvent(),tt=Math.round(total),kd=ev&&evLive(ev)?"race":"sim";RACE=null;saveRace();renderRace();b.disabled=false;if(tt>=600&&tt<=36000&&SBUSER)setTimeout(()=>openResult(null,{t:tt,kind:kd}),900);}return}
   RACE.marks.push(Date.now());cue("tap");
   {const sg=segs(),n=RACE.marks.length;let c=0;for(let i=0;i<n;i++)c+=sg[i].tg;const d=(RACE.marks[n-1]-RACE.start)/1000-c;
    if(n===16){RACE.end=RACE.marks[15];releaseWake();confetti();say(`Mål! Tid ${spokenTime((RACE.end-RACE.start)/1000)}. ${spokenDelta(d)}.`)}
@@ -3692,7 +3755,7 @@ async function loadFriendData(force){
   const ids=FRIENDS.slice(0,200);const out={at:Date.now(),profs:{},acts:[],actOk:true,likes:{}};
   {
     const [pr,ac]=await Promise.all([
-      ids.length?SB.from("profiles").select("user_id,username,tag,avatar_url,stats,next_race,best_division,partner_id").in("user_id",ids):Promise.resolve({data:[]}),
+      ids.length?SB.from("profiles").select("user_id,username,tag,avatar_url,stats,next_race,best_division,partner_id,prs").in("user_id",ids):Promise.resolve({data:[]}),
       SB.from("activity").select("id,user_id,kind,title,detail,created_at").in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30)]);
     (pr.data||[]).forEach(p=>{out.profs[p.user_id]=p;NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},{user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url})});
     if(ac.error)out.actOk=false;else out.acts=ac.data||[];
@@ -3711,6 +3774,42 @@ function raceLine(nr,partnerId){
   const dbl=/Doubles/.test(div)&&partnerId&&NAMES[partnerId]?` med ${esc(NAMES[partnerId].username)}`:"";
   return {where,when,ev,sub:[venue?esc(venue):"",div?esc(div)+dbl:""].filter(Boolean).join(" · ")};
 }
+/* ============ Topplistor: tider från lopp och simuleringar, per klass ============ */
+const RCL=[["open-m-singel","Open Herr Singel"],["open-w-singel","Open Dam Singel"],["pro-m-singel","Pro Herr Singel"],["pro-w-singel","Pro Dam Singel"],["open-m-doubles","Open Herr Doubles"],["open-w-doubles","Open Dam Doubles"],["pro-m-doubles","Pro Herr Doubles"],["pro-w-doubles","Pro Dam Doubles"],["mixed","Mixed Doubles"]];
+const clsName=k=>(RCL.find(x=>x[0]===k)||[,""])[1];
+const clsMine=()=>set.fmt==="mixed"?"mixed":`${set.k==="pro"?"pro":"open"}-${set.g==="w"?"w":"m"}-${set.fmt==="doubles"?"doubles":"singel"}`;
+const resAll=()=>(Array.isArray(set.results)?set.results:[]).filter(x=>x&&(x.kind==="race"||x.kind==="sim")&&RCL.some(c=>c[0]===x.cls)&&+x.t>=600&&+x.t<=36000);
+function parseRes(v){const p=String(v||"").trim().replace(/[.,]/g,":").split(":").map(n=>n===""?NaN:Number(n));if(p.some(isNaN)||p.length<2||p.length>3||p.slice(1).some(n=>n>59||n<0))return null;return p.reduce((a,b)=>a*60+b,0)}
+function frTimes(D){const kind=set.frs==="sim"?"sim":"race",cls=RCL.some(c=>c[0]===set.frcls)?set.frcls:clsMine(),key=(kind==="race"?"r:":"s:")+cls;
+  const mine=resAll().filter(x=>x.kind===kind&&x.cls===cls).sort((a,b)=>a.t-b.t);
+  const rows=[];if(mine[0])rows.push({user_id:SBUSER.id,username:MYPROF.username,avatar_url:MYPROF.avatar_url,t:mine[0].t,me:true});
+  Object.values(D.profs).forEach(p=>{const t=+(p.prs||{})[key];if(t>=600&&t<=36000)rows.push({user_id:p.user_id,username:p.username,avatar_url:p.avatar_url,t})});
+  rows.sort((a,b)=>a.t-b.t);
+  const all=resAll().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  return `<div class="field fr-cls"><label for="fr-cls">Klass</label><select id="fr-cls">${RCL.map(([k,l])=>`<option value="${k}"${k===cls?" selected":""}>${l}</option>`).join("")}</select></div>
+   ${rows.length?`<div class="group">${rows.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0" aria-label="Visa ${b.me?"din profil":esc(b.username)+"s profil"}"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3></div></div><b class="fr-v">${fmt(b.t)}</b></div>`).join("")}</div>`
+     :`<div class="card"><p class="small">Inga tider i ${esc(clsName(cls))} än. Lägg in din, så blir du först på listan.</p></div>`}
+   <button class="pill block" data-res-add style="margin-top:12px">Lägg till min tid</button>
+   <p class="small fr-foot">Snabbast först, med varje persons bästa tid. Var och en fyller i sina egna tider, och VARV. kontrollerar dem inte.</p>
+   ${all.length?`<div class="sechead"><h2>Mina tider</h2></div><div class="group">${all.map(x=>`<button class="row" data-res="${esc(x.id)}"><div><h3>${fmt(x.t)} · ${x.kind==="race"?"Hyrox-lopp":"Simulering"}</h3><p>${esc([clsName(x.cls),x.name,x.date].filter(Boolean).join(" · "))}</p></div><span></span><span class="chev">›</span></button>`).join("")}</div>`:""}`}
+function openResult(id,pre){const x=id?resAll().find(r=>r.id===id):null;if(id&&!x)return;pre=pre||{};const kind=x?x.kind:pre.kind||(set.frs==="sim"?"sim":"race"),cls=x?x.cls:(RCL.some(c=>c[0]===set.frcls)?set.frcls:clsMine());let k=kind;
+  openSheet(`<div><span class="small">Topplista</span><h2>${x?"Ändra tid":"Lägg till min tid"}</h2></div>
+   <div class="seg" id="rs-kind" role="group" aria-label="Typ"><button data-k="race">Hyrox-lopp</button><button data-k="sim">Simulering</button></div>
+   <div class="field"><label for="rs-cls">Klass</label><select id="rs-cls">${RCL.map(([v,l])=>`<option value="${v}"${v===cls?" selected":""}>${l}</option>`).join("")}</select></div>
+   <div class="grid2"><div class="field"><label for="rs-t">Sluttid</label><input type="text" id="rs-t" inputmode="decimal" autocomplete="off" placeholder="1:12:30" value="${x?fmt(x.t):pre.t?fmt(pre.t):""}"></div><div class="field"><label for="rs-d">Datum</label><input type="date" id="rs-d" max="${today()}" value="${esc(x?x.date:today())}"></div></div>
+   <div class="field"><label for="rs-n">Lopp eller plats</label><input type="text" id="rs-n" maxlength="50" value="${x?esc(x.name||""):""}" placeholder="Valfritt, till exempel Stockholm"></div>
+   <button class="pill block" id="rs-save">${x?"Spara ändringarna":"Spara tiden"}</button>${x?'<button class="pill ghost block" id="rs-del">Ta bort tiden</button>':""}`,()=>{
+    const dk=()=>$$("#rs-kind [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));dk();$("#rs-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(b){k=b.dataset.k;dk()}};
+    const after=()=>{saveSet();closeSheet();if(location.hash==="#vanner")renderFriends()};
+    $("#rs-save").onclick=()=>{const t=parseRes($("#rs-t").value);if(!t||t<600||t>36000){toast("Skriv tiden som h:mm:ss eller mm:ss, till exempel 1:12:30.");$("#rs-t").focus();return}
+      const d=$("#rs-d").value;if(!isDay(d)||d>today()){toast("Välj ett datum som har varit.");return}
+      const r={id:x?x.id:"r"+Date.now().toString(36),kind:k,cls:$("#rs-cls").value,t,date:d,name:$("#rs-n").value.trim().slice(0,50)||null};const list=Array.isArray(set.results)?set.results:[];
+      if(!x&&list.length>=200){toast("Du har 200 tider. Ta bort någon först.");return}
+      set.results=x?list.map(y=>y&&y.id===x.id?r:y):list.concat(r);set.frs=k;set.frcls=r.cls;after();toast("Tiden är sparad.");HAPTIC("success")};
+    const del=$("#rs-del");if(del)del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen för att ta bort";del.style.color="var(--bad)";return}set.results=set.results.filter(y=>!y||y.id!==x.id);after();toast("Tiden är borttagen.")}})}
+document.addEventListener("click",e=>{const s=e.target.closest("[data-frs]");if(s){set.frs=s.dataset.frs;saveSet();renderFriends();return}
+  if(e.target.closest("[data-res-add]")){openResult();return}const r=e.target.closest("[data-res]");if(r)openResult(r.dataset.res)});
+document.addEventListener("change",e=>{if(e.target.id==="fr-cls"){set.frcls=e.target.value;saveSet();renderFriends()}});
 async function renderFriends(force){
   const el=$("#fr-body");if(!el)return;
   if(!SB){el.innerHTML=`<div class="card"><p class="small">Att följa andra kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
@@ -3728,7 +3827,9 @@ async function renderFriends(force){
   races.sort((a,b)=>a.nr.date.localeCompare(b.nr.date));
   const waiting=FRQ_OUT.map(r=>r.to_user);
   const kindTxt={lopp:"tävlade",rekord:"satte rekord",pass:"tränade"};
-  el.innerHTML=`
+  const frs=set.frs==="race"||set.frs==="sim"?set.frs:"week";
+  el.innerHTML=`<div class="seg fr-seg" role="group" aria-label="Visa">${[["week","Veckan"],["race","Hyrox-lopp"],["sim","Simuleringar"]].map(([k,l])=>`<button data-frs="${k}" aria-pressed="${k===frs}">${l}</button>`).join("")}</div>
+   <div id="fr-times"${frs==="week"?" hidden":""}>${frs==="week"?"":frTimes(D)}</div><div${frs==="week"?"":" hidden"}>
    ${FRQ_IN.length?`<a class="card fr-reqcard" href="#notiser"><b>${FRQ_IN.length===1?esc((NAMES[FRQ_IN[0].from_user]||{username:"Någon"}).username)+" vill följa dig":FRQ_IN.length+" vill följa dig"}</b><span class="linkbtn">Svara ›</span></a>`:""}
    ${FRIENDS.length?"":`<div class="card fr-empty"><h3>Hitta någon att följa</h3><p class="small">Sök bland offentliga profiler, eller använd namn och kod. Dela din profil så att andra kan följa dig. Ditt namn och kod är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>.</p></div>`}
    <div class="sechead"><h2>Den här veckan</h2><span class="small">Varv</span></div>
@@ -3748,7 +3849,7 @@ async function renderFriends(force){
        return `<div class="row fr-act" data-prof="${esc(a.user_id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${mine?"Du":esc(p.username)} ${kindTxt[a.kind]||"tränade"}</h3><p>${esc([a.title,a.detail].filter(Boolean).join(" · "))}</p>${mine?like:""}</div><div class="fr-side"><span class="small fr-ago">${agoTxt(a.created_at)}</span>${mine?"":like}</div></div>`}).join("")}</div>`
      :`<div class="card"><p class="small">Här syns det när de du följer tränar och tävlar.</p></div>`}
    ${waiting.length?`<div class="sechead"><h2>Väntar på svar</h2></div><div class="group">${waiting.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row" data-prof="${esc(id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på godkännande</p></div><span class="chev">›</span></div>`}).join("")}</div>`:""}
-   <div class="fr-acts"><button class="pill block" id="fr-add2">Hitta atleter</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela min profil</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div>`;
+   <div class="fr-acts"><button class="pill block" id="fr-add2">Hitta atleter</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela min profil</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div></div>`;
   const fd=$("#fr-feed");if(fd)fd.onclick=async e=>{const b=e.target.closest("[data-like]");if(!b||b.disabled)return;const id=+b.dataset.like,L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);
     b.disabled=true;if(on)L.splice(L.indexOf(SBUSER.id),1);else{L.push(SBUSER.id);HAPTIC("light")}
     b.setAttribute("aria-pressed",!on);b.querySelector("span").textContent=L.length||"";b.classList.toggle("pop",!on);

@@ -851,6 +851,25 @@ a.row{color:inherit;text-decoration:none}
 .cr-zl{display:flex;align-items:center;gap:10px;width:100%;max-width:340px;color:rgba(255,255,255,.8)}.cr-z{flex:1;accent-color:#fff}
 .cr-hint{font-size:.82rem;color:rgba(255,255,255,.7);text-align:center}
 .cp-tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+/* Profilsida */
+.pp-back{display:flex;align-items:center;gap:2px;min-height:44px;margin:calc(env(safe-area-inset-top,0px) + 11px) 0 14px -6px;padding-top:0;font-size:1.05rem;position:relative;z-index:31;transform:translateY(10px)}
+.pp-head{display:grid;justify-items:center;text-align:center;gap:6px;margin-bottom:16px}
+.pp-av{width:104px;height:104px;border-radius:50%;background:var(--tile);display:grid;place-items:center;font-size:2.2rem;font-weight:700;overflow:hidden;margin-bottom:6px}.pp-av img{width:100%;height:100%;object-fit:cover}
+.pp-head h1{font-size:clamp(1.7rem,8vw,2.2rem);letter-spacing:-.04em;line-height:1.1}
+.pp-handle{color:var(--muted);font-size:.95rem}.pp-handle span{opacity:.8}
+.pp-chips{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin-top:4px}.pp-chips span{background:var(--tile);border-radius:980px;padding:6px 12px;font-size:.84rem;font-weight:500}
+.pp-bio{max-width:36ch;font-size:.98rem;line-height:1.45;margin-top:4px}
+.pp-fw{margin-top:2px}
+.pp-btns{display:grid;gap:8px;margin-bottom:18px}
+.pp-tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pp-tiles .tile{gap:2px}.pp-tiles.two{margin-bottom:10px}
+.pp-per{width:auto}.pp-per button{padding:6px 12px;font-size:.85rem}
+.pp-bars{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:5px;align-items:end;height:96px;margin-top:10px}
+.pp-bars span{display:flex;align-items:flex-end;height:100%;background:var(--seg);border-radius:5px;overflow:hidden}.pp-bars i{display:block;width:100%;background:var(--ink);border-radius:5px}.pp-bars i.now{background:var(--accent)}
+.pp-bl{display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:6px}
+.pp-freq{gap:12px}.pp-fv{display:flex;align-items:baseline;gap:8px}.pp-fv b{font-size:2.4rem;font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums}.pp-fv span{color:var(--muted);font-size:.95rem}
+.pp-dots{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px}.pp-dots i{display:block;aspect-ratio:1;border-radius:50%;background:var(--seg)}.pp-dots i.on{background:var(--green)}
+.pp-t{font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:no-preference){.pp-bars i{animation:barIn 1.1s var(--spring) both;transform-origin:bottom;animation-delay:calc(var(--i)*40ms)}}
 /* Hitta vänner: svepkort */
 .deck{position:relative;height:310px;margin:4px 0 26px}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -1309,6 +1328,14 @@ a.row{color:inherit;text-decoration:none}
     <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
     <div class="fdv" data-v="find" hidden><div id="fd-find"></div></div>
     <div class="fdv" data-v="top" hidden><div id="fr-body"></div></div>
+  </div>
+</section>
+
+<!-- ================= PROFILSIDA ================= -->
+<section class="view" id="v-person">
+  <div class="wrap">
+    <button class="linkbtn pp-back" id="pp-back"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Tillbaka</button>
+    <div id="pp-body"></div>
   </div>
 </section>
 
@@ -2524,7 +2551,7 @@ function profilePayload(){
   const bt=PRS.race&&PRS.race>=600&&PRS.race<=36000?PRS.race:null;
   return {best_time:bt,best_division:divText().slice(0,60),prs,
     next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:me?me.s:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
-    stats:{wk:weekStart(today()),wv:P.weekVarv,sessions:LOGS.length,hours:Math.round(st.total/6)/10,streak:st.streak,week:st.now.n,varv:P.varv,tier:P.tier.n,medals:P.recent.length,since:set.since||null}};
+    card:cardPayload(),stats:{wk:weekStart(today()),wv:P.weekVarv,sessions:LOGS.length,hours:Math.round(st.total/6)/10,streak:st.streak,week:st.now.n,varv:P.varv,tier:P.tier.n,medals:P.recent.length,since:set.since||null}};
 }
 function syncProfile(){
   if(!MYPROF||!SB||!SBUSER)return;clearTimeout(syncProfile.t);
@@ -2542,7 +2569,8 @@ function renderSocial(){
   $("#pf-name").textContent=MYPROF.username;
   if(!av.querySelector(".pf-cam"))av.insertAdjacentHTML("beforeend",`<span class="pf-cam" aria-hidden="true">${CAM}</span>`);
   id.hidden=false;
-  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button><button class="divchip" id="pf-edit">Redigera profil</button>`;
+  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button><button class="divchip" id="pf-edit">Redigera profil</button><button class="divchip" id="pf-view">Visa min profil</button>`;
+  $("#pf-view").onclick=()=>viewProfile(SBUSER.id);
   $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}};
   $("#pf-edit").onclick=openEditProfile;
   const sub=[expTxt(MYPROF.experience),MYPROF.races_count?`${MYPROF.races_count} ${MYPROF.races_count===1?"tävling":"tävlingar"}`:"",MYPROF.is_public?"Offentlig profil":"Privat profil"].filter(Boolean).join(" · ");
@@ -2574,31 +2602,92 @@ function openAddFriend(){
     run();setTimeout(()=>$("#fa-in").focus({preventScroll:true}),350);
   });
 }
-async function viewProfile(uid){
-  const me=uid===SBUSER.id;
-  const {data:p}=await SB.from("profiles").select("*").eq("user_id",uid).maybeSingle();
-  const basic=p||NAMES[uid];
-  if(!p){openSheet(`<div class="pv-head">${avImg(basic&&basic.avatar_url,basic&&basic.username,"pv-av")}<h2>${handleHtml(basic)}</h2><p class="small">Privat profil. Följ för att se pass och lopp.</p></div>${friendBtns(uid,me)}`,()=>bindFriendBtns(uid));return}
-  if(p.partner_id&&!NAMES[p.partner_id]){const {data:n}=await SB.rpc("varv_names",{p_ids:[p.partner_id]});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
-  const st=p.stats||{},nr=p.next_race,prs=p.prs||{};
-  let nrTxt="–",nrSub="";if(nr&&isDay(nr.date)){const d=Math.round((new Date(nr.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);nrTxt=nr.name||evD(nr.date).toLocaleDateString("sv-SE",{day:"numeric",month:"short"});nrSub=d>=0?(d===0?"i dag":`om ${d} d`):""}
-  const partner=p.partner_id&&NAMES[p.partner_id];
-  const prRows=[["km","1 km löpning"],...S.map(x=>[x.id,x.n])].map(([k,n])=>`<div><span>${esc(n)}</span><b class="${num(prs[k])?"":"none"}">${num(prs[k])?fmt(num(prs[k])):"–"}</b></div>`).join("");
-  openSheet(`<div class="pv-head">${avImg(p.avatar_url,p.username,"pv-av")}<h2>${handleHtml(p)}</h2>
-     <div class="pv-chips">${p.experience?`<span class="hot">${esc(expTxt(p.experience))}</span>`:""}${p.best_division?`<span>${esc(p.best_division)}</span>`:""}${st.tier?`<span>${esc(st.tier)}</span>`:""}</div></div>
-   <div class="pv-fw" id="pv-fw" class="small"></div><div class="pv3"><div><small>Tävlingar</small><b>${num(p.races_count)}</b><span>genomförda</span></div><div><small>Bästa tid</small><b>${num(p.best_time)?fmt(num(p.best_time)):"–"}</b><span>hel Hyrox</span></div><div><small>Nästa</small><b>${esc(nrTxt)}</b><span>${esc(nrSub)}</span></div></div>
-   <div><h4 style="margin-bottom:8px">Personliga rekord</h4><div class="pvlist">${prRows}</div></div>
-   <div><h4 style="margin-bottom:8px">Träning</h4><div class="pvlist">
-     <div><span>Pass totalt</span><b>${num(st.sessions)}</b></div><div><span>Träningstid</span><b>${String(num(st.hours)).replace(".",",")} h</b></div>
-     <div><span>Pass denna vecka</span><b>${num(st.week)}</b></div><div><span>Veckor i rad</span><b>${num(st.streak)}</b></div>
-     <div><span>Varv och nivå</span><b>${num(st.varv)} · ${esc(st.tier||"Start")}</b></div><div><span>Utmärkelser</span><b>${num(st.medals)}</b></div></div></div>
-   <div><h4 style="margin-bottom:8px">Doubles-partner</h4>${partner?`<button class="row" style="background:var(--tile);border-radius:18px" data-prof="${esc(partner.user_id)}">${avImg(partner.avatar_url,partner.username)}<div><h3>${handleHtml(partner)}</h3><p>Tryck för att se profilen</p></div><span class="chev">›</span></button>`:`<div class="pvlist"><div><span>Ingen partner vald</span></div></div>`}</div>
-   ${me?`<button class="pill block" id="pv-edit">Redigera profil</button>`:friendBtns(uid,me)}`,()=>{
-    bindFriendBtns(uid);const e=$("#pv-edit");if(e)e.onclick=openEditProfile;
-    SB.rpc("varv_follow_counts",{p_id:uid}).then(({data})=>{const c=data&&data[0],el=$("#pv-fw");if(c&&el)el.innerHTML=`<p class="small" style="text-align:center">${num(c.followers)} följare · ${num(c.following)} följer</p>`},()=>{});
-    document.querySelectorAll("#sheet-in [data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof));
-  });
-}
+/* ============ Profilsida ============ */
+/* Det användaren valt att visa. Bara påslagna delar skickas till servern. */
+const SHARE=[["races","Tävlingar och bästa sluttid"],["run","Löprekord, 1 km och 5 km"],["train","Träning: pass, minuter, frekvens och utveckling"],["prs","Senaste personliga rekord"],["st","Stationernas bästa tider"]];
+const MONF=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
+function racesCount(){return Math.max(+(MYPROF&&MYPROF.races_count)||0,resAll().filter(x=>x.kind==="race").length)}
+function cardPayload(){const c=set.card||{},sh=c.share||{},o={v:1};
+  if(c.showName&&set.name)o.name=String(set.name).slice(0,60);
+  if(c.city)o.city=String(c.city).slice(0,40);
+  if(c.showAge&&+set.age>=14&&+set.age<=99)o.age=Math.round(+set.age);
+  if(c.showCls)o.cls={k:set.k==="pro"?"Pro":"Open",f:set.fmt==="mixed"?"Mixed Doubles":set.fmt==="doubles"?"Doubles":"Singel"};
+  if(c.bio)o.bio=String(c.bio).slice(0,200);
+  if(/^\d{4}-\d{2}$/.test(c.since||""))o.since=c.since;
+  if(sh.races)o.races={n:racesCount(),best:PRS.race&&PRS.race>=600?Math.round(PRS.race):null};
+  if(sh.run)o.run={k1:PRS.km?Math.round(PRS.km):null,k5:PRS.k5?Math.round(PRS.k5):null};
+  if(sh.train){const L=LOGS.filter(l=>l&&l.date&&l.date<=today()),mins=a=>a.reduce((s,l)=>s+(+l.min||0),0),since=(a,b)=>L.filter(l=>l.date>=dAgo(a-1)&&l.date<=dAgo(b));
+    const ws=weekStart(today()),w=Array(12).fill(0),wn=Array(12).fill(0);L.forEach(l=>{const i=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(i>=0&&i<12){w[11-i]+=(+l.min||0);wn[11-i]++}});
+    const d30=since(30,0),p30=since(60,30),d90=since(90,0),p90=since(180,90);
+    o.train={n:L.length,min:Math.round(mins(L)),weeks:new Set(L.map(l=>weekStart(l.date))).size,w12:w.map(Math.round),n12:wn,
+      d30:{n:d30.length,min:Math.round(mins(d30)),pn:p30.length,pmin:Math.round(mins(p30))},d90:{n:d90.length,min:Math.round(mins(d90)),pn:p90.length,pmin:Math.round(mins(p90))}}}
+  if(sh.prs){const pd=set.prd||{};o.prs=Object.keys(pd).filter(k=>PRS[k]&&PRKEYS.some(x=>x[0]===k)).sort((a,b)=>String(pd[b]).localeCompare(String(pd[a]))).slice(0,5).map(k=>({k,t:Math.round(PRS[k]),d:pd[k]}))}
+  if(sh.st){o.st={};S.forEach(s=>{if(PRS[s.id])o.st[s.id]=Math.round(PRS[s.id])})}
+  return o}
+function prDate(k){set.prd=Object.assign({},set.prd||{});set.prd[k]=today();saveSet()}
+/* Profilsidan som egen vy, adress #u/<id> */
+async function viewProfile(uid){if(!uid)return;closeSheet();if(location.hash==="#u/"+uid){renderPerson(uid);return}location.hash="#u/"+uid}
+const ppNum=v=>(+v||0).toLocaleString("sv-SE");
+async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
+  if(!SB||!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för att se profiler</h3><button class="pill block" id="pp-login">Logga in</button></div>`;$("#pp-login").onclick=()=>openAuth();return}
+  const me=uid===SBUSER.id;if(!el.dataset.uid||el.dataset.uid!==uid)el.innerHTML=`<div class="card"><p class="small">Hämtar profilen…</p></div>`;el.dataset.uid=uid;
+  const {data:p}=await SB.from("profiles").select("user_id,username,tag,avatar_url,card,is_public").eq("user_id",uid).maybeSingle();
+  if(location.hash!=="#u/"+uid)return;
+  const basic=p||NAMES[uid]||{username:"Okänd",tag:"0000"};
+  if(!p){el.innerHTML=`<div class="pp-head">${avImg(basic.avatar_url,basic.username,"pp-av")}<h1>${esc(basic.username)}</h1><p class="pp-handle">${esc(basic.username)}#${esc(basic.tag||"")}</p></div>
+     <div class="card"><p class="small">Profilen är privat. Följ för att se det ${esc(basic.username)} delar.</p></div><div class="pp-btns">${friendBtns(uid,me)}</div>`;bindFriendBtns(uid);return}
+  NAMES[uid]=Object.assign({},NAMES[uid]||{},{user_id:uid,username:p.username,tag:p.tag,avatar_url:p.avatar_url});
+  const c=me?cardPayload():(p.card||{}),chips=[];
+  if(c.cls)chips.push(`${c.cls.k} · ${c.cls.f}`);if(c.city)chips.push(c.city);if(c.age)chips.push(`${c.age} år`);
+  if(c.since){const [y,m]=c.since.split("-");chips.push(`HYROX sedan ${MONF[+m-1]||""} ${y}`)}
+  const tiles=[];
+  if(c.races){tiles.push(["HYROX-tävlingar",ppNum(c.races.n)]);if(c.races.best)tiles.push(["Bästa sluttid",fmt(c.races.best)])}
+  if(c.run){if(c.run.k5)tiles.push(["5 km",fmt(c.run.k5)]);if(c.run.k1)tiles.push(["1 km PB",fmt(c.run.k1)])}
+  if(c.train){tiles.push(["Träningspass totalt",ppNum(c.train.n)]);tiles.push(["Träningsminuter",ppNum(c.train.min)])}
+  const nothing=!tiles.length&&!c.train&&!(c.prs&&c.prs.length)&&!(c.st&&Object.keys(c.st).length);
+  const per=set.ppPer===90?90:30,T=c.train,dd=T&&(per===30?T.d30:T.d90);
+  const chg=(a,b,u)=>{if(!b&&!a)return `<small class="st-d">–</small>`;const d=a-b;return `<small class="st-d ${d>0?"ahead":d<0?"behind":""}">${d>0?"+":d<0?"−":"±"}${ppNum(Math.abs(d))}${u} mot ${per} dagar innan</small>`};
+  const freq=T?(T.n12||[]).reduce((a,b)=>a+b,0)/12:0,active12=T?(T.n12||[]).filter(n=>n>0).length:0;
+  const name=c.name?esc(c.name):esc(p.username);
+  el.innerHTML=`<div class="pp-head">${avImg(p.avatar_url,p.username,"pp-av")}<h1>${name}</h1><p class="pp-handle">${esc(p.username)}<span>#${esc(p.tag)}</span></p>
+     ${chips.length?`<div class="pp-chips">${chips.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
+     ${c.bio?`<p class="pp-bio">${esc(c.bio)}</p>`:""}<p class="small pp-fw" id="pp-fw"></p></div>
+   <div class="pp-btns">${me?`<button class="pill ghost block" id="pp-edit">Redigera profil och vad du visar</button>`:friendBtns(uid,me)}</div>
+   ${tiles.length?`<div class="pp-tiles">${tiles.map(([l,v])=>`<div class="tile"><span>${esc(l)}</span><b>${esc(v)}</b></div>`).join("")}</div>`:""}
+   ${T?`<div class="sechead"><h2>Utveckling</h2><div class="seg pp-per" id="pp-per" role="group" aria-label="Period"><button data-per="30" aria-pressed="${per===30}">30 dagar</button><button data-per="90" aria-pressed="${per===90}">90 dagar</button></div></div>
+     <div class="pp-tiles two"><div class="tile"><span>Pass</span><b>${dd.n}</b>${chg(dd.n,dd.pn,"")}</div><div class="tile"><span>Minuter</span><b>${ppNum(dd.min)}</b>${chg(dd.min,dd.pmin," min")}</div></div>
+     <div class="card"><span class="lbl">Minuter per vecka, 12 veckor</span>${miniBars(T.w12||[])}</div>
+     <div class="sechead"><h2>Träningsfrekvens</h2></div>
+     <div class="card pp-freq"><div class="pp-fv"><b>${freq.toLocaleString("sv-SE",{maximumFractionDigits:1})}</b><span>pass per vecka i snitt</span></div>
+      <div class="pp-dots" role="img" aria-label="${active12} av 12 veckor med träning">${(T.n12||[]).map(n=>`<i class="${n?"on":""}" title="${n} pass"></i>`).join("")}</div>
+      <p class="small">${active12} av de senaste 12 veckorna med träning. ${ppNum(T.weeks)} aktiva träningsveckor totalt.</p></div>`:""}
+   ${c.prs&&c.prs.length?`<div class="sechead"><h2>Senaste rekord</h2></div><div class="group">${c.prs.map(r=>{const n=(PRKEYS.find(x=>x[0]===r.k)||[,r.k])[1];return `<div class="row"><span class="ra-ic st-ic g">${icoSvg("up")}</span><div><h3>${esc(n)}</h3><p>${isDay(r.d)?esc(fmtDM(r.d)):""}</p></div><b class="pp-t">${fmt(r.t)}</b></div>`}).join("")}</div>`:""}
+   ${c.st&&Object.keys(c.st).length?`<div class="sechead"><h2>Stationerna</h2><span class="small">Bästa tider</span></div><div class="group">${S.map((s,i)=>c.st[s.id]?`<div class="row"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3></div><b class="pp-t">${fmt(c.st[s.id])}</b></div>`:"").join("")}</div>`:""}
+   ${nothing?`<div class="card"><p class="small">${me?"Du visar ingen statistik än. Välj vad andra får se under Redigera profil.":esc(p.username)+" delar ingen statistik än."}</p></div>`:""}
+   <div class="sechead"><h2>Inlägg</h2></div><div id="pp-posts"><div class="card"><p class="small">Hämtar inlägg…</p></div></div>`;
+  const ed=$("#pp-edit");if(ed)ed.onclick=openEditProfile;bindFriendBtns(uid);
+  const pp=$("#pp-per");if(pp)pp.onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.ppPer=+b.dataset.per;saveSet();renderPerson(uid)};
+  SB.rpc("varv_follow_counts",{p_id:uid}).then(({data})=>{const k=data&&data[0],f=$("#pp-fw");if(k&&f)f.textContent=`${ppNum(k.followers)} följare · ${ppNum(k.following)} följer`},()=>{});
+  const D=await loadPosts(uid);if(location.hash!=="#u/"+uid)return;const box=$("#pp-posts");if(!box)return;
+  if(!D){box.innerHTML=`<div class="card"><p class="small">${me?"":"Följ "+esc(p.username)+" för att se inläggen."}</p></div>`;return}
+  box.innerHTML=D.acts.length?D.acts.map(a=>fdPost(a,D)).join(""):`<div class="card"><p class="small">${me?"Du har inte delat något än.":esc(p.username)+" har inte delat något än."}</p></div>`;
+  box.onclick=e=>postClick(e,D)}
+function miniBars(v){const mx=Math.max(1,...v);return `<div class="pp-bars" role="img" aria-label="Minuter per vecka de senaste tolv veckorna">${v.map((m,i)=>`<span title="${m} min"><i style="height:${Math.max(m?6:0,Math.round(m/mx*100))}%;--i:${i}" class="${i===v.length-1?"now":""}"></i></span>`).join("")}</div><div class="pp-bl"><span>12 v sedan</span><span>Den här veckan</span></div>`}
+async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url").eq("user_id",uid).order("created_at",{ascending:false}).limit(30);
+  if(error)return null;const D={acts:acts||[],likes:{},comments:{}};if(!D.acts.length)return D;const ids=D.acts.map(a=>a.id);
+  const [lk,cm]=await Promise.all([SB.from("activity_likes").select("activity_id,user_id").in("activity_id",ids),SB.from("activity_comments").select("id,activity_id,user_id,body,created_at").in("activity_id",ids).order("created_at",{ascending:true}).limit(500)]);
+  if(!lk.error){D.likeOk=true;(lk.data||[]).forEach(l=>{(D.likes[l.activity_id]=D.likes[l.activity_id]||[]).push(l.user_id)})}
+  if(!cm.error){D.comOk=true;(cm.data||[]).forEach(x=>{(D.comments[x.activity_id]=D.comments[x.activity_id]||[]).push(x)})}
+  const miss=[...new Set(Object.values(D.likes).flat().concat((cm.data||[]).map(x=>x.user_id)))].filter(id=>id!==SBUSER.id&&!NAMES[id]);
+  if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
+  return D}
+function postClick(e,D){
+  const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return true}deletePost(+dp.dataset.delpost,D);return true}
+  const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return true}
+  const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return true}
+  const md=e.target.closest(".po-media");if(md){const now=Date.now();if(md._t&&now-md._t<320){md._t=0;fdLike(+md.dataset.id,D,true)}else md._t=now;return true}
+  const pr=e.target.closest("[data-prof]");if(pr){viewProfile(pr.dataset.prof);return true}return false}
+
 function friendBtns(uid,me){if(me)return "";
   const more=`<div class="pv-more">${FOLLOWERS.includes(uid)?`<button class="linkbtn" id="pv-rmf">Ta bort som följare</button>`:""}<button class="linkbtn" id="pv-block">Blockera</button><button class="linkbtn" id="pv-report">Anmäl</button></div>`;
   let main;
@@ -2608,8 +2697,8 @@ function friendBtns(uid,me){if(me)return "";
   else main=`<button class="pill block" id="pv-add">${FOLLOWERS.includes(uid)?"Följ tillbaka":"Följ"}</button>`;
   return main+more}
 function bindFriendBtns(uid){
-  const on=(id,f)=>{const b=$(id);if(b)b.onclick=()=>busy(b,async()=>{await f();closeSheet()})};
-  const arm=(id,txt,f)=>{const r=$(id);if(r)r.onclick=()=>{if(!r.dataset.c){r.dataset.c=1;r.textContent=txt;r.style.color="var(--bad)";return}busy(r,async()=>{if(await f())closeSheet()})}};
+  const ppRe=()=>{if(location.hash==="#u/"+uid)renderPerson(uid)};const on=(id,f)=>{const b=$(id);if(b)b.onclick=()=>busy(b,async()=>{await f();closeSheet();ppRe()})};
+  const arm=(id,txt,f)=>{const r=$(id);if(r)r.onclick=()=>{if(!r.dataset.c){r.dataset.c=1;r.textContent=txt;r.style.color="var(--bad)";return}busy(r,async()=>{if(await f()){closeSheet();ppRe()}})}};
   on("#pv-add",()=>sendFriendRequest(uid));on("#pv-yes",()=>answerFriend(uid,true));on("#pv-no",()=>answerFriend(uid,false));on("#pv-undo",()=>cancelRequest(uid));
   arm("#pv-rm","Tryck igen för att sluta följa",async()=>{const ok=await removeFriend(uid);if(ok)toast("Du följer inte längre "+((NAMES[uid]||{}).username||"personen")+".");return ok});
   arm("#pv-rmf","Tryck igen för att ta bort",()=>socialRpc("varv_remove_follower",uid,"Följaren är borttagen."));
@@ -2634,7 +2723,7 @@ function openPeople(kind){const ids=kind==="followers"?FOLLOWERS:FRIENDS;
 function openBlocked(){openSheet(`<div><span class="small">Inställningar</span><h2>Blockerade</h2></div>${BLOCKED.length?`<div class="group">${BLOCKED.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3></div><button class="linkbtn" data-unb="${esc(id)}">Avblockera</button></div>`}).join("")}</div>`:`<div class="card"><p class="small">Du har inte blockerat någon.</p></div>`}`,()=>{
   document.querySelectorAll("#sheet-in [data-unb]").forEach(b=>b.onclick=()=>busy(b,async()=>{if(await socialRpc("varv_unblock",b.dataset.unb,"Blockeringen är borttagen."))closeSheet()}))})}
 function openEditProfile(){
-  if(!MYPROF)return;let exp=MYPROF.experience||"",pub=!!MYPROF.is_public;
+  if(!MYPROF)return;let exp=MYPROF.experience||"",pub=!!MYPROF.is_public;const cd=Object.assign({},set.card||{}),sh=Object.assign({},cd.share||{});
   const opts=FRIENDS.map(fid=>{const p=NAMES[fid];return p?`<option value="${esc(fid)}"${fid===MYPROF.partner_id?" selected":""}>${esc(handleTxt(p))}</option>`:""}).join("");
   openSheet(`<div><span class="small">Profil</span><h2>Redigera profil</h2></div>
    <div style="display:flex;gap:10px;flex-wrap:wrap"><button class="pill ghost" id="ep-pic" type="button">Byt profilbild</button>${MYPROF.avatar_url?`<button class="pill ghost" id="ep-nopic" type="button">Ta bort bild</button>`:""}</div>
@@ -2642,6 +2731,14 @@ function openEditProfile(){
      <div class="field"><label for="ep-name">Användarnamn</label><input type="text" id="ep-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" value="${esc(MYPROF.username)}"><span class="small">Din kod #${esc(MYPROF.tag)} är fast och följer med om du byter namn.</span></div>
      <div class="field"><label>Hyrox-erfarenhet</label><div class="seg" id="ep-exp" role="group" aria-label="Hyrox-erfarenhet">${EXP.map(([k,l])=>`<button type="button" data-x="${k}" aria-pressed="${k===exp}">${l}</button>`).join("")}</div></div>
      <div class="field"><label for="ep-races">Genomförda tävlingar</label><input type="number" id="ep-races" inputmode="numeric" min="0" max="500" value="${MYPROF.races_count||0}"></div>
+     <div class="field"><label for="ep-city">Ort</label><input type="text" id="ep-city" maxlength="40" autocomplete="address-level2" value="${esc(cd.city||"")}" placeholder="Till exempel Säter"></div>
+     <div class="field"><label for="ep-bio">Kort presentation</label><textarea id="ep-bio" rows="3" maxlength="200" placeholder="Vad tränar du för, och vad är ditt mål?">${esc(cd.bio||"")}</textarea></div>
+     <div class="grid2"><div class="field"><label for="ep-since">Började med HYROX</label><input type="month" id="ep-since" max="${today().slice(0,7)}" value="${esc(cd.since||"")}"></div><div class="field"><label for="ep-age">Ålder</label><input type="number" id="ep-age" inputmode="numeric" min="14" max="99" value="${esc(set.age||"")}"></div></div>
+     <div class="field"><span class="lbl">Visa på din profil</span><span class="small">Ort, presentation och startår visas när du fyllt i dem. Resten visas bara om du slår på det.</span></div>
+     ${swRow("ep-showName","Ditt namn",set.name?esc(set.name):"Namnet du angav när du började",!!cd.showName)}
+     ${swRow("ep-showAge","Ålder","Visas som antal år",!!cd.showAge)}
+     ${swRow("ep-showCls","Klass",divText(),!!cd.showCls)}
+     ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",!!sh[k])).join("")}
      <div class="field"><label for="ep-partner">Doubles-partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Följ din partner först.</span>`}</div>
      ${swRow("ep-pub","Offentlig profil","På: alla inloggade kan hitta dig, se din profil och följa dig direkt. Av: bara de du godkänner får följa dig. Namn och kod syns alltid för den som söker på dem.",pub)}
      <p class="small au-msg" id="ep-msg" role="status" aria-live="polite"></p>
@@ -2650,6 +2747,8 @@ function openEditProfile(){
     const msg=$("#ep-msg");
     $("#ep-exp").onclick=e=>{const b=e.target.closest("[data-x]");if(!b)return;exp=exp===b.dataset.x?"":b.dataset.x;$$("#ep-exp button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.x===exp))};
     $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub)};
+    ["showName","showAge","showCls"].forEach(k=>{const b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=!cd[k];b.setAttribute("aria-checked",cd[k])}});
+    SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=!sh[k];b.setAttribute("aria-checked",sh[k])}});
     $("#ep-pic").onclick=()=>$("#pf-av-file").click();
     const np=$("#ep-nopic");if(np)np.onclick=()=>busy(np,async()=>{try{await SB.storage.from("avatars").remove([SBUSER.id+"/avatar.jpg"])}catch(e){}
       await SB.from("profiles").update({avatar_url:null}).eq("user_id",SBUSER.id);MYPROF.avatar_url=null;MEINFO.avatarUrl="";renderAvatar();renderProfile();closeSheet();toast("Profilbilden är borttagen")});
@@ -2657,10 +2756,13 @@ function openEditProfile(){
       const name=$("#ep-name").value.trim();if(!NAME_RE.test(name)){msg.textContent="Användarnamnet får ha 2–20 tecken: bokstäver, siffror, _ och punkt.";msg.classList.add("bad");return}
       const races=Math.max(0,Math.min(500,Math.round(+$("#ep-races").value||0)));
       if(exp){set.level={ny:"ny",motionar:"mellan",erfaren:"mellan",elit:"elit"}[exp];saveSet();try{renderPlan();renderHome()}catch(x){}}
-      const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub};
+      const ag=Math.round(+$("#ep-age").value||0);if(ag>=14&&ag<=99)set.age=ag;
+      cd.city=$("#ep-city").value.trim().slice(0,40);cd.bio=$("#ep-bio").value.trim().slice(0,200);cd.since=/^\d{4}-\d{2}$/.test($("#ep-since").value)?$("#ep-since").value:"";cd.share=sh;set.card=cd;saveSet();
+      if(MYPROF)MYPROF.races_count=races;
+      const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub,card:cardPayload()};
       const {error}=await SB.from("profiles").update(upd).eq("user_id",SBUSER.id);
       if(error){msg.textContent=profErr(error);msg.classList.add("bad");return}
-      Object.assign(MYPROF,upd);await loadFriends();renderProfile();try{renderHome()}catch(e){}closeSheet();toast("Profilen är sparad");HAPTIC("success")})};
+      Object.assign(MYPROF,upd);await loadFriends();renderProfile();try{renderHome()}catch(e){}closeSheet();toast("Profilen är sparad");HAPTIC("success");if(location.hash==="#u/"+SBUSER.id)renderPerson(SBUSER.id)})};
   });
 }
 /* Beskärning: dra för att flytta, nyp eller dra i reglaget för att zooma */
@@ -3052,12 +3154,12 @@ addEventListener("resize",()=>{if(TON)tourStep()});
 function maybeTour(){if(!set.toured&&set.onboarded)setTimeout(()=>{if(!set.toured&&$("#sheet").hidden)startTour()},700)}
 
 /* ============ Rekord ============ */
-const PRKEYS=[["race","Hel Hyrox"],["km","1 km löpning"],...S.map(s=>[s.id,s.n])];
+const PRKEYS=[["race","Hel Hyrox"],["km","1 km löpning"],["k5","5 km löpning"],...S.map(s=>[s.id,s.n])];
 function renderPRs(){
   const t=planTimes();const tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
   const have=PRKEYS.filter(([k])=>PRS[k]);$("#prs-empty").hidden=have.length>0;$("#pr-add").hidden=have.length===PRKEYS.length;
   $("#prs").innerHTML=have.map(([k,n])=>{const v=PRS[k],d=v-tg[k];
-    return `<button class="pr" data-pr="${k}"><small>${n}</small><b>${fmt(v)}</b><span class="vs ${d<=0?"ahead":"behind"}">${fmtD(d)} mot plan</span></button>`}).join("");
+    return `<button class="pr" data-pr="${k}"><small>${n}</small><b>${fmt(v)}</b>${tg[k]!=null?`<span class="vs ${d<=0?"ahead":"behind"}">${fmtD(d)} mot plan</span>`:""}</button>`}).join("");
 }
 function openPR(k){
   const n=(PRKEYS.find(x=>x[0]===k)||[])[1];const v=PRS[k];
@@ -3065,7 +3167,7 @@ function openPR(k){
    <div class="field"><label for="pr-in">Tid, skriv bara siffror</label><input type="text" id="pr-in" inputmode="numeric" data-tm="${k==="race"?5:4}" placeholder="${k==="race"?"1:29:30":"4:15"}" value="${v?fmt(v):""}"></div>
    <div class="grid2">${v?`<button class="pill ghost" id="pr-del">Ta bort</button>`:"<span></span>"}<button class="pill" id="pr-save">Spara</button></div>`,()=>{
     const inp=$("#pr-in");setTimeout(()=>inp.focus(),320);
-    $("#pr-save").onclick=()=>{const s=parseT(inp.value);if(!s){toast("Skriv tiden med siffror, till exempel 415 för 4:15");return}const better=!PRS[k]||s<PRS[k];PRS[k]=s;savePRs();renderPRs();closeSheet();toast(better?"Nytt rekord sparat":"Rekordet är uppdaterat");if(better)setTimeout(confetti,250)};
+    $("#pr-save").onclick=()=>{const s=parseT(inp.value);if(!s){toast("Skriv tiden med siffror, till exempel 415 för 4:15");return}const better=!PRS[k]||s<PRS[k];if(better)prDate(k);PRS[k]=s;savePRs();renderPRs();closeSheet();toast(better?"Nytt rekord sparat":"Rekordet är uppdaterat");if(better)setTimeout(confetti,250)};
     const d=$("#pr-del");if(d)d.onclick=()=>{delete PRS[k];savePRs();renderPRs();closeSheet()};
   });
 }
@@ -3502,7 +3604,7 @@ function bestFromLogs(k){const std=k==="km"?1000:(exStd(k)||{}).m;if(!std)return
   LOGS.forEach(l=>(l.items||[]).forEach(it=>{const key=it.ex==="run"||it.ex==="tread"?"km":it.ex;if(key!==k)return;(it.sets||[]).forEach(x=>{if(nz(x.t)&&+x.m===std&&(best==null||x.t<best))best=x.t})}));return best}
 async function fixPRs(oldItems){let ch=false;const keys=new Set();
   (oldItems||[]).forEach(it=>{const k=it.ex==="run"||it.ex==="tread"?"km":(S.find(x=>x.id===it.ex)?it.ex:null);if(k&&(it.sets||[]).some(x=>nz(x.t)&&Math.round(x.t)===PRS[k]))keys.add(k)});
-  keys.forEach(k=>{const b=bestFromLogs(k);if(b==null)delete PRS[k];else PRS[k]=Math.round(b);ch=true});
+  keys.forEach(k=>{const b=bestFromLogs(k);if(b==null)delete PRS[k];else{const nb=Math.round(b);if(!PRS[k]||nb<PRS[k])prDate(k);PRS[k]=nb}ch=true});
   if(ch){await savePRs();try{renderPRs()}catch(e){}}}
 function prefill(o){openLogger({type:o.type,min:o.min,note:o.note,plan:o.plan,stations:o.stations,kicker:"Från din plan",fresh:o.fresh,forLive:o.forLive});if(o.start&&LG.items.length)startLive()}
 function openLogSheet(){openLogger()}
@@ -3837,7 +3939,7 @@ $("#rc-next").onclick=async()=>{
     const rsg=segs();let rp=RACE.start;const rsp=RACE.marks.slice(0,16).map(m=>{const x=Math.round((m-rp)/1000);rp=m;return x});
     await addLog({date:today(),type:"Racesimulering",min:Math.max(1,Math.round(total/60)),rpe:5,stations:S.map(s=>s.n),note:`Sluttid ${fmt(total)} mot målet ${fmtHM(RACE.target)}`,created:Date.now(),race:{sp:rsp,tg:rsg.map(x=>Math.round(x.tg)),cls:clsMine()}});
     {const ev=myEvent();if(ev&&evLive(ev))postActivity("lopp",ev.c,`${fmt(total)} · ${divText()}`);else postActivity("pass","Racesimulering",`Sluttid ${fmt(total)}`)}
-    if(!PRS.race||total<PRS.race){PRS.race=Math.round(total);await savePRs();toast("Sparat, och nytt rekord för hel Hyrox")}else toast("Loppet är sparat i loggen");
+    if(!PRS.race||total<PRS.race){PRS.race=Math.round(total);prDate("race");await savePRs();toast("Sparat, och nytt rekord för hel Hyrox")}else toast("Loppet är sparat i loggen");
     {const ev=myEvent(),tt=Math.round(total),kd=ev&&evLive(ev)?"race":"sim";RACE=null;saveRace();renderRace();b.disabled=false;if(tt>=600&&tt<=36000&&SBUSER)setTimeout(()=>openResult(null,{t:tt,kind:kd}),900);}return}
   RACE.marks.push(Date.now());cue("tap");
   {const sg=segs(),n=RACE.marks.length;let c=0;for(let i=0;i<n;i++)c+=sg[i].tg;const d=(RACE.marks[n-1]-RACE.start)/1000-c;
@@ -4457,12 +4559,8 @@ async function renderFeed(force){
   const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att fylla flödet</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><button class="pill block" data-fd-go="find">Hitta vänner</button></div>`:"";
   el.innerHTML=`<button class="pill block fd-new" data-fd-new>${CAMI}Dela ett inlägg</button>`+empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
   el.onclick=e=>{if(e.target.closest("[data-fd-new]")){openComposer();return}
-    const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return}deletePost(+dp.dataset.delpost,D);return}
     const g=e.target.closest("[data-fd-go]");if(g){setFdView(g.dataset.fd||g.dataset.fdGo);saveSet();renderFeed();return}
-    const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return}
-    const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return}
-    const md=e.target.closest(".po-media");if(md){const now=Date.now();if(md._t&&now-md._t<320){md._t=0;fdLike(+md.dataset.id,D,true)}else md._t=now;return}
-    const pr=e.target.closest("[data-prof]");if(pr)viewProfile(pr.dataset.prof)};
+    postClick(e,D)};
   const top=D.acts.find(a=>a.user_id!==SBUSER.id);if(top){set.frSeen=top.created_at;saveSet()}fdDot();frDot();
 }
 /* Dela ett inlägg med bild */
@@ -5018,11 +5116,12 @@ function appBadge(n){try{if("setAppBadge" in navigator){n?navigator.setAppBadge(
 const VIEWS=["hem","stationer","feed","race","logg","notiser","profil"];
 function route(){
   {const h=location.hash.slice(1);if(h==="vanner"||h==="plan"){history.replaceState(null,"","#feed")}}
-  const v=VIEWS.includes(location.hash.slice(1))?location.hash.slice(1):"hem";
+  const raw=location.hash.slice(1),person=/^u\/[\w-]{1,64}$/.test(raw);
+  const v=person?"person":VIEWS.includes(raw)?raw:"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
-  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=true;if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(v==="notiser")renderNotiser();frDot();notiBadge();
+  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=true;if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
   if(v==="logg"){drawRings(true);renderLog()}
 }
@@ -5035,6 +5134,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("#pf-theme [data-
   document.querySelectorAll("#pf-theme button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
 applyTheme();
 /* ============ Start ============ */
+$("#pp-back").onclick=()=>{if(history.length>1)history.back();else location.hash="#feed"};
 drawOval();refreshDivision();renderSplits();renderPlan();renderLog();renderPRs();renderHome();renderPack();renderRace();
 if(RACE&&!RACE.end){startTick();keepAwake()}
 route();

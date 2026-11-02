@@ -189,7 +189,33 @@ details.week summary::-webkit-details-marker{display:none}
 .wk-meta b{display:block}
 .wk-meta span{font-size:.82rem;color:var(--muted)}
 .phase{font-size:.7rem;font-weight:600;text-transform:uppercase;letter-spacing:.05em;padding:3px 8px;border-radius:980px;background:var(--card);color:var(--muted);white-space:nowrap}
-.phase.now{background:var(--hot);color:#fff}
+.phase.now{color:var(--link)}
+.passes{background:var(--tile);border-radius:18px;overflow:hidden}
+.week .passes{background:var(--card);border-radius:14px}
+.pass+.pass{border-top:1px solid var(--hair)}
+.pass summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 14px;min-height:60px}
+.pass summary::-webkit-details-marker{display:none}
+.pass summary h3{font-size:1rem;letter-spacing:-.01em;font-weight:600}
+.pass summary p{color:var(--muted);font-size:.86rem;line-height:1.35}
+.pass .chev{display:inline-block;color:var(--muted);transition:transform .2s}
+.pass[open] .chev{transform:rotate(90deg)}
+.pass .state{font-size:.86rem;font-weight:600;color:var(--good);white-space:nowrap}
+.pass .late{color:var(--link)}
+.pass-b{display:grid;gap:8px;padding:0 14px 12px}
+.pass-b p{color:var(--muted);font-size:.92rem;line-height:1.45}
+.pass-b .what{font-size:.86rem}
+.pass .logbtn{justify-self:start;color:var(--link);background:none;border:0;padding:0 10px 0 0;min-height:44px;cursor:pointer;font-size:.95rem}
+.plbar{display:flex;gap:3px}
+.plbar i{flex:1;height:6px;border-radius:3px;background:var(--tile)}
+.plbar i.d{background:var(--green)}
+.plbar i.n{background:var(--accent)}
+.today .pl-link{justify-self:start;color:var(--link);background:none;border:0;padding:0;min-height:44px;cursor:pointer;font-size:.95rem}
+#adapt .banner{margin:0}
+#adapt .bicon.start,#adapt .bicon.steady{background:var(--card);color:var(--ink)}
+#adapt details{margin-top:4px}
+#adapt summary{cursor:pointer;color:var(--link);font-size:.9rem;min-height:32px;display:flex;align-items:center}
+#adapt details p{margin-top:4px}
+#p-test{margin-top:12px}
 details.week summary .chev{transition:transform .2s;display:inline-block}
 details.week[open] summary .chev{transform:rotate(90deg)}
 .wk-r{display:flex;gap:8px;align-items:center}
@@ -1004,12 +1030,22 @@ a.row{color:inherit;text-decoration:none}
 
     </div>
 
-    <div class="sechead"><h2>Träningsschema</h2><button class="linkbtn" id="cal-btn" hidden>Lägg i kalendern</button></div>
-    <p class="small" id="p-weeks" style="margin:-4px 0 12px"></p>
-    <div id="adapt"></div>
-    <div class="weeks" id="p-plan"></div>
+    <div class="seg" id="pl-seg" role="group" aria-label="Visa" style="margin:14px 0 16px"><button data-pl="pass">Passen</button><button data-pl="lopp">Loppet</button></div>
 
-    <div class="sechead"><h2>Splittider</h2><span class="small" id="p-pace"></span></div>
+    <div id="pl-pass">
+    <div class="today" id="p-next"></div>
+    <div id="adapt" style="margin-top:12px"></div>
+    <div class="sechead"><h2 id="p-wk-h">Den här veckan</h2><span class="small" id="p-wk-s"></span></div>
+    <div class="passes" id="p-week"></div>
+    <div class="sechead"><h2>Hela planen</h2><button class="linkbtn" id="cal-btn" hidden>Lägg i kalendern</button></div>
+    <div class="plbar" id="p-bar" aria-hidden="true"></div>
+    <p class="small" id="p-weeks" style="margin:8px 0 12px"></p>
+    <div class="weeks" id="p-plan"></div>
+    <div id="p-test"></div>
+    </div>
+
+    <div id="pl-lopp" hidden>
+    <div class="sechead" style="margin-top:6px"><h2>Splittider</h2><span class="small" id="p-pace"></span></div>
     <div class="card">
       <div class="stack" id="p-stack" aria-hidden="true"></div>
       <div class="legend"><span><i style="background:var(--run)"></i>Löpning <b id="l-run"></b></span><span><i style="background:var(--sta)"></i>Stationer <b id="l-sta"></b></span><span><i style="background:var(--rox)"></i>Roxzone <b id="l-rox"></b></span></div>
@@ -1018,12 +1054,14 @@ a.row{color:inherit;text-decoration:none}
     </div>
 
     <div id="dbl-wrap" hidden>
-      <div class="sechead"><h2>Arbetsfördelning</h2><span class="small" id="dbl-sum"></span></div>
+      <div class="sechead"><h2>Så delar ni arbetet</h2><span class="small" id="dbl-sum"></span></div>
       <div class="card">
         <p class="small">Dra för att bestämma hur stor del av varje station du gör. En jobbar åt gången medan den andra vilar intill.</p>
         <div class="balance" aria-hidden="true"><div id="dbl-bar" style="width:50%"></div></div>
         <div id="dbl-list"></div>
       </div>
+    </div>
+
     </div>
 
     <div id="coach-wrap" hidden>
@@ -1664,7 +1702,8 @@ const DAYS={1:[2],2:[1,4],3:[1,3,5],4:[0,2,4,6],5:[0,1,3,5,6]};
 const ZMAP={"Intervaller":[4],"Kompromisslöpning":[3,4],"Styrka och stationer":[2,3],"Lugn distans":[2],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[4]};
 const ZONES=[[.5,.6,"Mycket lätt, uppvärmning"],[.6,.7,"Lätt, du kan prata hela meningar"],[.7,.8,"Måttligt, korta meningar"],[.8,.9,"Hårt, tävlingsfart"],[.9,1,"Max, korta intervaller"]];
 function hrmax(){return set.maxhr||(set.age?Math.round(220-set.age):null)}
-function zoneTxt(z){const l="Zon "+z.join("–");
+const ZWORD=["mycket lätt","lätt","måttligt","hårt","max"];
+function zoneTxt(z){const l=`Zon ${z.join("–")}, ${z.map(n=>ZWORD[n-1]).join(" till ")}`;
   if(set.hrz&&set.hrz.length===5){const lo=set.hrz[z[0]-1][0],hi=set.hrz[z[z.length-1]-1][1];return `${l} · ${hi?lo+"–"+hi:lo+"+"} slag/min`}
   const m=hrmax();if(!m)return l;return `${l} · ${Math.round(ZONES[z[0]-1][0]*m)}–${Math.round(ZONES[z[z.length-1]-1][1]*m)} slag/min`}
 const dayLbl=d=>new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"}).replace(/\./g,"");
@@ -1747,26 +1786,48 @@ function renderAdapt(){
   const a=ADAPT,el=$("#adapt");if(!a){el.innerHTML="";return}
   const icon={progress:"↑",lighter:"↓",recover:"↓",steady:"✓",start:"★"}[a.mode];
   const title={progress:"Planen ökar",lighter:"Lättare vecka",recover:"Återhämtningsvecka",steady:"Enligt plan",start:"Planen lär sig av dig"}[a.mode];
-  let note=a.mode==="start"?"Den anpassas efter hur många pass du loggar och hur tunga de känns. Logga dina pass så blir den personlig.":a.note;
-  if(a.missed.length)note+=` Förra veckan saknades ${a.missed.join(" och ").toLowerCase()}, prioritera det i veckan.`;
-  el.innerHTML=`<div class="banner"><span class="bicon ${a.mode}">${icon}</span><div><b>${title}</b><p>${note}</p>${a.suggest?`<button class="linkbtn" id="ad-sug">Ditt rekord på 1 km pekar mot ${fmtHM(a.suggest)}. Använd som måltid</button>`:""}${!set.test?`<button class="linkbtn" data-open="test">Gör starttestet för en personlig måltid</button>`:""}</div></div>`;
+  const short={progress:"Veckan är lite längre och tempot lite snabbare.",lighter:"Veckan är lite kortare så att du kommer igång igen.",recover:"Veckan är lugnare, eftersom passen har känts tunga.",steady:"Planen fortsätter som tänkt.",start:"Den anpassas efter det du loggar."}[a.mode];
+  const prio=a.missed.length?` Prioritera ${a.missed.join(" och ").toLowerCase()}.`:"";
+  const why=a.mode==="start"?"":a.note;
+  el.innerHTML=`<div class="banner"><span class="bicon ${a.mode}">${icon}</span><div><b>${title}</b><p>${short}${prio}</p>${why?`<details><summary>Varför?</summary><p>${why}</p></details>`:""}${a.suggest?`<button class="linkbtn" id="ad-sug">Ditt rekord på 1 km pekar mot ${fmtHM(a.suggest)}. Använd som måltid</button>`:""}</div></div>`;
+  $("#p-test").innerHTML=set.test?"":`<div class="group"><button class="row" data-open="test"><div class="badge">1 km</div><div><h3>Gör starttestet</h3><p>Ger en måltid och ett tempo som passar just dig.</p></div><span class="chev">›</span></button></div>`;
   const b=$("#ad-sug");if(b)b.onclick=()=>{set.target=a.suggest;$("#p-range").value=a.suggest;saveSet();renderSplits();renderPlan();renderHome();renderPRs();toast("Måltiden är uppdaterad")};
 }
 function renderPlan(){planChanged();
-  const openIdx=$$("#p-plan details").map((d,i)=>d.open?i:-1).filter(i=>i>=0);
   const base=buildPlan();ADAPT=computeAdapt(base);PLAN=buildPlan(ADAPT);
   const days=daysLeft();const cw=curWeekIdx();
   {const me=myEvent();$("#p-sum").textContent=[fmtHM(set.target)+" måltid",set.noRace?"Inget lopp valt":(me?me.c+" ":"")+new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}),divText()].join(" · ")}
-  $("#p-weeks").textContent=days>0?`Vecka ${cw+1} av ${PLAN.length}, ${days} dagar till loppet. ${levelTxt()?levelTxt()+" ":""}${set.hrz?"Pulszonerna kommer från Strava.":hrmax()?"Pulszonerna utgår från maxpuls "+hrmax()+".":"Ange ålder under Pulszoner för att se pulsintervall."}`:"Välj ett tävlingsdatum framåt.";
-  renderAdapt();
-  const keep=renderPlan.cw;setTimeout(()=>{renderPlan.cw=cw},0);
-  $("#p-plan").innerHTML=PLAN.map((w,wi)=>{
-    const ds=new Date(w.start+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"});
-    const op=openIdx.length&&keep===cw?openIdx.includes(wi):wi===cw;
-    return `<details class="week"${op?" open":""}><summary><span class="wk">${w.w}</span><div class="wk-meta"><b>Vecka ${w.w}</b><span>${ds} · ${w.ses.length} pass · ${w.ses.reduce((a,s)=>a+s.m,0)} min</span></div><span class="wk-r"><span class="phase${wi===cw?" now":""}">${wi===cw?"Nu":w.ph}</span><span class="chev">›</span></span></summary>
-    <div class="sess">${w.ses.map((s,si)=>`<div class="ses${sesDone(w,s)?" done":""}"><div class="top"><h4>${s.t}</h4><span class="min"><span class="daylbl">${dayLbl(s.date)}</span> · ${s.m} min</span></div><span class="zone z${s.z[0]}">${zoneTxt(s.z)}</span><p>${s.d}</p><div class="ses-acts"><button class="logbtn" data-w="${wi}" data-s="${si}">Logga passet</button><button class="logbtn mv" data-w="${wi}" data-s="${si}">${s.moved?"Flyttat · ändra":"Flytta"}</button></div></div>`).join("")}</div></details>`}).join("");
+  const w=PLAN[cw],td=today();
+  $("#p-weeks").textContent=!PLAN.length||days<=0?"Välj ett tävlingsdatum framåt.":`${w&&w.start>td?"Planen börjar "+fmtDM(w.start):"Vecka "+(cw+1)+" av "+PLAN.length} · ${days} dagar ${set.noRace?"kvar av planen":"till loppet"}. ${levelTxt()?levelTxt()+" ":""}${set.hrz?"Pulszonerna kommer från Strava.":hrmax()?"Pulszonerna utgår från maxpuls "+hrmax()+".":"Ange ålder under Ändra plan → Pulszoner för att se pulsintervall."}`;
+  $("#p-bar").innerHTML=PLAN.map((x,i)=>`<i class="${i<cw?"d":i===cw&&x.start<=td?"n":""}"></i>`).join("");
+  renderAdapt();renderPlanNext();
+  $("#p-wk-h").textContent=w&&w.start>td?"Första veckan":"Den här veckan";
+  if(w){const n=w.ses.filter(x=>sesDone(w,x)).length;$("#p-wk-s").textContent=`${n} av ${w.ses.length} klara · ${wkRange(w)}`;$("#p-week").innerHTML=passRows(w,cw)}else{$("#p-wk-s").textContent="";$("#p-week").innerHTML=""}
+  const keepOpen=new Set($$("#p-plan details[data-wk]").filter(d=>d.open).map(d=>d.dataset.wk));
+  const wkRow=(x,wi)=>`<details class="week" data-wk="${x.w}"${keepOpen.has(String(x.w))?" open":""}><summary><span class="wk">${x.w}</span><div class="wk-meta"><b>${wkRange(x)}</b><span>${x.ses.length} pass · ${x.ses.reduce((a,y)=>a+y.m,0)} min</span></div><span class="wk-r"><span class="phase">${x.ph}</span><span class="chev">›</span></span></summary><div class="sess"><div class="passes">${passRows(x,wi)}</div></div></details>`;
+  const past=PLAN.map((x,i)=>[x,i]).filter(([,i])=>i<cw),next=PLAN.map((x,i)=>[x,i]).filter(([,i])=>i>cw);
+  $("#p-plan").innerHTML=next.map(([x,i])=>wkRow(x,i)).join("")+(past.length?`<details class="week" data-wk="past"${keepOpen.has("past")?" open":""}><summary><span class="wk">✓</span><div class="wk-meta"><b>Tidigare veckor</b><span>${past.length} ${past.length===1?"vecka":"veckor"}</span></div><span class="wk-r"><span class="chev">›</span></span></summary><div class="sess">${past.map(([x,i])=>wkRow(x,i)).join("")}</div></details>`:"");
+  renderPlanSub();
 }
-$("#p-plan").addEventListener("click",e=>{const b=e.target.closest(".logbtn");if(!b)return;if(b.classList.contains("mv")){openMove(+b.dataset.w,+b.dataset.s);return}const w=PLAN[+b.dataset.w],s=w.ses[+b.dataset.s];prefill({type:s.t,min:s.m,stations:s.s||[],note:`Vecka ${w.w}`,plan:s.key+"@"+set.date})});
+const fmtDM=d=>new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
+function wkRange(w){const a=fmtDM(w.start),b=fmtDM(wEnd(w.start));return a.split(" ")[1]===b.split(" ")[1]?a.split(" ")[0]+"–"+b:a+" – "+b}
+const PASS_WHAT={"Intervaller":"Korta hårda sträckor med vila emellan. Gör dig snabbare.","Kompromisslöpning":"Löpning direkt efter stationer, så att du vänjer dig vid att springa på tunga ben.","Styrka och stationer":"Bygger styrkan du behöver på stationerna.","Lugn distans":"Lugn löpning som bygger uthållighet. Du ska kunna prata hela tiden.","Motor (SkiErg/rodd)":"Kondition på maskin, utan stötar för benen.","Racesimulering":"Generalrepetition av loppet, i tävlingstempo."};
+function passRows(w,wi){const td=today();return w.ses.map((x,si)=>{const a=new Date(x.date+"T12:00:00"),done=sesDone(w,x),late=!done&&x.date<td,wd=a.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
+  return `<details class="pass${done?" done":""}"><summary><span class="badge evd"><b>${a.getDate()}</b><small>${wd}</small></span><div><h3>${x.t}</h3><p>${x.m} min${x.moved?" · flyttat":""}${x.date===td&&!done?" · i dag":""}</p></div>${done?'<span class="state">✓ Klart</span>':late?'<span class="state late">Att ta igen</span>':'<span class="chev">›</span>'}</summary>
+   <div class="pass-b"><span class="zone z${x.z[0]}" style="justify-self:start">${zoneTxt(x.z)}</span>${PASS_WHAT[x.t]?`<p class="what">${PASS_WHAT[x.t]}</p>`:""}<p>${x.d}</p><div class="ses-acts"><button class="logbtn" data-w="${wi}" data-s="${si}">Logga passet</button>${x.date>=td||late?`<button class="logbtn mv" data-w="${wi}" data-s="${si}">${x.moved?"Flyttat · ändra":"Flytta"}</button>`:""}</div></div></details>`}).join("")}
+function nextPass(w){const td=today(),pend=w.ses.filter(x=>!sesDone(w,x)),tod=pend.find(x=>x.date===td),late=pend.find(x=>x.date<td);return {pend,tod,late,next:tod||late||pend[0]||null}}
+function renderPlanNext(){const el=$("#p-next"),cw=curWeekIdx(),w=PLAN[cw];
+  if(!w||daysLeft()<=0){el.innerHTML=`<h3>Välj en tävlingsdag.</h3><p>Sedan lägger VARV. upp passen fram till loppet.</p><div class="acts"><button class="pill" data-plan-edit>Ändra plan</button></div>`;return}
+  const {tod,late,next}=nextPass(w);
+  if(!next){const nw=PLAN[cw+1],f=nw&&nw.ses[0];el.innerHTML=`<span class="tag">Vecka ${w.w} · klar</span><h3>Veckans pass är klara.</h3><p>${f?`Nästa pass är ${f.t.toLowerCase()}, ${dayLbl(f.date)}.`:"Vila och ladda inför loppet."}</p>`;return}
+  const si=w.ses.indexOf(next),soon=!tod&&!late;
+  const tag=tod?"I dag":late?`Att ta igen · ${dayLbl(next.date)}`:`Nästa pass · ${dayLbl(next.date)}`;
+  const nextStart=d=>prefill({type:next.t,min:next.m,stations:next.s||[],note:`Vecka ${w.w}`,plan:next.key+"@"+set.date,...d});
+  el.innerHTML=`<span class="tag">${tag}</span><h3>${next.t} <span class="muted" style="font-weight:400;font-size:1rem">${next.m} min</span></h3><span class="zone z${next.z[0]}">${zoneTxt(next.z)}</span>${PASS_WHAT[next.t]?`<p class="small">${PASS_WHAT[next.t]}</p>`:""}<p>${next.d}</p><div class="acts"><button class="pill${soon?" ghost":""}" id="pn-start">${soon?"Träna ändå":"Starta passet"}</button><button class="pill ghost" id="pn-log">Logga pass</button></div><button class="pl-link" id="pn-move">${next.moved?"Flyttat · ändra dag":"Flytta till en annan dag"}</button>`;
+  $("#pn-start").onclick=()=>nextStart({start:true});$("#pn-log").onclick=()=>nextStart({});$("#pn-move").onclick=()=>openMove(cw,si)}
+function renderPlanSub(){const sub=set.psub==="lopp"?"lopp":"pass";$("#pl-pass").hidden=sub!=="pass";$("#pl-lopp").hidden=sub!=="lopp";$$("#pl-seg [data-pl]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pl===sub))}
+$$("#pl-seg [data-pl]").forEach(b=>b.onclick=()=>{set.psub=b.dataset.pl;saveSet();renderPlanSub()});
+$("#pl-pass").addEventListener("click",e=>{const b=e.target.closest(".logbtn");if(!b)return;if(b.classList.contains("mv")){openMove(+b.dataset.w,+b.dataset.s);return}const w=PLAN[+b.dataset.w],x=w.ses[+b.dataset.s];prefill({type:x.t,min:x.m,stations:x.s||[],note:`Vecka ${w.w}`,plan:x.key+"@"+set.date})});
 
 function openMove(wi,si){const w=PLAN[wi],s=w.ses[si],k=s.key+"@"+set.date;
   const days=[];for(let i=0;i<7;i++){const d=new Date(w.start+"T12:00:00");d.setDate(d.getDate()+i);const ds=iso(d);if(ds<set.date&&ds>=today())days.push(ds)}
@@ -3086,9 +3147,8 @@ function renderHome(){
   const el=$("#today");
   const w=PLAN[curWeekIdx()];
   if(!w){el.innerHTML="";return}
-  const td=today(),pend=w.ses.filter(s=>!sesDone(w,s));
+  const {pend,tod,late,next}=nextPass(w);
   if(!pend.length){el.innerHTML=`<span class="tag">Vecka ${w.w} · ${w.ph}</span><h3>Veckans pass är klara.</h3><p>Bra jobbat. Vila, ät och sov ordentligt så är du redo för nästa vecka.</p><div class="acts"><a class="pill ghost" href="#logg">Se loggen</a></div>`;return}
-  const tod=pend.find(s=>s.date===td),late=pend.find(s=>s.date<td),next=tod||late||pend[0];
   const rest=!tod&&!late;
   const tag=tod?"I dag":late?`Att ta igen · ${dayLbl(next.date)}`:`Vilodag · nästa pass ${dayLbl(next.date)}`;
   const am=ADAPT&&["progress","lighter","recover"].includes(ADAPT.mode)?`<p class="small">${{progress:"Planen har ökat",lighter:"Planen är lättare",recover:"Planen är lugnare"}[ADAPT.mode]} den här veckan utifrån din logg.</p>`:"";

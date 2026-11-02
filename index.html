@@ -472,6 +472,42 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 #hist-more{background:var(--tile)}
 .close:focus:not(:focus-visible){outline:none}
 /* Kontokrav */
+/* Första start, steg för steg */
+#onb{position:fixed;inset:0;z-index:44;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;
+  padding:calc(10px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 0 max(16px,env(safe-area-inset-left,0px))}
+#onb[hidden]{display:none}
+.ob{max-width:440px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;gap:18px}
+.ob-top{display:flex;justify-content:space-between;align-items:center;min-height:44px}
+.ob-top .small{font-variant-numeric:tabular-nums}
+.ob-bar{display:flex;gap:6px}.ob-bar i{flex:1;height:4px;border-radius:4px;background:var(--hair);transition:background .35s}.ob-bar i.on{background:var(--hot)}
+.ob-head{display:grid;gap:8px;margin-top:6px}
+.ob-head .eyebrow{font-size:.82rem;font-weight:600;color:var(--accent);text-transform:uppercase;letter-spacing:.04em}
+.ob-head h2{font-size:clamp(1.8rem,7.5vw,2.3rem);letter-spacing:-.04em;line-height:1.08}
+.ob-head p{color:var(--muted);font-size:1rem;line-height:1.45}
+.ob-body{display:grid;gap:18px;align-content:start;flex:1}
+.ob-foot{position:sticky;bottom:0;display:grid;gap:4px;padding:16px 0 calc(18px + env(safe-area-inset-bottom,0px));background:linear-gradient(to bottom,transparent,var(--bg) 18px)}
+.ob-foot .au-msg:empty{display:none}
+.ob-foot .au-msg{text-align:center;margin-bottom:6px}
+.ob-foot .linkbtn{justify-self:center;min-height:44px}
+.ob-goals{display:grid;gap:10px}
+.ob-goal{display:grid;grid-template-columns:44px minmax(0,1fr) 24px;gap:14px;align-items:center;width:100%;text-align:left;font:inherit;color:var(--ink);background:var(--tile);border:2px solid transparent;border-radius:18px;padding:14px 16px;cursor:pointer;min-height:76px;transition:border-color .2s}
+.ob-goal[aria-pressed="true"]{border-color:var(--accent)}
+.ob-goal b{display:block;font-weight:600;font-size:1.02rem;letter-spacing:-.01em}
+.ob-goal small{color:var(--muted);font-size:.88rem;line-height:1.35;display:block;margin-top:2px}
+.ob-goal:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+.ob-ck{width:24px;height:24px;border-radius:50%;border:2px solid var(--hair);display:grid;place-items:center;color:#fff;font-size:.78rem;font-weight:700;box-sizing:border-box}
+.ob-goal[aria-pressed="true"] .ob-ck{background:var(--accent);border-color:var(--accent)}
+.ob-ic{width:44px;height:44px;border-radius:12px;background:var(--card);display:grid;place-items:center;color:var(--accent)}.ob-ic svg{width:22px;height:22px}
+.ob-body .seg+.seg{margin-top:8px}
+.ob-races{display:grid;gap:12px}
+.ob-rch{display:flex;justify-content:space-between;align-items:center}
+.ob-note{background:var(--tile);border-radius:14px;padding:12px 14px;font-size:.9rem;color:var(--muted);line-height:1.45;margin:0}
+.ob-push{display:grid;gap:10px;padding:8px 0}
+.ob-ntf{display:grid;grid-template-columns:38px minmax(0,1fr) auto;gap:12px;align-items:start;background:var(--tile);border-radius:18px;padding:12px 14px;box-shadow:0 10px 26px -18px rgba(0,0,0,.35)}
+.ob-ntf:nth-child(2){opacity:.7;transform:scale(.97)}
+.ob-nic{width:38px;height:38px;border-radius:10px;background:var(--hot)}
+.ob-ntf b{font-size:.9rem}.ob-ntf p{font-size:.9rem;line-height:1.35;margin:2px 0 0}.ob-ntf small{color:var(--muted);font-size:.78rem}
+@media (prefers-reduced-motion:no-preference){.ob-body{animation:obIn .35s ease both}@keyframes obIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}}
 #gate{position:fixed;inset:0;z-index:45;background:var(--bg);overflow-y:auto;overscroll-behavior:contain;
   padding:calc(28px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(28px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
 #gate[hidden]{display:none}
@@ -964,6 +1000,15 @@ a.row{color:inherit;text-decoration:none}
     <div class="gt-foot"><a href="legal/integritet.html" target="_blank" rel="noopener">Integritetspolicy</a><a href="legal/villkor.html" target="_blank" rel="noopener">Användarvillkor</a></div>
   </div>
 </div>
+<div id="onb" hidden role="dialog" aria-modal="true" aria-labelledby="ob-h">
+  <div class="ob">
+    <div class="ob-top"><button class="linkbtn" id="ob-back" type="button">‹ Tillbaka</button><span class="small" id="ob-n"></span></div>
+    <div class="ob-bar" id="ob-bar" aria-hidden="true"></div>
+    <div class="ob-head"><span class="eyebrow" id="ob-eye"></span><h2 id="ob-h" tabindex="-1"></h2><p id="ob-p"></p></div>
+    <div class="ob-body" id="ob-body"></div>
+    <div class="ob-foot"><p class="small au-msg bad" id="ob-msg" role="status" aria-live="polite"></p><button class="pill block" id="ob-go" type="button">Fortsätt</button><button class="linkbtn" id="ob-skip" type="button" hidden></button></div>
+  </div>
+</div>
 <div id="splash" aria-hidden="true"><div class="sp-in"><svg class="sp-icon" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="spg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><path d="M1024.0 512.0 L1023.9 631.2 L1023.7 669.3 L1023.4 697.0 L1022.9 719.5 L1022.2 738.8 L1021.5 755.8 L1020.6 771.1 L1019.5 785.2 L1018.3 798.1 L1016.9 810.2 L1015.5 821.5 L1013.8 832.1 L1012.0 842.1 L1010.1 851.6 L1008.0 860.7 L1005.8 869.3 L1003.4 877.5 L1000.9 885.3 L998.2 892.8 L995.4 900.0 L992.4 906.9 L989.2 913.5 L985.9 919.9 L982.4 926.0 L978.7 931.8 L974.9 937.4 L970.9 942.8 L966.7 948.0 L962.3 953.0 L957.7 957.7 L953.0 962.3 L948.0 966.7 L942.8 970.9 L937.4 974.9 L931.8 978.7 L926.0 982.4 L919.9 985.9 L913.5 989.2 L906.9 992.4 L900.0 995.4 L892.8 998.2 L885.3 1000.9 L877.5 1003.4 L869.3 1005.8 L860.7 1008.0 L851.6 1010.1 L842.1 1012.0 L832.1 1013.8 L821.5 1015.5 L810.2 1016.9 L798.1 1018.3 L785.2 1019.5 L771.1 1020.6 L755.8 1021.5 L738.8 1022.2 L719.5 1022.9 L697.0 1023.4 L669.3 1023.7 L631.2 1023.9 L512.0 1024.0 L392.8 1023.9 L354.7 1023.7 L327.0 1023.4 L304.5 1022.9 L285.2 1022.2 L268.2 1021.5 L252.9 1020.6 L238.8 1019.5 L225.9 1018.3 L213.8 1016.9 L202.5 1015.5 L191.9 1013.8 L181.9 1012.0 L172.4 1010.1 L163.3 1008.0 L154.7 1005.8 L146.5 1003.4 L138.7 1000.9 L131.2 998.2 L124.0 995.4 L117.1 992.4 L110.5 989.2 L104.1 985.9 L98.0 982.4 L92.2 978.7 L86.6 974.9 L81.2 970.9 L76.0 966.7 L71.0 962.3 L66.3 957.7 L61.7 953.0 L57.3 948.0 L53.1 942.8 L49.1 937.4 L45.3 931.8 L41.6 926.0 L38.1 919.9 L34.8 913.5 L31.6 906.9 L28.6 900.0 L25.8 892.8 L23.1 885.3 L20.6 877.5 L18.2 869.3 L16.0 860.7 L13.9 851.6 L12.0 842.1 L10.2 832.1 L8.5 821.5 L7.1 810.2 L5.7 798.1 L4.5 785.2 L3.4 771.1 L2.5 755.8 L1.8 738.8 L1.1 719.5 L0.6 697.0 L0.3 669.3 L0.1 631.2 L0.0 512.0 L0.1 392.8 L0.3 354.7 L0.6 327.0 L1.1 304.5 L1.8 285.2 L2.5 268.2 L3.4 252.9 L4.5 238.8 L5.7 225.9 L7.1 213.8 L8.5 202.5 L10.2 191.9 L12.0 181.9 L13.9 172.4 L16.0 163.3 L18.2 154.7 L20.6 146.5 L23.1 138.7 L25.8 131.2 L28.6 124.0 L31.6 117.1 L34.8 110.5 L38.1 104.1 L41.6 98.0 L45.3 92.2 L49.1 86.6 L53.1 81.2 L57.3 76.0 L61.7 71.0 L66.3 66.3 L71.0 61.7 L76.0 57.3 L81.2 53.1 L86.6 49.1 L92.2 45.3 L98.0 41.6 L104.1 38.1 L110.5 34.8 L117.1 31.6 L124.0 28.6 L131.2 25.8 L138.7 23.1 L146.5 20.6 L154.7 18.2 L163.3 16.0 L172.4 13.9 L181.9 12.0 L191.9 10.2 L202.5 8.5 L213.8 7.1 L225.9 5.7 L238.8 4.5 L252.9 3.4 L268.2 2.5 L285.2 1.8 L304.5 1.1 L327.0 0.6 L354.7 0.3 L392.8 0.1 L512.0 0.0 L631.2 0.1 L669.3 0.3 L697.0 0.6 L719.5 1.1 L738.8 1.8 L755.8 2.5 L771.1 3.4 L785.2 4.5 L798.1 5.7 L810.2 7.1 L821.5 8.5 L832.1 10.2 L842.1 12.0 L851.6 13.9 L860.7 16.0 L869.3 18.2 L877.5 20.6 L885.3 23.1 L892.8 25.8 L900.0 28.6 L906.9 31.6 L913.5 34.8 L919.9 38.1 L926.0 41.6 L931.8 45.3 L937.4 49.1 L942.8 53.1 L948.0 57.3 L953.0 61.7 L957.7 66.3 L962.3 71.0 L966.7 76.0 L970.9 81.2 L974.9 86.6 L978.7 92.2 L982.4 98.0 L985.9 104.1 L989.2 110.5 L992.4 117.1 L995.4 124.0 L998.2 131.2 L1000.9 138.7 L1003.4 146.5 L1005.8 154.7 L1008.0 163.3 L1010.1 172.4 L1012.0 181.9 L1013.8 191.9 L1015.5 202.5 L1016.9 213.8 L1018.3 225.9 L1019.5 238.8 L1020.6 252.9 L1021.5 268.2 L1022.2 285.2 L1022.9 304.5 L1023.4 327.0 L1023.7 354.7 L1023.9 392.8Z" fill="url(#spg)"/><path class="sp-ring" d="M512,332.0 H632.0 A180.0,180.0 0 0 1 632.0,692.0 H392.0 A180.0,180.0 0 0 1 392.0,332.0 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round"/><circle class="sp-dot" cx="343.5" cy="338.7" r="58" fill="#fff"/></svg><div class="sp-name">VARV.</div></div></div>
 <main>
 <!-- ================= HEM ================= -->
@@ -1235,7 +1280,12 @@ a.row{color:inherit;text-decoration:none}
       <div class="grid2"><div class="field"><label for="pf-in-age">Ålder</label><input type="number" id="pf-in-age" inputmode="numeric" min="16" max="90" placeholder="30"></div>
       <div class="field"><label for="pf-in-h">Längd (cm)</label><input type="number" id="pf-in-h" inputmode="numeric" min="120" max="230" placeholder="175"></div>
       <div class="field"><label for="pf-in-max">Maxpuls</label><input type="number" id="pf-in-max" inputmode="numeric" min="120" max="230" placeholder="Valfritt"></div>
-      <div class="field"><label for="pf-in-lv">Nivå</label><select id="pf-in-lv"><option value="ny">Ny</option><option value="mellan">Mellan</option><option value="elit">Elit</option></select></div></div>
+      <div class="field"><label for="pf-in-lv">Nivå</label><select id="pf-in-lv"><option value="ny">Ny</option><option value="mellan">Mellan</option><option value="elit">Elit</option></select></div>
+      <div class="field"><label for="pf-in-sex">Kön</label><select id="pf-in-sex"><option value="">Välj</option><option value="w">Kvinna</option><option value="m">Man</option><option value="x">Annat</option></select></div>
+      <div class="field"><label for="pf-in-w">Vikt (kg)</label><input type="number" id="pf-in-w" inputmode="decimal" min="30" max="250" placeholder="Valfritt"></div>
+      <div class="field"><label for="pf-in-vo2">VO2max</label><input type="number" id="pf-in-vo2" inputmode="numeric" min="20" max="95" placeholder="Valfritt"></div>
+      <div class="field"><label for="pf-in-rhr">Vilopuls</label><input type="number" id="pf-in-rhr" inputmode="numeric" min="30" max="120" placeholder="Valfritt"></div>
+      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="decimal" placeholder="5:15"></div></div>
       <div class="chiprow"><button class="divchip" data-open="test">Gör om starttestet</button><button class="divchip" data-open="hr">Pulszoner</button></div>
     </div>
     <div class="group" style="margin-top:28px"><button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, kopplingar, hjälp och dina data</p></div><span class="chev">›</span></button></div>
@@ -2031,7 +2081,7 @@ async function sbStart(u){
   if(remote){
     const s=remote.get("settings");
     const simLocal=(Array.isArray(set.mySims)?set.mySims:[]).filter(x=>x&&x.pending);
-    if(s&&typeof s==="object"){set=Object.assign({},DEF,set,s);if(simLocal.length)set.mySims=(Array.isArray(s.mySims)?s.mySims:[]).filter(x=>!x||!simLocal.some(l=>l.id===x.id)).concat(simLocal);try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}refreshSettingsUI()}
+    if(s&&typeof s==="object"){set=Object.assign({},DEF,set,s);if(simLocal.length)set.mySims=(Array.isArray(s.mySims)?s.mySims:[]).filter(x=>!x||!simLocal.some(l=>l.id===x.id)).concat(simLocal);try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}refreshSettingsUI();if(set.onboarded&&ONB_ON){onbClose();renderPlan();renderHome()}}
     if(simLocal.length){set.mySims=set.mySims.map(x=>{if(x&&x.pending){const c=Object.assign({},x);delete c.pending;return c}return x})}
     SBSETOK=true;if(!s||simLocal.length)pushSettings();
     /* första inloggningen: flytta det som loggats på enheten till kontot */
@@ -3795,7 +3845,7 @@ function renderProfile(){
    :`<div class="row"><span class="badge">✓</span><div><h3>Sparas på den här enheten</h3><p>Allt ligger kvar i webbläsaren. Exportera dina data nedan för att flytta dem till en annan enhet. Inloggning med Google är på väg.</p></div><span></span></div>`;
   const nm=$("#pf-in-name");if(document.activeElement!==nm)nm.value=set.name||"";
   nm.placeholder=(MEINFO&&MEINFO.name)||"Ditt namn";
-  $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-lv").value=set.level||"mellan";
+  $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-lv").value=set.level||"mellan";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||"";{const pe=$("#pf-in-pace");if(document.activeElement!==pe)pe.value=set.pace?fmt(set.pace):""}
   $("#pf-set").innerHTML=themeSeg()+swRow("pf-sw-sound","Ljud","Pip i tidtagningen",set.cues.sound)+swRow("pf-sw-voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+swRow("pf-sw-hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false);
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
@@ -3805,9 +3855,12 @@ function renderProfile(){
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
-function saveProfileFields(){set.name=$("#pf-in-name").value.trim().slice(0,60);set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;saveSet();renderAvatar();$("#pf-av").innerHTML=avatarHtml();$("#pf-name").textContent=pName()||"Din profil"}
+function saveProfileFields(){set.name=$("#pf-in-name").value.trim().slice(0,60);set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
+  {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);
+   const pv=$("#pf-in-pace").value.trim(),pp=pv?parseRes(pv):null;if(!pv)set.pace=null;else if(pp&&pp>=150&&pp<=720)set.pace=pp}saveSet();renderAvatar();$("#pf-av").innerHTML=avatarHtml();$("#pf-name").textContent=pName()||"Din profil"}
+$("#pf-in-sex").addEventListener("change",e=>{set.sex=e.target.value||null;if(set.sex==="w"||set.sex==="m"){set.g=set.sex;refreshDivision()}saveSet()});
 $("#pf-in-lv").addEventListener("change",e=>{saveAbout({age:set.age,height:set.height,level:e.target.value});saveSet();renderPlan();renderHome();toast("Planen är uppdaterad.")});
-["#pf-in-name","#pf-in-age","#pf-in-h","#pf-in-max"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
+["#pf-in-name","#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr","#pf-in-pace"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
 function setPfMore(on){$("#pf-more").hidden=!on;$("#pf-main").hidden=on;window.scrollTo(0,0)}
 $("#pf-more-btn").onclick=()=>setPfMore(true);$("#pf-blocked").onclick=()=>{if(!SB||!SBUSER){toast("Logga in först.");return}openBlocked()};
 $("#pf-back").onclick=()=>{if(!$("#pf-more").hidden){setPfMore(false);return}if(history.length>1)history.back();else location.hash="#hem"};
@@ -3816,7 +3869,7 @@ $("#pf-exp").onclick=async()=>{const data=JSON.stringify({app:"VARV.",v:1,export
   try{const r=await DL.save({filename:`varv-data-${today()}.json`,data});if(r&&r.status==="saved")toast("Dina data är exporterade")}catch(err){saveErr(err)}};
 $("#pf-imp-file").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   try{const d=JSON.parse(await f.text());if(!d||d.app!=="VARV."||!Array.isArray(d.logs))throw 0;
-    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded"];
+    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace"];
     keep.forEach(k=>{if(d.settings&&d.settings[k]!==undefined)set[k]=d.settings[k]});set.per=(set.days||[]).length||set.per;saveSet();
     let n=0;for(const l of d.logs){if(!l||!l.date||LOGS.some(x=>x.id===l.id))continue;const b=Object.assign({},l);const id=b.id||("l"+Date.now()+n);delete b.id;
       if(mode==="db"&&col){try{await col.doc(id).set(b)}catch(err){}}else LOGS.push(Object.assign({id},b));n++}
@@ -3831,7 +3884,7 @@ $("#pf-del").onclick=async()=>{const b=$("#pf-del");
   LOGS=[];PRS={};PK={};RACE=null;const keepDate=new Date();keepDate.setDate(keepDate.getDate()+84);
   set=JSON.parse(JSON.stringify(DEF));set.date=iso(keepDate);set.days=DEFDAYS[4];set.per=4;saveSet();
   $("#p-range").value=set.target;$("#p-date").value=set.date;renderDays();renderSplits();renderAllData();renderPack();renderRace();renderCues();renderAvatar();renderProfile();
-  delete b.dataset.c;toast("Allt är raderat");renderHome();setTimeout(openStart,600)};
+  delete b.dataset.c;toast("Allt är raderat");renderHome();setTimeout(openOnb,600)};
 
 /* ============ Vänner ============ */
 let FRC=null;
@@ -4046,39 +4099,133 @@ function saveAbout(st){set.age=st.age;set.height=st.height;set.level=st.level;
 function openAbout(){const st={age:set.age||null,height:set.height||null,level:set.level||null};
   openSheet(`<div><span class="small">En sak till</span><h2>Om dig.</h2><p class="small">Dina svar anpassar planen och pulszonerna.</p></div><div style="display:grid;gap:18px">${aboutFields(st)}</div><button class="pill block" id="ab-go">Spara</button>`,()=>{
     aboutBind(st);$("#ab-go").onclick=()=>{if(!aboutOk(st))return;saveAbout(st);saveSet();refreshSettingsUI();renderPlan();renderHome();closeSheet();toast("Planen är uppdaterad.");HAPTIC("success")}})}
-function openStart(){
+/* ============ Första start: ett steg i taget efter inloggningen ============ */
+const GOALS=[["friends","Träna med vänner","Följ varandra, jämför veckan och peppa varandra."],["race","Träna inför ett lopp","En plan fram till loppdagen med tempo och splittider."],["plan","Få ett träningsschema","Pass vecka för vecka som anpassar sig efter dig."]];
+const GOAL_IC={friends:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.5 2.1 4.5 4.9"/></svg>`,
+  race:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg>`,
+  plan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></svg>`};
+const SEXES=[["w","Kvinna"],["m","Man"],["x","Annat"]];
+let ONB_ON=false;
+function onbClose(){if(!ONB_ON)return;ONB_ON=false;$("#onb").hidden=true;gateInert(false);document.body.style.overflow=""}
+function openOnb(){
   const evs=evUpcoming().filter(e=>evIn(e)>=21).sort((a,b)=>(a.r==="norden"?0:1)-(b.r==="norden"?0:1)||a.s.localeCompare(b.s)).slice(0,6);
-  const st={ev:null,date:"",none:false,target:set.target||90,age:set.age||null,height:set.height||null,level:set.level||null,goalSet:false};
-  const def=()=>{const d=new Date(today()+"T12:00:00");d.setDate(d.getDate()+84);return iso(d)};
-  const draw=()=>{
-    const seg=(k,opts,dis)=>`<div class="seg">${opts.map(([v,l])=>`<button type="button" data-${k}="${v}" aria-pressed="${set[k]===v}"${dis?" disabled":""}>${l}</button>`).join("")}</div>`;
-    $("#st-body").innerHTML=`
-     <section class="lg-sec" style="display:grid;gap:14px"><h3 class="st-h">Om dig</h3>${aboutFields(st)}</section>
-     <section class="lg-sec"><h3 class="st-h">Vilket lopp siktar du på?</h3>
-      <div class="lg-grp">${evs.map(e=>`<button type="button" class="lg-pk" data-sev="${e.i}" aria-pressed="${st.ev===e.i}"><span class="lg-dot" aria-hidden="true"></span><span><b style="font-weight:600">${esc(e.c)}</b><br><span class="small">${evRange(e)}</span></span><span class="lg-ck">${st.ev===e.i?"✓":""}</span></button>`).join("")}
-       <label class="lg-pk st-date" aria-pressed="${!!st.date}"><span class="lg-dot" aria-hidden="true"></span><span>${st.date?"Eget datum: "+new Date(st.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long",year:"numeric"}):"Annat lopp eller datum"}</span><span class="lg-ck">${st.date?"✓":""}</span><input type="date" id="st-d" min="${today()}" aria-label="Datum för loppet"></label>
-       <button type="button" class="lg-pk" data-snone aria-pressed="${st.none}"><span class="lg-dot" aria-hidden="true"></span><span>Inget lopp än, bara träna</span><span class="lg-ck">${st.none?"✓":""}</span></button></div></section>
-     <section class="lg-sec"><h3 class="st-h">Din klass</h3>
-      ${seg("fmt",[["singel","Singel"],["doubles","Doubles"],["mixed","Mixed"]])}${seg("k",[["open","Open"],["pro","Pro"]],set.fmt==="mixed")}${seg("g",[["w","Dam"],["m","Herr"]])}</section>
-     <section class="lg-sec"><h3 class="st-h">Vilken tid vill du klara?</h3>
-      <div class="st-goal"><b id="st-gv">${fmtHM(st.target)}</b><input type="range" id="st-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i minuter"></div>
-      <div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${st.target===v}">${l}</button>`).join("")}</div>
-      <p class="small">Osäker? Välj ungefär. Starttestet under Profil ger en personlig tid när du vill.</p></section>`;
+  const st={age:set.age||null,sex:set.sex||null,level:set.level||null,goals:new Set(Array.isArray(set.goals)?set.goals:[]),
+    ev:null,date:"",none:false,target:set.target||90,goalSet:false,cls:{fmt:set.fmt||"singel",k:set.k||"open",g:null},
+    past:Array.isArray(set.pastRaces)&&set.pastRaces.length?true:null,races:(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(r=>({n:r.n||"",d:r.d||"",t:r.t?fmt(r.t):""})),
+    weight:set.weight||null,height:set.height||null,vo2:set.vo2||null,rhr:set.rhr||null,maxhr:set.maxhr||null,pace:set.pace?fmt(set.pace):""};
+  let i=0;
+  const steps=()=>["about","goals"].concat(st.goals.has("race")?["race"]:[],["past","body"],SB&&SBUSER?["push"]:[]);
+  const num=id=>{const e=$(id);if(!e)return undefined;const v=e.value.trim().replace(",",".");return v===""?null:+v};
+  const seg=(k,opts,cur,dis)=>`<div class="seg" role="group">${opts.map(([v,l])=>`<button type="button" data-${k}="${v}" aria-pressed="${cur===v}"${dis?" disabled":""}>${l}</button>`).join("")}</div>`;
+  const pushState=()=>!pushOK()&&!(isIOS()&&!isStandalone())?"none":isIOS()&&!isStandalone()?"ios":set.push&&set.push.on?"on":"ask";
+  const V={
+    about:{eye:"Om dig",h:"Berätta lite om dig.",p:"Det styr planen, pulszonerna och vilken klass du jämförs med.",
+      html:()=>`<div class="field"><label for="ob-age">Ålder</label><input type="number" id="ob-age" inputmode="numeric" min="16" max="90" placeholder="År" value="${st.age||""}"></div>
+        <div class="field"><span class="lbl">Kön</span>${seg("sx",SEXES,st.sex)}</div>
+        <div class="field"><span class="lbl">Din nivå</span>${seg("lv",LEVELS.map(([k,l])=>[k,l]),st.level)}<span class="small">${(LEVELS.find(x=>x[0]===st.level)||[])[2]||"Styr hur tungt planen läggs upp."}</span></div>`,
+      read(){const a=num("#ob-age");if(a!==undefined)st.age=a},
+      ok:()=>!(st.age>=16&&st.age<=90)?["Fyll i din ålder. Du behöver vara minst 16 år.","#ob-age"]:!st.sex?["Välj kön."]:!st.level?["Välj din nivå."]:null},
+    goals:{eye:"Ditt mål",h:"Vad vill du få ut av VARV.?",p:"Välj ett eller flera.",
+      html:()=>`<div class="ob-goals">${GOALS.map(([k,t,s])=>`<button type="button" class="ob-goal" data-gl="${k}" aria-pressed="${st.goals.has(k)}"><span class="ob-ic">${GOAL_IC[k]}</span><span><b>${t}</b><small>${s}</small></span><span class="ob-ck" aria-hidden="true">${st.goals.has(k)?"✓":""}</span></button>`).join("")}</div>`,
+      read(){},ok:()=>st.goals.size?null:["Välj minst ett mål."]},
+    race:{eye:"Ditt lopp",h:"Vilket lopp siktar du på?",p:"Planen räknar baklänges från loppdagen.",
+      html:()=>{const c=st.cls,g=c.g||(st.sex==="w"||st.sex==="m"?st.sex:set.g);return `<div class="lg-grp">${evs.map(e=>`<button type="button" class="lg-pk" data-sev="${e.i}" aria-pressed="${st.ev===e.i}"><span class="lg-dot" aria-hidden="true"></span><span><b style="font-weight:600">${esc(e.c)}</b><br><span class="small">${evRange(e)}</span></span><span class="lg-ck">${st.ev===e.i?"✓":""}</span></button>`).join("")}
+         <label class="lg-pk st-date" aria-pressed="${!!st.date}"><span class="lg-dot" aria-hidden="true"></span><span>${st.date?"Eget datum: "+new Date(st.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long",year:"numeric"}):"Annat lopp eller datum"}</span><span class="lg-ck">${st.date?"✓":""}</span><input type="date" id="ob-d" min="${today()}" aria-label="Datum för loppet"></label>
+         <button type="button" class="lg-pk" data-snone aria-pressed="${st.none}"><span class="lg-dot" aria-hidden="true"></span><span>Inte bestämt än</span><span class="lg-ck">${st.none?"✓":""}</span></button></div>
+        <div class="field"><span class="lbl">Din klass</span>${seg("fmt",[["singel","Singel"],["doubles","Doubles"],["mixed","Mixed"]],c.fmt)}${seg("k",[["open","Open"],["pro","Pro"]],c.k,c.fmt==="mixed")}${seg("g",[["w","Dam"],["m","Herr"]],g)}</div>
+        <div class="field"><span class="lbl">Vilken tid vill du klara?</span><div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i minuter"></div>
+        <div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${st.target===v}">${l}</button>`).join("")}</div></div>`},
+      read(){},ok:()=>st.ev==null&&!st.date&&!st.none?["Välj ett lopp, ett datum eller Inte bestämt än."]:null},
+    past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår planen från var du står i dag.",
+      html:()=>`${seg("past",[["ja","Ja"],["nej","Nej, inte än"]],st.past===true?"ja":st.past===false?"nej":"")}
+        ${st.past?`<div class="ob-races">${st.races.map((r,j)=>`<div class="card ob-rc"><div class="ob-rch"><b>Lopp ${j+1}</b>${st.races.length>1?`<button class="linkbtn" type="button" data-rm="${j}">Ta bort</button>`:""}</div>
+          <div class="field"><label for="ob-rn${j}">Vilket lopp</label><input type="text" id="ob-rn${j}" maxlength="60" placeholder="Till exempel Stockholm 2025" value="${esc(r.n)}"></div>
+          <div class="grid2"><div class="field"><label for="ob-rd${j}">Datum</label><input type="date" id="ob-rd${j}" max="${today()}" value="${esc(r.d)}"></div>
+          <div class="field"><label for="ob-rt${j}">Tid</label><input type="text" id="ob-rt${j}" inputmode="decimal" placeholder="1:29:30" value="${esc(r.t)}"></div></div></div>`).join("")}
+          <button class="pill ghost block" type="button" data-add>+ Lägg till ett lopp till</button>
+          <p class="ob-note">Dina tider finns på results.hyrox.com om du inte minns dem. Du kan lägga till fler senare under Rekord.</p></div>`:""}`,
+      read(){st.races.forEach((r,j)=>{const n=$("#ob-rn"+j);if(!n)return;r.n=n.value.trim();r.d=$("#ob-rd"+j).value;r.t=$("#ob-rt"+j).value.trim()})},
+      ok(){if(st.past===null)return ["Välj Ja eller Nej."];if(!st.past)return null;
+        for(let j=0;j<st.races.length;j++){const r=st.races[j];if(!r.n&&!r.d&&!r.t)continue;
+          const t=parseRes(r.t);if(!t||t<2400||t>4*3600)return ["Skriv tiden för lopp "+(j+1)+" som t:mm:ss, till exempel 1:29:30.","#ob-rt"+j];
+          if(!r.d)return ["Välj datum för lopp "+(j+1)+".","#ob-rd"+j]}
+        return st.races.some(r=>r.t)?null:["Fyll i minst en tid, eller välj Nej."]}},
+    body:{eye:"Din form",h:"Några siffror om dig.",p:"Allt är valfritt. Ju mer du fyller i, desto mer träffsäkra blir tempo och pulszoner.",skip:"Hoppa över",
+      html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="${im||"numeric"}"${im?"":` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
+        return `<div class="grid2">${f("ob-w","Vikt (kg)",st.weight,"75",30,250)}${f("ob-ht","Längd (cm)",st.height,"178",120,230)}</div>
+        <div class="grid2">${f("ob-vo2","VO2max",st.vo2,"48",20,95)}${f("ob-rhr","Vilopuls",st.rhr,"55",30,120)}</div>
+        <div class="grid2">${f("ob-max","Maxpuls",st.maxhr,st.age?String(220-st.age):"190",120,230)}${f("ob-pace","Snittempo per km",st.pace,"5:15",0,0,"decimal")}</div>
+        <p class="ob-note">Vet du inte? Klockor som Garmin, Apple Watch och Polar visar VO2max, vilopuls och maxpuls. Snittempot är vad du brukar springa på ett vanligt lugnt pass.</p>`},
+      read(){[["weight","#ob-w"],["height","#ob-ht"],["vo2","#ob-vo2"],["rhr","#ob-rhr"],["maxhr","#ob-max"]].forEach(([k,id])=>{const v=num(id);if(v!==undefined)st[k]=v});const p=$("#ob-pace");if(p)st.pace=p.value.trim()},
+      ok(){const R=[["weight",30,250,"Vikten","#ob-w"],["height",120,230,"Längden","#ob-ht"],["vo2",20,95,"VO2max","#ob-vo2"],["rhr",30,120,"Vilopulsen","#ob-rhr"],["maxhr",120,230,"Maxpulsen","#ob-max"]];
+        for(const [k,a,b,n,id] of R)if(st[k]!=null&&!(st[k]>=a&&st[k]<=b))return [`${n} ser inte rätt ut. Skriv ett värde mellan ${a} och ${b}, eller lämna tomt.`,id];
+        if(st.rhr&&st.maxhr&&st.rhr>=st.maxhr)return ["Vilopulsen måste vara lägre än maxpulsen.","#ob-rhr"];
+        if(st.pace){const p=parseRes(st.pace);if(!p||p<150||p>720)return ["Skriv tempot som m:ss per km, till exempel 5:15.","#ob-pace"]}return null}},
+    push:{eye:"Notiser",h:"Vill du ha påminnelser?",p:"VARV. säger till när det är dags för dagens pass, räknar ner till loppet och berättar när vänner tränar. Du kan ändra det när som helst under Profil.",
+      html:()=>{const s=pushState();return `<div class="ob-push" aria-hidden="true"><div class="ob-ntf"><span class="ob-nic"></span><div><b>VARV.</b><p>Dags för dagens pass: 6 × 1 km i loppfart. 💪</p></div><small>nu</small></div><div class="ob-ntf"><span class="ob-nic"></span><div><b>VARV.</b><p>21 dagar kvar till loppet. Nu börjar nedtrappningen.</p></div><small>08:00</small></div></div>
+        ${s==="ios"?`<div class="ob-note"><b style="color:var(--ink)">På iPhone behöver VARV. ligga på hemskärmen för att kunna skicka notiser.</b><br>Tryck på Dela i Safari, välj Lägg till på hemskärmen, öppna VARV. därifrån och slå på notiser under Profil.</div>`
+         :s==="none"?`<p class="ob-note">Den här webbläsaren kan inte visa notiser. Du kan slå på dem senare från telefonen under Profil.</p>`
+         :s==="on"?`<p class="ob-note">Notiserna är redan påslagna.</p>`:""}`},
+      go:()=>pushState()==="ask"?"Tillåt notiser":"Klart",skip:()=>pushState()==="ask"?"Inte nu":"",read(){},ok:()=>null}
   };
-  openSheet(`<div><span class="small">Välkommen till VARV.</span><h2>Din plan.</h2><p class="small">Några frågor, sedan lägger VARV. upp träningen efter din nivå, vecka för vecka.</p></div><div id="st-body" style="display:grid;gap:26px"></div>
-    <div class="lg-foot"><button class="pill block" id="st-go">Skapa min plan</button></div>`,()=>{
-    const bindA=()=>aboutBind(st,()=>{if(!st.goalSet)st.target=LEVEL_TARGET[st.level];draw();bindA()});
-    draw();bindA();const r=$("#st-body");
-    r.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.dataset.lv)return;const d=b.dataset;
-      if(d.sev){st.ev=+d.sev;st.date="";st.none=false}else if(d.snone!==undefined){st.none=true;st.ev=null;st.date=""}
-      else if(d.sg){st.target=+d.sg;st.goalSet=true}else if(d.fmt){set.fmt=d.fmt;if(set.fmt==="mixed")set.k="open"}else if(d.k){set.k=d.k}else if(d.g){set.g=d.g}else return;draw();bindA()});
-    r.addEventListener("change",e=>{if(e.target.id==="st-d"&&e.target.value){st.date=e.target.value;st.ev=null;st.none=false;draw();bindA()}});
-    r.addEventListener("input",e=>{if(e.target.id==="st-g"){st.goalSet=true;st.target=+e.target.value;$("#st-gv").textContent=fmtHM(st.target);$$("#st-body [data-sg]").forEach(c=>c.setAttribute("aria-pressed",+c.dataset.sg===st.target))}});
-    const fin=go=>{if(go){if(!aboutOk(st))return;saveAbout(st);const ev=st.ev!=null?EVENTS[st.ev]:null;set.noRace=!ev&&!st.date;if(ev)set.race=raceKey(ev);else delete set.race;set.date=ev?ev.s:st.date||freeDate();set.target=st.target;set.planStart=today()}
-      set.onboarded=true;saveSet();refreshSettingsUI();renderPlan();renderHome();renderPRs();closeSheet();if(simInvWaiting())setTimeout(openInvite,450);else if(passWaiting())setTimeout(openSharedPass,450);
-      if(go){toast("Din plan är klar");HAPTIC("success")}setTimeout(maybeTour,500)};
-    $("#st-go").onclick=()=>fin(true);
-  });
+  const el=$("#onb"),body=$("#ob-body"),msg=$("#ob-msg"),go=$("#ob-go"),sk=$("#ob-skip");
+  const say=(t,focus)=>{msg.textContent=t||"";if(focus){const f=$(focus);if(f)f.focus()}};
+  function draw(){const v=V[steps()[i]];body.innerHTML=v.html()}
+  function render(){
+    const S=steps(),k=S[i],v=V[k];
+    $("#ob-eye").textContent=v.eye;$("#ob-h").textContent=v.h;$("#ob-p").textContent=v.p;$("#ob-n").textContent=`${i+1} av ${S.length}`;
+    $("#ob-bar").innerHTML=S.map((_,j)=>`<i class="${j<=i?"on":""}"></i>`).join("");
+    $("#ob-back").style.visibility=i?"visible":"hidden";
+    go.textContent=typeof v.go==="function"?v.go():i===S.length-1?"Klart":"Fortsätt";
+    const s=typeof v.skip==="function"?v.skip():v.skip;sk.hidden=!s;sk.textContent=s||"";
+    say("");draw();el.scrollTop=0;
+  }
+  function next(skipped){
+    const S=steps(),v=V[S[i]];v.read();
+    if(!skipped){const e=v.ok();if(e){say(e[0],e[1]);HAPTIC("warn");return}}
+    else if(S[i]==="body"&&v.ok()){["weight","height","vo2","rhr","maxhr"].forEach(k=>{st[k]=set[k]||null});st.pace=set.pace?fmt(set.pace):""}
+    if(i<S.length-1){i++;render();return}
+    finish();
+  }
+  async function finish(){
+    const lvlChanged=set.level!==st.level;
+    set.age=st.age;set.sex=st.sex;set.goals=[...st.goals];
+    saveAbout({age:st.age,height:st.height,level:st.level});
+    if(st.goals.has("race")){const c=st.cls,ev=st.ev!=null?EVENTS[st.ev]:null;
+      set.fmt=c.fmt;set.k=c.fmt==="mixed"?"open":c.k;set.g=c.g||(st.sex==="w"||st.sex==="m"?st.sex:set.g);
+      set.noRace=!ev&&!st.date;if(ev)set.race=raceKey(ev);else delete set.race;set.date=ev?ev.s:st.date||freeDate();set.target=st.target}
+    else{if(st.sex==="w"||st.sex==="m")set.g=st.sex;set.noRace=true;delete set.race;set.date=freeDate();if(lvlChanged||!set.onboarded)set.target=LEVEL_TARGET[st.level]||90}
+    set.planStart=today();
+    const races=st.past?st.races.filter(r=>r.t).map(r=>({n:r.n.slice(0,60),d:r.d,t:parseRes(r.t)})).sort((a,b)=>b.d.localeCompare(a.d)):[];
+    set.pastRaces=races;
+    set.weight=st.weight;set.height=st.height;set.vo2=st.vo2;set.rhr=st.rhr;set.maxhr=st.maxhr;set.pace=st.pace?parseRes(st.pace):null;
+    set.onboarded=true;saveSet();
+    const best=races.length?Math.min(...races.map(r=>r.t)):0;
+    if(best&&(!PRS.race||best<PRS.race)){PRS.race=best;try{await savePRs()}catch(e){}}
+    refreshSettingsUI();renderPlan();renderHome();renderPRs();
+    onbClose();HAPTIC("success");toast("Din plan är klar");
+    if(simInvWaiting())setTimeout(openInvite,450);else if(passWaiting())setTimeout(openSharedPass,450);
+    setTimeout(maybeTour,500);
+  }
+  body.onclick=e=>{const b=e.target.closest("button");if(!b||b.disabled)return;const d=b.dataset,v=V[steps()[i]];v.read();
+    if(d.sx)st.sex=d.sx;else if(d.lv){st.level=d.lv;if(!st.goalSet)st.target=LEVEL_TARGET[st.level]}
+    else if(d.gl){st.goals.has(d.gl)?st.goals.delete(d.gl):st.goals.add(d.gl);render();return}
+    else if(d.sev){st.ev=+d.sev;st.date="";st.none=false}else if(d.snone!==undefined){st.none=true;st.ev=null;st.date=""}
+    else if(d.sg){st.target=+d.sg;st.goalSet=true}else if(d.fmt){st.cls.fmt=d.fmt}else if(d.k){st.cls.k=d.k}else if(d.g){st.cls.g=d.g}
+    else if(d.past){st.past=d.past==="ja";if(st.past&&!st.races.length)st.races.push({n:"",d:"",t:""})}
+    else if(d.add!==undefined){if(st.races.length<10)st.races.push({n:"",d:"",t:""});draw();const n=$("#ob-rn"+(st.races.length-1));if(n)n.focus();return}
+    else if(d.rm){st.races.splice(+d.rm,1)}else return;
+    say("");draw()};
+  body.onchange=e=>{if(e.target.id==="ob-d"&&e.target.value){st.date=e.target.value;st.ev=null;st.none=false;draw()}};
+  body.oninput=e=>{if(msg.textContent)say("");if(e.target.id==="ob-g"){st.goalSet=true;st.target=+e.target.value;$("#ob-gv").textContent=fmtHM(st.target);$$("#ob-body [data-sg]").forEach(c=>c.setAttribute("aria-pressed",+c.dataset.sg===st.target))}};
+  body.onkeydown=e=>{if(e.key==="Enter"&&e.target.tagName==="INPUT"){e.preventDefault();go.click()}};
+  go.onclick=()=>busy(go,async()=>{const k=steps()[i];
+    if(k==="push"&&pushState()==="ask"){await pushOn()}
+    next(false)});
+  sk.onclick=()=>next(true);
+  $("#ob-back").onclick=()=>{if(!i)return;V[steps()[i]].read();i--;render()};
+  ONB_ON=true;closeSheet();el.hidden=false;gateInert(true);document.body.style.overflow="hidden";render();
+  setTimeout(()=>{const a=$("#ob-age");if(a&&!a.value)a.focus({preventScroll:true})},400);
 }
 
 /* ============ Framsteg per övning ============ */
@@ -4300,7 +4447,7 @@ renderComm();renderGarmin();renderAvatar();renderEvents();
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
   else if(set.onboarded&&passWaiting())setTimeout(openSharedPass,wait);
-  else if(!set.onboarded)setTimeout(()=>{if(!set.onboarded){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openStart()}},wait);
+  else if(!set.onboarded)setTimeout(()=>{if(!set.onboarded&&!ONB_ON){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openOnb()}},wait);
   else if(!set.level)setTimeout(()=>{if(!set.level&&$("#sheet").hidden)openAbout()},wait);
   else if(!set.toured)setTimeout(maybeTour,Math.max(0,wait-400));
   if(LIVE){renderLive();liveTickStart();if(LIVE.open)liveWake()}});

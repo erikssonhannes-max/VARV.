@@ -2326,7 +2326,7 @@ async function loadMyProfile(){
   const {data,error}=await SB.from("profiles").select("*").eq("user_id",SBUSER.id).maybeSingle();
   if(error||!data){MYPROF=null;if(location.hash==="#profil")renderProfile();return}
   MYPROF=data;MEINFO=Object.assign({},MEINFO||{},{avatarUrl:data.avatar_url||(MEINFO&&MEINFO.avatarUrl)||""});
-  await loadFriends();renderAvatar();if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#vanner")renderFriends(true);planChanged();
+  await loadFriends();renderAvatar();try{renderHome()}catch(e){}if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#vanner")renderFriends(true);planChanged();
 }
 async function loadFriends(){
   if(!SB||!SBUSER)return;
@@ -2481,7 +2481,7 @@ function openEditProfile(){
       const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub};
       const {error}=await SB.from("profiles").update(upd).eq("user_id",SBUSER.id);
       if(error){msg.textContent=profErr(error);msg.classList.add("bad");return}
-      Object.assign(MYPROF,upd);await loadFriends();renderProfile();closeSheet();toast("Profilen är sparad");HAPTIC("success")})};
+      Object.assign(MYPROF,upd);await loadFriends();renderProfile();try{renderHome()}catch(e){}closeSheet();toast("Profilen är sparad");HAPTIC("success")})};
   });
 }
 /* Profilbild: beskärs till en kvadrat och krymps innan den laddas upp */
@@ -3360,9 +3360,9 @@ function dayMsg(h,n){
 }
 function renderHome(){try{renderGo()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
-  {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(pName()||"").split(" ")[0];
+  {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const n=(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-    $("#h-greet").textContent=dayMsg(h,n)}}
+    $("#h-greet").textContent=n?`Hej, ${n}.`:"Hej."}}
   try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";

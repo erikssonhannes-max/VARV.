@@ -1527,9 +1527,9 @@ function openTest(first){
   openSheet(`<div><span class="small">${first?"Välkommen":"Din nivå"}</span><h2>Starttest</h2></div>
    <p class="muted">Gör testerna utvilad med 5–10 minuters vila emellan. Fyll i minst 1 km, resten är valfritt men gör uppskattningen säkrare.</p>
    <div class="grid2"><div class="field"><label for="t-age">Ålder</label><input type="number" id="t-age" inputmode="numeric" min="14" max="90" value="${set.age||""}" placeholder="30"></div>
-   <div class="field"><label for="t-km">1 km löpning, max</label><input type="text" id="t-km" inputmode="decimal" placeholder="4:30" value="${set.test&&set.test.km?fmt(set.test.km):""}"></div></div>
-   <div class="grid2"><div class="field"><label for="t-ski">SkiErg 1000 m</label><input type="text" id="t-ski" inputmode="decimal" placeholder="4:20" value="${set.test&&set.test.ski?fmt(set.test.ski):""}"></div>
-   <div class="field"><label for="t-wb">50 wall balls</label><input type="text" id="t-wb" inputmode="decimal" placeholder="2:10" value="${set.test&&set.test.wb?fmt(set.test.wb):""}"></div></div>
+   <div class="field"><label for="t-km">1 km löpning, max</label><input type="text" id="t-km" inputmode="numeric" data-tm="4" placeholder="4:30" value="${set.test&&set.test.km?fmt(set.test.km):""}"></div></div>
+   <div class="grid2"><div class="field"><label for="t-ski">SkiErg 1000 m</label><input type="text" id="t-ski" inputmode="numeric" data-tm="4" placeholder="4:20" value="${set.test&&set.test.ski?fmt(set.test.ski):""}"></div>
+   <div class="field"><label for="t-wb">50 wall balls</label><input type="text" id="t-wb" inputmode="numeric" data-tm="4" placeholder="2:10" value="${set.test&&set.test.wb?fmt(set.test.wb):""}"></div></div>
    <div id="t-res"></div>
    <button class="pill block" id="t-calc">Beräkna min nivå</button>
    <button class="pill ghost block" id="t-skip">${first?"Hoppa över, jag väljer själv":"Stäng"}</button>
@@ -1537,7 +1537,7 @@ function openTest(first){
     $("#t-skip").onclick=()=>{set.onboarded=true;saveSet();closeSheet();maybeTour()};
     $("#t-calc").onclick=()=>{
       const km=parseT($("#t-km").value),ski=parseT($("#t-ski").value),wb=parseT($("#t-wb").value),age=+$("#t-age").value||null;
-      if(!km||km<120||km>900){toast("Fyll i din 1 km-tid som m:ss, till exempel 4:30");return}
+      if(!km||km<120||km>900){toast("Fyll i din 1 km-tid, till exempel 430 för 4:30");return}
       const parts=[[km*1.25*8/.5,.6]];if(ski)parts.push([ski*1.15/.055,.2]);if(wb)parts.push([wb*3.2/.06,.2]);
       const ws=parts.reduce((a,x)=>a+x[1],0),T=parts.reduce((a,x)=>a+x[0]*x[1],0)/ws;const tm=Math.max(55,Math.min(150,Math.round(T/60)));
       $("#t-res").innerHTML=`<div class="est"><small>Uppskattad sluttid idag</small><b>${fmtHM(tm)}</b><p>Med en bra träningsperiod kan du sikta på omkring ${fmtHM(Math.max(55,Math.round(tm*.93)))}.</p></div>
@@ -2852,7 +2852,7 @@ function openPR(k){
    <div class="field"><label for="pr-in">Tid, skriv bara siffror</label><input type="text" id="pr-in" inputmode="numeric" data-tm="${k==="race"?5:4}" placeholder="${k==="race"?"1:29:30":"4:15"}" value="${v?fmt(v):""}"></div>
    <div class="grid2">${v?`<button class="pill ghost" id="pr-del">Ta bort</button>`:"<span></span>"}<button class="pill" id="pr-save">Spara</button></div>`,()=>{
     const inp=$("#pr-in");setTimeout(()=>inp.focus(),320);
-    $("#pr-save").onclick=()=>{const s=parseT(inp.value);if(!s){toast("Skriv tiden som m:ss, till exempel 4:15");return}const better=!PRS[k]||s<PRS[k];PRS[k]=s;savePRs();renderPRs();closeSheet();toast(better?"Nytt rekord sparat":"Rekordet är uppdaterat");if(better)setTimeout(confetti,250)};
+    $("#pr-save").onclick=()=>{const s=parseT(inp.value);if(!s){toast("Skriv tiden med siffror, till exempel 415 för 4:15");return}const better=!PRS[k]||s<PRS[k];PRS[k]=s;savePRs();renderPRs();closeSheet();toast(better?"Nytt rekord sparat":"Rekordet är uppdaterat");if(better)setTimeout(confetti,250)};
     const d=$("#pr-del");if(d)d.onclick=()=>{delete PRS[k];savePRs();renderPRs();closeSheet()};
   });
 }
@@ -3063,7 +3063,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
     return `<div class="lg-ex" data-i="${i}"><div class="lg-exh"><span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${hint?`<p class="small">Förra gången: ${esc(hint.replace(it.n+" ",""))}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
       <div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}${c[0]==="kg"&&it.ex==="farm"?" per hand":""}</span>`).join("")}<span></span></div>
       ${it.sets.map((s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];const val=nz(v)?(c[0]==="t"?fmt(v):c[0]==="kg"?fmtKg(v):v):"";
-        return `<input type="text" enterkeyhint="next" data-i="${i}" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"||c[0]==="t"?"decimal":"numeric"}" autocomplete="off" placeholder="${c[0]==="t"?"m:ss":"–"}" value="${val}" aria-label="${c[1]}, set ${j+1}">`}).join("")}
+        return `<input type="text" enterkeyhint="next" data-i="${i}" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${val}" aria-label="${c[1]}, set ${j+1}">`}).join("")}
         <button type="button" class="lg-sx" data-rs="${i}:${j}" aria-label="Ta bort set ${j+1}"${it.sets.length<2?" disabled":""}>−</button></div>`).join("")}
       <button type="button" class="lg-add" data-as="${i}">+ Lägg till set</button></div>`}).join("");
   r.innerHTML=`<div><span class="small">${esc(LG.kicker)}</span><h2>${LG.edit?"Ändra pass":LG.forLive?"Bygg ditt pass":LG.fromLive?"Spara passet":"Logga pass"}</h2></div>
@@ -3197,7 +3197,7 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
      ${it.sets.map((s,j)=>{const running=!!s.runAt;const act=running?`<button type="button" class="lv-act run" data-lstop="${i}:${j}" aria-label="Stoppa tiden för set ${j+1}"><span data-run="${s.runAt}">0:00</span></button>`
         :hasT&&!nz(s.t)&&!s.done?`<button type="button" class="lv-act" data-lrun="${i}:${j}" aria-label="Starta tiden för set ${j+1}">Starta</button>`
         :`<button type="button" class="lv-act chk${s.done?" on":""}" data-ldone="${i}:${j}" aria-pressed="${!!s.done}" aria-label="Set ${j+1} klart">✓</button>`;
-       return `<div class="lv-set${s.done?" done":""}" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>`<input type="text" enterkeyhint="done" data-li="${i}" data-lj="${j}" data-lf="${c[0]}" inputmode="${c[0]==="kg"||c[0]==="t"?"decimal":"numeric"}" autocomplete="off" placeholder="${c[0]==="t"?"m:ss":"–"}" value="${liveVal(c[0],s[c[0]])}" aria-label="${c[1]}, set ${j+1}">`).join("")}${act}</div>`}).join("")}
+       return `<div class="lv-set${s.done?" done":""}" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>`<input type="text" enterkeyhint="done" data-li="${i}" data-lj="${j}" data-lf="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${liveVal(c[0],s[c[0]])}" aria-label="${c[1]}, set ${j+1}">`).join("")}${act}</div>`}).join("")}
      <div class="lv-setbtns"><button type="button" class="linkbtn" data-ladd="${i}">+ Lägg till set</button>${it.sets.length>1&&!it.sets[it.sets.length-1].done?`<button type="button" class="linkbtn lv-muted" data-lsub="${i}">Ta bort sista setet</button>`:""}</div></div>`}).join("");
   v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="small">${done} av ${all} set</span><button type="button" class="linkbtn" id="lv-pause">${LIVE.pausedAt?"Fortsätt":"Pausa"}</button></div>
     <div class="lv-clock"><b id="lv-time">${fmt(liveElapsed())}</b><div class="progress lv-prog"><i style="width:${all?Math.round(done/all*100):0}%"></i></div></div>
@@ -3967,12 +3967,12 @@ function openResult(id,pre){const x=id?resAll().find(r=>r.id===id):null;if(id&&!
   openSheet(`<div><span class="small">Topplista</span><h2>${x?"Ändra tid":"Lägg till min tid"}</h2></div>
    <div class="seg" id="rs-kind" role="group" aria-label="Typ"><button data-k="race">Hyrox-lopp</button><button data-k="sim">Simulering</button></div>
    <div class="field"><label for="rs-cls">Klass</label><select id="rs-cls">${RCL.map(([v,l])=>`<option value="${v}"${v===cls?" selected":""}>${l}</option>`).join("")}</select></div>
-   <div class="grid2"><div class="field"><label for="rs-t">Sluttid</label><input type="text" id="rs-t" inputmode="decimal" autocomplete="off" placeholder="1:12:30" value="${x?fmt(x.t):pre.t?fmt(pre.t):""}"></div><div class="field"><label for="rs-d">Datum</label><input type="date" id="rs-d" max="${today()}" value="${esc(x?x.date:today())}"></div></div>
+   <div class="grid2"><div class="field"><label for="rs-t">Sluttid</label><input type="text" id="rs-t" inputmode="numeric" data-tm="5" autocomplete="off" placeholder="1:12:30" value="${x?fmt(x.t):pre.t?fmt(pre.t):""}"></div><div class="field"><label for="rs-d">Datum</label><input type="date" id="rs-d" max="${today()}" value="${esc(x?x.date:today())}"></div></div>
    <div class="field"><label for="rs-n">Lopp eller plats</label><input type="text" id="rs-n" maxlength="50" value="${x?esc(x.name||""):""}" placeholder="Valfritt, till exempel Stockholm"></div>
    <button class="pill block" id="rs-save">${x?"Spara ändringarna":"Spara tiden"}</button>${x?'<button class="pill ghost block" id="rs-del">Ta bort tiden</button>':""}`,()=>{
     const dk=()=>$$("#rs-kind [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===k));dk();$("#rs-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(b){k=b.dataset.k;dk()}};
     const after=()=>{saveSet();closeSheet();if(location.hash==="#vanner")renderFriends()};
-    $("#rs-save").onclick=()=>{const t=parseRes($("#rs-t").value);if(!t||t<600||t>36000){toast("Skriv tiden som h:mm:ss eller mm:ss, till exempel 1:12:30.");$("#rs-t").focus();return}
+    $("#rs-save").onclick=()=>{const t=parseRes($("#rs-t").value);if(!t||t<600||t>36000){toast("Skriv tiden med siffror, till exempel 11230 för 1:12:30.");$("#rs-t").focus();return}
       const d=$("#rs-d").value;if(!isDay(d)||d>today()){toast("Välj ett datum som har varit.");return}
       const r={id:x?x.id:"r"+Date.now().toString(36),kind:k,cls:$("#rs-cls").value,t,date:d,name:$("#rs-n").value.trim().slice(0,50)||null};const list=Array.isArray(set.results)?set.results:[];
       if(!x&&list.length>=200){toast("Du har 200 tider. Ta bort någon först.");return}
@@ -4138,7 +4138,7 @@ const SEXES=[["w","Kvinna"],["m","Man"],["x","Annat"]];
 let ONB_ON=false;
 /* Tider skrivs med bara siffror. Kolon sätts in automatiskt: 515 blir 5:15, 12930 blir 1:29:30. */
 function tmFormat(v,max){const d=String(v).replace(/\D/g,"").replace(/^0+(?=\d{3})/,"").slice(0,max);return d.length<3?d:d.length<5?d.slice(0,-2)+":"+d.slice(-2):d.slice(0,-4)+":"+d.slice(-4,-2)+":"+d.slice(-2)}
-document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.tm)return;const f=tmFormat(t.value,+t.dataset.tm||5);if(f!==t.value){t.value=f;try{t.setSelectionRange(f.length,f.length)}catch(x){}}});
+document.addEventListener("input",e=>{const t=e.target;if(!t.dataset||!t.dataset.tm)return;const f=tmFormat(t.value,+t.dataset.tm||5);if(f!==t.value){t.value=f;try{t.setSelectionRange(f.length,f.length)}catch(x){}}},true);
 const pastBest=()=>{const r=(Array.isArray(set.pastRaces)?set.pastRaces:[]).map(x=>+x.t).filter(t=>t>0);return r.length?Math.min(...r):0};
 const bestRace=()=>{const a=[+PRS.race||0,pastBest()].filter(t=>t>0);return a.length?Math.min(...a):0};
 function onbClose(){if(!ONB_ON)return;ONB_ON=false;$("#onb").hidden=true;gateInert(false);document.body.style.overflow=""}

@@ -515,18 +515,15 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .gt-ic{width:64px;height:64px;filter:drop-shadow(0 14px 24px var(--glow))}
 .gt-head{display:grid;gap:8px}
 .gt-head h2{font-size:clamp(1.7rem,7vw,2.1rem);letter-spacing:-.04em;line-height:1.1}
-.gt-head{padding-top:14px;border-top:1px solid var(--hair);margin-top:8px}
+.gt-head{margin-top:4px}
 .gt-hero{display:grid;gap:12px}
 .gt-hero h1{font-size:clamp(2.4rem,11vw,3.4rem);letter-spacing:-.05em;line-height:1.02;font-weight:700}
 .gt-hero h1 span{background:var(--hot);-webkit-background-clip:text;background-clip:text;color:transparent}
 .gt-hero p{color:var(--muted);font-size:1.05rem;line-height:1.45}
-.gt-cta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px}
-.gt-feats{display:grid;gap:10px}
-.gt-feats>div{display:grid;grid-template-columns:40px minmax(0,1fr);gap:14px;align-items:start;background:var(--tile);border-radius:18px;padding:14px 16px}
-.gt-feats b{display:block;font-size:1rem;font-weight:600;letter-spacing:-.01em}
-.gt-feats p{color:var(--muted);font-size:.9rem;line-height:1.4;margin-top:2px}
-.gt-fi{width:40px;height:40px;border-radius:12px;background:var(--card);display:grid;place-items:center;color:var(--accent)}
-.gt-fi svg{width:22px;height:22px}
+.gt-seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.gt-seg button{border:0;cursor:pointer;border-radius:980px;min-height:48px;padding:12px 16px;font:inherit;font-size:1rem;font-weight:500;background:var(--tile);color:var(--ink);transition:background .2s,box-shadow .2s}
+.gt-seg button[aria-pressed="true"]{background:var(--hot);color:#fff;font-weight:600;box-shadow:0 10px 24px -12px var(--glow)}
+.gt-seg button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .gt-head p{color:var(--muted);font-size:1rem}
 .gt .card{gap:14px}
 .gt-check{display:grid;grid-template-columns:24px minmax(0,1fr);gap:12px;align-items:start;font-size:.9rem;line-height:1.4;cursor:pointer;min-height:44px}
@@ -991,11 +988,9 @@ a.row{color:inherit;text-decoration:none}
 <div id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gt-h">
   <div class="gt">
     <svg class="gt-ic" viewBox="0 0 1024 1024" aria-hidden="true"><defs><linearGradient id="gtg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><rect width="1024" height="1024" rx="230" fill="url(#gtg)"/><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>
-    <section class="gt-hero"><h1>Träna <span>smartare</span> för Hyrox.</h1><p>En plan byggd från din måltid, alla åtta stationer förklarade och tidtagning på racedagen. Gratis att börja.</p>
-      <div class="gt-cta"><button class="pill" type="button" data-gtgo="up">Skapa konto</button><button class="pill ghost" type="button" data-gtgo="in">Logga in</button></div></section>
-    <div class="gt-feats"><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><div><b>Plan efter din måltid</b><p>Vecka för vecka, med tempo och pulszoner. Den anpassar sig efter det du faktiskt tränar.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 7c3 0 5 2.2 5 5.2V20H7v-7.8C7 9.2 9 7 12 7z"/><path d="M9.5 7.5V6a2.5 2.5 0 0 1 5 0v1.5"/></svg></span><div><b>Alla åtta stationer</b><p>Rätt vikter för din klass, teknik och de vanligaste misstagen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4"/></svg></span><div><b>Racedagen</b><p>Tidtagning med ljud, röst och vibration, och en kalender med lopp i hela världen.</p></div></div><div><span class="gt-fi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 17l5-5 4 3 7-8"/><path d="M15 7h5v5"/></svg></span><div><b>Form och följare</b><p>Se formen stiga, ta utmärkelser och jämför veckan med dem du följer.</p></div></div></div>
+    <section class="gt-hero"><h1>Träna <span>smartare</span> för Hyrox.</h1><p>En plan byggd från din måltid, alla åtta stationer förklarade och tidtagning på racedagen. Gratis att börja.</p></section>
     <div class="gt-head" id="gt-form"><span class="eyebrow" style="font-size:.82rem;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em">Kom igång</span><h2 id="gt-h">Skapa ditt konto.</h2><p id="gt-intro">Kontot sparar din plan, dina pass och rekord, och följer med mellan dina enheter. Det är gratis.</p></div>
-    <div class="seg" role="group" aria-label="Konto"><button type="button" data-gt="up" aria-pressed="true">Skapa konto</button><button type="button" data-gt="in" aria-pressed="false">Logga in</button></div>
+    <div class="gt-seg" role="group" aria-label="Konto"><button type="button" data-gt="up" aria-pressed="true">Skapa konto</button><button type="button" data-gt="in" aria-pressed="false">Logga in</button></div>
     <div id="gt-body"></div>
     <div class="gt-foot"><a href="legal/integritet.html" target="_blank" rel="noopener">Integritetspolicy</a><a href="legal/villkor.html" target="_blank" rel="noopener">Användarvillkor</a></div>
   </div>
@@ -2289,8 +2284,6 @@ function gateConsent(say){
   if(a&&!a.checked){say("Du behöver vara 16 år eller äldre för att skapa konto.",true);a.focus();return false}
   return true}
 document.addEventListener("click",e=>{const b=e.target.closest("#gate [data-gt]");if(!b)return;GATE_MODE=b.dataset.gt;renderGate()});
-document.addEventListener("click",e=>{const b=e.target.closest("#gate [data-gtgo]");if(!b)return;GATE_MODE=b.dataset.gtgo;renderGate();
-  const f=$("#gt-form");if(f)f.scrollIntoView({behavior:RM()?"auto":"smooth",block:"start"});setTimeout(()=>{const m=$("#gt-mail");if(m)m.focus({preventScroll:true})},RM()?0:450)});
 if(window.claude)gateDone();
 
 async function deleteAccount(){

@@ -13,7 +13,8 @@
       "info": "Full simulering med 1 km löpning utomhus och åtta stationer inomhus. Singel och team. Starttiderna är ungefärliga.",
       "url": "https://www.actic.se/kurser/traningskurser/hyrox-race-simulation/?centerId=182",
       "source": "https://www.actic.se/kurs/hyrox-race-simulation-herr-single-linkoping-storgatan-2026-11-07/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Sverige"
     },
     {
       "key": "2026-11-14-ocr-factory-espoo",
@@ -27,7 +28,8 @@
       "info": "Simulering inomhus. Par lördag 14 november, singel, Pro och lag söndag 15 november. Vikterna avviker något från det officiella loppet. Anmälan stänger 8 november.",
       "url": "https://kauppa.ocrfactory.fi/cg/297/ninja-race-2022/",
       "source": "https://ocrfactory.fi/fi-fi/article/app/hyrox-race/22025/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Finland"
     },
     {
       "key": "2027-02-19-tehotapahtumat-kuopio",
@@ -41,7 +43,8 @@
       "info": "Åtta löpsträckor på 1 km och åtta stationer. Singel och lag fredag 19 februari från 17:00, par lördag 20 februari från 10:00.",
       "url": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
       "source": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Finland"
     },
     {
       "key": "2027-03-13-fitnesslab-ringsted",
@@ -55,7 +58,8 @@
       "info": "Utomhus. Singel och double i Open och Pro samt mixed double. Anmälan stänger 1 mars.",
       "url": "https://www.sportstiming.dk/event/20017",
       "source": "https://www.sportstiming.dk/event/20017",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Danmark"
     },
     {
       "key": "2027-04-24-vagnhallen-goteborg",
@@ -69,7 +73,8 @@
       "info": "Doubles lördag 24 april, singel söndag 25 april. Priset höjs efter 31 december. Sista anmälningsdag 11 april.",
       "url": "https://vagnhallen.wondr.se/w_application/applicants/form_view/6abe5b12-3e14-4526-92dd-00390a100517",
       "source": "https://vagnhallen.se/hyrox/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Sverige"
     },
     {
       "key": "2027-05-22-crossfit-frederikshavn-frederikshavn",
@@ -83,7 +88,8 @@
       "info": "22-23 maj. Lördagen är slutsåld, platser finns kvar söndag 23 maj. Full och halv distans, solo och team. Anmälan stänger 10 maj.",
       "url": "https://www.sportstiming.dk/event/19635",
       "source": "https://www.sportstiming.dk/event/19635",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Danmark"
     },
     {
       "key": "2027-05-29-crossfit-highway-linkoping",
@@ -97,7 +103,8 @@
       "info": "Nytt heat var 7:e minut. 140 platser. Anmälan stänger 27 maj.",
       "url": "https://www.roxrace.com/r/hyrox-simulering-maj-2027",
       "source": "https://www.crossfithighway.se/hyrox-sim/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Sverige"
     },
     {
       "key": "2027-08-14-saga-ft-steinkjer",
@@ -111,7 +118,8 @@
       "info": "14-15 augusti. Full double lördag är fulltecknad med väntelista. Singel söndag från 10:00 och halv distans söndag från 13:30 är öppna. Anmälan är bindande efter 1 maj.",
       "url": "https://sagaft.no/hyrox-sim-pamelding/",
       "source": "https://sagaft.no/hyrox-sim-single/",
-      "checked": "2026-11-02"
+      "checked": "2026-11-02",
+      "country": "Norge"
     }
   ]
 }

@@ -781,7 +781,7 @@ a.row{color:inherit;text-decoration:none}
 .sg-pick .k[aria-pressed="true"]{background:linear-gradient(135deg,var(--cyan),var(--cyan2))}.sg-pick .s[aria-pressed="true"]{background:linear-gradient(135deg,var(--green),var(--green2))}.sg-pick .b[aria-pressed="true"]{background:linear-gradient(135deg,var(--accent),var(--accent2))}
 .sg-nums{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:4px 0}.sg-nums div{background:var(--tile);border-radius:12px;padding:8px;text-align:center}.sg-nums b{display:block;font-size:1.5rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}.sg-nums small{color:var(--muted);font-size:.74rem}
 .pre-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.pre{border:0;cursor:pointer;background:var(--tile);color:var(--ink);border-radius:18px;padding:14px;min-height:112px;display:grid;gap:3px;text-align:left;align-content:space-between;font:inherit;border-left:4px solid var(--accent)}.pre.k{border-left-color:var(--cyan)}.pre.s{border-left-color:var(--green)}
-.pre small{color:var(--muted);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.pre em{font-style:normal;color:var(--muted);font-size:.84rem;line-height:1.3;margin-top:-1px}#pre-f{margin-bottom:2px}.pre b{font-size:1.1rem;font-weight:600;letter-spacing:-.02em;line-height:1.2}.pre span{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
+.pre small{color:var(--muted);font-size:.74rem;font-weight:600;text-transform:uppercase;letter-spacing:.04em}.pre-pr{font-style:normal;color:var(--accent);font-weight:600;font-size:.84rem}.bm-card{gap:10px}.bm-top{display:grid;gap:2px}.bm-top b{font-size:2rem;font-weight:700;letter-spacing:-.03em;font-variant-numeric:tabular-nums}.bm-tries{display:flex;gap:8px;flex-wrap:wrap}.bm-tries span{background:var(--card);border-radius:10px;padding:6px 10px;font-weight:600;font-variant-numeric:tabular-nums;display:grid;font-size:.95rem}.bm-tries span.on{color:var(--accent)}.bm-tries small{color:var(--muted);font-weight:400;font-size:.75rem}.pre em{font-style:normal;color:var(--muted);font-size:.84rem;line-height:1.3;margin-top:-1px}#pre-f{margin-bottom:2px}.pre b{font-size:1.1rem;font-weight:600;letter-spacing:-.02em;line-height:1.2}.pre span{color:var(--muted);font-size:.86rem;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:no-preference){.go-now,.go,.go-chip,.pre{transition:transform .15s ease}.go-now:active,.go:active,.go-chip:active,.pre:active,.sg-pick button:active{transform:scale(.97)}
  .go-now::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 40%,rgba(255,255,255,.28) 50%,transparent 60%);transform:translateX(-100%);animation:goShine 5s ease-in-out 1.5s infinite;pointer-events:none}}
 @keyframes goShine{0%{transform:translateX(-100%)}25%,100%{transform:translateX(100%)}}
@@ -2402,6 +2402,7 @@ function profilePayload(){
   const st=weekStats(),P=PROG||progress(),me=myEvent();
   const prs={};PRKEYS.forEach(([k])=>{if(k!=="race"&&PRS[k])prs[k]=PRS[k]});
   resAll().forEach(x=>{const k=(x.kind==="race"?"r:":"s:")+x.cls;if(!prs[k]||x.t<prs[k])prs[k]=x.t});
+  Object.entries(set.bench||{}).forEach(([k,v])=>{if(v&&+v.t>=300&&+v.t<=14400)prs["b:"+k]=Math.round(+v.t)});
   const bt=PRS.race&&PRS.race>=600&&PRS.race<=36000?PRS.race:null;
   return {best_time:bt,best_division:divText().slice(0,60),prs,
     next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:me?me.s:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
@@ -2993,8 +2994,8 @@ function dropDraft(){LGDRAFT=null;try{localStorage.removeItem("varv-draft")}catc
 /* ============ Nytt pass: ett ställe för allt ============ */
 function tplSave(name,items,type){const clean=items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,sets:i.sets.map(x=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(x[f])&&!(f==="t"&&i.k!=="t"))o[f]=x[f]});return o})}));
   set.tpls=(set.tpls||[]).filter(x=>x.name!==name).concat([{id:"t"+Date.now().toString(36),name,type:type||null,items:clean}]).slice(-30);saveSet()}
-function liveFrom(items,type,hint){if(LIVE){openLogger();toast("Du har redan ett pass igång.");return}
-  openLogger({type:type||"Styrka och stationer",forLive:true});LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));if(hint)LG.hint=hint;startLive()}
+function liveFrom(items,type,hint,bench){if(LIVE){openLogger();toast("Du har redan ett pass igång.");return}
+  openLogger({type:type||"Styrka och stationer",forLive:true});LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));if(hint)LG.hint=hint;LG.bench=bench||null;startLive()}
 function buildFrom(items,type,o){openLogger(Object.assign({type:type||"Styrka och stationer",kicker:"Nytt pass"},o));LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));renderLG()}
 function prepRows(){return (set.tpls||[]).slice().reverse().map(t=>`<div class="prep"><button type="button" class="prep-n" data-prep-edit="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"} · Ändra</span></button><button type="button" class="prep-go" data-prep-go="${esc(t.id)}">Starta</button><button type="button" class="lg-x" data-prep-del="${esc(t.id)}" aria-label="Ta bort ${esc(t.name)}">✕</button></div>`).join("")}
 function renderPrep(){try{renderGo()}catch(e){}const el=$("#lg-prep");if(!el)return;el.innerHTML=(set.tpls||[]).length?`<span class="lbl">Förberedda pass</span><div class="lg-grp prep-l">${prepRows()}</div>`:""}
@@ -3039,10 +3040,10 @@ function sugItem(id,count,val){const x=EX.find(e=>e.id===id),ny=(set.level||"mel
 /* Färdiga pass, skrivna för VARV. */
 const PRESETS=[
  /* Hyrox: loppspecifikt */
- {n:"Hela banan",c:"hyrox",lv:"Hårt",m:80,t:"Racesimulering",w:"Generalrepetition av loppet",y:"Du får testa tempo, byten och energi över hela distansen innan det gäller.",h:"1 km löpning före varje station, i den ordning de kommer i loppet. Kör den tre till sex veckor före loppet, inte oftare än varannan vecka.",it:()=>[sugItem("run",8,{m:1000})].concat(EX.filter(x=>x.st).map(x=>sugItem(x.id,1,exStd(x.id))))},
- {n:"Halva banan",c:"hyrox",lv:"Hårt",m:45,t:"Racesimulering",w:"Första halvan av loppet",y:"Lär dig hålla igen på de första stationerna så att du har kvar kraft till slutet.",h:"1 km löpning före var och en av de fyra första stationerna, i tävlingstempo.",it:()=>[sugItem("run",4,{m:1000})].concat(["ski","push","pull","bbj"].map(i=>sugItem(i,1,exStd(i))))},
- {n:"Tunga ben",c:"hyrox",lv:"Hårt",m:40,t:"Löpning och stationer",w:"Löpning efter stationer",y:"Slutet av loppet avgörs av hur du springer när benen redan är trötta.",h:"Tre rundor: 1 km löpning, 50 m sandbag lunges och 50 wall balls. Så lite vila som möjligt mellan momenten.",it:()=>[sugItem("run",3,{m:1000}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:50})]},
- {n:"Sandwich",c:"hyrox",lv:"Medel",m:40,t:"Löpning och stationer",w:"Byten mellan maskin och löpning",y:"Varje station följs av löpning i loppet. Här tränar du att komma upp i fart direkt efter maskinen.",h:"Två rundor: SkiErg 1000 m, sedan 1 km löpning, sedan rodd 1000 m. Byt direkt utan vila. Vila 3 min mellan rundorna.",it:()=>[sugItem("ski",2,{m:1000}),sugItem("run",2,{m:1000}),sugItem("row",2,{m:1000})]},
+ {id:"hela",bm:1,n:"Hela banan",c:"hyrox",lv:"Hårt",m:80,t:"Racesimulering",w:"Generalrepetition av loppet",y:"Du får testa tempo, byten och energi över hela distansen innan det gäller.",h:"1 km löpning före varje station, i den ordning de kommer i loppet. Kör den tre till sex veckor före loppet, inte oftare än varannan vecka.",it:()=>[sugItem("run",8,{m:1000})].concat(EX.filter(x=>x.st).map(x=>sugItem(x.id,1,exStd(x.id))))},
+ {id:"halva",bm:1,n:"Halva banan",c:"hyrox",lv:"Hårt",m:45,t:"Racesimulering",w:"Första halvan av loppet",y:"Lär dig hålla igen på de första stationerna så att du har kvar kraft till slutet.",h:"1 km löpning före var och en av de fyra första stationerna, i tävlingstempo.",it:()=>[sugItem("run",4,{m:1000})].concat(["ski","push","pull","bbj"].map(i=>sugItem(i,1,exStd(i))))},
+ {id:"tunga",bm:1,n:"Tunga ben",c:"hyrox",lv:"Hårt",m:40,t:"Löpning och stationer",w:"Löpning efter stationer",y:"Slutet av loppet avgörs av hur du springer när benen redan är trötta.",h:"Tre rundor: 1 km löpning, 50 m sandbag lunges och 50 wall balls. Så lite vila som möjligt mellan momenten.",it:()=>[sugItem("run",3,{m:1000}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:50})]},
+ {id:"sandwich",bm:1,n:"Sandwich",c:"hyrox",lv:"Medel",m:40,t:"Löpning och stationer",w:"Byten mellan maskin och löpning",y:"Varje station följs av löpning i loppet. Här tränar du att komma upp i fart direkt efter maskinen.",h:"Två rundor: SkiErg 1000 m, sedan 1 km löpning, sedan rodd 1000 m. Byt direkt utan vila. Vila 3 min mellan rundorna.",it:()=>[sugItem("ski",2,{m:1000}),sugItem("run",2,{m:1000}),sugItem("row",2,{m:1000})]},
  {n:"Roxzone-EMOM",c:"hyrox",lv:"Hårt",m:30,t:"Löpning och stationer",w:"Jämnt tempo under trötthet",y:"Klockan styr, så du lär dig ett tempo du klarar att hålla när det blir tungt.",h:"Starta en klocka. Varje ny minut gör du ett moment och vilar resten av minuten. Minut 1: 10 m burpee broad jumps. Minut 2: 15 wall balls. Minut 3: 250 m rodd. Upprepa tio varv.",it:()=>[sugItem("bbj",10,{m:10}),sugItem("wall",10,{r:15}),sugItem("row",10,{m:250})]},
  /* Kondition */
  {n:"Tusingar",c:"kondition",lv:"Hårt",m:45,t:"Intervaller",w:"Fart i tävlingstempo",y:"Loppet är åtta kilometer löpning. Det här passet gör ditt tävlingstempo bekvämare.",h:"Värm upp 10 min. Spring 6 × 1 km i ditt tävlingstempo med 90 s gång eller jogg emellan.",it:()=>[sugItem("run",6,{m:1000})]},
@@ -3053,23 +3054,43 @@ const PRESETS=[
  {n:"Lugn distans",c:"kondition",lv:"Lätt",m:45,t:"Lugn distans",w:"Grundkondition",y:"De lugna kilometrarna bygger motorn som de hårda passen står på.",h:"Spring i prattempo. Du ska kunna prata i hela meningar hela vägen.",it:()=>[sugItem("run",1,{m:7000})]},
  /* Styrka */
  {n:"Slädpass",c:"styrka",lv:"Medel",m:35,t:"Styrka och stationer",w:"Kraft i släden",y:"Sled push och pull är där flest tappar tid. Teknik och styrka här lönar sig direkt.",h:"Korta tunga sträckor med full vila, 2 min mellan seten. Teknik före vikt.",it:()=>[sugItem("push",6,{m:25}),sugItem("pull",6,{m:25}),sugItem("farm",4,{m:50})]},
- {n:"Sista stationerna",c:"styrka",lv:"Hårt",m:35,t:"Styrka och stationer",w:"Styrka på trötta ben",y:"Farmers carry, lunges och wall balls kommer sist i loppet, när benen redan är slut.",h:"Tre rundor: 100 m farmers carry, 50 m sandbag lunges och 30 wall balls. Kort vila mellan momenten.",it:()=>[sugItem("farm",3,{m:100}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:30})]},
+ {id:"sista",bm:1,n:"Sista stationerna",c:"styrka",lv:"Hårt",m:35,t:"Styrka och stationer",w:"Styrka på trötta ben",y:"Farmers carry, lunges och wall balls kommer sist i loppet, när benen redan är slut.",h:"Tre rundor: 100 m farmers carry, 50 m sandbag lunges och 30 wall balls. Kort vila mellan momenten.",it:()=>[sugItem("farm",3,{m:100}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:30})]},
  {n:"Benstyrka",c:"styrka",lv:"Medel",m:50,t:"Styrka och stationer",w:"Starka ben och säte",y:"Starkare ben gör släden lättare och gör att lunges och wall balls inte tar slut på dig.",h:"Knäböj 5 × 5 tungt med 2–3 min vila. Sedan rumänska marklyft 3 × 8, bulgarska utfall 3 × 8 per ben och höftlyft 3 × 12.",it:()=>[sugItem("squat",5,{r:5}),sugItem("rdl",3,{r:8}),sugItem("bss",3,{r:8}),sugItem("hip",3,{r:12})]},
  {n:"Grepp och rygg",c:"styrka",lv:"Medel",m:45,t:"Styrka och stationer",w:"Greppstyrka och baksida",y:"Greppet sviker ofta på sled pull och farmers carry. Det här passet bygger det.",h:"Marklyft 4 × 5 tungt. Sedan skivstångsrodd 3 × 8, chins 3 × så många du klarar och tung farmers carry 4 × 50 m.",it:()=>[sugItem("dead",4,{r:5}),sugItem("brow",3,{r:8}),sugItem("chin",3,{r:8}),sugItem("farm",4,{m:50})]},
  {n:"Helkropp",c:"styrka",lv:"Lätt",m:45,t:"Styrka och stationer",w:"Allsidig grundstyrka",y:"Ett bra första styrkepass, eller ett lättare pass en vecka med mycket löpning.",h:"Frontböj 3 × 8, militärpress 3 × 8, kettlebell swings 3 × 15, armhävningar 3 × 12 och plankan 3 × 45 s.",it:()=>[sugItem("front",3,{r:8}),sugItem("ohp",3,{r:8}),sugItem("kbs",3,{r:15}),sugItem("pushup",3,{r:12}),sugItem("plank",3,{t:45})]}];
+/* Rekordpass: tiden från tidtagningen sparas som personligt rekord och jämförs med dem man följer */
+const benchMine=id=>{const v=(set.bench||{})[id];return v&&+v.t>0?v:null};
+function benchSave(id,t,date){const x=PRESETS.find(p=>p.id===id);if(!x)return null;set.bench=set.bench||{};const old=benchMine(id);
+  const pr=!old||t<old.t;set.bench[id]={t:pr?t:old.t,date:pr?date:old.date,n:((old&&old.n)||0)+1};saveSet();return {pr,prev:old?old.t:null,best:set.bench[id].t,n:x.n}}
+function benchHtml(id){const m=benchMine(id),tries=LOGS.filter(l=>l.bench&&l.bench.id===id).sort((a,b)=>b.date.localeCompare(a.date)||(b.created||0)-(a.created||0)).slice(0,3);
+  return `<div class="card bm-card"><div class="bm-top"><span class="lbl">Ditt rekord</span><b>${m?fmt(m.t):"–"}</b>${m?`<span class="small">${dshort(m.date)} · ${m.n} ${m.n===1?"försök":"försök"}</span>`:""}</div>
+   ${tries.length>1?`<div class="bm-tries">${tries.map(l=>`<span${l.bench.t===m.t?' class="on"':""}>${fmt(l.bench.t)}<small>${dshort(l.date)}</small></span>`).join("")}</div>`:""}
+   <p class="small">${m?"Kör passet igen med klockan och försök slå din tid.":"Kör passet med klockan så sparas din tid som rekord."} Tiden räknas bara när alla set är avbockade.</p></div>
+   <div id="bm-lb"></div>`}
+async function benchBoard(id){const el=$("#bm-lb");if(!el)return;
+  if(!SB||!SBUSER||!MYPROF){el.innerHTML="";return}
+  el.innerHTML=`<div class="sechead"><h2>Bland dem du följer</h2></div><div class="card"><p class="small">Hämtar…</p></div>`;
+  let D=null;try{D=await loadFriendData()}catch(e){}if(!el.isConnected)return;
+  const rows=[],m=benchMine(id);if(m)rows.push({user_id:SBUSER.id,username:MYPROF.username,avatar_url:MYPROF.avatar_url,t:m.t,me:true});
+  Object.values((D&&D.profs)||{}).forEach(p=>{const t=+(p.prs||{})["b:"+id];if(t>=300&&t<=14400)rows.push({user_id:p.user_id,username:p.username,avatar_url:p.avatar_url,t})});
+  rows.sort((a,b)=>a.t-b.t);
+  el.innerHTML=`<div class="sechead"><h2>Bland dem du följer</h2><span class="small">${rows.length} ${rows.length===1?"tid":"tider"}</span></div>
+   ${rows.length?`<div class="group">${rows.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3></div></div><b class="fr-v">${fmt(b.t)}</b></div>`).join("")}</div>`
+   :`<div class="card"><p class="small">${FRIENDS.length?"Ingen du följer har kört passet än. Sätt den första tiden!":"Följ vänner under Vänner, så ser du deras tider här."}</p></div>`}`;
+  el.onclick=e=>{const r=e.target.closest("[data-prof]");if(r&&r.dataset.prof!==SBUSER.id){closeSheet();setTimeout(()=>viewProfile(r.dataset.prof),320)}}}
 const PRE_CAT=[["alla","Alla"],["hyrox","Hyrox"],["kondition","Kondition"],["styrka","Styrka"]];
 let PRE_F="alla";
 function passActions(p,back){return `<button class="pill block" id="pv-go">Kör passet</button><div class="grid2"><button class="pill ghost" id="pv-edit">Anpassa</button><button class="pill ghost" id="pv-save">Spara till senare</button></div><button class="linkbtn" id="pv-share" style="justify-self:center">Dela passet</button>`}
-function passBind(p){$("#pv-go").onclick=()=>liveFrom(p.items,p.type,p.hint);$("#pv-edit").onclick=()=>{buildFrom(p.items,p.type,{forLive:true,kicker:p.name});LG.hint=p.hint;LG.tplName=p.name};
+function passBind(p){$("#pv-go").onclick=()=>liveFrom(p.items,p.type,p.hint,p.bench);$("#pv-edit").onclick=()=>{buildFrom(p.items,p.type,{forLive:true,kicker:p.name});LG.hint=p.hint;LG.tplName=p.name};
   $("#pv-save").onclick=()=>{tplSave(p.name,p.items,p.type);set.tpls[set.tpls.length-1].hint=p.hint;saveSet();renderPrep();closeSheet();toast("Passet är sparat. Du hittar det under Logg.")};$("#pv-share").onclick=()=>passShare(p)}
-function openPass(p,kicker){openSheet(`${p.fromPresets?`<button class="linkbtn" id="pv-back" style="justify-self:start">‹ Alla färdiga pass</button>`:""}<div><span class="small">${esc(p.cat?p.cat+" · "+p.lv:kicker)}</span><h2>${esc(p.name)}</h2></div>${p.why?`<p class="muted" style="margin:0">${esc(p.why)}</p>`:""}<div class="card sg-card">${p.m?`<span class="small">Omkring ${p.m} min</span>`:""}<ul>${p.items.map(i=>`<li>${esc(itemTxt(i))}</li>`).join("")}</ul>${p.hint?`<p class="small">${esc(p.hint)}</p>`:""}</div>${passActions(p)}`,()=>{passBind(p);const bk=$("#pv-back");if(bk)bk.onclick=openPresets})}
+function openPass(p,kicker){openSheet(`${p.fromPresets?`<button class="linkbtn" id="pv-back" style="justify-self:start">‹ Alla färdiga pass</button>`:""}<div><span class="small">${esc(p.cat?p.cat+" · "+p.lv:kicker)}</span><h2>${esc(p.name)}</h2></div>${p.why?`<p class="muted" style="margin:0">${esc(p.why)}</p>`:""}<div class="card sg-card">${p.m?`<span class="small">Omkring ${p.m} min</span>`:""}<ul>${p.items.map(i=>`<li>${esc(itemTxt(i))}</li>`).join("")}</ul>${p.hint?`<p class="small">${esc(p.hint)}</p>`:""}</div>${p.bench?benchHtml(p.bench):""}${passActions(p)}`,()=>{passBind(p);const bk=$("#pv-back");if(bk)bk.onclick=openPresets;if(p.bench)benchBoard(p.bench)})}
 function openPresets(){const cl={hyrox:"b",styrka:"s",kondition:"k"},CN={hyrox:"Hyrox",kondition:"Kondition",styrka:"Styrka"};
-  const grid=()=>PRESETS.map((x,i)=>[x,i]).filter(([x])=>PRE_F==="alla"||x.c===PRE_F).map(([x,i])=>`<button class="pre ${cl[x.c]}" data-pre="${i}"><small>${CN[x.c]} · ${x.lv}</small><b>${esc(x.n)}</b><em>${esc(x.w)}</em><span>${x.m} min</span></button>`).join("");
+  const grid=()=>PRESETS.map((x,i)=>[x,i]).filter(([x])=>PRE_F==="alla"||x.c===PRE_F).map(([x,i])=>`<button class="pre ${cl[x.c]}" data-pre="${i}"><small>${CN[x.c]} · ${x.lv}</small><b>${esc(x.n)}</b><em>${esc(x.w)}</em><span>${x.m} min</span>${x.bm?`<i class="pre-pr">${benchMine(x.id)?"Rekord "+fmt(benchMine(x.id).t):"Rekordpass"}</i>`:""}</button>`).join("");
   openSheet(`<div><span class="small">Nytt pass</span><h2>Färdiga pass</h2><p class="small">Klassiker för Hyrox, kondition och styrka.</p></div>
    <div class="seg" id="pre-f" role="group" aria-label="Kategori">${PRE_CAT.map(([k,l])=>`<button type="button" data-pf="${k}" aria-pressed="${PRE_F===k}">${l}</button>`).join("")}</div>
    <div class="pre-grid" id="pre-g">${grid()}</div><p class="small">Vikterna utgår från din klass eller dina senaste pass.</p>`,()=>{
     $("#pre-f").onclick=e=>{const b=e.target.closest("[data-pf]");if(!b)return;PRE_F=b.dataset.pf;$$("#pre-f button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#pre-g").innerHTML=grid()};
-    $("#pre-g").onclick=e=>{const b=e.target.closest("[data-pre]");if(!b)return;const x=PRESETS[+b.dataset.pre];openPass({name:x.n,type:x.t,hint:x.h,why:x.y,lv:x.lv,cat:CN[x.c],m:x.m,items:x.it(),fromPresets:true},"Färdigt pass")}})}
+    $("#pre-g").onclick=e=>{const b=e.target.closest("[data-pre]");if(!b)return;const x=PRESETS[+b.dataset.pre];openPass({name:x.n,type:x.t,hint:x.h,why:x.y,lv:x.lv,cat:CN[x.c],m:x.m,items:x.it(),fromPresets:true,bench:x.bm?x.id:null},"Färdigt pass")}})}
 /* Delade pass: uppgifterna ligger i länken, inget sparas på servern. Länken kontrolleras när den öppnas. */
 function passLink(p){const j=JSON.stringify({n:p.name,t:p.type||"",h:p.hint||"",i:p.items.map(i=>({e:i.ex,n:i.n,k:i.k,w:i.w?1:0,s:i.st?1:0,x:i.sets.map(x=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(x[f]))o[f]=+x[f]});return o})}))});
   return "https://varvtraining.com/?pass="+btoa(String.fromCharCode(...new TextEncoder().encode(j))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
@@ -3236,10 +3257,13 @@ async function saveLG(btn){if(btn.disabled)return;
   const f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
-  const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;
+  const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
   const before=weekStats().now.n;const ok=await addLog(entry);btn.disabled=false;if(!ok)return;LG.saved=true;dropDraft();if(LG.fromLive)clearLive();
   const after=weekStats().now.n;closeSheet();HAPTIC("success");
-  if(before<set.per&&after>=set.per){toast("Veckans mål är klart");confetti()}else toast("Passet är sparat");
+  const br=bch?benchSave(bch.id,bch.t,entry.date):null;
+  if(br&&br.pr){toast(br.prev?`Nytt rekord på ${br.n}: ${fmt(bch.t)}, ${fmt(br.prev-bch.t)} snabbare`:`Första tiden på ${br.n}: ${fmt(bch.t)}`);setTimeout(confetti,250)}
+  else if(br)toast(`Sparat. ${fmt(bch.t)}, ${fmt(bch.t-br.best)} från ditt rekord`);
+  else if(before<set.per&&after>=set.per){toast("Veckans mål är klart");confetti()}else toast("Passet är sparat");
   try{if(typeof onLogged==="function")onLogged(entry)}catch(x){}
   try{checkPRs(entry.items)}catch(x){}
 }
@@ -3292,7 +3316,8 @@ function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
   const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0;
   if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
   L.items.forEach(i=>i.sets.forEach(x=>delete x.done));
-  LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:dropped?`${dropped} set som inte bockades av är borttagna`:"Passet är klart",view:"main",forLive:false,draft:false});
+  const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
+  LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom alla set inte bockades av"):dropped?`${dropped} set som inte bockades av är borttagna`:"Passet är klart",view:"main",forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
 function clearLive(){LIVE=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
 function bindLive(){const v=$("#live");
@@ -4032,7 +4057,7 @@ $("#pf-exp").onclick=async()=>{const data=JSON.stringify({app:"VARV.",v:1,export
   try{const r=await DL.save({filename:`varv-data-${today()}.json`,data});if(r&&r.status==="saved")toast("Dina data är exporterade")}catch(err){saveErr(err)}};
 $("#pf-imp-file").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   try{const d=JSON.parse(await f.text());if(!d||d.app!=="VARV."||!Array.isArray(d.logs))throw 0;
-    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace"];
+    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace","bench"];
     keep.forEach(k=>{if(d.settings&&d.settings[k]!==undefined)set[k]=d.settings[k]});set.per=(set.days||[]).length||set.per;saveSet();
     let n=0;for(const l of d.logs){if(!l||!l.date||LOGS.some(x=>x.id===l.id))continue;const b=Object.assign({},l);const id=b.id||("l"+Date.now()+n);delete b.id;
       if(mode==="db"&&col){try{await col.doc(id).set(b)}catch(err){}}else LOGS.push(Object.assign({id},b));n++}

@@ -1,0 +1,33 @@
+{
+  "updated": "2026-11-02",
+  "races": [
+    {
+      "key": "2027-04-24-vagnhallen-goteborg",
+      "title": "HYROX Race Simulation",
+      "organizer": "Vagnhallen",
+      "city": "Göteborg",
+      "venue": "Vagnhallen, Banehagsliden 5",
+      "day": "2027-04-24",
+      "start_time": null,
+      "price": "425 kr singel, 750 kr doubles",
+      "info": "Doubles lördag 24 april, singel söndag 25 april. Priset höjs efter 31 december. Sista anmälningsdag 11 april.",
+      "url": "https://vagnhallen.wondr.se/w_application/applicants/form_view/6abe5b12-3e14-4526-92dd-00390a100517",
+      "source": "https://vagnhallen.se/hyrox/",
+      "checked": "2026-11-02"
+    },
+    {
+      "key": "2027-05-29-crossfit-highway-linkoping",
+      "title": "HYROX Simulering",
+      "organizer": "CrossFit Highway",
+      "city": "Linköping",
+      "venue": "CrossFit Highway, Gottorpsgatan 51",
+      "day": "2027-05-29",
+      "start_time": "08:00",
+      "price": "395 kr singel, 795 kr doubles",
+      "info": "Nytt heat var 7:e minut. 140 platser. Anmälan stänger 27 maj.",
+      "url": "https://www.roxrace.com/r/hyrox-simulering-maj-2027",
+      "source": "https://www.crossfithighway.se/hyrox-sim/",
+      "checked": "2026-11-02"
+    }
+  ]
+}

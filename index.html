@@ -2532,6 +2532,8 @@ async function deleteAccount(){
       if($("#dl-in").value.trim().toUpperCase()!=="RADERA"){msg.textContent="Skriv RADERA i rutan.";msg.classList.add("bad");return}
       msg.textContent="Raderar…";msg.classList.remove("bad");
       try{await SB.storage.from("avatars").remove([SBUSER.id+"/avatar.jpg"])}catch(x){}
+      try{const {data:pa}=await SB.from("activity").select("image_url").eq("user_id",SBUSER.id).not("image_url","is",null).limit(1000);
+        const paths=(pa||[]).map(r=>r.image_url).filter(okPost).map(u=>u.slice(POSTIMG.length).split("?")[0]);if(paths.length)await SB.storage.from("posts").remove(paths)}catch(x){}
       const {error}=await SB.rpc("delete_my_account");
       if(error){msg.textContent=/delete_my_account|404|not find/i.test(String(error.message||error.code||""))?"Radering är inte uppsatt i databasen än. Kontakta oss så raderar vi kontot.":sbErr(error);msg.classList.add("bad");return}
       try{await SB.auth.signOut()}catch(x){}
@@ -3299,8 +3301,10 @@ function goHtml(){const prep=(set.tpls||[]).slice().reverse(),pl=goPlan();
    ${prep.length?`<div class="go-prep"><span class="lbl">Redo att köras</span><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
 /* Dagens pass från planen: visa övningarna innan man startar */
 function planItems(x){const out=[];if(/Intervall|Löpning|distans/.test(x.t))out.push("Löpning");(x.s||[]).forEach(n=>{if(!out.includes(n))out.push(n)});return out}
+document.addEventListener("click",e=>{const b=e.target.closest("[data-dplan]");if(!b)return;const [wi,si]=b.dataset.dplan.split(":").map(Number),w=PLAN[wi],x=w&&w.ses[si];if(!x)return;
+  closeSheet();setTimeout(()=>openPlanPass({w,s:x,late:x.date<today()&&!sesDone(w,x)}),320)});
 function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stations:x.s||[],note:`Vecka ${pl.w.w}`,plan:x.key+"@"+set.date};
-  openSheet(`<div><span class="small">${pl.late?"Att ta igen · "+dayLbl(x.date):"Dagens rekommenderade pass"}</span><h2>${esc(x.t)}</h2></div>
+  openSheet(`<div><span class="small">${pl.late?"Att ta igen · "+dayLbl(x.date):x.date===today()?"Dagens rekommenderade pass":"Planerat pass · "+dayLbl(x.date)}</span><h2>${esc(x.t)}</h2></div>
    <div class="facts3"><div><small>Tid</small><b>${x.m} min</b></div><div><small>Vecka</small><b>${pl.w.w}</b></div><div><small>Intensitet</small><b>${x.z?"Zon "+x.z.join("–"):"–"}</b></div></div>
    ${PASS_WHAT[x.t]?`<p class="muted">${esc(PASS_WHAT[x.t])}</p>`:""}
    ${its.length?`<div><span class="lbl">Övningar</span><div class="group" style="margin-top:8px">${its.map((n,i)=>`<div class="row"><span class="badge">${i+1}</span><div><h3>${esc(n)}</h3></div><span></span></div>`).join("")}</div></div>`:""}
@@ -3699,8 +3703,8 @@ function saveRestDay(ds,v){const m=Object.assign({},set.restDays||{});if(v)m[ds]
   const lim=new Date();lim.setDate(lim.getDate()-400);const li=iso(lim);Object.keys(m).forEach(k=>{if(k<li)delete m[k]});set.restDays=m;saveSet();renderHome()}
 function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
   const title=new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-  const ses=[];PLAN.forEach(w=>w.ses.forEach(x=>{if(x.date===ds)ses.push(x)}));
-  const planH=ses.length?`<div class="group">${ses.map(x=>`<a class="row nob" href="#plan"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></a>`).join("")}</div>`:"";
+  const ses=[];PLAN.forEach((w,wi)=>w.ses.forEach((x,si)=>{if(x.date===ds)ses.push({x,wi,si})}));
+  const planH=ses.length?`<div class="group">${ses.map(({x,wi,si})=>`<button class="row nob" data-dplan="${wi}:${si}"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></button>`).join("")}</div>`:"";
   if(future){openSheet(`<div><span class="small">Kommande dag</span><h2 class="day-t">${esc(title)}</h2></div>${planH||`<p class="small">Inget pass planerat den här dagen.</p>`}`);return}
   const st={k:r?r.k:null,what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
   const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=!st.k};
@@ -5069,7 +5073,7 @@ function openOnb(){
       read(){},ok:()=>st.other&&!st.date?["Välj datum för loppet.","#ob-d"]:st.ev==null&&!st.other&&!st.none?["Välj ett lopp, Annat lopp eller Inte bestämt än."]:null},
     goal:{eye:"Måltid",h:"Har du en måltid du satsar på?",p:"Tiden du vill gå i mål på i ett helt Hyrox-lopp. Planen sätter tempot för löpningen och stationerna utifrån den.",
       html:()=>`<div class="chips">${(LEVEL_GOALS[st.level]||LEVEL_GOALS.mellan).map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${!st.noGoal&&st.goalSet&&st.target===v}">${l}</button>`).join("")}<button type="button" class="chip" data-sng aria-pressed="${st.noGoal}">Vet inte än</button></div>
-        ${st.noGoal?`<p class="ob-note">Då utgår måltiden från din nivå, ungefär ${fmtHM(LEVEL_TARGET[st.level]||90)}. Du kan sätta en måltid när som helst under Plan, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
+        ${st.noGoal?`<p class="ob-note">Då utgår måltiden från din nivå, ungefär ${fmtHM(LEVEL_TARGET[st.level]||90)}. Du kan sätta en måltid när som helst under Tävla → Racedag, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
         :`<div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i timmar och minuter"><span class="small">Dra för att välja en egen tid</span></div>`}`,
       read(){},ok:()=>st.goalSet||st.noGoal?null:["Välj en tid, dra i reglaget eller välj Vet inte än."]},
     past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår måltiden från var du står i dag.",

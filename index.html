@@ -1917,8 +1917,10 @@ async function sbStart(u){
   let remote=null;try{remote=await C.refresh()}catch(e){}
   if(remote){
     const s=remote.get("settings");
-    if(s&&typeof s==="object"){set=Object.assign({},DEF,set,s);try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}refreshSettingsUI()}
-    SBSETOK=true;if(!s)pushSettings();
+    const simLocal=(Array.isArray(set.mySims)?set.mySims:[]).filter(x=>x&&x.pending);
+    if(s&&typeof s==="object"){set=Object.assign({},DEF,set,s);if(simLocal.length)set.mySims=(Array.isArray(s.mySims)?s.mySims:[]).filter(x=>!x||!simLocal.some(l=>l.id===x.id)).concat(simLocal);try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}refreshSettingsUI()}
+    if(simLocal.length){set.mySims=set.mySims.map(x=>{if(x&&x.pending){const c=Object.assign({},x);delete c.pending;return c}return x})}
+    SBSETOK=true;if(!s||simLocal.length)pushSettings();
     /* första inloggningen: flytta det som loggats på enheten till kontot */
     const hasLogs=[...remote.keys()].some(k=>k!=="meta"&&k!=="settings");
     const local=LOGS.filter(l=>l&&l.date&&!String(l.id).startsWith("strava-"));
@@ -3355,7 +3357,7 @@ const simMine=id=>!!(SBUSER&&SIMGO.some(g=>g.race_id===id&&g.user_id===SBUSER.id
 const simFriends=id=>SIMGO.filter(g=>g.race_id===id&&(!SBUSER||g.user_id!==SBUSER.id)).map(g=>(NAMES[g.user_id]||{}).username).filter(Boolean);
 const simCount=(id,n)=>n===1?"1 anmäld":n+" anmälda";
 function simFriendTxt(id){const f=simFriends(id);if(!f.length)return "";return f.length===1?f[0]+" ska dit":f.length===2?f[0]+" och "+f[1]+" ska dit":f[0]+" och "+(f.length-1)+" till ska dit"}
-const simNextMine=()=>(SIMS||[]).filter(s=>simMine(s.id)).concat(simOwn()).filter(s=>s.day>=today()).sort((a,b)=>a.day.localeCompare(b.day))[0]||null;
+const simNextMine=()=>(SIMS||[]).filter(s=>simMine(s.id)).concat(simOwn().filter(s=>s.mine)).filter(s=>s.day>=today()).sort((a,b)=>a.day.localeCompare(b.day))[0]||null;
 function renderHomeSim(){const el=$("#h-sim");if(!el)return;const x=simNextMine();el.hidden=!x;if(!x)return;const d=Math.round((evD(x.day)-evD(today()))/864e5);
   $("#h-sim-d").textContent=d;$("#h-sim-t").textContent=d===1?"dag till simuleringen":"dagar till simuleringen";$("#h-sim-p").textContent=x.city+" · "+evD(x.day).toLocaleDateString("sv-SE",{day:"numeric",month:"long"})}
 function simHtml(){
@@ -3373,13 +3375,14 @@ function simHtml(){
 function simOwnHtml(){
   const t=today(),L=simOwn().sort((a,b)=>(a.day<t)-(b.day<t)||(a.day<t?b.day.localeCompare(a.day):a.day.localeCompare(b.day)));
   const row=s=>{const a=evD(s.day),d=Math.round((a-evD(t))/864e5);
-    return `<button class="row" data-sim="${esc(s.id)}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${esc(s.title)}</h3><p>${esc(s.city)}${a.getFullYear()!==evD(t).getFullYear()?" · "+a.getFullYear():""}</p></div><span class="amt">${d<0?"Har varit":d===0?"I dag":d===1?"i morgon":`om ${d} d`}</span></button>`};
-  return `<div class="sechead sim-land"><h2>Egna race</h2>${L.length?`<span class="small">${L.length}</span>`:""}</div>${L.length?`<div class="group">${L.map(row).join("")}</div>`:`<div class="card"><p class="small">Hittar du inte ditt race i listan? Lägg in det själv. Det syns bara för dig.</p></div>`}<button class="pill ghost block" data-sim-add style="margin-top:12px">Lägg till eget race</button>`}
+    return `<button class="row" data-sim="${esc(s.id)}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${esc(s.title)}${s.mine?'<span class="evtag me">Min</span>':""}</h3><p>${esc(s.city)}${a.getFullYear()!==evD(t).getFullYear()?" · "+a.getFullYear():""}</p></div><span class="amt">${d<0?"Har varit":d===0?"I dag":d===1?"i morgon":`om ${d} d`}</span></button>`};
+  return `<div class="sechead sim-land"><h2>Egna race</h2>${L.length?`<span class="small">${L.length}</span>`:""}</div>${L.length?`<div class="group">${L.map(row).join("")}</div>`:`<div class="card"><p class="small">Hittar du inte ditt race i listan? Lägg in det själv. Det syns bara för dig och dem du bjuder in.</p></div>`}<button class="pill ghost block" data-sim-add style="margin-top:12px">Lägg till eget race</button>`}
 const simUrl=v=>{v=String(v||"").trim();if(!v)return "";try{const u=new URL(/^[a-z][a-z0-9+.-]*:/i.test(v)?v:"https://"+v);if(u.protocol==="http:")u.protocol="https:";return u.protocol==="https:"&&u.hostname.includes(".")?u.href:null}catch(e){return null}};
 function openOwnForm(id){const s=id?simOwn().find(x=>x.id===id):null;if(id&&!s)return;const v=k=>esc((s&&s[k])||"");
-  openSheet(`<div><span class="small">Syns bara för dig</span><h2>${s?"Ändra race":"Lägg till eget race"}</h2></div>
+  openSheet(`<div><span class="small">Syns bara för dig och dem du bjuder in</span><h2>${s?"Ändra race":"Lägg till eget race"}</h2></div>
    <div class="field"><label for="so-title">Namn på racet</label><input type="text" id="so-title" maxlength="80" value="${v("title")}" placeholder="Till exempel: Hyrox-simulering på gymmet"></div>
    <div class="field"><label for="so-city">Plats</label><input type="text" id="so-city" maxlength="60" value="${v("city")}" placeholder="Stad eller ort"></div>
+   <div class="field"><label for="so-land">Land</label><input type="text" id="so-land" maxlength="40" value="${s?v("country"):"Sverige"}"></div>
    <div class="grid2"><div class="field"><label for="so-day">Datum</label><input type="date" id="so-day" value="${v("day")}"${s?"":` min="${today()}"`}></div><div class="field"><label for="so-time">Starttid, om du vet</label><input type="time" id="so-time" value="${v("start_time")}"></div></div>
    <div class="field"><label for="so-org">Arrangör</label><input type="text" id="so-org" maxlength="80" value="${v("organizer")}"></div>
    <div class="field"><label for="so-venue">Lokal eller adress</label><input type="text" id="so-venue" maxlength="120" value="${v("venue")}"></div>
@@ -3396,20 +3399,54 @@ function openOwnForm(id){const s=id?simOwn().find(x=>x.id===id):null;if(id&&!s)r
       if(url===null){toast("Länken ser inte rätt ut. Skriv hela adressen.");$("#so-url").focus();return}
       const all=Array.isArray(set.mySims)?set.mySims:[];
       if(!s&&all.length>=50){toast("Du har 50 egna race. Ta bort något först.");return}
-      const r={id:s?s.id:"own-"+Date.now().toString(36),own:true,title,city,day,start_time:g("time")||null,organizer:g("org")||null,venue:g("venue")||null,price:g("price")||null,url:url||null,info:g("info")||null};
-      set.mySims=s?all.map(x=>x&&x.id===s.id?r:x):all.concat(r);saveSet();renderSims();closeSheet();toast(s?"Racet är ändrat.":"Racet är tillagt.");if(!s)HAPTIC("success")};
+      const r={id:s?s.id:"own-"+Date.now().toString(36),own:true,mine:!!(s&&s.mine),inv:(s&&s.inv)||undefined,pending:(s&&s.pending)||!SBSETOK||undefined,title,city,country:g("land")||null,day,start_time:g("time")||null,organizer:g("org")||null,venue:g("venue")||null,price:g("price")||null,url:url||null,info:g("info")||null};
+      set.mySims=s?all.map(x=>x&&x.id===s.id?r:x):all.concat(r);saveSet();renderSims();openOwnSim(r);toast(s?"Racet är ändrat.":"Racet är tillagt.");if(!s)HAPTIC("success")};
     const del=$("#so-del");if(del)del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen för att ta bort";del.style.color="var(--bad)";return}
       set.mySims=set.mySims.filter(x=>!x||x.id!==s.id);saveSet();renderSims();closeSheet();toast("Racet är borttaget.")};
   })}
-function openOwnSim(s){const a=evD(s.day),d=Math.round((a-evD(today()))/864e5);
-  const tid=/^\d{2}:\d{2}/.test(s.start_time||"")?s.start_time.slice(0,5):"",link=/^https:\/\//.test(s.url||"")?s.url:"";
+function simFacts(s){const a=evD(s.day),d=Math.round((a-evD(today()))/864e5),tid=/^\d{2}:\d{2}/.test(s.start_time||"")?s.start_time.slice(0,5):"";
+  return `<div class="facts3"><div><small>Datum</small><b>${a.getDate()} ${MON[a.getMonth()]} ${a.getFullYear()}${tid?" "+tid:""}</b></div><div><small>Kvar</small><b>${d<0?"Har varit":d===0?"I dag":d===1?"1 dag":d+" dagar"}</b></div><div><small>Plats</small><b>${esc(s.city+(s.country?", "+s.country:""))}</b></div></div>
+   ${s.venue?`<p class="small">${esc(s.venue)}</p>`:""}${s.price?`<p class="small">Pris: ${esc(s.price)}</p>`:""}`}
+function openOwnSim(s){const link=/^https:\/\//.test(s.url||"")?s.url:"",up=s.day>=today();
   openSheet(`<div><span class="small">${esc(s.organizer||"Eget race")}</span><h2>${esc(s.title)}</h2></div>
-   <div class="facts3"><div><small>Datum</small><b>${a.getDate()} ${MON[a.getMonth()]} ${a.getFullYear()}${tid?" "+tid:""}</b></div><div><small>Kvar</small><b>${d<0?"Har varit":d===0?"I dag":d===1?"1 dag":d+" dagar"}</b></div><div><small>Plats</small><b>${esc(s.city)}</b></div></div>
-   ${s.venue?`<p class="small">${esc(s.venue)}</p>`:""}${s.price?`<p class="small">Pris: ${esc(s.price)}</p>`:""}
+   ${simFacts(s)}
    ${s.info?`<p class="small" style="white-space:pre-line">${esc(s.info)}</p>`:""}
-   ${link?`<a class="pill block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Öppna anmälan ↗</a>`:""}
-   <p class="small">Du har lagt in racet själv, så det syns bara för dig. VARV. har inte kontrollerat uppgifterna.</p>
-   <button class="pill ghost block" id="so-edit">Ändra eller ta bort</button>`,()=>{$("#so-edit").onclick=()=>openOwnForm(s.id)})}
+   ${up?`<button class="pill${s.mine?" ghost":""} block" id="so-mine" aria-pressed="${!!s.mine}">${s.mine?"Ta bort som min simulering":"Markera som min simulering"}</button>`:""}
+   ${link?`<a class="pill ghost block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Öppna anmälan ↗</a>`:""}
+   ${up?`<button class="pill ghost block" id="so-share">Bjud in</button><p class="small">Inbjudan är en länk med racets uppgifter, utan dina anteckningar. Den som öppnar den får en egen kopia, så ändringar du gör senare följer inte med.</p>`:""}
+   <p class="small">Du har lagt in racet själv, och VARV. har inte kontrollerat uppgifterna.</p>
+   <button class="pill ghost block" id="so-edit">Ändra eller ta bort</button>`,()=>{
+    $("#so-edit").onclick=()=>openOwnForm(s.id);
+    const m=$("#so-mine");if(m)m.onclick=()=>{const on=!s.mine;set.mySims=set.mySims.map(x=>x&&x.id===s.id?Object.assign({},x,{mine:on}):x);saveSet();renderSims();closeSheet();toast(on?"Racet är din simulering.":"Markeringen är borttagen.");if(on)HAPTIC("success")};
+    const b=$("#so-share");if(b)b.onclick=()=>simShare(s)})}
+/* Inbjudan: racets uppgifter ligger i själva länken, inget sparas på servern. Länken är data från någon annan och kontrolleras när den öppnas. */
+function simInvLink(s){const j=JSON.stringify({i:s.inv||s.id,t:s.title,c:s.city,l:s.country||"",d:s.day,h:s.start_time||"",o:s.organizer||"",v:s.venue||"",p:s.price||"",u:s.url||""});
+  const b=btoa(String.fromCharCode(...new TextEncoder().encode(j))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");return "https://varvtraining.com/?lopp="+b}
+async function simShare(s){const url=simInvLink(s),a=evD(s.day),text=`Häng med på ${s.title} i ${s.city}, ${a.getDate()} ${MON[a.getMonth()]} ${a.getFullYear()}.`;
+  try{if(navigator.share){await navigator.share({title:"VARV.",text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(url);toast("Länken är kopierad")}catch(e){toast("Kunde inte kopiera länken.")}}
+function simInvParse(b){try{if(typeof b!=="string"||b.length>2500)return null;
+    const j=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))));
+    const t=(k,m)=>{const v=j[k];if(v==null||v==="")return null;if(typeof v!=="string")throw 0;const x=v.trim().slice(0,m);return x||null};
+    const r={inv:t("i",30),title:t("t",80),city:t("c",60),country:t("l",40),day:t("d",10),start_time:t("h",5),organizer:t("o",80),venue:t("v",120),price:t("p",40),url:simUrl(t("u",300))||null};
+    if(!/^own-[a-z0-9]{1,24}$/.test(r.inv||"")||!r.title||!r.city||!/^\d{4}-\d{2}-\d{2}$/.test(r.day||"")||isNaN(evD(r.day)))return null;
+    if(r.start_time&&!/^\d{2}:\d{2}$/.test(r.start_time))r.start_time=null;return r}catch(e){return null}}
+(()=>{try{const q=new URLSearchParams(location.search),v=q.get("lopp");if(v){localStorage.setItem("varv-lopp",v);q.delete("lopp");
+  const rest=q.toString();history.replaceState(null,"",location.pathname+(rest?"?"+rest:"")+location.hash)}}catch(e){}})();
+function simInvWaiting(){try{return !!localStorage.getItem("varv-lopp")}catch(e){return false}}
+function openInvite(){let v=null;try{v=localStorage.getItem("varv-lopp");if(v)localStorage.removeItem("varv-lopp")}catch(e){}
+  if(!v)return;const r=simInvParse(v);if(!r){toast("Inbjudan gick inte att läsa.");return}
+  const have=simOwn().find(x=>x.id===r.inv||x.inv===r.inv);if(have){openOwnSim(have);return}
+  let host="";try{host=r.url?new URL(r.url).hostname.replace(/^www\./,""):""}catch(e){}
+  const up=r.day>=today();
+  openSheet(`<div><span class="small">Du är inbjuden${r.organizer?" · "+esc(r.organizer):""}</span><h2>${esc(r.title)}</h2></div>
+   ${simFacts(r)}
+   ${r.url?`<a class="pill ghost block" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Öppna anmälan på ${esc(host)} ↗</a>`:""}
+   <p class="small">Uppgifterna kommer från den som bjöd in dig. VARV. har inte kontrollerat dem.</p>
+   ${up?'<button class="pill block" id="inv-add">Lägg till som min simulering</button>':'<p class="small">Racet har redan varit.</p>'}`,()=>{
+    const b=$("#inv-add");if(b)b.onclick=()=>{const all=Array.isArray(set.mySims)?set.mySims:[];if(all.length>=50){toast("Du har 50 egna race. Ta bort något först.");return}
+      set.mySims=all.concat(Object.assign({},r,{id:"own-"+Date.now().toString(36),own:true,mine:true,info:null,pending:SBSETOK?undefined:true}));saveSet();set.tsub="sim";saveSet();closeSheet();
+      if(location.hash==="#race")renderTv();else location.hash="#race";renderSims();toast("Racet är din simulering.");HAPTIC("success")}})}
 function renderSims(){const el=$("#ev-sim");if(el)el.innerHTML=simHtml()+simOwnHtml();renderHomeSim();const b=document.querySelector('#tv-seg [data-tv="sim"]');if(b){const n=(SIMS||[]).filter(x=>x.day>=today()).length;b.textContent=n?`Simuleringar (${n})`:"Simuleringar"}}
 async function loadSims(force){
   const C=window.VARV_SUPABASE||{};if(!C.url||!C.anonKey||window.claude)return;
@@ -3763,7 +3800,7 @@ function openStart(){
     r.addEventListener("change",e=>{if(e.target.id==="st-d"&&e.target.value){st.date=e.target.value;st.ev=null;st.none=false;draw();bindA()}});
     r.addEventListener("input",e=>{if(e.target.id==="st-g"){st.goalSet=true;st.target=+e.target.value;$("#st-gv").textContent=fmtHM(st.target);$$("#st-body [data-sg]").forEach(c=>c.setAttribute("aria-pressed",+c.dataset.sg===st.target))}});
     const fin=go=>{if(go){if(!aboutOk(st))return;saveAbout(st);const ev=st.ev!=null?EVENTS[st.ev]:null;set.noRace=!ev&&!st.date;if(ev)set.race=raceKey(ev);else delete set.race;set.date=ev?ev.s:st.date||freeDate();set.target=st.target;set.planStart=today()}
-      set.onboarded=true;saveSet();refreshSettingsUI();renderPlan();renderHome();renderPRs();closeSheet();
+      set.onboarded=true;saveSet();refreshSettingsUI();renderPlan();renderHome();renderPRs();closeSheet();if(simInvWaiting())setTimeout(openInvite,450);
       if(go){toast("Din plan är klar");HAPTIC("success")}setTimeout(maybeTour,500)};
     $("#st-go").onclick=()=>fin(true);
   });
@@ -3986,7 +4023,8 @@ if(!window.claude&&"serviceWorker" in navigator&&location.protocol==="https:"){t
 if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
 renderComm();renderGarmin();renderAvatar();renderEvents();
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
-  if(!set.onboarded)setTimeout(()=>{if(!set.onboarded){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openStart()}},wait);
+  if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
+  else if(!set.onboarded)setTimeout(()=>{if(!set.onboarded){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openStart()}},wait);
   else if(!set.level)setTimeout(()=>{if(!set.level&&$("#sheet").hidden)openAbout()},wait);
   else if(!set.toured)setTimeout(maybeTour,Math.max(0,wait-400));
   if(LIVE){renderLive();liveTickStart();if(LIVE.open)liveWake()}});

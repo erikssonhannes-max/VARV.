@@ -856,8 +856,8 @@ a.row{color:inherit;text-decoration:none}
 .back .hero .wrap{justify-items:start;gap:14px}
 .back .hero-big,.back .hero .sub,.back .hero .divchip{display:none}
 .back .hello{display:grid;gap:4px}
-.back .hello h1{font-size:2.2rem;font-weight:700;letter-spacing:-.035em;line-height:1.12;padding-bottom:.08em;background:linear-gradient(90deg,#ff2d55,#ff5a36,#ff7a3d,#ffa25c,#ff7a3d,#ff5a36,#ff2d55);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:hellopan 9s linear infinite,hellofade .9s var(--ease) both}
-@keyframes hellopan{from{background-position:0% 50%}to{background-position:150% 50%}}
+.back .hello h1{font-size:2.2rem;font-weight:700;letter-spacing:-.035em;line-height:1.12;padding-bottom:.08em;background-image:linear-gradient(105deg,rgba(255,226,170,0) 42%,rgba(255,226,170,.95) 50%,rgba(255,226,170,0) 58%),linear-gradient(90deg,#ff2d55,#ff7a3d,#ffb347,#ff7a3d,#ff2d55);background-size:300% 100%,200% 100%;background-repeat:no-repeat,repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:hellopan 5s linear infinite,hellofade .9s var(--ease) both}
+@keyframes hellopan{0%{background-position:100% 50%,0% 50%}45%{background-position:0% 50%,90% 50%}100%{background-position:0% 50%,200% 50%}}
 @keyframes hellofade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.back .hello h1{animation:none}}
 .back .hello .eyebrow:first-letter{text-transform:uppercase}
@@ -1230,7 +1230,7 @@ a.row{color:inherit;text-decoration:none}
 
 <script>
 /* ============ Felrapporter ============ */
-const APPVER="2026-11-02k";
+const APPVER="2026-11-02l";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},

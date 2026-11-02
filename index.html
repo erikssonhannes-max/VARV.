@@ -829,7 +829,7 @@ a.row{color:inherit;text-decoration:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .fd-new{margin-bottom:14px}.fd-new svg{margin-right:2px}
 .po-h{justify-content:space-between}.po-who2{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px;min-width:0}
-.po-del{font-size:.82rem}
+.po-del{font-size:.82rem}.po-own-acts{display:flex;gap:14px;flex:none}
 .po-img{padding:0;min-height:0;background:var(--card)}.po-img img{width:100%;height:auto;max-height:85vh;object-fit:cover;display:block;-webkit-user-drag:none}
 .po-cap{padding:0 16px 10px;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere}.po-cap b{font-weight:600}
 .cp-pick{display:grid;place-items:center;aspect-ratio:4/3;border-radius:16px;background:var(--tile);border:1.5px dashed var(--hair);cursor:pointer;overflow:hidden;position:relative}
@@ -2700,7 +2700,11 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   box.innerHTML=D.acts.length?D.acts.map(a=>fdPost(a,D)).join(""):`<div class="card"><p class="small">${me?"Du har inte delat något än.":esc(p.username)+" har inte delat något än."}</p></div>`;
   box.onclick=e=>postClick(e,D)}
 function miniBars(v){const mx=Math.max(1,...v);return `<div class="pp-bars" role="img" aria-label="Minuter per vecka de senaste tolv veckorna">${v.map((m,i)=>`<span title="${m} min"><i style="height:${Math.max(m?6:0,Math.round(m/mx*100))}%;--i:${i}" class="${i===v.length-1?"now":""}"></i></span>`).join("")}</div><div class="pp-bl"><span>12 v sedan</span><span>Den här veckan</span></div>`}
-async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url,mentions").eq("user_id",uid).order("created_at",{ascending:false}).limit(30);
+/* Kolumnerna för inlägg. note och edited_at finns när supabase/redigera.sql är körd, annars hämtas resten som förut. */
+let ACT_EDIT=true;const ACT_BASE="id,user_id,kind,title,detail,created_at,image_url,mentions";
+const actCols=()=>ACT_EDIT?ACT_BASE+",note,edited_at":ACT_BASE;
+async function actSel(build){let r=await build(actCols());if(r&&r.error&&ACT_EDIT&&/note|edited_at|column/i.test(String(r.error.message||""))){ACT_EDIT=false;r=await build(actCols())}return r}
+async function loadPosts(uid){const {data:acts,error}=await actSel(c=>SB.from("activity").select(c).eq("user_id",uid).order("created_at",{ascending:false}).limit(30));
   if(error)return null;const D={acts:acts||[],likes:{},comments:{}};if(!D.acts.length)return D;const ids=D.acts.map(a=>a.id);
   const [lk,cm]=await Promise.all([SB.from("activity_likes").select("activity_id,user_id").in("activity_id",ids),SB.from("activity_comments").select("id,activity_id,user_id,body,created_at,mentions").in("activity_id",ids).order("created_at",{ascending:true}).limit(500)]);
   if(!lk.error){D.likeOk=true;(lk.data||[]).forEach(l=>{(D.likes[l.activity_id]=D.likes[l.activity_id]||[]).push(l.user_id)})}
@@ -2710,6 +2714,7 @@ async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").
   return D}
 function postClick(e,D){
   const mn=e.target.closest(".mention");if(mn){viewProfile(mn.dataset.prof);return true}
+  const ep=e.target.closest("[data-editpost]");if(ep){openEditPost(+ep.dataset.editpost,D);return true}
   const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return true}deletePost(+dp.dataset.delpost,D);return true}
   const sh=e.target.closest("[data-share]");if(sh){sharePost(+sh.dataset.share,D);return true}
   const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return true}
@@ -4475,7 +4480,7 @@ async function loadFriendData(force){
   {
     const [pr,ac]=await Promise.all([
       ids.length?SB.from("profiles").select("user_id,username,tag,avatar_url,stats,next_race,best_division,partner_id,prs").in("user_id",ids):Promise.resolve({data:[]}),
-      SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url,mentions").in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30)]);
+      actSel(c=>SB.from("activity").select(c).in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30))]);
     (pr.data||[]).forEach(p=>{out.profs[p.user_id]=p;NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},{user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url})});
     if(ac.error)out.actOk=false;else out.acts=ac.data||[];
     if(out.acts.length){const {data:lk,error:le}=await SB.from("activity_likes").select("activity_id,user_id").in("activity_id",out.acts.map(a=>a.id));
@@ -4756,6 +4761,43 @@ function openComposer(){if(!SB||!SBUSER){openAuth();return}
       const mentions=$("#cp-txt")._mentions?$("#cp-txt")._mentions():[];const {error}=await SB.from("activity").insert({kind:"pass",title,detail,image_url,mentions:mentions.length?mentions:null});
       if(error){toast("Kunde inte dela. Försök igen.");return}
       if(prev)URL.revokeObjectURL(prev);closeSheet();HAPTIC("success");toast("Inlägget är delat");FRC=null;set.fdsub="flow";saveSet();renderFeed(true)})})}
+/* Ändra ett eget inlägg: lägg till eller byt bild, och skriv en kommentar. Egna inlägg (Delade ...) ändrar sin text,
+   inlägg som appen skapade, som ett pass eller ett rekord, får en kommentar under. */
+function openEditPost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!==SBUSER.id)return;
+  const own=/^Delade/.test(a.title||""),field=own?"detail":"note",max=own?160:300,hadPic=okPost(a.image_url);
+  let blob=null,prev=null,orig=null,ratio=.8,removePic=false;
+  openSheet(`<div><span class="small">${esc(a.title||FD_KIND[a.kind]||"Inlägg")} · ${agoTxt(a.created_at)}</span><h2>Ändra inlägg</h2></div>
+   <label class="cp-pick${hadPic?" has":""}" id="ep2-pick" for="ep2-file">${hadPic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`}</label>
+   <input type="file" id="ep2-file" accept="image/*" class="sr">
+   <div class="cp-tools" id="ep2-tools"${hadPic?"":" hidden"}><button type="button" class="pill ghost" id="ep2-new">Byt bild</button><button type="button" class="pill ghost" id="ep2-rm">Ta bort bild</button></div>
+   <div class="field"><label for="ep2-txt">${own?"Text":"Kommentar"}</label><textarea id="ep2-txt" rows="3" maxlength="${max}" placeholder="${own?"Skriv något om passet. Tagga vänner med @":"Hur gick det? Tagga vänner med @"}">${esc(a[field]||"")}</textarea></div>
+   <button class="pill block" id="ep2-go">Spara</button>
+   <p class="small">${own?"":"Det som appen skrev om passet ligger kvar. Din kommentar visas under. "}Ändringen syns för dem som följer dig.</p>`,()=>{
+    const f=$("#ep2-file"),pk=$("#ep2-pick");attachMentions($("#ep2-txt"));
+    const show=()=>{pk.classList.toggle("has",!!blob||(hadPic&&!removePic));
+      pk.innerHTML=blob?`<img src="${prev}" alt="Vald bild">`:hadPic&&!removePic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`;
+      pk.style.aspectRatio=blob?String(ratio):"";$("#ep2-tools").hidden=!(blob||(hadPic&&!removePic))};
+    const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
+      ratio=cr.ratio;blob=cr.blob;removePic=false;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);show();return true};
+    f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}if(await crop(x))orig=x};
+    $("#ep2-new").onclick=()=>f.click();
+    $("#ep2-rm").onclick=()=>{blob=null;if(prev){URL.revokeObjectURL(prev);prev=null}removePic=true;show()};
+    $("#ep2-go").onclick=()=>busy($("#ep2-go"),async()=>{const ta=$("#ep2-txt"),txt=ta.value.replace(/\s+/g," ").trim().slice(0,max)||null;
+      let image_url=removePic?null:a.image_url||null,uploaded=null;
+      if(blob){const small=await shrinkImg(blob).catch(()=>null);if(!small){toast("Kunde inte läsa bilden. Prova en annan.");return}
+        const path=`${SBUSER.id}/${Date.now().toString(36)}${Math.random().toString(36).slice(2,10)}.jpg`;
+        const {error}=await SB.storage.from("posts").upload(path,small,{contentType:"image/jpeg",cacheControl:"31536000",upsert:false});
+        if(error){toast("Kunde inte ladda upp bilden. Försök igen.");return}
+        uploaded=path;image_url=SB.storage.from("posts").getPublicUrl(path).data.publicUrl}
+      const nm=ta._mentions?ta._mentions():[],mentions=[...new Set((a.mentions||[]).concat(nm))].slice(0,10);
+      const patch={[field]:txt,image_url,mentions:mentions.length?mentions:null};
+      const {data,error}=await SB.from("activity").update(patch).eq("id",id).select(actCols()).maybeSingle();
+      if(error||!data){if(uploaded){try{await SB.storage.from("posts").remove([uploaded])}catch(x){}}
+        toast(/permission|policy|column|denied/i.test(String((error&&error.message)||""))?"Ändring av inlägg är inte uppsatt i databasen än.":"Kunde inte spara. Försök igen.");return}
+      if(hadPic&&a.image_url!==data.image_url){try{await SB.storage.from("posts").remove([a.image_url.slice(POSTIMG.length).split("?")[0]])}catch(x){}}
+      Object.assign(a,data);if(prev)URL.revokeObjectURL(prev);
+      const el=document.querySelector(`.post[data-act="${id}"]`);if(el)el.outerHTML=fdPost(a,D);
+      closeSheet();HAPTIC("success");toast("Inlägget är ändrat")})})}
 async function deletePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!==SBUSER.id)return;
   const {error}=await SB.from("activity").delete().eq("id",id);if(error){toast("Kunde inte ta bort. Försök igen.");return}
   if(okPost(a.image_url)){try{await SB.storage.from("posts").remove([a.image_url.slice(POSTIMG.length).split("?")[0]])}catch(e){}}
@@ -4763,7 +4805,7 @@ async function deletePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_
 
 function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),k=FD_KIND[a.kind]?a.kind:"pass",pic=okPost(a.image_url);
   return `<article class="post" data-act="${a.id}">
-   <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small>${pic?"Delade":FD_KIND[k]} · ${agoTxt(a.created_at)}</small></div></div>${mine?`<button class="linkbtn po-del" data-delpost="${a.id}">Ta bort</button>`:""}</header>
+   <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small>${pic?"Delade":FD_KIND[k]} · ${agoTxt(a.created_at)}${a.edited_at?" · ändrat":""}</small></div></div>${mine?`<span class="po-own-acts">${ACT_EDIT?`<button class="linkbtn po-del" data-editpost="${a.id}">Ändra</button>`:""}<button class="linkbtn po-del" data-delpost="${a.id}">Ta bort</button></span>`:""}</header>
    ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:`<div class="po-media k-${k}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-k">${fdIcon(k)}${esc(FD_KIND[k])}</span>
      ${big?`<b class="po-big">${esc(big)}</b>`:""}
@@ -4771,7 +4813,7 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
-   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "),a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
+   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
 const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;
 const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");

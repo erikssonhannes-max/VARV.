@@ -876,6 +876,12 @@ a.row{color:inherit;text-decoration:none}
 .viewer{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,var(--fade,1));display:grid;place-items:center;touch-action:none;opacity:0;transition:opacity .2s var(--ease)}.viewer.on{opacity:1}
 .vw-img{max-width:100vw;max-height:100vh;max-height:100dvh;object-fit:contain;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;transition:transform .08s linear}
 .vw-x{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;cursor:pointer}
+.mention{border:0;background:none;padding:0;font:inherit;color:var(--link);font-weight:600;cursor:pointer}
+.mn-host{position:relative}
+.mn-box{position:absolute;left:0;right:0;bottom:calc(100% + 6px);z-index:5;background:var(--card);border:1px solid var(--hair);border-radius:16px;box-shadow:0 12px 32px rgba(0,0,0,.18);padding:6px;display:grid;gap:2px;max-height:280px;overflow:auto}
+.mn-it{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px 8px;border:0;background:none;border-radius:12px;text-align:left;color:var(--ink);font:inherit;cursor:pointer}
+.mn-it[aria-selected="true"],.mn-it:hover{background:var(--tile)}.mn-it>span:not(.fr-av){display:flex;align-items:baseline;gap:4px}.mn-it .fr-av{width:36px;height:36px;flex-shrink:0;font-size:.8rem}.mn-it b{font-weight:600}.mn-it small{color:var(--muted)}
+.mn-none{padding:10px 12px;color:var(--muted);font-size:.9rem}
 /* Hitta vänner: svepkort */
 .deck{position:relative;height:310px;margin:4px 0 26px}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -2682,15 +2688,16 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   box.innerHTML=D.acts.length?D.acts.map(a=>fdPost(a,D)).join(""):`<div class="card"><p class="small">${me?"Du har inte delat något än.":esc(p.username)+" har inte delat något än."}</p></div>`;
   box.onclick=e=>postClick(e,D)}
 function miniBars(v){const mx=Math.max(1,...v);return `<div class="pp-bars" role="img" aria-label="Minuter per vecka de senaste tolv veckorna">${v.map((m,i)=>`<span title="${m} min"><i style="height:${Math.max(m?6:0,Math.round(m/mx*100))}%;--i:${i}" class="${i===v.length-1?"now":""}"></i></span>`).join("")}</div><div class="pp-bl"><span>12 v sedan</span><span>Den här veckan</span></div>`}
-async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url").eq("user_id",uid).order("created_at",{ascending:false}).limit(30);
+async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url,mentions").eq("user_id",uid).order("created_at",{ascending:false}).limit(30);
   if(error)return null;const D={acts:acts||[],likes:{},comments:{}};if(!D.acts.length)return D;const ids=D.acts.map(a=>a.id);
-  const [lk,cm]=await Promise.all([SB.from("activity_likes").select("activity_id,user_id").in("activity_id",ids),SB.from("activity_comments").select("id,activity_id,user_id,body,created_at").in("activity_id",ids).order("created_at",{ascending:true}).limit(500)]);
+  const [lk,cm]=await Promise.all([SB.from("activity_likes").select("activity_id,user_id").in("activity_id",ids),SB.from("activity_comments").select("id,activity_id,user_id,body,created_at,mentions").in("activity_id",ids).order("created_at",{ascending:true}).limit(500)]);
   if(!lk.error){D.likeOk=true;(lk.data||[]).forEach(l=>{(D.likes[l.activity_id]=D.likes[l.activity_id]||[]).push(l.user_id)})}
   if(!cm.error){D.comOk=true;(cm.data||[]).forEach(x=>{(D.comments[x.activity_id]=D.comments[x.activity_id]||[]).push(x)})}
-  const miss=[...new Set(Object.values(D.likes).flat().concat((cm.data||[]).map(x=>x.user_id)))].filter(id=>id!==SBUSER.id&&!NAMES[id]);
+  const miss=[...new Set(Object.values(D.likes).flat().concat((cm.data||[]).map(x=>x.user_id),...(cm.data||[]).map(x=>x.mentions||[]),...D.acts.map(a=>a.mentions||[])))].filter(id=>id!==SBUSER.id&&!NAMES[id]);
   if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   return D}
 function postClick(e,D){
+  const mn=e.target.closest(".mention");if(mn){viewProfile(mn.dataset.prof);return true}
   const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return true}deletePost(+dp.dataset.delpost,D);return true}
   const sh=e.target.closest("[data-share]");if(sh){sharePost(+sh.dataset.share,D);return true}
   const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return true}
@@ -4431,14 +4438,14 @@ async function loadFriendData(force){
   {
     const [pr,ac]=await Promise.all([
       ids.length?SB.from("profiles").select("user_id,username,tag,avatar_url,stats,next_race,best_division,partner_id,prs").in("user_id",ids):Promise.resolve({data:[]}),
-      SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url").in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30)]);
+      SB.from("activity").select("id,user_id,kind,title,detail,created_at,image_url,mentions").in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30)]);
     (pr.data||[]).forEach(p=>{out.profs[p.user_id]=p;NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},{user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url})});
     if(ac.error)out.actOk=false;else out.acts=ac.data||[];
     if(out.acts.length){const {data:lk,error:le}=await SB.from("activity_likes").select("activity_id,user_id").in("activity_id",out.acts.map(a=>a.id));
       if(!le){out.likeOk=true;(lk||[]).forEach(l=>{(out.likes[l.activity_id]=out.likes[l.activity_id]||[]).push(l.user_id)})}
-      out.comments={};const {data:cm,error:ce}=await SB.from("activity_comments").select("id,activity_id,user_id,body,created_at").in("activity_id",out.acts.map(a=>a.id)).order("created_at",{ascending:true}).limit(500);
+      out.comments={};const {data:cm,error:ce}=await SB.from("activity_comments").select("id,activity_id,user_id,body,created_at,mentions").in("activity_id",out.acts.map(a=>a.id)).order("created_at",{ascending:true}).limit(500);
       if(!ce){out.comOk=true;(cm||[]).forEach(c=>{(out.comments[c.activity_id]=out.comments[c.activity_id]||[]).push(c)});
-        const miss=[...new Set((cm||[]).map(c=>c.user_id))].filter(id=>id!==SBUSER.id&&!NAMES[id]);if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}}}
+        const miss=[...new Set((cm||[]).map(c=>c.user_id).concat(...(cm||[]).map(c=>c.mentions||[]),...out.acts.map(a=>a.mentions||[])))].filter(id=>id!==SBUSER.id&&!NAMES[id]);if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}}}
     const need=[...new Set(Object.values(out.profs).map(p=>p.partner_id).filter(x=>x&&!NAMES[x]))];
     if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   }
@@ -4650,6 +4657,32 @@ function openViewer(src,alt){const ov=document.createElement("div");ov.className
     if(!moved){const now=Date.now();if(now-lastTap<300){lastTap=0;z=z>1?1:2.5;tx=ty=0;draw()}else{lastTap=now;setTimeout(()=>{if(lastTap===now&&z===1&&!P.size)close()},310)}}};
   ov.addEventListener("pointerup",up);ov.addEventListener("pointercancel",up);
   setTimeout(()=>ov.querySelector(".vw-x").focus(),50)}
+/* Tagga vänner med @ */
+const MN_RE=/@([\p{L}\p{N}_.]{2,20})/gu;
+function richText(t,ids){let h=esc(t||"");const map={};(ids||[]).forEach(id=>{const n=id===(SBUSER&&SBUSER.id)?MYPROF&&MYPROF.username:(NAMES[id]||{}).username;if(n)map[n.toLowerCase()]=id});
+  if(!Object.keys(map).length)return h;return h.replace(MN_RE,(m,n)=>{const id=map[n.toLowerCase()];return id?`<button type="button" class="mention" data-prof="${esc(id)}">@${n}</button>`:m})}
+function mnPeople(){const ids=[...new Set(FRIENDS.concat(FOLLOWERS))].filter(id=>!BLOCKED.includes(id)&&NAMES[id]&&NAMES[id].username);
+  return ids.map(id=>NAMES[id]).sort((a,b)=>(FRIENDS.includes(b.user_id)&&FOLLOWERS.includes(b.user_id))-(FRIENDS.includes(a.user_id)&&FOLLOWERS.includes(a.user_id))||a.username.localeCompare(b.username,"sv"))}
+function attachMentions(ta){if(!ta||ta._m)return;ta._m=new Map();const host=ta.parentElement;host.classList.add("mn-host");
+  const box=document.createElement("div");box.className="mn-box";box.hidden=true;box.setAttribute("role","listbox");box.setAttribute("aria-label","Tagga en vän");host.appendChild(box);
+  let items=[],sel=0,start=-1;
+  const hide=()=>{box.hidden=true;items=[]};ta._mnOpen=()=>!box.hidden;
+  const draw=()=>{box.innerHTML=items.map((p,i)=>`<button type="button" role="option" class="mn-it" aria-selected="${i===sel}" data-i="${i}">${avImg(p.avatar_url,p.username)}<span><b>${esc(p.username)}</b><small>#${esc(p.tag||"")}</small></span></button>`).join("");box.hidden=false};
+  const update=()=>{const pos=ta.selectionStart,m=ta.value.slice(0,pos).match(/(^|\s)@([\p{L}\p{N}_.]{0,20})$/u);if(!m){hide();return}
+    start=pos-m[2].length-1;const q=m[2].toLowerCase(),all=mnPeople();
+    items=all.filter(p=>p.username.toLowerCase().startsWith(q)).concat(all.filter(p=>!p.username.toLowerCase().startsWith(q)&&p.username.toLowerCase().includes(q))).slice(0,6);
+    if(!items.length){box.innerHTML=`<p class="mn-none">${all.length?"Ingen vän matchar":"Följ några vänner för att kunna tagga dem"}</p>`;box.hidden=false;items=[];return}sel=0;draw()};
+  const pick=i=>{const p=items[i];if(!p)return;const end=ta.selectionStart,ins="@"+p.username+" ";ta.value=(ta.value.slice(0,start)+ins+ta.value.slice(end)).slice(0,+ta.maxLength>0?+ta.maxLength:9999);
+    const c=Math.min(ta.value.length,start+ins.length);ta.setSelectionRange(c,c);ta._m.set(p.username.toLowerCase(),p.user_id);hide();ta.focus();HAPTIC("light")};
+  ta.addEventListener("input",update);ta.addEventListener("click",update);
+  ta.addEventListener("keydown",e=>{if(box.hidden||!items.length){if(e.key==="Escape"&&!box.hidden){e.preventDefault();hide()}return}
+    if(e.key==="ArrowDown"||e.key==="ArrowUp"){e.preventDefault();sel=(sel+(e.key==="ArrowDown"?1:items.length-1))%items.length;draw()}
+    else if(e.key==="Enter"||e.key==="Tab"){e.preventDefault();e.stopImmediatePropagation();pick(sel)}
+    else if(e.key==="Escape"){e.preventDefault();hide()}});
+  box.addEventListener("pointerdown",e=>e.preventDefault());
+  box.addEventListener("click",e=>{const b=e.target.closest("[data-i]");if(b)pick(+b.dataset.i)});
+  ta.addEventListener("blur",()=>setTimeout(hide,150));
+  ta._mentions=()=>{const ids=new Set();for(const m of ta.value.matchAll(MN_RE)){const id=ta._m.get(m[1].toLowerCase());if(id)ids.add(id)}return [...ids].slice(0,10)}}
 /* Dela ett inlägg med bild */
 const POSTIMG="https://kwjnezbazyahyzsmpuyg.supabase.co/storage/v1/object/public/posts/";
 const okPost=u=>typeof u==="string"&&u.startsWith(POSTIMG)&&!/[\s"'<>]/.test(u);
@@ -4664,10 +4697,10 @@ function openComposer(){if(!SB||!SBUSER){openAuth();return}
    <label class="cp-pick" id="cp-pick" for="cp-file"><span class="cp-empty">${CAMI}<b>Välj en bild</b><small>Ta ett foto eller välj från biblioteket</small></span></label>
    <input type="file" id="cp-file" accept="image/*" class="sr">
    <div class="cp-tools" id="cp-tools" hidden><button type="button" class="pill ghost" id="cp-crop">Beskär</button><button type="button" class="pill ghost" id="cp-new">Byt bild</button></div>
-   <div class="field"><label for="cp-txt">Text</label><textarea id="cp-txt" rows="3" maxlength="160" placeholder="Skriv något om passet"></textarea></div>
+   <div class="field"><label for="cp-txt">Text</label><textarea id="cp-txt" rows="3" maxlength="160" placeholder="Skriv något om passet. Tagga vänner med @"></textarea></div>
    <button class="pill block" id="cp-go">Dela</button>
    <p class="small">Syns för dem som följer dig. Bilden sparas med en slumpad länk, precis som profilbilder.</p>`,()=>{
-    const f=$("#cp-file"),pk=$("#cp-pick");
+    const f=$("#cp-file"),pk=$("#cp-pick");attachMentions($("#cp-txt"));
     let orig=null,ratio=.8;
     const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
       ratio=cr.ratio;blob=cr.blob;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);pk.classList.add("has");pk.style.aspectRatio=String(ratio);pk.innerHTML=`<img src="${prev}" alt="Vald bild">`;$("#cp-tools").hidden=false;return true};
@@ -4683,7 +4716,7 @@ function openComposer(){if(!SB||!SBUSER){openAuth();return}
         if(error){toast("Kunde inte ladda upp bilden. Försök igen.");return}
         image_url=SB.storage.from("posts").getPublicUrl(path).data.publicUrl}
       const title=blob?"Delade en bild":"Delade ett inlägg",detail=txt.replace(/\s+/g," ").slice(0,160)||null;
-      const {error}=await SB.from("activity").insert({kind:"pass",title,detail,image_url});
+      const mentions=$("#cp-txt")._mentions?$("#cp-txt")._mentions():[];const {error}=await SB.from("activity").insert({kind:"pass",title,detail,image_url,mentions:mentions.length?mentions:null});
       if(error){toast("Kunde inte dela. Försök igen.");return}
       if(prev)URL.revokeObjectURL(prev);closeSheet();HAPTIC("success");toast("Inlägget är delat");FRC=null;set.fdsub="flow";saveSet();renderFeed(true)})})}
 async function deletePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!==SBUSER.id)return;
@@ -4697,31 +4730,31 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
    ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:`<div class="po-media k-${k}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-k">${fdIcon(k)}${esc(FD_KIND[k])}</span>
      ${big?`<b class="po-big">${esc(big)}</b>`:""}
-     <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${esc(a.detail)}</span>`:""}
+     <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${richText(a.detail,a.mentions)}</span>`:""}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
-   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${esc([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "))}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
+   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "),a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
 const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;
 const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");
 function fdComPrev(id,D){const C=D.comments[id]||[],last=C.slice(-2);
   return `<div class="po-cm" id="po-cm${id}">${C.length>2?`<button class="po-more" data-com="${id}">Visa alla ${C.length} kommentarer</button>`:""}
-   ${last.map(c=>`<p class="po-c"><b>${esc(cName(c.user_id))}</b> ${esc(c.body)}</p>`).join("")}
+   ${last.map(c=>`<p class="po-c"><b>${esc(cName(c.user_id))}</b> ${richText(c.body,c.mentions)}</p>`).join("")}
    <button class="po-add" data-com="${id}">${C.length?"Skriv en kommentar":"Bli först att kommentera"}</button></div>`}
 function openComments(id,D){const a=D.acts.find(x=>x.id===id);if(!a)return;const ownPost=a.user_id===SBUSER.id,p=ownPost?MYPROF:(NAMES[a.user_id]||{username:"Någon"});
   const list=()=>{const C=D.comments[id]||[];return C.length?C.map(c=>{const pp=c.user_id===SBUSER.id?MYPROF:(NAMES[c.user_id]||{username:"Någon"}),can=c.user_id===SBUSER.id||ownPost;
-     return `<div class="cm-row">${avImg(pp.avatar_url,pp.username)}<div><p><b>${esc(cName(c.user_id))}</b> ${esc(c.body)}</p><small>${agoTxt(c.created_at)}${can?` · <button class="linkbtn cm-del" data-del="${c.id}">Ta bort</button>`:""}</small></div></div>`}).join(""):`<p class="small">Inga kommentarer än. Skriv något peppande.</p>`};
+     return `<div class="cm-row">${avImg(pp.avatar_url,pp.username)}<div><p><b>${esc(cName(c.user_id))}</b> ${richText(c.body,c.mentions)}</p><small>${agoTxt(c.created_at)}${can?` · <button class="linkbtn cm-del" data-del="${c.id}">Ta bort</button>`:""}</small></div></div>`}).join(""):`<p class="small">Inga kommentarer än. Skriv något peppande.</p>`};
   openSheet(`<div><span class="small">${ownPost?"Ditt inlägg":esc(p.username)} · ${esc(a.title||FD_KIND[a.kind]||"")}</span><h2>Kommentarer</h2></div>
    <div class="cm-list" id="cm-list">${list()}</div>
-   <form id="cm-f" class="cm-f" novalidate><label class="sr" for="cm-in">Kommentar</label><textarea id="cm-in" rows="2" maxlength="300" placeholder="Skriv en kommentar" enterkeyhint="send"></textarea><button class="pill" id="cm-go" type="submit">Skicka</button></form>`,()=>{
+   <form id="cm-f" class="cm-f" novalidate><label class="sr" for="cm-in">Kommentar</label><textarea id="cm-in" rows="2" maxlength="300" placeholder="Skriv en kommentar, tagga med @" enterkeyhint="send"></textarea><button class="pill" id="cm-go" type="submit">Skicka</button></form>`,()=>{
     const upd=()=>{$("#cm-list").innerHTML=list();const pv=$("#po-cm"+id);if(pv)pv.outerHTML=fdComPrev(id,D)};
-    const inp=$("#cm-in");inp.onkeydown=e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#cm-f").requestSubmit()}};
+    const inp=$("#cm-in");attachMentions(inp);inp.onkeydown=e=>{if(inp._mnOpen&&inp._mnOpen())return;if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#cm-f").requestSubmit()}};
     $("#cm-f").onsubmit=async e=>{e.preventDefault();const t=inp.value.trim();if(!t)return;const b=$("#cm-go");if(b.disabled)return;b.disabled=true;
-      const {data,error}=await SB.from("activity_comments").insert({activity_id:id,body:t.slice(0,300)}).select("id,activity_id,user_id,body,created_at").maybeSingle();
+      const {data,error}=await SB.from("activity_comments").insert({activity_id:id,body:t.slice(0,300),mentions:(inp._mentions&&inp._mentions().length)?inp._mentions():null}).select("id,activity_id,user_id,body,created_at,mentions").maybeSingle();
       b.disabled=false;if(error||!data){toast("Kunde inte skicka. Försök igen.");return}
       (D.comments[id]=D.comments[id]||[]).push(data);inp.value="";HAPTIC("light");upd();const l=$("#cm-list");l.scrollTop=l.scrollHeight};
-    $("#cm-list").onclick=async e=>{const d=e.target.closest("[data-del]");if(!d)return;if(!d.dataset.c){d.dataset.c=1;d.textContent="Tryck igen för att ta bort";d.style.color="var(--bad)";return}
+    $("#cm-list").onclick=async e=>{const mn=e.target.closest(".mention");if(mn){viewProfile(mn.dataset.prof);return}const d=e.target.closest("[data-del]");if(!d)return;if(!d.dataset.c){d.dataset.c=1;d.textContent="Tryck igen för att ta bort";d.style.color="var(--bad)";return}
       const cid=+d.dataset.del;const {error}=await SB.from("activity_comments").delete().eq("id",cid);if(error){toast("Kunde inte ta bort. Försök igen.");return}
       D.comments[id]=(D.comments[id]||[]).filter(c=>c.id!==cid);upd();toast("Kommentaren är borttagen")};
     setTimeout(()=>inp.focus({preventScroll:true}),350)})}

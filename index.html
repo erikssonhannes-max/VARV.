@@ -894,6 +894,18 @@ a.row{color:inherit;text-decoration:none}
 .sw-tag.yes{left:20px;color:var(--good);opacity:var(--yes,0);transform:rotate(-8deg)}.sw-tag.no{right:20px;color:var(--bad);opacity:var(--no,0);transform:rotate(8deg)}
 .deck-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Statistik */
+.hy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:start}
+.hy-days{display:grid;grid-template-rows:16px repeat(7,11px);row-gap:3px;font-size:.66rem;color:var(--muted);line-height:11px}
+.hy-scroll{overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;-webkit-mask-image:linear-gradient(to right,transparent,#000 14px);mask-image:linear-gradient(to right,transparent,#000 14px)}.hy-scroll::-webkit-scrollbar{display:none}
+.hy-in{display:grid;grid-template-rows:16px auto;row-gap:3px;width:max-content}
+.hy-mon{display:grid;grid-template-columns:repeat(53,11px);column-gap:3px;font-size:.66rem;color:var(--muted);line-height:14px;white-space:nowrap}
+.hy-grid{display:grid;grid-template-columns:repeat(53,11px);grid-template-rows:repeat(7,11px);gap:3px}
+.hy-c{display:block;width:11px;height:11px;border-radius:2.5px;background:var(--seg);cursor:pointer}
+.hy-c.l1{background:color-mix(in srgb,var(--accent) 30%,var(--seg))}.hy-c.l2{background:color-mix(in srgb,var(--accent) 55%,var(--seg))}.hy-c.l3{background:color-mix(in srgb,var(--accent) 78%,var(--seg))}.hy-c.l4{background:var(--accent)}
+.hy-c.td{outline:1.5px solid var(--ink);outline-offset:-1.5px}.hy-c.sel{outline:2px solid var(--link);outline-offset:0}
+.hy-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-top:10px}
+.hy-leg{display:flex;align-items:center;gap:3px;font-size:.7rem;color:var(--muted)}.hy-leg .hy-c{cursor:default}.hy-leg .hy-c:first-of-type{margin-left:4px}.hy-leg .hy-c:last-of-type{margin-right:4px}
+.hy-card{gap:0}
 .st-tiles{grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:6px}.st-tiles b small{font-size:.9rem;font-weight:500;color:var(--muted);letter-spacing:0}
 .heat{display:grid;grid-template-rows:repeat(7,auto);gap:3px;align-items:center}
 .heat .hd{font-size:.68rem;color:var(--muted);padding-right:6px}
@@ -926,8 +938,8 @@ a.row{color:inherit;text-decoration:none}
 .radar .ref{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:4 4}
 .radar .you{fill:color-mix(in srgb,var(--accent) 18%,transparent);stroke:var(--accent);stroke-width:2.2;stroke-linejoin:round}
 .radar .you.s{fill:color-mix(in srgb,var(--green) 20%,transparent);stroke:var(--green)}
-.radar text{fill:var(--muted);font-size:11px;font-weight:500}
-.rd-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}.rd-leg span{display:flex;align-items:center;gap:6px}.rd-leg i{width:12px;height:12px;border-radius:3px}.rd-leg .g{background:var(--green)}.rd-leg .a{background:var(--accent)}.rd-leg .d{border:1.5px dashed var(--muted)}
+.radar .g.goal{stroke:var(--green);stroke-opacity:.55;stroke-width:1.5;stroke-dasharray:3 4}.radar text{fill:var(--muted);font-size:11px;font-weight:500}
+.rd-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--muted)}.rd-leg span{display:flex;align-items:center;gap:6px}.rd-leg i{width:12px;height:12px;border-radius:3px}.rd-leg .g{background:var(--green)}.rd-leg .gl{border:1.5px dashed var(--green);opacity:.7;box-sizing:border-box}.rd-leg .a{background:var(--accent)}.rd-leg .d{border:1.5px dashed var(--muted)}
 .linec,.barc{width:100%;display:block;overflow:visible}
 .linec .ln{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
 .linec .pt{fill:var(--tile);stroke:var(--accent);stroke-width:2}.linec .pt.last{fill:var(--accent)}
@@ -3743,7 +3755,7 @@ function renderHome(){try{renderGo()}catch(e){}
   $("#h-racedate").textContent=new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
   {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#plan")}
   $("#h-target").textContent=fmtHM(set.target);$("#h-pace").textContent=fmt(t.pace);
-  {const hn=$("#h-new");if(hn)hn.hidden=set.level!=="ny"}
+  {const hn=$("#h-new");if(hn){hn.hidden=set.level!=="ny"||!!set.newSeen;hn.onclick=()=>{set.newSeen=true;saveSet();hn.hidden=true}}}
   $("#h-week").textContent=`${st.now.n}/${set.per}`;$("#h-streak").textContent=st.streak;
   const med=set.g==="w"?5780:5276,src=bestRace()||set.target*60,dm=Math.round((src-med)/60);
   $("#h-med").innerHTML=`${bestRace()?"Ditt rekord":"Din måltid"} är <b style="color:var(--ink);font-weight:600">${dm===0?"lika med":Math.abs(dm)+" min "+(dm<0?"snabbare än":"långsammare än")}</b> mediantiden i Open ${set.g==="w"?"dam, 1:36":"herr, 1:28"}.`;
@@ -3807,9 +3819,9 @@ function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs(
 /* Grafer: radar, linje och staplar som SVG i appens färger */
 const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
 const stShort=s=>({bbj:"Burpee\nBroad Jumps",farm:"Farmers\nCarry",lunge:"Sandbag\nLunges"})[s.id]||s.n;
-function radarSvg(lab,ser,aria){const n=lab.length,R=92,cx=160,cy=132,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]};
+function radarSvg(lab,ser,aria,goal){const n=lab.length,R=92,cx=160,cy=132,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]};
   const poly=(v,c)=>`<polygon class="${c}" points="${v.map((r,i)=>pt(i,Math.max(.04,Math.min(1,r))).map(x=>x.toFixed(1)).join(",")).join(" ")}"/>`;
-  const rings=[.25,.5,.75,1].map(r=>poly(lab.map(()=>r),"g")).join("");
+  const rings=[.25,.5,.75,1].map(r=>poly(lab.map(()=>r),r===1&&goal?"g goal":"g")).join("");
   const spokes=lab.map((_,i)=>{const [x,y]=pt(i,1);return `<line class="g" x1="${cx}" y1="${cy}" x2="${x.toFixed(1)}" y2="${y.toFixed(1)}"/>`}).join("");
   const txt=lab.map((l,i)=>{const [x,y]=pt(i,1.16),an=Math.abs(x-cx)<6?"middle":x<cx?"end":"start",ln=String(l).split("\n"),y0=y+4-(ln.length-1)*6.5;return `<text x="${x.toFixed(1)}" y="${y0.toFixed(1)}" text-anchor="${an}">${ln.map((t,j)=>`<tspan x="${x.toFixed(1)}" dy="${j?13:0}">${esc(t)}</tspan>`).join("")}</text>`}).join("");
   return `<svg class="radar" viewBox="-24 0 368 264" role="img" aria-label="${esc(aria)}">${rings}${spokes}${ser.map(s=>poly(s.v,s.c)).join("")}${txt}</svg>`}
@@ -3865,6 +3877,26 @@ function weekBarsSvg(vals,labels,aria){const W=320,H=140,T=20,B=22,n=vals.length
   const Y=v=>T+(1-v/hi)*(H-T-B);
   return `<svg class="barc" viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(aria)}">${vals.map((v,i)=>{const x=4+i*gw+(gw-bw)/2,y=Y(v),last=i===n-1;return `<rect class="b${last?" over":""}" x="${x.toFixed(1)}" y="${y.toFixed(1)}" width="${bw.toFixed(1)}" height="${Math.max(0,H-B-y).toFixed(1)}" rx="4" style="--i:${i}"/>${labels[i]?`<text class="xl" x="${(x+bw/2).toFixed(1)}" y="${H-6}" text-anchor="middle">${esc(labels[i])}</text>`:""}${last?`<text class="vl" x="${(x+bw/2).toFixed(1)}" y="${(y-6).toFixed(1)}" text-anchor="middle">${Math.round(v)}</text>`:""}`}).join("")}
    ${avg?`<line class="ref" x1="4" x2="${W-4}" y1="${Y(avg).toFixed(1)}" y2="${Y(avg).toFixed(1)}" style="stroke-dasharray:4 4;stroke-width:1.5;stroke:var(--muted)"/><text class="xl" x="4" y="${(Y(avg)-6).toFixed(1)}">Snitt ${Math.round(avg)} min</text>`:""}</svg>`}
+/* Stationsträning mot ett mål: hur många gånger loppets mängd (till exempel 1000 m SkiErg eller 100 wall balls)
+   man tränat per station, jämfört med vad som är rimligt för nivån under perioden. Ytterkanten är målet. */
+const ST_RATE={ny:1,mellan:1.5,elit:2.5};
+const ST_STD={ski:["m",1000],push:["m",50],pull:["m",50],bbj:["m",80],row:["m",1000],farm:["m",200],lunge:["m",100],wall:["r",100]};
+function stVolume(L){return S.map(s=>{const [f,std]=ST_STD[s.id]||["m",1];let v=0;
+  L.forEach(l=>{if(Array.isArray(l.items)&&l.items.length){l.items.forEach(it=>{if(it.ex===s.id)(it.sets||[]).forEach(x=>{v+=Math.max(0,+x[f]||0)})})}
+    else if((l.stations||[]).includes(s.n))v+=std*.5});return v/std})}
+function stTarget(days){return (ST_RATE[set.level]||ST_RATE.mellan)*days/7}
+/* Aktivitet för ett år, i samma stil som GitHub: en kolumn per vecka, måndag överst, månader ovanför. */
+const HY_LV=m=>!m?0:m<30?1:m<60?2:m<90?3:4;
+function heatYear(){const byM={},byN={};LOGS.forEach(l=>{if(l&&l.date){byM[l.date]=(byM[l.date]||0)+(+l.min||0);byN[l.date]=(byN[l.date]||0)+1}});
+  const W=53,td=today(),ws=weekStart(td),start=new Date(ws+"T12:00:00");start.setDate(start.getDate()-7*(W-1));const first=iso(start);
+  const months=[],cells=[];let lastM=-1;
+  for(let w=0;w<W;w++){const d0=new Date(start);d0.setDate(d0.getDate()+w*7);const m=d0.getMonth();if(m!==lastM){if(w<W-2)months.push(`<span style="grid-column:${w+1}/span 4">${MON[m]}</span>`);lastM=m}
+    for(let d=0;d<7;d++){const x=new Date(d0);x.setDate(x.getDate()+d);const k=iso(x);if(k>td)continue;const mn=byM[k]||0;
+      cells.push(`<i class="hy-c l${HY_LV(mn)}${k===td?" td":""}" style="grid-row:${d+1};grid-column:${w+1}" data-hd="${k}" title="${esc(fmtDM(k))}: ${mn} min"></i>`)}}
+  const n=Object.entries(byN).filter(([k])=>k>=first&&k<=td).reduce((a,[,v])=>a+v,0),days=Object.keys(byN).filter(k=>k>=first&&k<=td).length;
+  return {n,html:`<div class="hy"><div class="hy-days" aria-hidden="true"><span></span><span>Mån</span><span></span><span>Ons</span><span></span><span>Fre</span><span></span><span></span></div>
+   <div class="hy-scroll"><div class="hy-in"><div class="hy-mon" aria-hidden="true">${months.join("")}</div><div class="hy-grid" role="img" aria-label="${n} pass på ${days} dagar det senaste året">${cells.join("")}</div></div></div></div>
+   <div class="hy-foot"><span class="small" id="hy-info">${days} ${days===1?"dag":"dagar"} med träning. Tryck på en ruta.</span><span class="hy-leg" aria-hidden="true">Mindre<i class="hy-c l0"></i><i class="hy-c l1"></i><i class="hy-c l2"></i><i class="hy-c l3"></i><i class="hy-c l4"></i>Mer</span></div>`,byM,byN}}
 function heatHtml(minsByDay,weeks){const ws=weekStart(today());const start=new Date(ws+"T12:00:00");start.setDate(start.getDate()-7*(weeks-1));
   const mx=Math.max(1,...Object.values(minsByDay));const cells=[];
   for(let d=0;d<7;d++)for(let w=0;w<weeks;w++){const x=new Date(start);x.setDate(x.getDate()+w*7+d);const k=iso(x),m=minsByDay[k]||0,fut=k>today();
@@ -3924,16 +3956,17 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
   const byT={};Lp.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
   const wd=[0,0,0,0,0,0,0];Lp.forEach(l=>{wd[(new Date(l.date+"T12:00:00").getDay()+6)%7]++});const wdm=Math.max(1,...wd);
   const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
+  const stv=stVolume(Lp),stT=stTarget(per),HY=heatYear();
   const stRows=S.map((s,i)=>{const sp=hasT?+lastR.race.sp[2*i+1]:null,tg=hasT?+lastR.race.tg[2*i+1]:null,d=hasT?sp-tg:null;
-    return `<button class="row st-row" data-st="${i}"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3><p>${cnt[i]} ${cnt[i]===1?"pass":"pass"}${hasT?` · senaste loppet ${fmt(sp)}`:""}</p></div><span class="st-r">${hasT?(Math.round(d)===0?`<b class="st-eq">±0:00</b>`:`<b class="${d<0?"ahead":"behind"}">${fmtD(d)}</b>`):""}<span class="chev">›</span></span></button>`}).join("");
+    return `<button class="row st-row" data-st="${i}"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3><p>${cnt[i]} pass · ${Math.min(999,Math.round(stv[i]/stT*100))} % av målet${hasT?` · senaste loppet ${fmt(sp)}`:""}</p></div><span class="st-r">${hasT?(Math.round(d)===0?`<b class="st-eq">±0:00</b>`:`<b class="${d<0?"ahead":"behind"}">${fmtD(d)}</b>`):""}<span class="chev">›</span></span></button>`}).join("");
   const hb=(rows,max,unit)=>`<div class="card hbars">${rows.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/max*100)}%;--i:${i}"></i></div><b>${Math.round(m)}${unit}</b></div>`).join("")}</div>`;
   el.innerHTML=`<div class="sechead"><h2>Stationerna</h2><span class="small">I loppets ordning</span></div>
-   <div class="card">${radarSvg(S.map(stShort),[...(rv?[{v:S.map(()=>.5),c:"ref"},{v:rv,c:"you"}]:[]),{v:cnt.map(c=>c/mx),c:"you s"}],"De åtta stationerna i ett Hyrox-lopp: hur ofta du tränat dem och hur du presterade i ditt senaste lopp")}
-   <div class="rd-leg"><span><i class="g"></i>Träning, ${per2.toLowerCase()}</span>${rv?`<span><i class="a"></i>Senaste loppet, ${esc(fmtDM(lastR.date))}</span><span><i class="d"></i>Måltid</span>`:""}</div>
-   <p class="small">Längre ut betyder mer träning${rv?", eller snabbare än målet i loppet":""}. Tryck på en station nedan för teknik och övningar.</p></div>
+   <div class="card">${radarSvg(S.map(stShort),[...(rv?[{v:S.map(()=>.5),c:"ref"},{v:rv,c:"you"}]:[]),{v:stv.map(v=>Math.min(1.08,v/stT)),c:"you s"}],"De åtta stationerna i ett Hyrox-lopp: hur mycket du tränat dem mot målet för din nivå och hur du presterade i ditt senaste lopp",true)}
+   <div class="rd-leg"><span><i class="g"></i>Träning, ${per2.toLowerCase()}</span><span><i class="gl"></i>Mål för din nivå</span>${rv?`<span><i class="a"></i>Senaste loppet, ${esc(fmtDM(lastR.date))}</span><span><i class="d"></i>Måltid</span>`:""}</div>
+   <p class="small">Ytterkanten är målet för ${esc({ny:"dig som är ny",elit:"elitnivå"}[set.level]||"din nivå")}: ungefär ${String(ST_RATE[set.level]||ST_RATE.mellan).replace(".",",")} gånger loppets mängd per station och vecka, till exempel ${Math.round((ST_RATE[set.level]||ST_RATE.mellan)*1000)} m SkiErg. ${stv.every(v=>v>=stT)?"Du når målet på alla stationer.":stv.some(v=>v>=stT)?"Du når målet på "+stv.filter(v=>v>=stT).length+" av 8 stationer.":"Ingen station är vid målet än."}${rv?" Den streckade ringen är din måltid i loppet, och längre ut är snabbare.":""} Tryck på en station nedan för teknik och övningar.</p></div>
    <div class="group st-list">${stRows}</div>
-   <div class="sechead"><h2>Aktivitet</h2><span class="small">16 veckor</span></div>
-   <div class="card">${heatHtml(byDay,16)}<p class="small">Varje ruta är en dag. Mörkare betyder fler minuter.</p></div>
+   <div class="sechead"><h2>Aktivitet</h2><span class="small">${HY.n} pass senaste året</span></div>
+   <div class="card hy-card">${HY.html}</div>
    <div class="sechead"><h2>Minuter per vecka</h2><span class="small">12 veckor</span></div>
    <div class="card">${weekBarsSvg(wkM.slice(1),wl,"Träningsminuter per vecka de senaste tolv veckorna")}<p class="small">Den rosa stapeln är den här veckan. Strecket är snittet för veckorna innan.</p></div>
    ${Lp.length?`<div class="sechead"><h2>Intensitet</h2><span class="small">${per2}</span></div>
@@ -3945,6 +3978,10 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
    <div class="card"><div class="st-wd">${DN.map((d,i)=>`<div><span class="v">${wd[i]}</span><span class="c"><i style="height:${Math.round(wd[i]/wdm*100)}%;--i:${i}"></i></span><span class="d">${d}</span></div>`).join("")}</div></div>`:""}
    ${pts.length?`<div class="sechead"><h2>Dina lopp</h2><span class="small">${pts.length} sparade</span></div>
    <div class="card">${lineSvg(pts,set.target*60,"Sluttid för dina sparade lopp och simuleringar")}<p class="small">Högre upp är snabbare. Den streckade linjen är din måltid. Tryck på ett lopp under Tävla för hela analysen.</p></div>`:""}`;
+  {const sc=el.querySelector(".hy-scroll");if(sc)requestAnimationFrame(()=>{sc.scrollLeft=sc.scrollWidth});
+   const g=el.querySelector(".hy-grid");if(g)g.onclick=e=>{const c=e.target.closest("[data-hd]");if(!c)return;const k=c.dataset.hd,m=HY.byM[k]||0,n=HY.byN[k]||0;
+     el.querySelectorAll(".hy-c.sel").forEach(x=>x.classList.remove("sel"));c.classList.add("sel");
+     $("#hy-info").textContent=`${new Date(k+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})}: ${n?`${n} ${n===1?"pass":"pass"}, ${m} min`:"ingen träning"}`}}
 }
 function isoWeek(d){const x=new Date(Date.UTC(d.getFullYear(),d.getMonth(),d.getDate()));const n=x.getUTCDay()||7;x.setUTCDate(x.getUTCDate()+4-n);const y=new Date(Date.UTC(x.getUTCFullYear(),0,1));return Math.ceil(((x-y)/864e5+1)/7)}
 

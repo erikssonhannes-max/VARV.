@@ -77,9 +77,16 @@ function daily(s: Sub, now: { date: string; wd: string }): Msg | null {
 }
 
 async function runDaily() {
-  const { data } = await SB.from("push_subs").select("*");
+  // Hämtas sida för sida, annars missar databasens radgräns de som kommer efter de första tusen.
+  const data: Sub[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data: page, error } = await SB.from("push_subs").select("*").order("endpoint").range(from, from + 999);
+    if (error || !page?.length) break;
+    data.push(...(page as Sub[]));
+    if (page.length < 1000) break;
+  }
   let sent = 0;
-  for (const s of (data || []) as Sub[]) {
+  for (const s of data) {
     let now;
     try { now = local(s.tz || "Europe/Stockholm"); } catch { now = local("Europe/Stockholm"); }
     if (now.hour !== s.hour || s.last_daily === now.date) continue;

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="description" content="Hyrox-träning: stationsguider, plan efter måltid, tidtagning, logg och racepass för Garmin.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -1610,9 +1610,10 @@ function drawOval(){
   const pos=[];
   S.forEach((st,i)=>{const a=-Math.PI/2+i*(Math.PI/4)+Math.PI/8;const x=cx+rx*Math.cos(a),y=cy+ry*Math.sin(a);pos.push([x,y]);
     const inner=ART[st.id].replace(/^<svg[^>]*>/,"").replace(/<\/svg>$/,"");
-    h+=`<g class="ov" data-st="${i}" role="button" aria-label="${st.n}" style="--d:${i*60}ms"><circle class="ov-rip" cx="${x}" cy="${y}" r="21"/><g class="ov-n"><circle class="ov-c" cx="${x}" cy="${y}" r="21"/><svg class="ov-i" x="${x-13}" y="${y-13}" width="26" height="26" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></g></g>`});
+    h+=`<g class="ov" data-st="${i}" role="button" tabindex="0" aria-label="${st.n}" style="--d:${i*60}ms"><circle class="ov-rip" cx="${x}" cy="${y}" r="21"/><g class="ov-n"><circle class="ov-c" cx="${x}" cy="${y}" r="21"/><svg class="ov-i" x="${x-13}" y="${y-13}" width="26" height="26" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">${inner}</svg></g></g>`});
   svg.innerHTML=h;
   svg.onclick=e=>{const g=e.target.closest("g.ov");if(g){location.hash="#stationer";setTimeout(()=>openStation(+g.dataset.st),80)}};
+  svg.onkeydown=e=>{if(e.key!=="Enter"&&e.key!==" ")return;const g=e.target.closest&&e.target.closest("g.ov");if(g){e.preventDefault();openStation(+g.dataset.st)}};
   const tr=svg.querySelector("#trail"),cm=svg.querySelector("#comet"),rn=svg.querySelector("#runner"),nodes=[...svg.querySelectorAll("g.ov")];
   const lbl=svg.querySelector("#ov-lbl"),tt=svg.querySelector("#ov-t"),sb=svg.querySelector("#ov-s");
   cancelAnimationFrame(drawOval.raf);clearTimeout(drawOval.swap);
@@ -1781,7 +1782,14 @@ function computeAdapt(base){
 }
 let PLAN=[],ADAPT=null;
 function curWeekIdx(){const t=today();let idx=0;PLAN.forEach((w,i)=>{if(w.start<=t)idx=i});return idx}
-function sesDone(w,s){return LOGS.some(l=>l.src==="strava"&&l.date===s.date)||LOGS.some(l=>l.plan===s.key+"@"+set.date)||LOGS.some(l=>l.type===s.t&&l.date>=w.start&&l.date<=wEnd(w.start))}
+/* Ett loggat pass räknas bara för ett planerat pass: först det det är kopplat till, annars det första av samma typ. Strava-pass har egna namn och matchas på dagen. */
+function sesDone(w,s){const end=wEnd(w.start),inW=LOGS.filter(l=>l.date>=w.start&&l.date<=end),keys=new Set(w.ses.map(x=>x.key+"@"+set.date));
+  if(inW.some(l=>l.plan===s.key+"@"+set.date))return true;
+  const free=inW.filter(l=>!keys.has(l.plan));const used=new Set();
+  for(const x of w.ses){if(inW.some(l=>l.plan===x.key+"@"+set.date))continue;
+    const m=free.find(l=>!used.has(l)&&(l.src==="strava"?l.date===x.date:l.type===x.t));
+    if(m){used.add(m);if(x===s)return true}}
+  return false}
 function renderAdapt(){
   const a=ADAPT,el=$("#adapt");if(!a){el.innerHTML="";return}
   const icon={progress:"↑",lighter:"↓",recover:"↓",steady:"✓",start:"★"}[a.mode];
@@ -1979,6 +1987,8 @@ async function initSupabase(){
 }
 
 async function sbStart(u){
+  /* Ett annat konto på samma enhet ska aldrig ärva den förra användarens data */
+  try{const o=localStorage.getItem("varv-owner");if(o&&o!==u.id){wipeLocal();localStorage.setItem("varv-owner",u.id);location.reload();return}localStorage.setItem("varv-owner",u.id)}catch(e){}
   SBUSER=u;SBSETOK=false;const C=sbCollection(u.id);SBCOL=C;
   const md=u.user_metadata||{};MEINFO={name:md.full_name||md.name||"",avatarUrl:md.avatar_url||md.picture||""};
   let remote=null;try{remote=await C.refresh()}catch(e){}
@@ -2006,10 +2016,15 @@ async function sbStart(u){
   loadMyProfile();
 }
 
+/* Tar bort allt som hör till kontot från enheten. Inbjudningar och offentliga listor får vara kvar, och inloggningen sköts av Supabase. */
+function wipeLocal(){try{Object.keys(localStorage).filter(k=>/^hyrox-|^varv-/.test(k)&&!/^varv-(lopp|events2|sims)$/.test(k)).forEach(k=>localStorage.removeItem(k))}catch(e){}}
 async function sbSignOut(){
   const b=$("#au-out");if(b)b.disabled=true;
+  /* sista ändringen ska hinna sparas i kontot innan den rensas här */
+  clearTimeout(pushSettings.t);
+  try{if(SBCOL&&SBSETOK){const c=JSON.parse(JSON.stringify(set));delete c.geo;await SBCOL.doc("settings").set(c)}}catch(e){}
   try{await SB.auth.signOut()}catch(e){}
-  try{localStorage.removeItem(SB_CACHE)}catch(e){}
+  wipeLocal();
   location.hash="#profil";location.reload();
 }
 
@@ -2221,7 +2236,9 @@ const handleHtml=p=>p?`<span class="handle">${esc(p.username)}<small>#${esc(p.ta
 const handleTxt=p=>p?`${p.username}#${p.tag}`:"";
 const CAM='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>';
 const COPY='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 0 1 1-1h10"/></svg>';
-function avImg(url,name,cls){return `<span class="${cls||"fr-av"}">${url?`<img src="${esc(url)}" alt="" loading="lazy">`:esc(initials(name))}</span>`}
+/* Visar bara bilder från vår egen lagring (eller Google), så att ingen kan samla in besökares adresser via en egen server */
+function okImg(u){try{const x=new URL(u),c=(window.VARV_SUPABASE||{}).url||"";return x.protocol==="https:"&&((x.origin===new URL(c).origin&&x.pathname.startsWith("/storage/v1/object/public/avatars/"))||x.hostname.endsWith(".googleusercontent.com"))}catch(e){return false}}
+function avImg(url,name,cls){return `<span class="${cls||"fr-av"}">${url&&okImg(url)?`<img src="${esc(url)}" alt="" loading="lazy">`:esc(initials(name))}</span>`}
 
 async function loadMyProfile(){
   if(!SB||!SBUSER)return;
@@ -2512,7 +2529,7 @@ async function renderComm(){
   const rank=id=>rows.findIndex(r=>r.id===id)+1;
   const P=set.partner&&BOARD[set.partner]?BOARD[set.partner]:null;const me=B[ME];
   const col=(name,d)=>`<div class="col"><h4>${esc(name)}</h4><div class="kv"><span>Varv</span><b>${wkVal(d,"wv")}</b></div><div class="kv"><span>Pass</span><b>${wkVal(d,"n")}</b></div><div class="kv"><span>I rad</span><b>${num(d.streak)} v</b></div><div class="kv"><span>Rekord</span><b>${num(d.race)?fmt(num(d.race)):"–"}</b></div></div>`;
-  const row=r=>{const pr=PROF[r.id],k=rank(r.id),t=TIERS[r.d.tier||0]||TIERS[0];return `<button class="row${r.id===ME?" lbme":""}" data-person="${esc(r.id)}"><span class="rk">${pr&&pr.avatarUrl?`<img class="av" src="${esc(pr.avatarUrl)}" alt="">`:`<span class="av"></span>`}<i class="${k<=3&&wkVal(r.d,"wv")?"r"+k:"rn"}">${k}</i></span><div><h3>${esc(pname(r.id))}${r.id===set.partner?" · partner":""}${r.id===ME&&!set.share?' <span class="small">· bara du ser dig</span>':""}</h3><p>${t.n} · ${r.d.med||0} ${r.d.med===1?"utmärkelse":"utmärkelser"}</p></div><span class="amt"><b style="color:var(--ink)">${wkVal(r.d,"wv")}</b>&nbsp;varv</span></button>`};
+  const row=r=>{const pr=PROF[r.id],k=rank(r.id),t=TIERS[r.d.tier||0]||TIERS[0];return `<button class="row${r.id===ME?" lbme":""}" data-person="${esc(r.id)}"><span class="rk">${pr&&pr.avatarUrl&&okImg(pr.avatarUrl)?`<img class="av" src="${esc(pr.avatarUrl)}" alt="">`:`<span class="av"></span>`}<i class="${k<=3&&wkVal(r.d,"wv")?"r"+k:"rn"}">${k}</i></span><div><h3>${esc(pname(r.id))}${r.id===set.partner?" · partner":""}${r.id===ME&&!set.share?' <span class="small">· bara du ser dig</span>':""}</h3><p>${t.n} · ${r.d.med||0} ${r.d.med===1?"utmärkelse":"utmärkelser"}</p></div><span class="amt"><b style="color:var(--ink)">${wkVal(r.d,"wv")}</b>&nbsp;varv</span></button>`};
   el.innerHTML=`<div class="seg" id="lb-seg" role="group" aria-label="Visa" style="margin-bottom:12px"><button data-lb="friends" aria-pressed="${LBV==="friends"}">Vänner</button><button data-lb="all" aria-pressed="${LBV==="all"}">Alla</button></div>
   <div class="group">${list.map(row).join("")}</div>
   ${LBV==="friends"&&ids.length<2?`<div class="card" style="margin-top:10px"><p class="small">Lägg till vänner genom att trycka på dem under Alla. Ni ser sedan varandras vecka här.</p></div>`:""}
@@ -3611,7 +3628,7 @@ $$("#tv-seg [data-tv]").forEach(b=>b.onclick=()=>{set.tsub=b.dataset.tv;saveSet(
 function initials(n){const p=String(n||"").trim().split(/\s+/).filter(Boolean);return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:"")).toUpperCase():"V"}
 let MEINFO=null;
 function pName(){return set.name||(MEINFO&&MEINFO.name)||""}
-function avatarHtml(){return MEINFO&&MEINFO.avatarUrl&&(!set.name||MYPROF)?`<img src="${esc(MEINFO.avatarUrl)}" alt="">`:`<span>${esc(initials(pName()||(MYPROF&&MYPROF.username)||""))}</span>`}
+function avatarHtml(){return MEINFO&&MEINFO.avatarUrl&&okImg(MEINFO.avatarUrl)&&(!set.name||MYPROF)?`<img src="${esc(MEINFO.avatarUrl)}" alt="">`:`<span>${esc(initials(pName()||(MYPROF&&MYPROF.username)||""))}</span>`}
 function renderAvatar(){const a=$("#avatar-btn");if(a)a.innerHTML=avatarHtml()}
 function swRow(id,title,sub,on){return `<button class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
 function renderProfile(){

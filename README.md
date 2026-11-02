@@ -10,7 +10,7 @@ Intern sida för teamet: adressen delas bara internt (kräver kod, se `supabase/
 
 ## Inloggning med Supabase
 
-Appen fungerar utan konto. När Supabase är inkopplat kan man skapa konto och logga in, och då sparas pass, rekord och inställningar i kontot och följer med mellan enheter. Det man loggat på enheten innan flyttas till kontot vid första inloggningen.
+Appen kräver konto när Supabase är inkopplat. Pass, rekord och inställningar sparas i kontot och följer med mellan enheter. Vid utloggning rensas de från enheten.
 
 Sätt upp det så här:
 

@@ -1781,7 +1781,7 @@ function renderSplits(){
 }
 const daysLeft=()=>Math.round((new Date(set.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);
 const DAYS={1:[2],2:[1,4],3:[1,3,5],4:[0,2,4,6],5:[0,1,3,5,6]};
-const ZMAP={"Intervaller":[4],"Kompromisslöpning":[3,4],"Styrka och stationer":[2,3],"Lugn distans":[2],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[4]};
+const ZMAP={"Intervaller":[4],"Löpning och stationer":[3,4],"Styrka och stationer":[2,3],"Lugn distans":[2],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[4]};
 const ZONES=[[.5,.6,"Mycket lätt, uppvärmning"],[.6,.7,"Lätt, du kan prata hela meningar"],[.7,.8,"Måttligt, korta meningar"],[.8,.9,"Hårt, tävlingsfart"],[.9,1,"Max, korta intervaller"]];
 function hrmax(){return set.maxhr||(set.age?Math.round(220-set.age):null)}
 const ZWORD=["mycket lätt","lätt","måttligt","hårt","max"];
@@ -1819,7 +1819,7 @@ function buildPlan(adj){
         elit:{Bas:`8 × 800 m i ${P(-10)} /km, ${rest} s vila`,Bygg:`6 × 1 km i ${P(-15)} /km, ${rest} s vila`,Specifik:`5 × 1 km i ${P(-20)} /km och 6 × 400 m snabbt, ${rest} s vila`}}[L][ph];
       ses.push({t:"Intervaller",m:M(ph==="Bas"?50:55),d:`Uppvärmning 10 min. ${iv}. Nedvarvning 5 min.`});
       const r=L==="ny"?(ph==="Bas"?2:3):L==="elit"?4:(ph==="Bas"?3:4);const st=rot.slice(0,r);
-      ses.push({t:"Kompromisslöpning",m:M(r*11+10),d:`${r} rundor: 1 km i ${P(0)} /km direkt följt av halva tävlingsmängden av ${st.map(s=>s.n).join(", ")}.${set.fmt!=="singel"?" Träna med din partner och öva byten.":""}`,s:st.map(s=>s.n)});
+      ses.push({t:"Löpning och stationer",m:M(r*11+10),d:`${r} rundor: 1 km i ${P(0)} /km direkt följt av halva tävlingsmängden av ${st.map(s=>s.n).join(", ")}.${set.fmt!=="singel"?" Träna med din partner och öva byten.":""}`,s:st.map(s=>s.n)});
       const pk=kgPlan(ph,w,Wn);
       const str={Bas:`Knäböj 4 × 8, gående utfall 3 × 20 m, marklyft 3 × 6, plankan 3 × 45 s. Slädteknik: push 4 × 12,5 m på ${pk.push} kg och pull 4 × 12,5 m på ${pk.pull} kg.`,
         Bygg:`Knäböj 4 × 6 tungt, bulgarska utfall 3 × 10 per ben. Släde: push 4 × 12,5 m på ${pk.push} kg, pull 4 × 12,5 m på ${pk.pull} kg. Farmers carry 4 × 50 m med 2 × ${pk.farm} kg.`,
@@ -1847,7 +1847,7 @@ function computeAdapt(base){
   [cw-1,cw-2].forEach(i=>{if(i>=0){const w=base[i];planned+=w.ses.length;done+=Math.min(w.ses.length,inR(w.start,wEnd(w.start)).length)}});
   const two=new Date();two.setDate(two.getDate()-14);const rl=LOGS.filter(l=>l.date>=iso(two)&&l.rpe);
   const rpe=rl.length?rl.reduce((a,l)=>a+ +l.rpe,0)/rl.length:null;
-  if(cw>=1){const lw=base[cw-1],got=inR(lw.start,wEnd(lw.start));res.missed=["Intervaller","Kompromisslöpning"].filter(k=>lw.ses.some(x=>x.t===k)&&!got.some(l=>l.type===k))}
+  if(cw>=1){const lw=base[cw-1],got=inR(lw.start,wEnd(lw.start));res.missed=["Intervaller","Löpning och stationer"].filter(k=>lw.ses.some(x=>x.t===k)&&!got.some(l=>l.type===k))}
   if(!planned){res.mode=LOGS.length?"steady":"start";res.note=LOGS.length?"Planen följer din måltid. Från nästa vecka anpassas den efter vad du loggat.":""}
   else{const c=done/planned;
     if(c<.6){res.mode="lighter";res.vol=.85;res.note=`Du hann ${done} av ${planned} planerade pass de senaste veckorna. Veckan är lite kortare så att du kommer igång igen.`}
@@ -1900,7 +1900,7 @@ function renderPlan(){planChanged();
 }
 const fmtDM=d=>new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
 function wkRange(w){const a=fmtDM(w.start),b=fmtDM(wEnd(w.start));return a.split(" ")[1]===b.split(" ")[1]?a.split(" ")[0]+"–"+b:a+" – "+b}
-const PASS_WHAT={"Intervaller":"Korta hårda sträckor med vila emellan. Gör dig snabbare.","Kompromisslöpning":"Löpning direkt efter stationer, så att du vänjer dig vid att springa på tunga ben.","Styrka och stationer":"Bygger styrkan du behöver på stationerna.","Lugn distans":"Lugn löpning som bygger uthållighet. Du ska kunna prata hela tiden.","Motor (SkiErg/rodd)":"Kondition på maskin, utan stötar för benen.","Racesimulering":"Generalrepetition av loppet, i tävlingstempo."};
+const PASS_WHAT={"Intervaller":"Korta hårda sträckor med vila emellan. Gör dig snabbare.","Löpning och stationer":"Löpning direkt efter stationer, så att du vänjer dig vid att springa på tunga ben.","Styrka och stationer":"Bygger styrkan du behöver på stationerna.","Lugn distans":"Lugn löpning som bygger uthållighet. Du ska kunna prata hela tiden.","Motor (SkiErg/rodd)":"Kondition på maskin, utan stötar för benen.","Racesimulering":"Generalrepetition av loppet, i tävlingstempo."};
 function passRows(w,wi){const td=today();return w.ses.map((x,si)=>{const a=new Date(x.date+"T12:00:00"),done=sesDone(w,x),late=!done&&x.date<td,wd=a.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
   return `<details class="pass${done?" done":""}"><summary><span class="badge evd"><b>${a.getDate()}</b><small>${wd}</small></span><div><h3>${x.t}</h3><p>${x.m} min${x.moved?" · flyttat":""}${x.date===td&&!done?" · i dag":""}</p></div>${done?'<span class="state">✓ Klart</span>':late?'<span class="state late">Att ta igen</span>':'<span class="chev">›</span>'}</summary>
    <div class="pass-b"><span class="zone z${x.z[0]}" style="justify-self:start">${zoneTxt(x.z)}</span>${PASS_WHAT[x.t]?`<p class="what">${PASS_WHAT[x.t]}</p>`:""}<p>${x.d}</p><div class="ses-acts"><button class="logbtn" data-w="${wi}" data-s="${si}">Logga passet</button>${x.date>=td||late?`<button class="logbtn mv" data-w="${wi}" data-s="${si}">${x.moved?"Flyttat · ändra":"Flytta"}</button>`:""}</div></div></details>`}).join("")}
@@ -2002,7 +2002,7 @@ async function savePRs(){
   if(mode==="db"&&col){try{await col.doc("meta").set({kind:"meta",prs:PRS})}catch(err){toast("Kunde inte spara rekordet.")}return}
   saveLocal();renderAllData();
 }
-function renderAllData(){renderLog();renderPlan();renderHome();renderPRs();renderAvatar();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
+function renderAllData(){LOGS.forEach(l=>{if(l&&l.type==="Kompromiss"+"löpning")l.type="Löpning och stationer"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
 
 /* ============ Konto: inloggning med Supabase ============ */
 /* Används när appen körs som vanlig webbapp. Pass, rekord och inställningar sparas
@@ -2538,7 +2538,7 @@ function groupToLog(g){
   const runs=g.items.filter(x=>RUNT.includes(x.sport_type)),other=g.items.filter(x=>!RUNT.includes(x.sport_type));
   const km=runs.reduce((a,x)=>a+(x.summary.distance||0),0)/1000,rt=runs.reduce((a,x)=>a+(x.summary.moving_time||0),0);
   const ty=other.map(x=>x.sport_type).join(" ");
-  const type=runs.length&&other.length?"Kompromisslöpning":runs.length?"Löpning":/Row/.test(ty)?"Motor (SkiErg/rodd)":/Weight|Crossfit|HighIntensity|Workout/.test(ty)?"Styrka och stationer":"Annat";
+  const type=runs.length&&other.length?"Löpning och stationer":runs.length?"Löpning":/Row/.test(ty)?"Motor (SkiErg/rodd)":/Weight|Crossfit|HighIntensity|Workout/.test(ty)?"Styrka och stationer":"Annat";
   const one=g.items[0].summary;
   const min=Math.max(1,Math.round(g.items.length>1?(g.end-g.start)/60000:(one.moving_time||one.elapsed_time||60)/60));
   const re=g.items.reduce((a,x)=>a+(x.summary.relative_effort||0),0);
@@ -2870,7 +2870,7 @@ setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"pass");
 /* ============ Logg-UI ============ */
 /* ============ Logga pass ============ */
 const lg$$=s=>[...document.querySelectorAll(s)];
-const TYPES=["Styrka och stationer","Intervaller","Löpning","Kompromisslöpning","Lugn distans","Motor (SkiErg/rodd)","Racesimulering","Annat"];
+const TYPES=["Styrka och stationer","Intervaller","Löpning","Löpning och stationer","Lugn distans","Motor (SkiErg/rodd)","Racesimulering","Annat"];
 /* k: d = meter och tid, r = antal, c = kalorier och tid, t = tid. w: vikt. st: HYROX-station */
 const EXG=["Hyrox-stationer","Löpning och kondition","Styrka","Kroppsvikt och core"];
 const EX=[
@@ -2921,7 +2921,7 @@ function newItem(x,empty){
 function autoType(){const it=LG.items;if(!it.length)return "Styrka och stationer";
   const isRun=i=>i.ex==="run"||i.ex==="tread",st=it.filter(i=>i.st).length,run=it.find(isRun);
   const motor=it.every(i=>["ski","row","bike","bikeerg"].includes(i.ex)),other=it.some(i=>!i.st&&!isRun(i));
-  if(st>=8&&run)return "Racesimulering";if(motor)return "Motor (SkiErg/rodd)";if(run&&st)return "Kompromisslöpning";
+  if(st>=8&&run)return "Racesimulering";if(motor)return "Motor (SkiErg/rodd)";if(run&&st)return "Löpning och stationer";
   if(run&&!other)return run.sets.length>1?"Intervaller":"Löpning";return "Styrka och stationer"}
 const lgType=()=>LG.typeSet?LG.type:autoType();
 let LG=null;
@@ -2940,18 +2940,30 @@ const GOI={now:'<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>'
 const goIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GOI[k]}</svg>`;
 function goPlan(){try{const w=PLAN[curWeekIdx()];if(!w||daysLeft()<=0)return null;const n=nextPass(w);return n.tod||n.late?{w,s:n.tod||n.late,late:!n.tod}:null}catch(e){return null}}
 function goHtml(){const prep=(set.tpls||[]).slice().reverse(),pl=goPlan();
-  return `${pl?`<button class="go-now" data-go="plan"><span class="go-ic">${goIc("now")}</span><span><small class="go-k">${pl.late?"Att ta igen":"I dag"}</small><b>${esc(pl.s.t)}.</b><small>${pl.s.m} min enligt din plan. Tryck för att köra.</small></span></button>`:`<button class="go-now" data-go="now"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Välj övningar och starta klockan</small></span></button>`}
+  return `${pl?`<button class="go-now" data-go="plan"><span class="go-ic">${goIc("now")}</span><span><small class="go-k">${pl.late?"Att ta igen":"Dagens rekommenderade pass"}</small><b>${esc(pl.s.t)}.</b><small>${pl.s.m} min · Tryck för att se övningarna</small></span></button>`:`<button class="go-now" data-go="now"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Välj övningar och starta klockan</small></span></button>`}
    <div class="go-grid">${pl?`<button class="go g-own" data-go="now"><span class="go-ic">${goIc("now")}</span><b>Eget pass</b><small>Välj övningar och starta klockan</small></button>`:""}<button class="go g-sug" data-go="sug"><span class="go-ic">${goIc("sug")}</span><b>Ge mig ett pass</b><small>Kondition, styrka eller båda</small></button>
    <button class="go g-pre" data-go="pre"><span class="go-ic">${goIc("pre")}</span><b>Färdiga pass</b><small>${PRESETS.length} pass för Hyrox</small></button>
    <button class="go g-prep" data-go="prep"><span class="go-ic">${goIc("prep")}</span><b>Förbered</b><small>Klart när du når gymmet</small></button>
    <button class="go g-after" data-go="after"><span class="go-ic">${goIc("after")}</span><b>Redan kört?</b><small>Logga i efterhand</small></button></div>
    ${prep.length?`<div class="go-prep"><span class="lbl">Redo att köras</span><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
+/* Dagens pass från planen: visa övningarna innan man startar */
+function planItems(x){const out=[];if(/Intervall|Löpning|distans/.test(x.t))out.push("Löpning");(x.s||[]).forEach(n=>{if(!out.includes(n))out.push(n)});return out}
+function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stations:x.s||[],note:`Vecka ${pl.w.w}`,plan:x.key+"@"+set.date};
+  openSheet(`<div><span class="small">${pl.late?"Att ta igen · "+dayLbl(x.date):"Dagens rekommenderade pass"}</span><h2>${esc(x.t)}</h2></div>
+   <div class="facts3"><div><small>Tid</small><b>${x.m} min</b></div><div><small>Vecka</small><b>${pl.w.w}</b></div><div><small>Intensitet</small><b>${x.z?"Zon "+x.z.join("–"):"–"}</b></div></div>
+   ${PASS_WHAT[x.t]?`<p class="muted">${esc(PASS_WHAT[x.t])}</p>`:""}
+   ${its.length?`<div><span class="lbl">Övningar</span><div class="group" style="margin-top:8px">${its.map((n,i)=>`<div class="row"><span class="badge">${i+1}</span><div><h3>${esc(n)}</h3></div><span></span></div>`).join("")}</div></div>`:""}
+   <div class="card"><span class="lbl">Så här gör du</span><p style="margin:0;line-height:1.5">${esc(x.d)}</p>${x.z?`<span class="small">${esc(zoneTxt(x.z))}</span>`:""}</div>
+   <button class="pill block" id="pp-go">Starta passet</button>
+   <button class="pill ghost block" id="pp-log">Redan kört? Logga det</button>`,()=>{
+    $("#pp-go").onclick=()=>prefill(Object.assign({start:true},o));
+    $("#pp-log").onclick=()=>prefill(Object.assign({fresh:true},o))})}
 function renderGo(){const el=$("#h-go");if(!el)return;el.innerHTML=LIVE?"":`${goHtml()}`}
 function openHub(){if(LIVE){openLogger();return}openSheet(`<div><span class="small">Nytt pass</span><h2>Vad blir det i dag?</h2></div><div class="go-wrap">${goHtml()}</div>`)}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;const k=b.dataset.go;
   if(LIVE){openLogger();return}
-  if(k==="plan"){const pl=goPlan();if(pl){prefill({type:pl.s.t,min:pl.s.m,stations:pl.s.s||[],note:`Vecka ${pl.w.w}`,plan:pl.s.key+"@"+set.date,start:true});return}}
-  if(k==="now"||k==="plan")openLogger({forLive:true,kicker:"Träna nu"});else if(k==="prep")openLogger({forLive:true,kicker:"Förbered till gymmet"});else if(k==="after")openLogger({kicker:"Logga i efterhand"});else if(k==="pre")openPresets();else openSuggest()});
+  if(k==="plan"){const pl=goPlan();if(pl){openPlanPass(pl);return}}
+  if(k==="now"||k==="plan")openLogger({forLive:true,kicker:"Träna nu"});else if(k==="prep")openLogger({forLive:true,kicker:"Förbered till gymmet"});else if(k==="after")openLogger({kicker:"Logga i efterhand",fresh:!(LGDRAFT&&LGDRAFT.kicker==="Logga i efterhand")});else if(k==="pre")openPresets();else openSuggest()});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-prep-go],[data-prep-edit],[data-prep-del]");if(!b)return;const d=b.dataset,t=(set.tpls||[]).find(x=>x.id===(d.prepGo||d.prepEdit||d.prepDel));if(!t)return;
   if(d.prepGo){liveFrom(t.items,t.type,t.hint);return}
   if(d.prepEdit){buildFrom(t.items,t.type,{forLive:true,kicker:"Förberett pass"});LG.tplName=t.name;return}
@@ -2966,7 +2978,7 @@ function sugItem(id,count,val){const x=EX.find(e=>e.id===id),ny=(set.level||"mel
 const PRESETS=[
  {n:"Hela banan",f:"Båda",m:80,t:"Racesimulering",h:"Generalrepetition: 1 km löpning före varje station. Kör den några veckor före loppet.",it:()=>[sugItem("run",8,{m:1000})].concat(EX.filter(x=>x.st).map(x=>sugItem(x.id,1,exStd(x.id))))},
  {n:"Halva banan",f:"Båda",m:45,t:"Racesimulering",h:"1 km löpning före varje station, med de fyra första stationerna.",it:()=>[sugItem("run",4,{m:1000})].concat(["ski","push","pull","bbj"].map(i=>sugItem(i,1,exStd(i))))},
- {n:"Tunga ben",f:"Båda",m:40,t:"Kompromisslöpning",h:"Varva: 1 km löpning, lunges och wall balls. Vänjer benen vid slutet av loppet.",it:()=>[sugItem("run",3,{m:1000}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:50})]},
+ {n:"Tunga ben",f:"Båda",m:40,t:"Löpning och stationer",h:"Varva: 1 km löpning, lunges och wall balls. Vänjer benen vid slutet av loppet.",it:()=>[sugItem("run",3,{m:1000}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:50})]},
  {n:"Slädpass",f:"Styrka",m:35,t:"Styrka och stationer",h:"Korta tunga sträckor med full vila. Teknik före vikt.",it:()=>[sugItem("push",6,{m:25}),sugItem("pull",6,{m:25}),sugItem("farm",4,{m:50})]},
  {n:"Sista stationerna",f:"Styrka",m:35,t:"Styrka och stationer",h:"Lunges och wall balls när du redan är trött.",it:()=>[sugItem("farm",3,{m:100}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:30})]},
  {n:"Motor",f:"Kondition",m:40,t:"Motor (SkiErg/rodd)",h:"Jämnt hårt tempo med en minuts vila mellan sträckorna.",it:()=>[sugItem("ski",5,{m:500}),sugItem("row",5,{m:500})]},
@@ -3001,7 +3013,7 @@ function suggest(focus,min,v){const lvl=set.level||"mellan",ny=lvl==="ny",n=min<
   if(focus==="kondition"){const k=v%3;
     if(k===0){const it=[mk("run",a[n],{m:1000})];if(n)it.push(mk("row",n+1,{m:500}));return {name:"Löpintervaller",type:"Intervaller",hint:"Spring hårt men jämnt. Vila 90 sekunder mellan sträckorna.",items:it}}
     if(k===1){const it=[mk("ski",a[n],{m:500}),mk("row",a[n],{m:500})];if(n===2)it.push(mk("run",1,{m:2000}));return {name:"Maskinpass",type:"Motor (SkiErg/rodd)",hint:"Växla mellan maskinerna i jämnt hårt tempo. Vila en minut mellan.",items:it}}
-    const c=[3,4,5][n];return {name:"Löpning och stationer",type:"Kompromisslöpning",hint:"Varva: 1 km löpning och sedan en station, utan att vila länge.",items:[mk("run",c,{m:1000})].concat(stale.slice(0,2).map(x=>half(x.id,c)))}}
+    const c=[3,4,5][n];return {name:"Löpning och stationer",type:"Löpning och stationer",hint:"Varva: 1 km löpning och sedan en station, utan att vila länge.",items:[mk("run",c,{m:1000})].concat(stale.slice(0,2).map(x=>half(x.id,c)))}}
   return {name:"Kondition och styrka",type:"Styrka och stationer",hint:"Kör löpningen först, sedan styrkan och till sist stationerna.",items:[mk("run",[2,3,4][n],{m:1000})].concat(SP.slice(0,[2,3,3][n]).map(id=>lift(id,3))).concat(stale.slice(0,[1,2,3][n]).map(x=>half(x.id,2)))}}
 function openSuggest(){const st={f:set.sugF||"bada",m:set.sugM||45,v:LOGS.length};
   openSheet(`<div><span class="small">Förslag från VARV.</span><h2>Vad är du sugen på?</h2></div>
@@ -3022,7 +3034,7 @@ function openSuggest(){const st={f:set.sugF||"bada",m:set.sugM||45,v:LOGS.length
     draw()})}
 function openLogger(o){o=o||{};const ed=o.edit;
   if(LIVE&&!ed&&!o.date){LIVE.open=true;saveLive();renderLive();liveWake();return}
-  if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT&&!o.forLive){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
+  if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT&&!o.forLive&&!o.fresh&&(!o.kicker||o.kicker===LGDRAFT.kicker)){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
   LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:(o.date||today()),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
     rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};

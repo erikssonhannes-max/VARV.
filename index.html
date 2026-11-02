@@ -850,6 +850,8 @@ a.row{color:inherit;text-decoration:none}
 .fw-counts span{color:var(--muted);font-size:.86rem}
 .pv-more{display:flex;justify-content:center;gap:18px;flex-wrap:wrap}
 .pv-more .linkbtn{color:var(--muted)}
+.sim-lands{font-size:.95rem;color:var(--muted)}.sim-lands b{color:var(--ink);font-weight:600}
+.sim-land{margin-top:20px}
 /* Hem för den som redan är igång */
 .hello{display:none}
 .back .hero{text-align:left;padding-block:28px 14px}
@@ -931,6 +933,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="sechead"><h2>Ditt lopp</h2><a href="#plan" data-plan-edit>Ändra</a></div>
     <div class="tiles">
       <a class="tile wide tap" id="h-race" href="#plan"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
+      <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
       <a class="tile tap" href="#plan"><b id="h-target">1:30</b><span>måltid</span></a>
       <a class="tile tap" href="#plan"><b id="h-pace">–</b><span>snittempo per km</span></a>
     </div>
@@ -1230,7 +1233,7 @@ a.row{color:inherit;text-decoration:none}
 
 <script>
 /* ============ Felrapporter ============ */
-const APPVER="2026-11-02l";
+const APPVER="2026-11-02o";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3065,7 +3068,7 @@ function renderHome(){
     $("#h-greet").textContent=(h<5?"God natt":h<10?"God morgon":h<18?"Hej":"God kväll")+(n?", "+n:"")+"."}}
   try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
-  $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag kvar":"dagar kvar";
+  $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";
   $("#h-racedate").textContent=new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
   {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar av planen";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#plan")}
   $("#h-target").textContent=fmtHM(set.target);$("#h-pace").textContent=fmt(t.pace);
@@ -3354,14 +3357,21 @@ const simMine=id=>!!(SBUSER&&SIMGO.some(g=>g.race_id===id&&g.user_id===SBUSER.id
 const simFriends=id=>SIMGO.filter(g=>g.race_id===id&&(!SBUSER||g.user_id!==SBUSER.id)).map(g=>(NAMES[g.user_id]||{}).username).filter(Boolean);
 const simCount=(id,n)=>n===1?"1 anmäld":n+" anmälda";
 function simFriendTxt(id){const f=simFriends(id);if(!f.length)return "";return f.length===1?f[0]+" ska dit":f.length===2?f[0]+" och "+f[1]+" ska dit":f[0]+" och "+(f.length-1)+" till ska dit"}
+const simNextMine=()=>(SIMS||[]).filter(s=>s.day>=today()&&simMine(s.id)).sort((a,b)=>a.day.localeCompare(b.day))[0]||null;
+function renderHomeSim(){const el=$("#h-sim");if(!el)return;const x=simNextMine();el.hidden=!x;if(!x)return;const d=Math.round((evD(x.day)-evD(today()))/864e5);
+  $("#h-sim-d").textContent=d;$("#h-sim-t").textContent=d===1?"dag till simuleringen":"dagar till simuleringen";$("#h-sim-p").textContent=x.city+" · "+evD(x.day).toLocaleDateString("sv-SE",{day:"numeric",month:"long"})}
 function simHtml(){
   if(!SIMS)return "";
   const up=SIMS.filter(s=>s.day>=today());
   if(!up.length)return `<div class="card"><p class="small">Inga simuleringar är inlagda just nu.</p></div>`;
-  return `<div class="group">${up.map(s=>{const a=evD(s.day),n=num(SIMN[s.id]),fr=simFriendTxt(s.id);
-    return `<button class="row" data-sim="${esc(s.id)}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${esc([s.organizer,s.city].filter(Boolean).join(", "))}${simMine(s.id)?'<span class="evtag me">Anmäld</span>':""}</h3><p>${esc(s.title)}${fr?"<br>"+esc(fr):""}</p></div><span class="amt">${n?simCount(s.id,n):""}</span></button>`}).join("")}</div>`;
+  const row=s=>{const a=evD(s.day),n=num(SIMN[s.id]),fr=simFriendTxt(s.id);
+    return `<button class="row" data-sim="${esc(s.id)}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${esc([s.organizer,s.city].filter(Boolean).join(", "))}${simMine(s.id)?'<span class="evtag me">Anmäld</span>':""}</h3><p>${esc(s.title)}${fr?"<br>"+esc(fr):""}</p></div><span class="amt">${n?simCount(s.id,n):""}</span></button>`};
+  const lands=[...new Set(up.map(s=>s.country||"Övriga länder"))].sort((a,b)=>(a==="Sverige"?-1:b==="Sverige"?1:0)||(a==="Övriga länder"?1:b==="Övriga länder"?-1:a.localeCompare(b,"sv")));
+  const nx=simNextMine();let hero="";
+  if(nx){const a=evD(nx.day),d=Math.round((a-evD(today()))/864e5);hero=`<div class="evhero hot"><span class="k">Min simulering</span><h3>${esc(nx.city)}</h3><p>${a.getDate()} ${MON[a.getMonth()]} ${a.getFullYear()} · ${esc(nx.organizer||nx.title)}${nx.country?" · "+esc(nx.country):""}</p><div class="evbig">${d===0?"<b>I dag</b>":`<b>${d}</b><span>${d===1?"dag kvar":"dagar kvar"}</span>`}</div><button class="pill" data-sim="${esc(nx.id)}">Visa simuleringen</button></div>`}
+  return hero+`<div class="sim-lands"${nx?' style="margin-top:18px"':""}><b>${up.length} ${up.length===1?"simulering":"simuleringar"}</b> i ${esc(lands.filter(l=>l!=="Övriga länder").join(", ")||"flera länder")}</div>`+lands.map(l=>{const L=up.filter(s=>(s.country||"Övriga länder")===l);return `<div class="sechead sim-land"><h2>${esc(l)}</h2><span class="small">${L.length}</span></div><div class="group">${L.map(row).join("")}</div>`}).join("");
 }
-function renderSims(){const el=$("#ev-sim");if(el)el.innerHTML=simHtml();const b=document.querySelector('#tv-seg [data-tv="sim"]');if(b){const n=(SIMS||[]).filter(x=>x.day>=today()).length;b.textContent=n?`Simuleringar (${n})`:"Simuleringar"}}
+function renderSims(){const el=$("#ev-sim");if(el)el.innerHTML=simHtml();renderHomeSim();const b=document.querySelector('#tv-seg [data-tv="sim"]');if(b){const n=(SIMS||[]).filter(x=>x.day>=today()).length;b.textContent=n?`Simuleringar (${n})`:"Simuleringar"}}
 async function loadSims(force){
   const C=window.VARV_SUPABASE||{};if(!C.url||!C.anonKey||window.claude)return;
   if(!force&&Date.now()-SIMAT<60000)return;SIMAT=Date.now();
@@ -3385,9 +3395,9 @@ function openSim(id){const s=simById(id);if(!s)return;
   const a=evD(s.day),d=Math.round((a-evD(today()))/864e5),mine=simMine(id),n=num(SIMN[id]),fr=simFriendTxt(id);
   const tid=/^\d{2}:\d{2}/.test(s.start_time||"")?s.start_time.slice(0,5):"";
   const link=/^https:\/\//.test(s.url||"")?s.url:"";
-  openSheet(`<div><span class="small">${esc(s.organizer||"Simulations-race")}</span><h2>${esc(s.title)}</h2></div>
-   <div class="facts3"><div><small>Datum</small><b>${a.getDate()} ${MON[a.getMonth()]}${tid?" "+tid:""}</b></div><div><small>Kvar</small><b>${d===0?"I dag":d===1?"1 dag":d+" dagar"}</b></div><div><small>Plats</small><b>${esc(s.venue||s.city)}</b></div></div>
-   ${s.price?`<p class="small">Pris: ${esc(s.price)}. Betalas hos arrangören.</p>`:""}
+  openSheet(`<div><span class="small">${esc([s.organizer||"Simulering",s.country].filter(Boolean).join(" · "))}</span><h2>${esc(s.title)}</h2></div>
+   <div class="facts3"><div><small>Datum</small><b>${a.getDate()} ${MON[a.getMonth()]}${tid?" "+tid:""}</b></div><div><small>Kvar</small><b>${d===0?"I dag":d===1?"1 dag":d+" dagar"}</b></div><div><small>Plats</small><b>${esc(s.city+(s.country?", "+s.country:""))}</b></div></div>
+   ${s.venue?`<p class="small">${esc(s.venue)}</p>`:""}${s.price?`<p class="small">Pris: ${esc(s.price)}. Betalas hos arrangören.</p>`:""}
    ${s.info?`<p class="small" style="white-space:pre-line">${esc(s.info)}</p>`:""}
    ${n||fr?`<p class="small">${n?simCount(id,n)+" i VARV.":""}${n&&fr?" · ":""}${esc(fr)}</p>`:""}
    ${link?`<a class="pill block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Anmäl dig hos arrangören ↗</a>`:`<p class="small">Arrangören har inte lagt ut någon anmälan än.</p>`}
@@ -3399,7 +3409,7 @@ function openSim(id){const s=simById(id);if(!s)return;
         const q=mine?SB.from("sim_going").delete().eq("race_id",id).eq("user_id",SBUSER.id):SB.from("sim_going").insert({race_id:id});
         const {error}=await q;
         if(error&&error.code!=="23505"){toast("Kunde inte spara. Försök igen.");return}
-        await loadSims(true);closeSheet();toast(mine?"Markeringen är borttagen.":"Du är markerad som anmäld.");if(!mine)HAPTIC("success")})};
+        await loadSims(true);closeSheet();toast(mine?"Markeringen är borttagen.":"Simuleringen är nu din.");if(!mine)HAPTIC("success")})};
   });
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-sim]");if(b)openSim(b.dataset.sim)});
@@ -3409,7 +3419,7 @@ function renderEvents(){
   const hero=me&&me.e>=today()?me:up.find(e=>e.r==="norden")||up[0];
   let h="";
   if(hero){const d=evIn(hero);
-    h+=`<div class="evhero hot"><span class="k">${me===hero?"Mitt lopp":"Nästa i Norden"}</span><h3>${hero.c}</h3><p>${evRange(hero)}${hero.v?" · "+hero.v:""}</p>
+    h+=`<div class="evhero hot"><span class="k">${me===hero?"Mitt HYROX-lopp":"Nästa HYROX-lopp i Norden"}</span><h3>${hero.c}</h3><p>${evRange(hero)}${hero.v?" · "+hero.v:""}</p>
       <div class="evbig">${evLive(hero)?"<b>Pågår nu</b>":`<b>${d}</b><span>${d===1?"dag kvar":"dagar kvar"}</span>`}</div>
       <button class="pill" data-ev="${hero.i}">${me===hero?"Visa loppet":"Gör till mitt lopp"}</button></div>`}
     h+=`<div class="seg" id="ev-seg" role="group" aria-label="Region"><button data-r="norden" aria-pressed="${r==="norden"}">Norden</button><button data-r="europa" aria-pressed="${r==="europa"}">Europa</button><button data-r="varlden" aria-pressed="${r==="varlden"}">Världen</button></div>`;

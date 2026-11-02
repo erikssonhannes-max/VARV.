@@ -1625,20 +1625,17 @@ function renderCourse(){
   $("#course").innerHTML=h;
 }
 function openStation(i){
-  const s=S[i],t=planTimes(),pr=PRS[s.id];
+  const s=S[i],t=planTimes();
   openSheet(`<div class="art">${ART[s.id]}</div>
    <div class="st-nav"><div><span class="small">Station ${i+1} av 8</span><h2>${s.n}</h2></div><div class="st-arrows"><button type="button" id="st-prev" aria-label="Föregående station"${i?"":" disabled"}>‹</button><button type="button" id="st-next" aria-label="Nästa station"${i<7?"":" disabled"}>›</button></div></div>
    <div class="facts3"><div><small>Mängd</small><b>${s.q}</b></div><div><small>${set.fmt==="mixed"?"Mixed":set.k==="pro"?"Pro":"Open"}</small><b>${wval(s)}</b></div><div><small>Mål vid ${fmtHM(set.target)}</small><b>${fmt(t.st[i])}</b></div></div>
-   ${pr?`<p class="small">Ditt rekord: <b style="color:var(--ink)">${fmt(pr)}</b>, <span class="${pr<=t.st[i]?"ahead":"behind"}">${fmtD(pr-t.st[i])}</span> mot planen.</p>`:""}
    <div><h4>Teknik</h4><ul>${s.tech.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div><h4>Vanliga misstag</h4><ul>${s.miss.map(x=>`<li>${x}</li>`).join("")}</ul></div>
    <div><h4>Regler</h4><ul><li>${s.rule}</li>${wtarget(s)?`<li>Wall ball-${wtarget(s)}.</li>`:""}</ul></div>
    ${set.fmt!=="singel"?`<div><h4>I doubles</h4><ul><li>${s.dbl}</li></ul></div>`:""}
    <div><h4>Träna så här</h4><ul>${s.drill.map(x=>`<li><b>${x}</b></li>`).join("")}</ul></div>
-   <a class="pill ghost block" href="https://www.youtube.com/results?search_query=${encodeURIComponent("HYROX "+s.n+" technique")}" target="_blank" rel="noopener">Se teknikvideor ↗</a>
-   <div class="grid2"><button class="pill ghost" id="sh-pr">Sätt rekord</button><button class="pill" id="sh-log">Logga pass</button></div>`,
-  ()=>{$("#st-prev").onclick=()=>openStation(i-1);$("#st-next").onclick=()=>openStation(i+1);
-    $("#sh-log").onclick=()=>{closeSheet();prefill({type:"Styrka och stationer",min:45,stations:[s.n]})};$("#sh-pr").onclick=()=>{closeSheet();setTimeout(()=>openPR(s.id),330)}});
+   <a class="pill ghost block" href="https://www.youtube.com/results?search_query=${encodeURIComponent("HYROX "+s.n+" technique")}" target="_blank" rel="noopener">Se teknikvideor ↗</a>`,
+  ()=>{$("#st-prev").onclick=()=>openStation(i-1);$("#st-next").onclick=()=>openStation(i+1)});
 }
 document.addEventListener("click",e=>{const b=e.target.closest("button[data-st]");if(b)openStation(+b.dataset.st)});
 

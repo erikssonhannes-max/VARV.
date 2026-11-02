@@ -870,6 +870,12 @@ a.row{color:inherit;text-decoration:none}
 .pp-dots{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px}.pp-dots i{display:block;aspect-ratio:1;border-radius:50%;background:var(--seg)}.pp-dots i.on{background:var(--green)}
 .pp-t{font-size:1.05rem;font-weight:700;font-variant-numeric:tabular-nums}
 @media (prefers-reduced-motion:no-preference){.pp-bars i{animation:barIn 1.1s var(--spring) both;transform-origin:bottom;animation-delay:calc(var(--i)*40ms)}}
+.po-sh{width:44px;height:44px;border:0;background:none;color:var(--ink);display:grid;place-items:center;border-radius:12px;padding:0;cursor:pointer}.po-sh.solo{margin-left:auto}
+.sh-prev{width:100%;border-radius:16px;display:block}
+.po-img{cursor:zoom-in}
+.viewer{position:fixed;inset:0;z-index:210;background:rgba(0,0,0,var(--fade,1));display:grid;place-items:center;touch-action:none;opacity:0;transition:opacity .2s var(--ease)}.viewer.on{opacity:1}
+.vw-img{max-width:100vw;max-height:100vh;max-height:100dvh;object-fit:contain;user-select:none;-webkit-user-select:none;-webkit-user-drag:none;transition:transform .08s linear}
+.vw-x{position:absolute;top:calc(env(safe-area-inset-top,0px) + 12px);right:calc(env(safe-area-inset-right,0px) + 12px);width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.16);color:#fff;display:grid;place-items:center;cursor:pointer}
 /* Hitta vänner: svepkort */
 .deck{position:relative;height:310px;margin:4px 0 26px}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
@@ -2686,9 +2692,12 @@ async function loadPosts(uid){const {data:acts,error}=await SB.from("activity").
   return D}
 function postClick(e,D){
   const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return true}deletePost(+dp.dataset.delpost,D);return true}
+  const sh=e.target.closest("[data-share]");if(sh){sharePost(+sh.dataset.share,D);return true}
   const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return true}
   const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return true}
-  const md=e.target.closest(".po-media");if(md){const now=Date.now();if(md._t&&now-md._t<320){md._t=0;fdLike(+md.dataset.id,D,true)}else md._t=now;return true}
+  const md=e.target.closest(".po-media");if(md){const now=Date.now();
+    if(md._t&&now-md._t<320){md._t=0;clearTimeout(md._o);fdLike(+md.dataset.id,D,true)}
+    else{md._t=now;const im=md.querySelector(".po-img img")||(md.classList.contains("po-img")&&md.querySelector("img"));if(im){clearTimeout(md._o);md._o=setTimeout(()=>{md._t=0;openViewer(im.currentSrc||im.src,im.alt)},330)}}return true}
   const pr=e.target.closest("[data-prof]");if(pr){viewProfile(pr.dataset.prof);return true}return false}
 
 function friendBtns(uid,me){if(me)return "";
@@ -4585,6 +4594,62 @@ async function renderFeed(force){
     postClick(e,D)};
   const top=D.acts.find(a=>a.user_id!==SBUSER.id);if(top){set.frSeen=top.created_at;saveSet()}fdDot();frDot();
 }
+/* Dela ett inlägg utanför appen: bilden eller ett delningskort, via telefonens delningsmeny */
+const SHAREI=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>`;
+function shareText(a){const mine=a.user_id===SBUSER.id,who=mine?(MYPROF&&MYPROF.username)||"Jag":((NAMES[a.user_id]||{}).username||"Någon");
+  const verb=okPost(a.image_url)?"delade":a.kind==="lopp"?"tävlade":a.kind==="rekord"?"satte rekord":"tränade";
+  const what=[a.title&&!/^Delade (en bild|ett inlägg)$/.test(a.title)?a.title:"",a.detail].filter(Boolean).join(" · ");
+  return `${who} ${verb} på VARV.${what?": "+what:""}`}
+function wrapLines(x,t,maxW,maxL){const w=String(t).split(/\s+/),L=[];let cur="";w.forEach(s=>{const n=cur?cur+" "+s:s;if(x.measureText(n).width>maxW&&cur){L.push(cur);cur=s}else cur=n});if(cur)L.push(cur);
+  if(L.length>maxL){L.length=maxL;let l=L[maxL-1];while(l&&x.measureText(l+"…").width>maxW)l=l.slice(0,-1);L[maxL-1]=l+"…"}return L}
+async function shareCard(a){const W=1080,H=1350,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d"),F='-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Helvetica,Arial,sans-serif';
+  const bg=x.createLinearGradient(0,0,W,H);bg.addColorStop(0,"#16070c");bg.addColorStop(.55,"#0b0b0f");bg.addColorStop(1,"#120a06");x.fillStyle=bg;x.fillRect(0,0,W,H);
+  const gl=x.createRadialGradient(W*.8,H*.25,0,W*.8,H*.25,W*.7);gl.addColorStop(0,"rgba(255,45,85,.35)");gl.addColorStop(1,"rgba(255,45,85,0)");x.fillStyle=gl;x.fillRect(0,0,W,H);
+  // Banan som ett varv
+  x.strokeStyle="rgba(255,255,255,.08)";x.lineWidth=36;x.beginPath();x.ellipse(W/2,H*.47,W*.62,H*.3,-.12,0,Math.PI*2);x.stroke();
+  const hot=x.createLinearGradient(0,0,W,0);hot.addColorStop(0,"#ff2d55");hot.addColorStop(1,"#ff7a45");x.strokeStyle=hot;x.lineWidth=10;x.lineCap="round";x.beginPath();x.ellipse(W/2,H*.47,W*.62,H*.3,-.12,Math.PI*1.08,Math.PI*1.72);x.stroke();
+  // Märket
+  const lx=80,ly=80,s=104;try{const ic=new Image();ic.src="icons/varv-512.png";await ic.decode();x.save();x.beginPath();if(x.roundRect)x.roundRect(lx,ly,s,s,24);else x.rect(lx,ly,s,s);x.clip();x.drawImage(ic,lx,ly,s,s);x.restore()}catch(e){}
+  x.fillStyle="#fff";x.font=`800 64px ${F}`;x.textBaseline="middle";x.fillText("VARV.",lx+s+28,ly+s/2+2);
+  // Vem och vad
+  const mine=a.user_id===SBUSER.id,who=mine?(MYPROF&&MYPROF.username)||"":((NAMES[a.user_id]||{}).username||"");
+  const kind={lopp:"TÄVLADE",rekord:"NYTT REKORD",pass:"TRÄNADE"}[a.kind]||"TRÄNADE";
+  x.textBaseline="alphabetic";x.fillStyle="rgba(255,255,255,.62)";x.font=`600 40px ${F}`;x.fillText(`${who.toUpperCase()} · ${kind}`,80,H-520);
+  const big=fdBig(a);let y=H-350;
+  if(big){x.fillStyle="#fff";x.font=`800 ${big.length>6?200:240}px ${F}`;x.fillText(big,72,y);y+=100}else y=H-380;
+  x.fillStyle="#fff";x.font=`700 60px ${F}`;wrapLines(x,a.title||"",W-160,2).forEach((l,i)=>{x.fillText(l,80,y+i*70)});y+=70*Math.min(2,wrapLines(x,a.title||"",W-160,2).length);
+  x.fillStyle="rgba(255,255,255,.62)";x.font=`500 40px ${F}`;if(a.detail)wrapLines(x,a.detail,W-160,2).forEach((l,i)=>{x.fillText(l,80,y+i*52)});
+  x.fillStyle="rgba(255,255,255,.5)";x.font=`500 34px ${F}`;x.fillText("Träna smartare för Hyrox · varvtraining.com",80,H-70);
+  return await new Promise(res=>c.toBlob(res,"image/png"))}
+async function sharePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a)return;HAPTIC("light");
+  const text=shareText(a),url="https://varvtraining.com",pic=okPost(a.image_url);let blob=null;
+  try{blob=pic?await fetch(a.image_url,{mode:"cors"}).then(r=>r.ok?r.blob():null):await shareCard(a)}catch(e){blob=pic?null:await shareCard(a).catch(()=>null)}
+  const file=blob?new File([blob],`varv-${id}.${blob.type==="image/png"?"png":"jpg"}`,{type:blob.type||"image/jpeg"}):null;
+  try{if(file&&navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+"\n"+url,title:"VARV."});return}
+    if(navigator.share){await navigator.share({text,url,title:"VARV."});return}}catch(e){if(e&&e.name==="AbortError")return}
+  const prev=file?URL.createObjectURL(file):null;
+  openSheet(`<div><span class="small">Dela inlägg</span><h2>Dela</h2></div>${prev?`<img class="sh-prev" src="${prev}" alt="Bilden som delas">`:""}
+   <p class="small">${esc(text)}</p><div class="grid2">${prev?`<a class="pill" href="${prev}" download="${esc(file.name)}">Spara bild</a>`:"<span></span>"}<button class="pill ghost" id="sh-copy">Kopiera text</button></div>`,()=>{
+    $("#sh-copy").onclick=async()=>{try{await navigator.clipboard.writeText(text+"\n"+url);toast("Texten är kopierad")}catch(e){toast("Kunde inte kopiera")}}})}
+
+/* Bild i helskärm: nyp eller dubbeltryck för att zooma, svep nedåt för att stänga */
+function openViewer(src,alt){const ov=document.createElement("div");ov.className="viewer";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-label","Bild i helskärm");
+  ov.innerHTML=`<img class="vw-img" alt="${esc(alt||"")}" draggable="false"><button class="vw-x" aria-label="Stäng"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+  const im=ov.querySelector(".vw-img");im.src=src;document.body.appendChild(ov);document.body.style.overflow="hidden";requestAnimationFrame(()=>ov.classList.add("on"));
+  let z=1,tx=0,ty=0,dy=0,lastTap=0;const P=new Map();let last=null,moved=false;
+  const draw=()=>{im.style.transform=`translate(${tx}px,${ty+dy}px) scale(${z})`;ov.style.setProperty("--fade",z===1?Math.max(.25,1-Math.abs(dy)/400):1)};
+  const close=()=>{ov.classList.remove("on");document.body.style.overflow="";removeEventListener("keydown",key);setTimeout(()=>ov.remove(),RM()?0:220)};
+  const key=e=>{if(e.key==="Escape")close()};addEventListener("keydown",key);
+  ov.querySelector(".vw-x").onclick=e=>{e.stopPropagation();close()};
+  ov.addEventListener("pointerdown",e=>{if(e.target.closest(".vw-x"))return;ov.setPointerCapture(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});last=null;moved=false});
+  ov.addEventListener("pointermove",e=>{if(!P.has(e.pointerId))return;const pr=P.get(e.pointerId);P.set(e.pointerId,{x:e.clientX,y:e.clientY});const ddx=e.clientX-pr.x,ddy=e.clientY-pr.y;if(Math.abs(ddx)+Math.abs(ddy)>2)moved=true;
+    if(P.size===2){const [a,b]=[...P.values()],d=Math.hypot(a.x-b.x,a.y-b.y);if(last){z=Math.max(1,Math.min(5,z*d/last));if(z===1){tx=ty=0}}last=d;draw()}
+    else if(z>1){tx+=ddx;ty+=ddy;draw()}else{dy+=ddy;draw()}});
+  const up=e=>{P.delete(e.pointerId);last=null;if(P.size)return;
+    if(z===1&&Math.abs(dy)>110){close();return}if(z===1){dy=0;draw()}
+    if(!moved){const now=Date.now();if(now-lastTap<300){lastTap=0;z=z>1?1:2.5;tx=ty=0;draw()}else{lastTap=now;setTimeout(()=>{if(lastTap===now&&z===1&&!P.size)close()},310)}}};
+  ov.addEventListener("pointerup",up);ov.addEventListener("pointercancel",up);
+  setTimeout(()=>ov.querySelector(".vw-x").focus(),50)}
 /* Dela ett inlägg med bild */
 const POSTIMG="https://kwjnezbazyahyzsmpuyg.supabase.co/storage/v1/object/public/posts/";
 const okPost=u=>typeof u==="string"&&u.startsWith(POSTIMG)&&!/[\s"'<>]/.test(u);
@@ -4635,7 +4700,7 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
      <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${esc(a.detail)}</span>`:""}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
-   <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}</div>
+   <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
    ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${esc([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "))}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
 const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;

@@ -3331,11 +3331,36 @@ function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===
     const c=$("#dy-clear");if(c)c.onclick=()=>{saveRestDay(ds,null);closeSheet();toast("Markeringen är borttagen.")};
   })}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-wday]");if(b)openDay(b.dataset.wday)});
+/* Dagens hälsning: utgår från loppet, dagens pass, vad man har tränat och veckodagen.
+   Samma text hela dagen, så den inte byter varje gång man öppnar appen. */
+function dayMsg(h,n){
+  const td=today(),N=n?", "+n:"",pick=a=>a[[...td].reduce((x,c)=>x+c.charCodeAt(0),0)%a.length];
+  const race=!set.noRace&&set.date?daysLeft():null,pl=goPlan(),doneToday=LOGS.some(l=>l.date===td);
+  const last=LOGS.map(l=>l.date).filter(Boolean).sort().pop(),idle=last?Math.round((new Date(td+"T12:00:00")-new Date(last+"T12:00:00"))/864e5):null;
+  const streak=weekStats().streak,wd=new Date().getDay(),hasPlan=PLAN.length&&race!==null&&race>0;
+  if(race===0)return "Racedag. Lycka till"+N+"!";
+  if(race===1)return "I morgon är det dags"+N+".";
+  if(race>1&&race<=7)return `${race} dagar kvar. Nu laddar vi.`;
+  if(doneToday)return pick(["Snyggt jobbat i dag"+N+".","Dagens pass är klart. Bra"+N+".","Ett varv närmare målet"+N+"."]);
+  if(idle!==null&&idle>=10)return "Välkommen tillbaka"+N+".";
+  if(pl&&pl.late)return pick(["Ett pass att ta igen"+N+".","Du har ett pass kvar från i veckan.","Dags att ta igen ett pass"+N+"."]);
+  if(pl){if(h<5)return "Sent ute"+N+"? Passet väntar i morgon.";
+    if(h<10)return pick(["God morgon"+N+". Dags att köra.","God morgon"+N+". Dagens pass väntar.","Morgon"+N+". Benen är redo."]);
+    if(h<17)return pick(["Dags för dagens pass"+N+".","Passet väntar på dig"+N+".","Hinner du ett pass i dag"+N+"?"]);
+    return pick(["Ett pass kvar i dag"+N+".","Kvällspass"+N+"? Det är inte för sent.","God kväll"+N+". Passet väntar."])}
+  if(hasPlan)return pick(["Vilodag"+N+". Benen tackar dig.","Vila i dag. Formen byggs nu.","Vilodag. Sov gott i natt"+N+"."]);
+  if(streak>=3)return `${streak} veckor i rad${N}. Fortsätt så.`;
+  if(h<5)return "God natt"+N+".";
+  if(wd===1)return pick(["Ny vecka, nya varv"+N+".","Måndag. Sätt tonen för veckan."]);
+  if(wd===5)return pick(["Fredag. Avsluta veckan starkt.","Fredag"+N+". Ett pass innan helgen?"]);
+  if(wd===0||wd===6)return pick(["Helg"+N+". Perfekt för ett långpass.","Helg. Tid för ett längre pass?"]);
+  return (h<10?"God morgon":h<18?"Redo för ett pass":"God kväll")+N+(h>=10&&h<18?"?":".");
+}
 function renderHome(){try{renderGo()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-    $("#h-greet").textContent=(h<5?"God natt":h<10?"God morgon":h<18?"Hej":"God kväll")+(n?", "+n:"")+"."}}
+    $("#h-greet").textContent=dayMsg(h,n)}}
   try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";

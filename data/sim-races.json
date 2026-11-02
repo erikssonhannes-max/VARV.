@@ -2,6 +2,62 @@
   "updated": "2026-11-02",
   "races": [
     {
+      "key": "2026-11-07-actic-linkoping",
+      "title": "HYROX Race Simulation",
+      "organizer": "Actic",
+      "city": "Linköping",
+      "venue": "Actic Linköping Storgatan",
+      "day": "2026-11-07",
+      "start_time": "10:00",
+      "price": "400 kr, Actic-medlemmar 300 kr",
+      "info": "Full simulering med 1 km löpning utomhus och åtta stationer inomhus. Singel och team. Starttiderna är ungefärliga.",
+      "url": "https://www.actic.se/kurser/traningskurser/hyrox-race-simulation/?centerId=182",
+      "source": "https://www.actic.se/kurs/hyrox-race-simulation-herr-single-linkoping-storgatan-2026-11-07/",
+      "checked": "2026-11-02"
+    },
+    {
+      "key": "2026-11-14-ocr-factory-espoo",
+      "title": "HYROX Race",
+      "organizer": "OCR Factory",
+      "city": "Espoo",
+      "venue": "OCR Factory, Finnoonlaaksontie 7",
+      "day": "2026-11-14",
+      "start_time": "09:00",
+      "price": "79 € singel, 74 € per person i par",
+      "info": "Simulering inomhus. Par lördag 14 november, singel, Pro och lag söndag 15 november. Vikterna avviker något från det officiella loppet. Anmälan stänger 8 november.",
+      "url": "https://kauppa.ocrfactory.fi/cg/297/ninja-race-2022/",
+      "source": "https://ocrfactory.fi/fi-fi/article/app/hyrox-race/22025/",
+      "checked": "2026-11-02"
+    },
+    {
+      "key": "2027-02-19-tehotapahtumat-kuopio",
+      "title": "HYROX-kisasimulaatio",
+      "organizer": "TehoTapahtumat",
+      "city": "Kuopio",
+      "venue": "Tehdaskatu 8",
+      "day": "2027-02-19",
+      "start_time": "17:00",
+      "price": "69 € singel, 119 € par (förköpspris)",
+      "info": "Åtta löpsträckor på 1 km och åtta stationer. Singel och lag fredag 19 februari från 17:00, par lördag 20 februari från 10:00.",
+      "url": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
+      "source": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
+      "checked": "2026-11-02"
+    },
+    {
+      "key": "2027-03-13-fitnesslab-ringsted",
+      "title": "Hyrox Simulation - FitnessLab marts 2027",
+      "organizer": "FitnessLab",
+      "city": "Ringsted",
+      "venue": "FitnessLab, Industriparken 2",
+      "day": "2027-03-13",
+      "start_time": "09:00",
+      "price": "300 DKK singel, 550 DKK double + avgift",
+      "info": "Utomhus. Singel och double i Open och Pro samt mixed double. Anmälan stänger 1 mars.",
+      "url": "https://www.sportstiming.dk/event/20017",
+      "source": "https://www.sportstiming.dk/event/20017",
+      "checked": "2026-11-02"
+    },
+    {
       "key": "2027-04-24-vagnhallen-goteborg",
       "title": "HYROX Race Simulation",
       "organizer": "Vagnhallen",
@@ -13,6 +69,20 @@
       "info": "Doubles lördag 24 april, singel söndag 25 april. Priset höjs efter 31 december. Sista anmälningsdag 11 april.",
       "url": "https://vagnhallen.wondr.se/w_application/applicants/form_view/6abe5b12-3e14-4526-92dd-00390a100517",
       "source": "https://vagnhallen.se/hyrox/",
+      "checked": "2026-11-02"
+    },
+    {
+      "key": "2027-05-22-crossfit-frederikshavn-frederikshavn",
+      "title": "HYROX SIMULATION - CrossFit Frederikshavn - Forår 2027",
+      "organizer": "CrossFit Frederikshavn",
+      "city": "Frederikshavn",
+      "venue": "CrossFit Frederikshavn, Knivholtvej 1A",
+      "day": "2027-05-22",
+      "start_time": "09:00",
+      "price": "350 DKK per deltagare + avgift",
+      "info": "22-23 maj. Lördagen är slutsåld, platser finns kvar söndag 23 maj. Full och halv distans, solo och team. Anmälan stänger 10 maj.",
+      "url": "https://www.sportstiming.dk/event/19635",
+      "source": "https://www.sportstiming.dk/event/19635",
       "checked": "2026-11-02"
     },
     {

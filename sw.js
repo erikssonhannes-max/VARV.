@@ -6,7 +6,9 @@ self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.a
 self.addEventListener("fetch",e=>{
   const r=e.request;if(r.method!=="GET"||new URL(r.url).origin!==location.origin)return;
   // nätet först för sidan så att uppdateringar syns direkt, cache när nätet saknas
-  const net=fetch(r).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy))}return res});
+  // sidan och appens egna filer kontrolleras alltid mot servern, så att en ny version syns direkt och inte först efter webbläsarens cachetid
+  const fresh=r.mode==="navigate"||/\.(html|js|json|webmanifest)$|\/$/.test(new URL(r.url).pathname);
+  const net=(fresh?fetch(r.url,{cache:"no-cache",credentials:"same-origin"}):fetch(r)).then(res=>{if(res.ok){const copy=res.clone();caches.open(CACHE).then(c=>c.put(r,copy))}return res});
   const offline=()=>caches.match(r,{ignoreSearch:r.mode==="navigate"}).then(m=>m||caches.match("index.html"));
   // vid dåligt nät visas den sparade versionen efter 4 sekunder, medan nätet får fortsätta uppdatera i bakgrunden
   e.respondWith(new Promise(done=>{let over=false;const finish=x=>{if(!over){over=true;done(x)}};

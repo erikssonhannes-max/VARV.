@@ -98,6 +98,20 @@
       "url": "https://www.roxrace.com/r/hyrox-simulering-maj-2027",
       "source": "https://www.crossfithighway.se/hyrox-sim/",
       "checked": "2026-11-02"
+    },
+    {
+      "key": "2027-08-14-saga-ft-steinkjer",
+      "title": "HYROX SIM i Steinkjerhallen",
+      "organizer": "SAGA FT",
+      "city": "Steinkjer",
+      "venue": "Steinkjerhallen, Bogavegen 6",
+      "day": "2027-08-14",
+      "start_time": "09:30",
+      "price": "500 NOK singel, 1000 NOK double",
+      "info": "14-15 augusti. Full double lördag är fulltecknad med väntelista. Singel söndag från 10:00 och halv distans söndag från 13:30 är öppna. Anmälan är bindande efter 1 maj.",
+      "url": "https://sagaft.no/hyrox-sim-pamelding/",
+      "source": "https://sagaft.no/hyrox-sim-single/",
+      "checked": "2026-11-02"
     }
   ]
 }

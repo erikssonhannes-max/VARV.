@@ -3387,11 +3387,14 @@ function openOwnForm(id){const s=id?simOwn().find(x=>x.id===id):null;if(id&&!s)r
    <div class="field"><label for="so-org">Arrangör</label><input type="text" id="so-org" maxlength="80" value="${v("organizer")}"></div>
    <div class="field"><label for="so-venue">Lokal eller adress</label><input type="text" id="so-venue" maxlength="120" value="${v("venue")}"></div>
    <div class="field"><label for="so-price">Pris</label><input type="text" id="so-price" maxlength="40" value="${v("price")}"></div>
-   <div class="field"><label for="so-url">Länk till anmälan</label><input id="so-url" type="url" inputmode="url" autocapitalize="off" maxlength="300" value="${v("url")}" placeholder="https://"></div>
+   ${swRow("so-haslink","Länk till anmälan","Visar knappen Öppna anmälan på racet",!!(s&&s.url))}
+   <div class="field" id="so-urlf"${s&&s.url?"":" hidden"}><label for="so-url">Adress till anmälan</label><input id="so-url" type="url" inputmode="url" autocapitalize="off" maxlength="300" value="${v("url")}" placeholder="https://"></div>
    <div class="field"><label for="so-info">Anteckningar</label><textarea id="so-info" rows="3" maxlength="600" placeholder="Till exempel: klass, startgrupp, partner, vad du ska ta med">${v("info")}</textarea></div>
    <button class="pill block" id="so-save">${s?"Spara ändringarna":"Lägg till racet"}</button>
    ${s?'<button class="pill ghost block" id="so-del">Ta bort racet</button>':""}`,()=>{
-    $("#so-save").onclick=()=>{const g=k=>$("#so-"+k).value.trim(),title=g("title"),city=g("city"),day=g("day"),url=simUrl(g("url"));
+    const hl=$("#so-haslink");hl.onclick=()=>{const on=hl.getAttribute("aria-checked")!=="true";hl.setAttribute("aria-checked",on);$("#so-urlf").hidden=!on;if(on)$("#so-url").focus()};
+    $("#so-save").onclick=()=>{const g=k=>$("#so-"+k).value.trim(),title=g("title"),city=g("city"),day=g("day"),linkOn=hl.getAttribute("aria-checked")==="true",url=linkOn?simUrl(g("url")):"";
+      if(linkOn&&!g("url")){toast("Skriv adressen till anmälan, eller stäng av länken.");$("#so-url").focus();return}
       if(!title){toast("Skriv namnet på racet.");$("#so-title").focus();return}
       if(!city){toast("Skriv var racet går.");$("#so-city").focus();return}
       if(!/^\d{4}-\d{2}-\d{2}$/.test(day)){toast("Välj ett datum.");$("#so-day").focus();return}

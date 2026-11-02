@@ -983,7 +983,7 @@ a.row{color:inherit;text-decoration:none}
 @media (prefers-reduced-motion:reduce){.lg-ex{animation:none}}
 
 /* Vänner */
-.fr-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:calc(max(16px,env(safe-area-inset-right,0px)) + 46px);z-index:30;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--tile);text-decoration:none;box-shadow:0 0 0 2px var(--bg)}
+.fr-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:calc(max(16px,env(safe-area-inset-right,0px)) + 90px);z-index:30;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;color:var(--ink);background:var(--tile);text-decoration:none;box-shadow:0 0 0 2px var(--bg)}
 .fr-btn.on{background:var(--ink);color:var(--bg)}
 .fr-btn.new::after{content:"";position:absolute;top:1px;right:1px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--bg)}
 .fr-lb{grid-template-columns:22px minmax(0,1fr) auto}
@@ -1324,9 +1324,8 @@ a.row{color:inherit;text-decoration:none}
 <section class="view" id="v-feed">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Feed</span><h1>Flödet.</h1><p>Ditt och dina vänners senaste träning. Ge en tumme upp när någon kämpar.</p></div>
-    <div class="seg" id="fd-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-fd="flow">Flöde</button><button data-fd="find">Hitta vänner</button><button data-fd="top">Topplista</button></div>
+    <div class="seg" id="fd-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-fd="flow">Flöde</button><button data-fd="top">Topplista</button></div>
     <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
-    <div class="fdv" data-v="find" hidden><div id="fd-find"></div></div>
     <div class="fdv" data-v="top" hidden><div id="fr-body"></div></div>
   </div>
 </section>
@@ -1452,8 +1451,12 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Följer</span><h1>Tillsammans.</h1><p class="small">Topplistor, era lopp och vad de du följer har tränat.</p></div>
-    
+    <div class="pagehead"><span class="eyebrow">Vänner</span><h1>Dina vänner.</h1><p>De du följer, dina följare och nya att träna med.</p></div>
+    <div id="vn-req"></div>
+    <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="following">Följer</button><button data-vn="followers">Följare</button><button data-vn="find">Hitta vänner</button></div>
+    <div class="vnv" data-v="following" id="vn-following"></div>
+    <div class="vnv" data-v="followers" id="vn-followers" hidden></div>
+    <div class="vnv" data-v="find" hidden><div id="fd-find"></div></div>
   </div>
 </section>
 <!-- ================= NOTISER ================= -->
@@ -1536,7 +1539,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="tr-foot"><button class="pill ghost" id="tr-back">Tillbaka</button><button class="pill" id="tr-next">Nästa</button></div>
   </div></div>
 <a class="nt-btn" id="nt-btn" href="#notiser" aria-label="Notiser" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg><span class="nt-count" hidden></span></a>
-<a class="fr-btn" id="fr-btn" href="#feed" aria-label="Följer" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
+<a class="fr-btn" id="fr-btn" href="#vanner" aria-label="Vänner" hidden><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.4"/><path d="M2.8 19.5c.6-3.3 3.2-5.3 6.2-5.3s5.6 2 6.2 5.3"/><path d="M15.6 4.9a3.3 3.3 0 0 1 0 6.3M17.8 14.6c1.8.7 3 2.4 3.4 4.9"/></svg></a>
 <a class="logo-btn" id="logo-btn" href="#hem" aria-label="Till startsidan"></a>
 <a class="avatar-btn" id="avatar-btn" href="#profil" aria-label="Din profil"><span>V</span></a>
 
@@ -2931,7 +2934,7 @@ async function renderComm(){
   ${LBV==="friends"&&ids.length<2?`<div class="card" style="margin-top:10px"><p class="small">Lägg till vänner genom att trycka på dem under Alla. Ni ser sedan varandras vecka här.</p></div>`:""}
   <p class="small" style="margin:10px 2px 0">Varv denna vecka. Listan börjar om på måndag.</p>
   ${set.partner?`<div class="sechead" style="margin-top:24px"><h2 style="font-size:1.1rem">Du och din partner</h2><button class="linkbtn" data-person="${esc(set.partner)}">Ändra</button></div>${P?`<div class="duo">${col("Du",me)}${col(pname(set.partner),P)}</div>`:`<div class="card"><p class="small">Din partner syns här när hen har slagit på Visa mig i topplistan.</p></div>`}`:""}
-  <div class="card" style="margin-top:14px"><button class="switchrow" id="share-tg" role="switch" aria-checked="${!!set.share}"><span><b>Visa mig i topplistan</b><small>Andra ser ditt namn, dina varv och pass denna vecka, din nivå, dina utmärkelser, din svit och ditt rekord. Inget annat delas.</small></span><span class="sw"></span></button></div>`;
+  <div class="card" style="margin-top:14px"><button type="button" class="switchrow" id="share-tg" role="switch" aria-checked="${!!set.share}"><span><b>Visa mig i topplistan</b><small>Andra ser ditt namn, dina varv och pass denna vecka, din nivå, dina utmärkelser, din svit och ditt rekord. Inget annat delas.</small></span><span class="sw"></span></button></div>`;
   $("#share-tg").onclick=()=>{set.share=!set.share;saveSet();renderComm();syncBoard();toast(set.share?"Du syns nu i topplistan":"Du är borttagen från topplistan")};
   $("#lb-seg").onclick=e=>{const b=e.target.closest("[data-lb]");if(!b)return;LBV=b.dataset.lb;renderComm()};
 }
@@ -4349,7 +4352,7 @@ let MEINFO=null;
 function pName(){return set.name||(MEINFO&&MEINFO.name)||""}
 function avatarHtml(){return MEINFO&&MEINFO.avatarUrl&&okImg(MEINFO.avatarUrl)&&(!set.name||MYPROF)?`<img src="${esc(MEINFO.avatarUrl)}" alt="">`:`<span>${esc(initials(pName()||(MYPROF&&MYPROF.username)||""))}</span>`}
 function renderAvatar(){const a=$("#avatar-btn");if(a)a.innerHTML=avatarHtml()}
-function swRow(id,title,sub,on){return `<button class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
+function swRow(id,title,sub,on){return `<button type="button" class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
 function renderProfile(){
   if(!set.since){set.since=today();saveSet()}
   const st=weekStats(),hrs=Math.round(st.total/6)/10;
@@ -4518,7 +4521,7 @@ async function renderFriends(force){
   $("#fr-add2").onclick=openAddFriend;$("#fr-link2").onclick=shareFriendLink;$("#fr-qr2").onclick=showFriendQR;
   const top=D.acts[0];if(top){set.frSeen=top.created_at;saveSet()}frDot();
 }
-function frDot(){try{fdDot()}catch(e){}const b=$("#fr-btn");if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
+function frDot(){try{fdDot()}catch(e){}const b=null;if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
 async function frCheck(){try{if(!SB||!SBUSER||!FRIENDS.length)return;await loadFriendData(true);frDot()}catch(e){}}
 
 /* Hälsning på Hem: efter tid på dygnet och om man tränat i dag */
@@ -4535,6 +4538,26 @@ function greetLine(h,n){const done=LOGS.some(l=>l&&l.date===today());
   const k=done?(h>=20||h<5?"doneLate":"done"):h>=5&&h<9?"early":h<11&&h>=9?"morning":h>=11&&h<14?"lunch":h>=14&&h<17?"after":h>=17&&h<22?"evening":"night";
   const L=GREET[k],seed=[...today()+k].reduce((a,c)=>a+c.charCodeAt(0),0),t=L[seed%L.length];
   return n?`${t}, ${n}.`:`${t}.`}
+/* ============ Vänner ============ */
+function setVnView(v){set.vnsub=v;$$("#v-vanner .vnv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#vn-seg [data-vn]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.vn===v))}
+$("#vn-seg").onclick=e=>{const b=e.target.closest("[data-vn]");if(!b)return;setVnView(b.dataset.vn);saveSet();renderVanner()};
+document.addEventListener("click",e=>{const a=e.target.closest("[data-vn-go]");if(a){set.vnsub=a.dataset.vnGo;saveSet();if(location.hash==="#vanner")renderVanner()}});
+async function renderVanner(){const v=["following","followers","find"].includes(set.vnsub)?set.vnsub:"following";setVnView(v);
+  const req=$("#vn-req"),seg=$("#vn-seg");
+  if(!SB||!SBUSER){req.innerHTML=`<div class="card"><h3>Träna ihop med andra</h3><p class="small">Logga in för att följa vänner, se deras pass och hitta nya att träna med.</p><button class="pill block" id="vn-login">Logga in</button></div>`;seg.hidden=true;$$("#v-vanner .vnv").forEach(x=>x.hidden=true);$("#vn-login").onclick=()=>openAuth();return}
+  seg.hidden=false;
+  $$("#vn-seg [data-vn]").forEach(b=>{const n=b.dataset.vn==="following"?FRIENDS.length:b.dataset.vn==="followers"?FOLLOWERS.length:null;b.textContent=(b.dataset.vn==="following"?"Följer":b.dataset.vn==="followers"?"Följare":"Hitta vänner")+(n!=null?` (${n})`:"")});
+  const need=[...new Set(FRIENDS.concat(FOLLOWERS,FRQ_IN.map(r=>r.from_user)))].filter(id=>!NAMES[id]);
+  if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
+  if(location.hash!=="#vanner")return;
+  req.innerHTML=FRQ_IN.length?`<div class="sechead" style="margin-top:0"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div><div class="group" style="margin-bottom:18px">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req">${avImg(p.avatar_url,p.username)}<div data-prof="${esc(r.from_user)}" role="button" tabindex="0"><h3>${handleHtml(p)}</h3><p>Förfrågan · ${agoTxt(r.created_at)}</p></div><div class="nt-acts"><button class="pill nt-yes" data-yes="${esc(r.from_user)}">Godkänn</button><button class="pill ghost nt-no" data-no="${esc(r.from_user)}" aria-label="Avböj ${esc(p.username)}">Avböj</button></div></div>`}).join("")}</div>`:"";
+  req.onclick=async e=>{const b=e.target.closest("button");if(b&&!b.disabled){if(b.dataset.yes){b.disabled=true;await answerFriend(b.dataset.yes,true);renderVanner();return}if(b.dataset.no){b.disabled=true;await answerFriend(b.dataset.no,false);renderVanner();return}}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
+  const both=id=>FRIENDS.includes(id)&&FOLLOWERS.includes(id);
+  const list=(ids,empty,sub)=>ids.length?personRows(ids,sub):`<div class="card"><p class="small">${empty}</p><button class="pill block" data-vn-find style="margin-top:12px">Hitta vänner</button></div>`;
+  $("#vn-following").innerHTML=list(FRIENDS,"Du följer ingen än. Hitta någon att träna med.",id=>id===(MYPROF&&MYPROF.partner_id)?"Din Doubles-partner":both(id)?"Ni följer varandra":"");
+  $("#vn-followers").innerHTML=list(FOLLOWERS,"Ingen följer dig än. Dela din profil så hittar andra dig.",id=>FRIENDS.includes(id)?"Ni följer varandra":"Följ tillbaka från profilen");
+  $$("#vn-following,#vn-followers").forEach(el=>el.onclick=e=>{if(e.target.closest("[data-vn-find]")){setVnView("find");saveSet();renderVanner();return}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)});
+  if(v==="find")renderFind()}
 /* ============ Feed: flöde, hitta vänner och topplista ============ */
 const FD_KIND={lopp:"Tävlade",rekord:"Nytt rekord",pass:"Tränade"};
 let FSUG=null;
@@ -4544,19 +4567,18 @@ function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FR
 function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
 function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p class="small">Logga in för att följa andra, se deras pass och ge tumme upp.</p><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
 async function renderFeed(force){
-  setFdView(["flow","find","top"].includes(set.fdsub)?set.fdsub:"flow");
+  setFdView(["flow","top"].includes(set.fdsub)?set.fdsub:"flow");
   const v=set.fdsub;
   if(v==="top"){renderFriends(force);return}
-  const el=v==="find"?$("#fd-find"):$("#fd-flow");if(!el)return;
+  const el=$("#fd-flow");if(!el)return;
   if(!SB){el.innerHTML=`<div class="card"><p class="small">Flödet kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
-  if(!SBUSER){fdLogin(el,v==="find"?"Hitta vänner":"Ditt träningsflöde");return}
+  if(!SBUSER){fdLogin(el,"Ditt träningsflöde");return}
   if(!MYPROF){el.innerHTML=`<div class="card"><p class="small">Profiler är inte uppsatta än.</p></div>`;return}
-  if(v==="find"){renderFind(force);return}
   if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar flödet…</p></div>`;
   const D=await loadFriendData(force);if(!D||location.hash!=="#feed"||set.fdsub!=="flow")return;
   if(!D.actOk){el.innerHTML=`<div class="card"><p class="small">Flödet är inte uppsatt än.</p></div>`;return}
   const posts=D.acts.filter(a=>a.user_id===SBUSER.id||!BLOCKED.includes(a.user_id));
-  const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att fylla flödet</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><button class="pill block" data-fd-go="find">Hitta vänner</button></div>`:"";
+  const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att fylla flödet</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><a class="pill block" href="#vanner" data-vn-go="find">Hitta vänner</a></div>`:"";
   el.innerHTML=`<button class="pill block fd-new" data-fd-new>${CAMI}Dela ett inlägg</button>`+empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
   el.onclick=e=>{if(e.target.closest("[data-fd-new]")){openComposer();return}
     const g=e.target.closest("[data-fd-go]");if(g){setFdView(g.dataset.fd||g.dataset.fdGo);saveSet();renderFeed();return}
@@ -4655,7 +4677,7 @@ function fdPop(art){const p=art.querySelector(".po-pop");if(!p)return;p.classLis
 /* Hitta vänner: förslag som man sveper */
 async function renderFind(force){const el=$("#fd-find");if(!el)return;
   if(!FSUG||force){if(!FSUG)el.innerHTML=`<div class="card"><p class="small">Letar efter förslag…</p></div>`;const {data,error}=await SB.rpc("varv_suggest");FSUG=error?[]:(data||[]);FSUG.forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)})}
-  if(location.hash!=="#feed"||set.fdsub!=="find")return;
+  if(location.hash!=="#vanner"||set.vnsub!=="find")return;
   const skip=set.sugSkip||[],waiting=FRQ_OUT.map(r=>r.to_user);
   const list=FSUG.filter(p=>!FRIENDS.includes(p.user_id)&&!waiting.includes(p.user_id)&&!skip.includes(p.user_id)&&!BLOCKED.includes(p.user_id));
   const deck=list.slice(0,3).reverse();
@@ -5054,7 +5076,7 @@ async function answerFriend(uid,yes){
 async function removeFriend(uid){let {error}=await SB.rpc("varv_unfollow",{p_other:uid});if(error){toast(sbErr(error));return false}
   if(MYPROF&&MYPROF.partner_id===uid)MYPROF.partner_id=null;await loadFriends();await loadRequests();FRC=null;refreshSocialViews();return true}
 async function cancelRequest(uid){await SB.from("friend_requests").delete().eq("from_user",SBUSER.id).eq("to_user",uid);await loadRequests();refreshSocialViews();toast("Förfrågan är återkallad.")}
-function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#feed")renderFeed(true);if(h==="#notiser")renderNotiser();notiBadge()}
+function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#vanner")renderVanner();if(h==="#feed")renderFeed(true);if(h==="#notiser")renderNotiser();notiBadge()}
 
 /* ============ Notiscenter ============ */
 let NOTIS=[],NOTIS_OK=true;
@@ -5065,7 +5087,7 @@ async function loadNotis(){if(!SB||!SBUSER)return;
   if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   notiBadge();if(location.hash==="#notiser")renderNotiser();
 }
-function notiBadge(){const b=$("#nt-btn");if(!b)return;b.hidden=!SBUSER||location.hash==="#profil";
+function notiBadge(){{const f=$("#fr-btn");if(f){f.hidden=!SBUSER||location.hash==="#profil";f.classList.toggle("new",FRQ_IN.length>0&&location.hash!=="#vanner")}}const b=$("#nt-btn");if(!b)return;b.hidden=!SBUSER||location.hash==="#profil";
   const n=Math.max(NOTIS.filter(x=>!x.read_at).length,FRQ_IN.length);const c=b.querySelector(".nt-count");
   c.textContent=n>9?"9+":n;c.hidden=!n||location.hash==="#notiser";appBadge(n);b.setAttribute("aria-label",n?`Notiser, ${n} nya`:"Notiser");b.classList.toggle("on",location.hash==="#notiser")}
 const NT_ICON={follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"};
@@ -5113,15 +5135,15 @@ function appBadge(n){try{if("setAppBadge" in navigator){n?navigator.setAppBadge(
     if(dy>120||fast){sh.style.transform="";closeSheet()}else sh.style.transform="";y0=null})})();
 
 /* ============ Routing ============ */
-const VIEWS=["hem","stationer","feed","race","logg","notiser","profil"];
+const VIEWS=["hem","stationer","feed","race","logg","vanner","notiser","profil"];
 function route(){
-  {const h=location.hash.slice(1);if(h==="vanner"||h==="plan"){history.replaceState(null,"","#feed")}}
+  {const h=location.hash.slice(1);if(h==="plan"){history.replaceState(null,"","#feed")}}
   const raw=location.hash.slice(1),person=/^u\/[\w-]{1,64}$/.test(raw);
   const v=person?"person":VIEWS.includes(raw)?raw:"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
-  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=true;if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
+  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=!SBUSER||v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="vanner")renderVanner();if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
   if(v==="logg"){drawRings(true);renderLog()}
 }
@@ -5143,7 +5165,7 @@ if(!window.claude)initSupabase();
 (async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false;renderGarmin()}}catch(e){}})();
 if(!window.claude&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
 if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
-renderComm();renderGarmin();renderAvatar();renderEvents();setFdView(["flow","find","top"].includes(set.fdsub)?set.fdsub:"flow");
+renderComm();renderGarmin();renderAvatar();renderEvents();setFdView(["flow","top"].includes(set.fdsub)?set.fdsub:"flow");
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
   else if(set.onboarded&&passWaiting())setTimeout(openSharedPass,wait);

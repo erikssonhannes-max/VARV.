@@ -3990,6 +3990,13 @@ function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs(
 /* Grafer: radar, linje och staplar som SVG i appens färger */
 const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
 const stShort=s=>({bbj:"Burpee\nBroad Jumps",farm:"Farmers\nCarry",lunge:"Sandbag\nLunges"})[s.id]||s.n;
+/* Referenstider per station i sekunder: snitt Open herr, snitt Open dam och elit (mitten av elitspannet). Elit för damer räknas fram med samma skillnad som i Open. */
+const ST_REF={ski:[272,293,225],push:[151,159,122],pull:[217,285,140],bbj:[358,458,240],row:[267,309,225],farm:[110,136,85],lunge:[344,317,180],wall:[351,377,240]};
+function stRef(id){const r=ST_REF[id],w=set.g==="w",o=w?r[1]:r[0];return {open:o,elite:w?Math.round(r[2]*r[1]/r[0]):r[2]}}
+/* Personligt rekord på en station: bästa av rekordlistan och sträckorna i loggade lopp. */
+function stPR(i){const s=S[i];let b=+PRS[s.id]>0?+PRS[s.id]:0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1];if(t>0&&(!b||t<b))b=t});return b||null}
+/* Hur långt ut rekordet når: snittet i Open ligger på mitten, elit i ytterkanten. */
+function stReach(i){const t=stPR(i);if(!t)return 0;const r=stRef(S[i].id);return Math.max(.04,Math.min(1.06,.5+.5*(r.open-t)/(r.open-r.elite)))}
 function radarSvg(lab,ser,aria,goal){const n=lab.length,R=92,cx=160,cy=132,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]};
   const poly=(v,c)=>`<polygon class="${c}" points="${v.map((r,i)=>pt(i,Math.max(.04,Math.min(1,r))).map(x=>x.toFixed(1)).join(",")).join(" ")}"/>`;
   const rings=[.25,.5,.75,1].map(r=>poly(lab.map(()=>r),r===1&&goal?"g goal":"g")).join("");
@@ -4129,12 +4136,12 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
   const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
   const stv=stVolume(Lp),stT=stTarget(per),HY=heatYear();
   const stRows=S.map((s,i)=>{const sp=hasT?+lastR.race.sp[2*i+1]:null,tg=hasT?+lastR.race.tg[2*i+1]:null,d=hasT?sp-tg:null;
-    return `<button class="row st-row" data-st="${i}"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3><p>${cnt[i]} pass · ${Math.min(999,Math.round(stv[i]/stT*100))} % av målet${hasT?` · senaste loppet ${fmt(sp)}`:""}</p></div><span class="st-r">${hasT?(Math.round(d)===0?`<b class="st-eq">±0:00</b>`:`<b class="${d<0?"ahead":"behind"}">${fmtD(d)}</b>`):""}<span class="chev">›</span></span></button>`}).join("");
+    return `<button class="row st-row" data-st="${i}"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3><p>${stPR(i)?`Rekord ${fmt(stPR(i))}`:"Inget rekord än"} · elit ${fmt(stRef(s.id).elite)} · ${cnt[i]} pass</p></div><span class="st-r">${hasT?(Math.round(d)===0?`<b class="st-eq">±0:00</b>`:`<b class="${d<0?"ahead":"behind"}">${fmtD(d)}</b>`):""}<span class="chev">›</span></span></button>`}).join("");
   const hb=(rows,max,unit)=>`<div class="card hbars">${rows.map(([k,m],i)=>`<div class="hb"><span>${esc(k)}</span><div class="tr"><i style="width:${Math.round(m/max*100)}%;--i:${i}"></i></div><b>${Math.round(m)}${unit}</b></div>`).join("")}</div>`;
   el.innerHTML=`<div class="sechead"><h2>Stationerna</h2><span class="small">I loppets ordning</span></div>
-   <div class="card">${radarSvg(S.map(stShort),[...(rv?[{v:S.map(()=>.5),c:"ref"},{v:rv,c:"you"}]:[]),{v:stv.map(v=>Math.min(1.08,v/stT)),c:"you s"}],"De åtta stationerna i ett Hyrox-lopp: hur mycket du tränat dem mot målet för din nivå och hur du presterade i ditt senaste lopp",true)}
-   <div class="rd-leg"><span><i class="g"></i>Träning, ${per2.toLowerCase()}</span><span><i class="gl"></i>Mål för din nivå</span>${rv?`<span><i class="a"></i>Senaste loppet, ${esc(fmtDM(lastR.date))}</span><span><i class="d"></i>Måltid</span>`:""}</div>
-   <p class="small">Ytterkanten är målet för ${esc({ny:"dig som är ny",elit:"elitnivå"}[set.level]||"din nivå")}: ungefär ${String(ST_RATE[set.level]||ST_RATE.mellan).replace(".",",")} gånger loppets mängd per station och vecka, till exempel ${Math.round((ST_RATE[set.level]||ST_RATE.mellan)*1000)} m SkiErg. ${stv.every(v=>v>=stT)?"Du når målet på alla stationer.":stv.some(v=>v>=stT)?"Du når målet på "+stv.filter(v=>v>=stT).length+" av 8 stationer.":"Ingen station är vid målet än."}${rv?" Den streckade ringen är din måltid i loppet, och längre ut är snabbare.":""} Tryck på en station nedan för teknik och övningar.</p></div>
+   <div class="card">${radarSvg(S.map((s,i)=>stShort(s)+"\n"+(stPR(i)?fmt(stPR(i)):"–")),[{v:S.map(()=>.5),c:"ref"},{v:S.map((_,i)=>stReach(i)),c:"you"}],`De åtta stationerna: dina personliga rekord jämfört med snittet i Open ${set.g==="w"?"dam":"herr"} och elitens tider`,true)}
+   <div class="rd-leg"><span><i class="a"></i>Ditt rekord</span><span><i class="d"></i>Snitt Open ${set.g==="w"?"dam":"herr"}</span><span><i class="gl"></i>Elit</span></div>
+   <p class="small">Ytterkanten är elitens tider och den streckade ringen är snittet i Open ${set.g==="w"?"dam":"herr"}. Ditt personliga rekord på varje station avgör hur långt ut du når, så det försvinner aldrig. ${S.some((_,i)=>stPR(i))?"":"Lägg till rekord eller logga en hel station, så fylls diagrammet. "}Tryck på en station nedan för teknik och övningar.</p></div>
    <div class="group st-list">${stRows}</div>
    <div class="sechead"><h2>Aktivitet</h2><span class="small">${HY.n} pass senaste året</span></div>
    <div class="card hy-card">${HY.html}</div>

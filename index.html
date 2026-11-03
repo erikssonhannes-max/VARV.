@@ -901,6 +901,10 @@ a.row{color:inherit;text-decoration:none}
 .hk-row b{display:block;font-weight:600}.hk-row small{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
 .hk-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.hk-acts .pill{min-height:40px;padding:9px 16px;font-size:.92rem}
 .hk-fill{display:flex;gap:8px}.hk-fill svg{color:#ff2d55}
+/* Dra för att uppdatera flödet */
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:43;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--card);color:var(--accent);display:grid;place-items:center;box-shadow:0 8px 24px -10px rgba(0,0,0,.45);opacity:0;transform:translateY(-60px);pointer-events:none}
+#ptr.go{transition:transform .25s var(--spring),opacity .2s}#ptr.spin svg{animation:ptrSpin .8s linear infinite}
+@keyframes ptrSpin{to{transform:rotate(360deg)}}
 /* Statistik */
 .hy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:start}
 .hy-days{display:grid;grid-template-rows:16px repeat(7,11px);row-gap:3px;font-size:.66rem;color:var(--muted);line-height:11px}
@@ -1564,6 +1568,7 @@ a.row{color:inherit;text-decoration:none}
 </section>
 </main>
 <div id="live" role="dialog" aria-label="Pågående pass" hidden></div>
+<div id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg></div>
 <button type="button" id="lv-bar" hidden><span class="lv-dot" aria-hidden="true"></span><span id="lv-bar-name">Pass pågår</span><b id="lv-bar-time">0:00</b><span class="chev">›</span></button>
 <div id="tour" hidden><div class="tr-block"></div><div class="tr-hole none"></div>
   <div class="tr-card" role="dialog" aria-modal="true" aria-labelledby="tr-h" aria-describedby="tr-p">
@@ -4681,6 +4686,17 @@ $("#fd-seg").onclick=e=>{const b=e.target.closest("[data-fd]");if(!b)return;setF
 function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FRC.acts.find(a=>SBUSER&&a.user_id!==SBUSER.id);t.hidden=!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed")}
 function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
 function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p class="small">Logga in för att följa andra, se deras pass och ge tumme upp.</p><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
+/* Dra nedåt högst upp i flödet för att hämta nya inlägg. */
+(()=>{let y0=null,dy=0,busyR=false;const el=()=>$("#ptr"),MAX=90,TRIG=64;
+  const ok=()=>location.hash==="#feed"&&set.fdsub!=="top"&&$("#sheet").hidden&&!busyR&&(window.scrollY||document.documentElement.scrollTop)<=0;
+  const show=d=>{const p=el();if(!p)return;const k=Math.min(MAX,d*.5);p.classList.remove("go");p.style.opacity=String(Math.min(1,k/TRIG));p.style.transform=`translateY(${k-30}px) rotate(${k*4}deg)`};
+  const hide=()=>{const p=el();if(!p)return;p.classList.add("go");p.classList.remove("spin");p.style.opacity="0";p.style.transform="translateY(-60px)"};
+  document.addEventListener("touchstart",e=>{y0=ok()&&e.touches.length===1?e.touches[0].clientY:null;dy=0},{passive:true});
+  document.addEventListener("touchmove",e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<-8||(window.scrollY||0)>0){y0=null;hide();return}if(dy>0)show(dy)},{passive:true});
+  document.addEventListener("touchend",async()=>{if(y0===null)return;y0=null;
+    if(dy*.5<TRIG){hide();return}
+    const p=el();busyR=true;p.classList.add("go","spin");p.style.opacity="1";p.style.transform="translateY(34px)";HAPTIC("light");
+    try{FRC=null;await renderFeed(true)}catch(x){}finally{busyR=false;setTimeout(hide,250)}},{passive:true});})();
 async function renderFeed(force){
   setFdView(["flow","top"].includes(set.fdsub)?set.fdsub:"flow");
   const v=set.fdsub;

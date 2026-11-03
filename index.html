@@ -422,6 +422,32 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .howto{display:grid;gap:6px}
 .howto h3{font-size:1.02rem}
 .howto p{color:var(--muted);font-size:.93rem;line-height:1.45}
+.pg-tabs{margin:0}
+.pg-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:0 2px}
+.pg-chips::-webkit-scrollbar{display:none}
+.pg-chips .chip{flex:none}
+.pg-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
+.pg-head b{font-size:2.4rem;font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.pg-head span{color:var(--muted);font-size:.92rem}
+.pg-svg{width:100%;height:auto;display:block;overflow:visible;touch-action:manipulation}
+.pg-svg text{fill:var(--muted);font-size:10.5px;font-family:var(--f)}
+.pg-hit{cursor:pointer;outline:none}
+.pg-bar{fill:color-mix(in srgb,var(--accent) 38%,var(--hair))}
+.pg-zero{fill:var(--hair)}
+.pg-hit.on .pg-bar{fill:var(--accent)}
+.pg-hit.on text{fill:var(--ink);font-weight:600}
+.pg-hit:focus-visible .pg-bar,.pg-hit:focus-visible .pg-dot{stroke:var(--link);stroke-width:2}
+.pg-line{fill:none;stroke:var(--accent);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.pg-area{fill:var(--accent);opacity:.1}
+.pg-dot{fill:var(--tile);stroke:var(--accent);stroke-width:2.4}
+.pg-hit.on .pg-dot{fill:var(--accent2);stroke:var(--tile);stroke-width:2.5}
+.pg-guide{stroke:var(--hair);stroke-width:1.5;stroke-dasharray:3 3}
+.pg-note{color:var(--muted);font-size:.8rem;line-height:1.4;margin-top:-6px}
+.pg-empty{display:grid;place-items:center;height:110px;border-radius:14px;background:var(--card);color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:no-preference){.pg-bar{transition:fill .15s ease}}
+.fm-bars rect{fill:color-mix(in srgb,var(--accent) 38%,var(--hair))}
+.fm-bars rect.now{fill:var(--accent)}
+.fm-bars rect.z{fill:var(--hair)}
 .formmini{grid-template-columns:auto minmax(0,1fr);gap:12px 18px;align-items:center}
 .formmini .fm-l{display:grid;gap:3px;justify-items:start}
 .formmini .fm-l span{font-size:.85rem}
@@ -1254,8 +1280,8 @@ a.row{color:inherit;text-decoration:none}
     </div>
     <p class="small" id="h-med" style="margin-top:10px"></p>
 
-    <div class="sechead"><h2>Din form</h2><a href="#logg" data-lg="form">Statistik</a></div>
-    <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din form och nivå"></a>
+    <div class="sechead"><h2>Din utveckling</h2><a href="#logg" data-lg="form">Statistik</a></div>
+    <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din utveckling och nivå"></a>
 
     <div class="sechead"><h2>Tävlingar nära dig</h2><a href="#race" data-tv-go="kal">Alla tävlingar</a></div>
     <div class="near" id="h-next"></div>
@@ -1463,7 +1489,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="lgv" data-v="form">
     <div id="st-top"></div>
     <div id="load" hidden></div>
-    <div class="sechead"><h2>Din form</h2><button class="linkbtn" id="form-info">Så fungerar det</button></div>
+    <div class="sechead"><h2>Din utveckling</h2><button class="linkbtn" id="form-info">Så fungerar det</button></div>
     <div class="card formcard" id="form"></div>
     <div id="stats"></div>
 
@@ -3067,59 +3093,100 @@ function medHTML(m,o){o=o||{};const on=o.on,sz=o.sz?" "+o.sz:"";const c=FAM[m.f]
   return on?`<div class="med${sz}${o.shine?" shine":""}" style="--m1:${c[0]};--m2:${c[1]}" aria-hidden="true">${inner}</div>`:`<div class="med off${sz}" style="--p:${Math.round((o.p||0)*100)}" aria-hidden="true">${inner}</div>`}
 function tierHTML(t,sz,shine){return `<div class="med ${sz||"sm"}${shine?" shine":""}" style="--m1:${t.m[0]};--m2:${t.m[1]}${t.i?";--mi:"+t.i:""}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${IC.varv}</svg></div>`}
 function dshort(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(".","")}
-function formData(){
-  const byDay={};LOGS.forEach(l=>{if(l.date)byDay[l.date]=(byDay[l.date]||0)+loadOf(l)});
-  const t=today(),N=70,W=150,d=new Date(t+"T12:00:00");d.setDate(d.getDate()-W);let F=0;const past=[];
-  for(let i=0;i<=W;i++){const ds=iso(d);F+=((byDay[ds]||0)-F)/42;if(i>=W-N)past.push({ds,f:F});d.setDate(d.getDate()+1)}
-  const fut=[];let raceIn=false;
-  if(set.date>t&&PLAN.length){const pl={};PLAN.forEach(w=>w.ses.forEach(s=>{if(s.date>t)pl[s.date]=(pl[s.date]||0)+s.m}));
-    const end=new Date(set.date+"T12:00:00"),lim=new Date(t+"T12:00:00");lim.setDate(lim.getDate()+35);raceIn=end<=lim;const stop=raceIn?end:lim;
-    let G=F;const x=new Date(t+"T12:00:00");fut.push({ds:t,f:F});while(x<stop){x.setDate(x.getDate()+1);const ds=iso(x);G+=((pl[ds]||0)-G)/42;fut.push({ds,f:G})}}
-  const ago=past[past.length-29].f,best=Math.max(...past.map(p=>p.f));
-  return {past,fut,now:F,ago,best,raceIn};
-}
-function formMsg(fd){
-  if(!LOGS.length)return "Logga ditt första pass så börjar kurvan stiga.";
-  const dl=fd.now-fd.ago,pct=fd.ago>2?Math.round(dl/fd.ago*100):null;let m;
-  const last=[...LOGS].map(l=>l.date).sort().pop()||"",idle=Math.round((new Date(today()+"T12:00:00")-new Date(last+"T12:00:00"))/864e5);
-  if(fd.now>=fd.best-.05&&fd.now>3&&dl>.5)m="Du är i din bästa form hittills.";
-  else if(dl>=1)m=pct&&pct<400?`Formen har stigit ${pct} % på fyra veckor.`:"Formen stiger tydligt.";
-  else if(dl<=-1)m=idle>=3?"Formen dalar lite. Ett pass i dag vänder kurvan.":"Formen dalar lite men kommer tillbaka snabbt.";
-  else m="Jämn form. Ett extra pass i veckan lyfter kurvan.";
-  if(fd.fut.length>7){const p=Math.round(fd.fut[fd.fut.length-1].f);m+=p>=Math.round(fd.now)?` Följer du planen är du på ${p} ${fd.raceIn?"till loppet":"om fem veckor"}.`:fd.raceIn?" Planen trappar ner inför loppet så att du står på startlinjen utvilad.":""}
-  return m;
-}
 function pathOf(pts){return pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}
 function lenOf(pts){let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return Math.ceil(s)+2}
+/* Din utveckling: ett diagram man kan trycka i. Pass och tid per vecka, tempo på stationerna och beräknat max i styrkeövningar. */
+let PGV={tab:"pass",st:null,lift:null,sel:null};
+const PG_TABS=[["pass","Pass"],["tid","Tid"],["st","Stationer"],["sty","Styrka"]];
+const pgMin=m=>{m=Math.round(m);const h=Math.floor(m/60),r=m%60;return h?`${h} h${r?" "+r+" min":""}`:`${r} min`};
+const pgDay=ds=>new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
+function pgWeeks(n){const ws=weekStart(today()),out=[],ix={};
+  for(let i=n-1;i>=0;i--){const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*i);ix[iso(d)]=out.length;out.push({ws:iso(d),wk:isoWeek(d),n:0,m:0})}
+  LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;const i=ix[weekStart(l.date)];if(i===undefined)return;out[i].n++;out[i].m+=(+l.min||0)});return out}
+/* Bästa tiden per dag på en station. Kortare set räknas om till hela stationens längd, och tider från lopp räknas med. */
+function pgStation(id){const i=S.findIndex(s=>s.id===id),std=exStd(id)||{},pts={};
+  const add=(ds,t,full)=>{if(!(t>0))return;if(!pts[ds]||t<pts[ds].v)pts[ds]={ds,v:t,full}};
+  LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;
+    if(l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16)add(l.date,+l.race.sp[2*i+1],1);
+    (l.items||[]).forEach(it=>{if(!it||it.ex!==id)return;(it.sets||[]).forEach(x=>{if(!nz(x.t)||(nz(x.kg)&&std.kg&&+x.kg<std.kg))return;
+      const done=std.r?+x.r||0:+x.m||0,need=std.r||std.m;if(!need||done<need*.5)return;add(l.date,+x.t*need/done,done>=need*.98)})})});
+  return Object.values(pts).sort((a,b)=>a.ds.localeCompare(b.ds))}
+/* Styrkeövningar med vikt och reps, flest pass först. */
+function pgLifts(){const c={};LOGS.forEach(l=>(l&&l.items||[]).forEach(it=>{if(!it||it.st||S.some(s=>s.id===it.ex)||it.ex==="run"||it.ex==="tread")return;
+    if(!(it.sets||[]).some(x=>nz(x.kg)&&nz(x.r)&&+x.r<=20))return;const k=it.ex;c[k]=c[k]||{id:k,n:it.n,c:0,last:""};c[k].c++;if(l.date>c[k].last)c[k].last=l.date}));
+  return Object.values(c).sort((a,b)=>b.c-a.c||b.last.localeCompare(a.last)).slice(0,6)}
+/* Beräknat max för en repetition (Epley): vikt × (1 + reps/30). */
+function pgLift(id){const pts={};LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;(l.items||[]).forEach(it=>{if(!it||it.ex!==id)return;
+    (it.sets||[]).forEach(x=>{if(!nz(x.kg)||!nz(x.r)||+x.r>20)return;const r=+x.r,v=r===1?+x.kg:+x.kg*(1+r/30);if(!pts[l.date]||v>pts[l.date].v)pts[l.date]={ds:l.date,v,kg:+x.kg,r}})})});
+  return Object.values(pts).sort((a,b)=>a.ds.localeCompare(b.ds))}
+const pgDur=t=>Math.round(t)<60?`${Math.round(t)} s`:fmt(t);
+const pgKg=v=>fmtKg(Math.round(v*2)/2)+" kg";
+function pgBars(vals,labels,sel,unit){const W=320,T=10,B=118,n=vals.length,gw=W/n,bw=Math.min(18,gw*.56),mx=Math.max(1,...vals)*1.12;
+  let h=`<line x1="0" x2="${W}" y1="${B}" y2="${B}" stroke="var(--hair)"/>`;
+  vals.forEach((v,i)=>{const x=i*gw+gw/2,bh=v?Math.max(3,(B-T)*v/mx):0,on=i===sel;
+    h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(labels[i].a)}: ${esc(unit(v))}"><rect x="${(i*gw).toFixed(1)}" y="0" width="${gw.toFixed(1)}" height="${B+18}" fill="transparent"/>`+
+      (v?`<rect class="pg-bar" x="${(x-bw/2).toFixed(1)}" y="${(B-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5,bw/2).toFixed(1)}"/>`:`<rect class="pg-zero" x="${(x-bw/2).toFixed(1)}" y="${B-2}" width="${bw.toFixed(1)}" height="2" rx="1"/>`)+
+      (labels[i].t?`<text x="${x.toFixed(1)}" y="${B+15}" text-anchor="middle">${labels[i].t}</text>`:"")+`</g>`});
+  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
+function pgLine(pts,sel,invert,unit){const W=320,T=16,B=112,L=10,R=W-10,n=pts.length,vs=pts.map(p=>p.v);
+  let lo=Math.min(...vs),hi=Math.max(...vs);const pad=Math.max((hi-lo)*.18,hi*.04,1);lo-=pad;hi+=pad;
+  const X=i=>n===1?W/2:L+i/(n-1)*(R-L),Y=v=>invert?T+(v-lo)/(hi-lo)*(B-T):B-(v-lo)/(hi-lo)*(B-T),pp=pts.map((p,i)=>[X(i),Y(p.v)]);
+  let h=`<line x1="0" x2="${W}" y1="${B}" y2="${B}" stroke="var(--hair)"/>`;
+  if(n>1)h+=`<path class="pg-area" d="${pathOf(pp)} L${pp[n-1][0].toFixed(1)} ${B} L${pp[0][0].toFixed(1)} ${B} Z"/><path class="pg-line" d="${pathOf(pp)}"/>`;
+  pts.forEach((p,i)=>{const on=i===sel,[x,y]=pp[i];h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(pgDay(p.ds))}: ${esc(unit(p.v))}"><rect x="${(x-Math.max(14,(R-L)/Math.max(1,n-1)/2)).toFixed(1)}" y="0" width="${(2*Math.max(14,(R-L)/Math.max(1,n-1)/2)).toFixed(1)}" height="${B+18}" fill="transparent"/>`+
+    (on?`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${y.toFixed(1)}" y2="${B}" class="pg-guide"/>`:"")+`<circle class="pg-dot${p.full===0?" est":""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on?6:4}"/></g>`});
+  h+=`<text x="${L}" y="${B+15}">${esc(pgDay(pts[0].ds))}</text>${n>1?`<text x="${R}" y="${B+15}" text-anchor="end">${esc(pgDay(pts[n-1].ds))}</text>`:""}`;
+  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
+function pgCmp(a,b,unit,more,less){const d=a-b;if(!b&&!a)return "";if(!b)return "";if(Math.abs(d)<1e-9)return "Lika mycket som de fyra veckorna innan.";return `${unit(Math.abs(d))} ${d>0?more:less} än de fyra veckorna innan.`}
 function renderForm(){
-  const el=$("#form");if(!el)return;const fd=formData(),P=PROG;
-  const dl=Math.round(fd.now-fd.ago),W=320,T=14,B=112,R=fd.fut.length?300:306;
-  const all=fd.past.length+Math.max(0,fd.fut.length-1),X=i=>4+i/(all-1)*(R-4);
-  const ymax=Math.max(10,...fd.past.map(p=>p.f),...fd.fut.map(p=>p.f))*1.18,Y=f=>B-f/ymax*(B-T);
-  const pp=fd.past.map((p,i)=>[X(i),Y(p.f)]),ti=fd.past.length-1,fp=fd.fut.map((p,i)=>[X(ti+i),Y(p.f)]);
-  let h=`<defs><linearGradient id="fgl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient><linearGradient id="fga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".22"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>`;
-  h+=`<line x1="0" x2="${W}" y1="${B}" y2="${B}" stroke="var(--hair)"/>`;
-  h+=`<path class="farea" d="${pathOf(pp)} L${pp[ti][0].toFixed(1)} ${B} L${pp[0][0].toFixed(1)} ${B} Z" fill="url(#fga)"/>`;
-  if(fp.length>1){h+=`<path class="ffut" d="${pathOf(fp)}"/>`;const e=fp[fp.length-1];h+=`<text class="fv" x="${(e[0]+6).toFixed(1)}" y="${(e[1]+4).toFixed(1)}">${Math.round(fd.fut[fd.fut.length-1].f)}</text>`}
-  h+=`<path class="fline" stroke="url(#fgl)" style="--len:${lenOf(pp)}" d="${pathOf(pp)}"/>`;
-  const idx={};fd.past.forEach((p,i)=>idx[p.ds]=i);
-  P.recent.forEach(id=>{const i=idx[P.earned[id]];if(i===undefined||i===ti)return;const m=MEDALS.find(x=>x.id===id);h+=`<circle class="fmed" cx="${pp[i][0].toFixed(1)}" cy="${pp[i][1].toFixed(1)}" r="4" fill="${FAM[m.f][1]}"><title>${esc(m.n)}</title></circle>`});
-  h+=`<circle class="fpulse" cx="${pp[ti][0].toFixed(1)}" cy="${pp[ti][1].toFixed(1)}" r="5" fill="var(--accent2)"/><circle cx="${pp[ti][0].toFixed(1)}" cy="${pp[ti][1].toFixed(1)}" r="5" fill="var(--accent2)" stroke="var(--tile)" stroke-width="2.5"/>`;
-  h+=`<text x="2" y="130">10 v sedan</text><text x="${pp[ti][0].toFixed(1)}" y="130" text-anchor="${fp.length>1?"middle":"end"}">I dag</text>`;
-  if(fp.length>1)h+=`<text x="${W}" y="130" text-anchor="end">${fd.raceIn?"Loppet":"+5 v"}</text>`;
+  const el=$("#form");if(!el)return;const P=PROG,v=PGV;let body="",head="",msg="",chips="";
+  const tabs=`<div class="seg pg-tabs" role="group" aria-label="Visa">${PG_TABS.map(([k,l])=>`<button data-pgt="${k}" aria-pressed="${v.tab===k}">${l}</button>`).join("")}</div>`;
+  const big=(b,s)=>`<div class="pg-head"><b>${b}</b><span>${s}</span></div>`;
+  if(v.tab==="pass"||v.tab==="tid"){
+    const W=pgWeeks(12),isP=v.tab==="pass",vals=W.map(w=>isP?w.n:w.m),sel=v.sel==null||v.sel>=W.length?W.length-1:v.sel,w=W[sel];
+    const lab=W.map((x,i)=>({a:i===W.length-1?"Den här veckan":`Vecka ${x.wk}`,t:i===W.length-1?"Nu":i%3===2?`v${x.wk}`:""}));
+    const unit=isP?(n=>`${n} pass`):pgMin,s4=vals.slice(-4).reduce((a,b)=>a+b,0),p4=vals.slice(-8,-4).reduce((a,b)=>a+b,0);
+    head=big(isP?w.n:pgMin(w.m),`${isP?(w.n===1?"pass":"pass")+" · ":""}${sel===W.length-1?"den här veckan":"vecka "+w.wk}${isP&&w.m?` · ${pgMin(w.m)}`:!isP&&w.n?` · ${w.n} pass`:""}`);
+    msg=!LOGS.length?"Logga ditt första pass så fylls staplarna på.":(isP?`${s4} pass de senaste fyra veckorna. `:`${pgMin(s4)} träning de senaste fyra veckorna. `)+pgCmp(s4,p4,isP?(n=>`${n} ${n===1?"pass":"pass"}`):pgMin,"mer","mindre");
+    body=pgBars(vals,lab,sel,unit);
+  }else if(v.tab==="st"){
+    const have=S.map(s=>({s,p:pgStation(s.id)})),withD=have.filter(x=>x.p.length);
+    let id=v.st&&have.find(x=>x.s.id===v.st)?v.st:(withD.slice().sort((a,b)=>b.p.length-a.p.length)[0]||{s:S[0]}).s.id;
+    const cur=have.find(x=>x.s.id===id),pts=cur.p.slice(-12);
+    chips=`<div class="pg-chips" role="group" aria-label="Station">${S.map(s=>`<button class="chip" data-pgs="${s.id}" aria-pressed="${s.id===id}">${esc(s.n)}</button>`).join("")}</div>`;
+    if(!pts.length){head=big("–",esc(cur.s.n));msg=`Logga tid på ${esc(cur.s.n)}, till exempel ${esc(cur.s.id==="wall"?"100":cur.s.q)}${cur.s.id==="wall"?" reps":""}, så syns ditt tempo här.`;body=`<div class="pg-empty">Inga tider än</div>`}
+    else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,best=Math.min(...pts.map(x=>x.v)),last=pts[pts.length-1].v;
+      head=big(fmt(p.v),`${esc(cur.s.n)} · ${esc(pgDay(p.ds))}${p.full?"":" · omräknad"}`);
+      msg=pts.length<2?`Logga ${esc(cur.s.n)} fler gånger så syns utvecklingen.`:last<first?`${pgDur(first-last)} snabbare än ${esc(pgDay(pts[0].ds))}. Bästa tiden är ${fmt(best)}.`:last>first?`${pgDur(last-first)} långsammare än ${esc(pgDay(pts[0].ds))}. Bästa tiden är ${fmt(best)}.`:`Samma tid som ${esc(pgDay(pts[0].ds))}.`;
+      body=pgLine(pts,sel,true,fmt)+`<p class="pg-note">Högre i diagrammet är snabbare. Tiden gäller hela stationen.</p>`}
+  }else{
+    const L=pgLifts();
+    if(!L.length){head=big("–","beräknat max");msg="Logga en styrkeövning med vikt och reps, till exempel knäböj, så syns hur du blir starkare.";body=`<div class="pg-empty">Inga styrkepass än</div>`}
+    else{const id=v.lift&&L.find(x=>x.id===v.lift)?v.lift:L[0].id,cur=L.find(x=>x.id===id),pts=pgLift(id).slice(-12);
+      chips=`<div class="pg-chips" role="group" aria-label="Övning">${L.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}</div>`;
+      const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
+      head=big(pgKg(p.v),`beräknat max · ${esc(pgDay(p.ds))} · ${fmtKg(p.kg)} kg × ${p.r}`);
+      msg=pts.length<2?`Logga ${esc(cur.n)} fler gånger så syns utvecklingen.`:Math.round((last-first)*2)/2>0?`${pgKg(last-first)} starkare än ${esc(pgDay(pts[0].ds))}.`:Math.round((last-first)*2)/2<0?`${pgKg(first-last)} lägre än ${esc(pgDay(pts[0].ds))}. Det svänger ofta mellan passen.`:`Samma nivå som ${esc(pgDay(pts[0].ds))}.`;
+      body=pgLine(pts,sel,false,pgKg)+`<p class="pg-note">Beräknat max för en repetition utifrån vikt och reps, så att tunga och lätta set går att jämföra.</p>`}
+  }
   const nx=P.next;
-  el.innerHTML=`<div class="formhead"><div class="formnum"><b>${Math.round(fd.now)}</b><span>formtal</span></div>${LOGS.length?`<span class="delta${dl>0?" up":""}">${dl>0?"+":dl<0?"−":"±"}${Math.abs(dl)} på 4 veckor</span>`:""}</div>
-   <p class="formmsg">${esc(formMsg(fd))}</p>
-   <svg class="formsvg" viewBox="0 0 ${W} 136" role="img" aria-label="Formkurva för de senaste tio veckorna">${h}</svg>
+  el.innerHTML=`${tabs}${chips}${head}<p class="formmsg">${msg}</p>${body}
    <button class="lvl" id="lvl-btn">${tierHTML(P.tier)}<div><b>${P.tier.n} · ${P.varv} varv</b><small>${P.weekVarv} denna vecka · ${nx?`${P.toNext} till ${nx.n}`:"högsta nivån"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>`;
   $("#lvl-btn").onclick=openLevels;
+  const ch=el.querySelector(".pg-chips [aria-pressed=true]");if(ch&&ch.scrollIntoView)ch.parentNode.scrollLeft=Math.max(0,ch.offsetLeft-ch.parentNode.offsetLeft-12);
 }
+$("#form").addEventListener("click",e=>{const v=PGV;let b;
+  if(b=e.target.closest("[data-pgt]")){if(v.tab===b.dataset.pgt)return;v.tab=b.dataset.pgt;v.sel=null}
+  else if(b=e.target.closest("[data-pgs]")){v.st=b.dataset.pgs;v.sel=null}
+  else if(b=e.target.closest("[data-pgl]")){v.lift=b.dataset.pgl;v.sel=null}
+  else if(b=e.target.closest("[data-pi]")){v.sel=+b.dataset.pi;if(typeof HAPTIC==="function")HAPTIC()}
+  else return;const sx=(el=>el?el.scrollLeft:0)($("#form .pg-chips"));renderForm();const c=$("#form .pg-chips");if(c&&!b.dataset.pgt)c.scrollLeft=sx});
+$("#form").addEventListener("keydown",e=>{const g=e.target.closest&&e.target.closest("[data-pi]");if(!g||(e.key!=="Enter"&&e.key!==" "))return;e.preventDefault();PGV.sel=+g.dataset.pi;renderForm();const n=$(`#form [data-pi="${PGV.sel}"]`);if(n)n.focus()});
 function sparkHome(){
-  const el=$("#h-form");if(!el)return;const fd=formData(),P=PROG,pts=fd.past.slice(-42),dl=Math.round(fd.now-fd.ago);
-  const ymax=Math.max(8,...pts.map(p=>p.f))*1.15,pp=pts.map((p,i)=>[4+i/(pts.length-1)*150,54-p.f/ymax*48]),e=pp[pp.length-1];
-  el.innerHTML=`<div class="fm-l"><span>Form</span><b>${Math.round(fd.now)}</b>${LOGS.length?`<span class="delta${dl>0?" up":""}">${dl>0?"+":dl<0?"−":"±"}${Math.abs(dl)} på 4 v</span>`:""}</div>
-   <svg viewBox="0 0 160 60" aria-hidden="true"><defs><linearGradient id="hfl" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient><linearGradient id="hfa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".2"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs>
-   <path class="farea" d="${pathOf(pp)} L${e[0].toFixed(1)} 58 L4 58 Z" fill="url(#hfa)"/><path class="fline" stroke="url(#hfl)" style="--len:${lenOf(pp)}" d="${pathOf(pp)}"/><circle cx="${e[0].toFixed(1)}" cy="${e[1].toFixed(1)}" r="4.5" fill="var(--accent2)" stroke="var(--tile)" stroke-width="2.5"/></svg>
+  const el=$("#h-form");if(!el)return;const P=PROG,W=pgWeeks(8),mx=Math.max(1,...W.map(w=>w.n)),s4=W.slice(-4).reduce((a,w)=>a+w.n,0),m4=W.slice(-4).reduce((a,w)=>a+w.m,0),gw=160/8;
+  const bars=W.map((w,i)=>{const h=w.n?Math.max(4,48*w.n/mx):2;return `<rect x="${(i*gw+gw*.2).toFixed(1)}" y="${(54-h).toFixed(1)}" width="${(gw*.6).toFixed(1)}" height="${h.toFixed(1)}" rx="3" class="${i===7?"now":""}${w.n?"":" z"}"/>`}).join("");
+  el.innerHTML=`<div class="fm-l"><span>Senaste 4 veckorna</span><b>${s4} pass</b><span class="delta">${pgMin(m4)}</span></div>
+   <svg viewBox="0 0 160 60" aria-hidden="true" class="fm-bars">${bars}</svg>
    <div class="fm-b">${tierHTML(P.tier,"xs")}<span><b>${P.tier.n}</b> · ${P.varv} varv · ${P.recent.length} ${P.recent.length===1?"utmärkelse":"utmärkelser"}</span><span class="chev" style="flex:none">›</span></div>`;
 }
 function medalOrder(){const P=PROG;const on=P.recent.map(id=>MEDALS.find(m=>m.id===id));
@@ -3138,9 +3205,9 @@ function openLevels(){const P=PROG;
    <p class="small">Nivån följer med dig och sjunker aldrig. Varv tjänar du på all träning, inte bara den snabba.</p>`)}
 function openFormInfo(){
   openSheet(`<div><span class="small">Framsteg</span><h2>Så fungerar det</h2></div>
-   <div class="card"><div class="howto"><h3>Form</h3><p>Visar hur mycket du har tränat de senaste sex veckorna, där nyare pass väger tyngst. Den stiger när du tränar jämnt och sjunker långsamt när du vilar. Hårda pass räknas lite mer än lugna. Den streckade linjen visar vart du är på väg om du följer planen.</p></div>
-   <div class="howto"><h3>Varv</h3><p>Varje pass ger ett varv per tio minuter, högst tolv per pass. Ett pass från din plan ger två extra och ett klarat veckomål fem extra.</p></div>
-   <div class="howto"><h3>Nivåer och utmärkelser</h3><p>Varven tar dig från Start till Elit. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp. Prickarna på kurvan visar när du tog dem.</p></div>
+   <div class="card"><div class="howto"><h3>Din utveckling</h3><p>Tryck på Pass, Tid, Stationer eller Styrka för att byta diagram, och på en stapel eller punkt för att se just den veckan eller det passet.</p><p>Pass och Tid visar de senaste tolv veckorna. Stationer visar din bästa tid per pass, och ett kortare set räknas om till hela stationen. Högre i diagrammet är snabbare. Styrka visar beräknat max för en repetition utifrån vikt och reps, så att du ser om du blir starkare även när du kör olika många reps.</p></div>
+   <div class="howto"><h3>Varv</h3><p>Varje pass ger ett varv per tio minuter, högst tolv per pass. Ett klarat veckomål ger fem extra.</p></div>
+   <div class="howto"><h3>Nivåer och utmärkelser</h3><p>Varven tar dig från Start till Elit. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
    <div class="howto"><h3>Topplistan</h3><p>Jämför varv denna vecka, inte fart. Den som tränar jämnt kan alltid vinna veckan. Listan börjar om varje måndag.</p></div></div>`)}
 $("#medals").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)};
 $("#med-all").onclick=openAllMedals;$("#form-info").onclick=openFormInfo;

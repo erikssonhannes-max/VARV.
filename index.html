@@ -2040,7 +2040,7 @@ function renderSplits(){
 }
 const daysLeft=()=>Math.round((new Date(set.date+"T12:00:00")-new Date(today()+"T12:00:00"))/864e5);
 const DAYS={1:[2],2:[1,4],3:[1,3,5],4:[0,2,4,6],5:[0,1,3,5,6]};
-const ZMAP={"Intervaller":[4],"Löpning och stationer":[3,4],"Styrka och stationer":[2,3],"Lugn distans":[2],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[4]};
+const ZMAP={"Styrka":[2,3],"Intervaller":[4],"Löpning och stationer":[3,4],"Styrka och stationer":[2,3],"Lugn distans":[2],"Motor (SkiErg/rodd)":[3,4],"Racesimulering":[4]};
 const ZONES=[[.5,.6,"Mycket lätt, uppvärmning"],[.6,.7,"Lätt, du kan prata hela meningar"],[.7,.8,"Måttligt, korta meningar"],[.8,.9,"Hårt, tävlingsfart"],[.9,1,"Max, korta intervaller"]];
 function hrmax(){return set.maxhr||(set.age?Math.round(220-set.age):null)}
 const ZWORD=["mycket lätt","lätt","måttligt","hårt","max"];
@@ -2159,7 +2159,7 @@ function renderPlan(){if(NOPLAN){PLAN=[];return}planChanged();
 }
 const fmtDM=d=>new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
 function wkRange(w){const a=fmtDM(w.start),b=fmtDM(wEnd(w.start));return a.split(" ")[1]===b.split(" ")[1]?a.split(" ")[0]+"–"+b:a+" – "+b}
-const PASS_WHAT={"Intervaller":"Korta hårda sträckor med vila emellan. Gör dig snabbare.","Löpning och stationer":"Löpning direkt efter stationer, så att du vänjer dig vid att springa på tunga ben.","Styrka och stationer":"Bygger styrkan du behöver på stationerna.","Lugn distans":"Lugn löpning som bygger uthållighet. Du ska kunna prata hela tiden.","Motor (SkiErg/rodd)":"Kondition på maskin, utan stötar för benen.","Racesimulering":"Generalrepetition av loppet, i tävlingstempo."};
+const PASS_WHAT={"Styrka":"Styrketräning med vikter, utan Hyrox-stationer. Bygger kraften du behöver på banan.","Intervaller":"Korta hårda sträckor med vila emellan. Gör dig snabbare.","Löpning och stationer":"Löpning direkt efter stationer, så att du vänjer dig vid att springa på tunga ben.","Styrka och stationer":"Bygger styrkan du behöver på stationerna.","Lugn distans":"Lugn löpning som bygger uthållighet. Du ska kunna prata hela tiden.","Motor (SkiErg/rodd)":"Kondition på maskin, utan stötar för benen.","Racesimulering":"Generalrepetition av loppet, i tävlingstempo."};
 function passRows(w,wi){const td=today();return w.ses.map((x,si)=>{const a=new Date(x.date+"T12:00:00"),done=sesDone(w,x),late=!done&&x.date<td,wd=a.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
   return `<details class="pass${done?" done":""}"><summary><span class="badge evd"><b>${a.getDate()}</b><small>${wd}</small></span><div><h3>${x.t}</h3><p>${x.m} min${x.moved?" · flyttat":""}${x.date===td&&!done?" · i dag":""}</p></div>${done?'<span class="state">✓ Klart</span>':late?'<span class="state late">Att ta igen</span>':'<span class="chev">›</span>'}</summary>
    <div class="pass-b"><span class="zone z${x.z[0]}" style="justify-self:start">${zoneTxt(x.z)}</span>${PASS_WHAT[x.t]?`<p class="what">${PASS_WHAT[x.t]}</p>`:""}<p>${x.d}</p><div class="ses-acts"><button class="logbtn" data-w="${wi}" data-s="${si}">Logga passet</button>${x.date>=td||late?`<button class="logbtn mv" data-w="${wi}" data-s="${si}">${x.moved?"Flyttat · ändra":"Flytta"}</button>`:""}</div></div></details>`}).join("")}
@@ -2261,7 +2261,8 @@ async function savePRs(){
   if(mode==="db"&&col){try{await col.doc("meta").set({kind:"meta",prs:PRS})}catch(err){toast("Kunde inte spara rekordet.")}return}
   saveLocal();renderAllData();
 }
-function renderAllData(){LOGS.forEach(l=>{if(l&&l.type==="Kompromiss"+"löpning")l.type="Löpning och stationer"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
+function renderAllData(){LOGS.forEach(l=>{if(!l)return;if(l.type==="Kompromiss"+"löpning")l.type="Löpning och stationer";
+  if(l.type==="Styrka och stationer"&&Array.isArray(l.items)&&l.items.length&&!l.items.some(i=>i&&i.st)&&!(l.stations||[]).length)l.type="Styrka"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
 
 /* ============ Konto: inloggning med Supabase ============ */
 /* Används när appen körs som vanlig webbapp. Pass, rekord och inställningar sparas
@@ -3248,7 +3249,7 @@ setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
 /* ============ Logg-UI ============ */
 /* ============ Logga pass ============ */
 const lg$$=s=>[...document.querySelectorAll(s)];
-const TYPES=["Styrka och stationer","Intervaller","Löpning","Löpning och stationer","Lugn distans","Motor (SkiErg/rodd)","Racesimulering","Annat"];
+const TYPES=["Styrka","Styrka och stationer","Intervaller","Löpning","Löpning och stationer","Lugn distans","Motor (SkiErg/rodd)","Racesimulering","Annat"];
 /* k: d = meter och tid, r = antal, c = kalorier och tid, t = tid. w: vikt. st: HYROX-station */
 const EXG=["Hyrox-stationer","Löpning och kondition","Styrka","Kroppsvikt och core"];
 const EX=[
@@ -3301,11 +3302,11 @@ function newItem(x,empty){
   if(x.k==="r"&&!x.st)return Object.assign(base,{sets:[{r:10},{r:10},{r:10}]});
   return Object.assign(base,{sets:[std?Object.assign({},std):{}]});
 }
-function autoType(){const it=LG.items;if(!it.length)return "Styrka och stationer";
+function autoType(){const it=LG.items;if(!it.length)return "Styrka";
   const isRun=i=>i.ex==="run"||i.ex==="tread",st=it.filter(i=>i.st).length,run=it.find(isRun);
   const motor=it.every(i=>["ski","row","bike","bikeerg"].includes(i.ex)),other=it.some(i=>!i.st&&!isRun(i));
   if(st>=8&&run)return "Racesimulering";if(motor)return "Motor (SkiErg/rodd)";if(run&&st)return "Löpning och stationer";
-  if(run&&!other)return run.sets.length>1?"Intervaller":"Löpning";return "Styrka och stationer"}
+  if(run&&!other)return run.sets.length>1?"Intervaller":"Löpning";return st?"Styrka och stationer":"Styrka"}
 const lgType=()=>LG.typeSet?LG.type:autoType();
 let LG=null;
 let LGDRAFT=null;try{const d=JSON.parse(localStorage.getItem("varv-draft")||"null");if(d&&Date.now()-d.at<12*3600e3)LGDRAFT=d.lg}catch(e){}
@@ -3377,9 +3378,9 @@ const PRESETS=[
  /* Styrka */
  {n:"Slädpass",c:"styrka",lv:"Medel",m:35,t:"Styrka och stationer",w:"Kraft i släden",y:"Sled push och pull är där flest tappar tid. Teknik och styrka här lönar sig direkt.",h:"Korta tunga sträckor med full vila, 2 min mellan seten. Teknik före vikt.",it:()=>[sugItem("push",6,{m:25}),sugItem("pull",6,{m:25}),sugItem("farm",4,{m:50})]},
  {id:"sista",bm:1,n:"Sista stationerna",c:"styrka",lv:"Hårt",m:35,t:"Styrka och stationer",w:"Styrka på trötta ben",y:"Farmers carry, lunges och wall balls kommer sist i loppet, när benen redan är slut.",h:"Tre rundor: 100 m farmers carry, 50 m sandbag lunges och 30 wall balls. Kort vila mellan momenten.",it:()=>[sugItem("farm",3,{m:100}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:30})]},
- {n:"Benstyrka",c:"styrka",lv:"Medel",m:50,t:"Styrka och stationer",w:"Starka ben och säte",y:"Starkare ben gör släden lättare och gör att lunges och wall balls inte tar slut på dig.",h:"Knäböj 5 × 5 tungt med 2–3 min vila. Sedan rumänska marklyft 3 × 8, bulgarska utfall 3 × 8 per ben och höftlyft 3 × 12.",it:()=>[sugItem("squat",5,{r:5}),sugItem("rdl",3,{r:8}),sugItem("bss",3,{r:8}),sugItem("hip",3,{r:12})]},
+ {n:"Benstyrka",c:"styrka",lv:"Medel",m:50,t:"Styrka",w:"Starka ben och säte",y:"Starkare ben gör släden lättare och gör att lunges och wall balls inte tar slut på dig.",h:"Knäböj 5 × 5 tungt med 2–3 min vila. Sedan rumänska marklyft 3 × 8, bulgarska utfall 3 × 8 per ben och höftlyft 3 × 12.",it:()=>[sugItem("squat",5,{r:5}),sugItem("rdl",3,{r:8}),sugItem("bss",3,{r:8}),sugItem("hip",3,{r:12})]},
  {n:"Grepp och rygg",c:"styrka",lv:"Medel",m:45,t:"Styrka och stationer",w:"Greppstyrka och baksida",y:"Greppet sviker ofta på sled pull och farmers carry. Det här passet bygger det.",h:"Marklyft 4 × 5 tungt. Sedan skivstångsrodd 3 × 8, chins 3 × så många du klarar och tung farmers carry 4 × 50 m.",it:()=>[sugItem("dead",4,{r:5}),sugItem("brow",3,{r:8}),sugItem("chin",3,{r:8}),sugItem("farm",4,{m:50})]},
- {n:"Helkropp",c:"styrka",lv:"Lätt",m:45,t:"Styrka och stationer",w:"Allsidig grundstyrka",y:"Ett bra första styrkepass, eller ett lättare pass en vecka med mycket löpning.",h:"Frontböj 3 × 8, militärpress 3 × 8, kettlebell swings 3 × 15, armhävningar 3 × 12 och plankan 3 × 45 s.",it:()=>[sugItem("front",3,{r:8}),sugItem("ohp",3,{r:8}),sugItem("kbs",3,{r:15}),sugItem("pushup",3,{r:12}),sugItem("plank",3,{t:45})]}];
+ {n:"Helkropp",c:"styrka",lv:"Lätt",m:45,t:"Styrka",w:"Allsidig grundstyrka",y:"Ett bra första styrkepass, eller ett lättare pass en vecka med mycket löpning.",h:"Frontböj 3 × 8, militärpress 3 × 8, kettlebell swings 3 × 15, armhävningar 3 × 12 och plankan 3 × 45 s.",it:()=>[sugItem("front",3,{r:8}),sugItem("ohp",3,{r:8}),sugItem("kbs",3,{r:15}),sugItem("pushup",3,{r:12}),sugItem("plank",3,{t:45})]}];
 /* Rekordpass: tiden från tidtagningen sparas som personligt rekord och jämförs med dem man följer */
 const benchMine=id=>{const v=(set.bench||{})[id];return v&&+v.t>0?v:null};
 function benchSave(id,t,date){const x=PRESETS.find(p=>p.id===id);if(!x)return null;set.bench=set.bench||{};const old=benchMine(id);
@@ -3432,7 +3433,7 @@ function suggest(focus,min,v){const lvl=set.level||"mellan",ny=lvl==="ny",n=min<
   const lift=(id,sets)=>{if(id==="plank")return mk(id,sets,{t:45});const r={chin:ny?5:6,pushup:12,situp:15}[id]||(ny?10:8);return mk(id,sets,{r})};
   const SP=[["squat","bench","brow","rdl","wlunge","plank"],["dead","ohp","chin","bss","kbs","plank"],["front","pushup","brow","hip","thr","situp"]][v%3];
   const stale=staleStations(),a=ny?[3,4,5]:[3,5,6],sets=ny?3:4;
-  if(focus==="styrka")return {name:["Styrka: helkropp","Styrka: drag och ben","Styrka: press och höft"][v%3],type:"Styrka och stationer",hint:"Sänk vikten om tekniken brister. Vila 1–2 minuter mellan seten.",items:SP.slice(0,[4,5,6][n]).map((id,i)=>lift(id,i<2?sets:3))};
+  if(focus==="styrka")return {name:["Styrka: helkropp","Styrka: drag och ben","Styrka: press och höft"][v%3],type:"Styrka",hint:"Sänk vikten om tekniken brister. Vila 1–2 minuter mellan seten.",items:SP.slice(0,[4,5,6][n]).map((id,i)=>lift(id,i<2?sets:3))};
   if(focus==="kondition"){const k=v%3;
     if(k===0){const it=[mk("run",a[n],{m:1000})];if(n)it.push(mk("row",n+1,{m:500}));return {name:"Löpintervaller",type:"Intervaller",hint:"Spring hårt men jämnt. Vila 90 sekunder mellan sträckorna.",items:it}}
     if(k===1){const it=[mk("ski",a[n],{m:500}),mk("row",a[n],{m:500})];if(n===2)it.push(mk("run",1,{m:2000}));return {name:"Maskinpass",type:"Motor (SkiErg/rodd)",hint:"Växla mellan maskinerna i jämnt hårt tempo. Vila en minut mellan.",items:it}}
@@ -4985,8 +4986,8 @@ const HK=()=>IS_NATIVE&&window.Capacitor&&window.Capacitor.Plugins&&window.Capac
 const HK_NAME=()=>window.Capacitor&&typeof window.Capacitor.getPlatform==="function"&&window.Capacitor.getPlatform()==="android"?"Health Connect":"Apple Hälsa";
 const HK_READ=["workouts","heartRate","vo2Max","restingHeartRate","weight","height","distance","calories"];
 const HK_TYPE={running:"Löpning",runningTreadmill:"Löpning",trackAndField:"Löpning",highIntensityIntervalTraining:"Intervaller",
-  functionalStrengthTraining:"Styrka och stationer",traditionalStrengthTraining:"Styrka och stationer",strengthTraining:"Styrka och stationer",crossTraining:"Styrka och stationer",
-  weightlifting:"Styrka och stationer",coreTraining:"Styrka och stationer",bootCamp:"Styrka och stationer",calisthenics:"Styrka och stationer",mixedCardio:"Löpning och stationer",
+  functionalStrengthTraining:"Styrka och stationer",traditionalStrengthTraining:"Styrka",strengthTraining:"Styrka",crossTraining:"Styrka och stationer",
+  weightlifting:"Styrka",coreTraining:"Styrka",bootCamp:"Styrka och stationer",calisthenics:"Styrka",mixedCardio:"Löpning och stationer",
   rowing:"Motor (SkiErg/rodd)",rowingMachine:"Motor (SkiErg/rodd)",crossCountrySkiing:"Motor (SkiErg/rodd)",elliptical:"Motor (SkiErg/rodd)",bikingStationary:"Motor (SkiErg/rodd)"};
 const HK_SV={running:"Löpning",runningTreadmill:"Löpband",trackAndField:"Löpning på bana",highIntensityIntervalTraining:"Intervaller",functionalStrengthTraining:"Funktionell styrka",
   traditionalStrengthTraining:"Styrketräning",strengthTraining:"Styrketräning",crossTraining:"Crossträning",mixedCardio:"Blandad kondition",rowing:"Rodd",rowingMachine:"Roddmaskin",

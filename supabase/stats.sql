@@ -1,7 +1,7 @@
 -- VARV. – intern statistik
 -- Kör hela filen en gång i Supabase: SQL Editor → New query → klistra in → Run.
 -- Längst ned visas en hemlig kod. Den används för att öppna den interna
--- statistiksidan (och kalkylarket om ni vill).
+-- statistiksidan.
 --
 -- Funktionen varv_dashboard ger bara summor (nya användare, aktiva och loggade
 -- pass), aldrig namn, e-post eller enskilda pass. Den svarar bara den som

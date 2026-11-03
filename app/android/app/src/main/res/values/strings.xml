@@ -4,4 +4,5 @@
     <string name="title_activity_main">VARV.</string>
     <string name="package_name">com.varvtraining.app</string>
     <string name="custom_url_scheme">com.varvtraining.app</string>
+    <string name="health_connect_privacy_policy_url">https://varvtraining.com/legal/integritet.html</string>
 </resources>

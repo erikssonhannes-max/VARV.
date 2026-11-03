@@ -15,7 +15,8 @@
     "@capacitor/core": "8.6.0",
     "@capacitor/ios": "8.6.0",
     "@capacitor/splash-screen": "8.0.2",
-    "@capacitor/status-bar": "8.0.4"
+    "@capacitor/status-bar": "8.0.4",
+    "@capgo/capacitor-health": "^8.11.14"
   },
   "devDependencies": {
     "@capacitor/assets": "^4.0.0",

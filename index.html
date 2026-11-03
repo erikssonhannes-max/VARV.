@@ -682,6 +682,7 @@ details.more[open] summary{margin-bottom:6px}
 .avatar-btn img,.pf-av img,.pf-mini img{width:100%;height:100%;object-fit:cover;display:block}
 .pf-top{padding-top:22px}
 #pf-stats .tile b{color:var(--accent2)}
+.pf-rank{margin-top:12px}
 #v-profil .pf-cam{background:var(--hot);color:#fff}
 .pf-head{display:grid;justify-items:center;text-align:center;gap:8px;padding:12px 0 22px}
 .pf-av{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;overflow:hidden;color:#fff;font-size:2.4rem;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 18px 36px -18px var(--glow)}
@@ -1543,6 +1544,7 @@ a.row{color:inherit;text-decoration:none}
     <div class="pf-head"><div class="pf-av" id="pf-av"></div><h1 id="pf-name">Din profil</h1><div class="pf-id" id="pf-id" hidden></div><p class="small" id="pf-sub"></p>
       <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></div>
     <div class="tiles" id="pf-stats"></div>
+    <div id="pf-rank"></div>
     <div id="pf-social"></div>
     <div class="sechead"><h2>Konto</h2></div>
     <div class="group" id="pf-acc"></div>
@@ -3049,7 +3051,8 @@ $("#comm").addEventListener("click",e=>{const b=e.target.closest("[data-person]"
 const RPEF=[1,.7,.85,1,1.15,1.3];
 const loadOf=l=>(+l.min||0)*(RPEF[l.rpe]||1);
 const varvOf=l=>Math.min(12,Math.max(1,Math.round((+l.min||0)/10)))+(l.plan?2:0);
-const TIERS=[{n:"Start",v:0,m:["#d5d5da","#8e8e93"]},{n:"Brons",v:50,m:["#efb68a","#9c5a2c"]},{n:"Silver",v:150,m:["#f4f6f9","#9fa8b3"],i:"#3d434b"},{n:"Guld",v:350,m:["#ffe08a","#d48f0b"]},{n:"Platina",v:700,m:["#eef8ff","#7eaed2"],i:"#24435c"},{n:"Elit",v:1200,m:["#ff3b5c","#ff7a3d"]}];
+/* Personlig rank: man stiger en nivå efter ett visst antal loggade pass. */
+const TIERS=[{n:"Start",v:0,m:["#d5d5da","#8e8e93"]},{n:"Brons",v:10,m:["#efb68a","#9c5a2c"]},{n:"Silver",v:25,m:["#f4f6f9","#9fa8b3"],i:"#3d434b"},{n:"Guld",v:50,m:["#ffe08a","#d48f0b"]},{n:"Platina",v:100,m:["#eef8ff","#7eaed2"],i:"#24435c"},{n:"Elit",v:200,m:["#ff3b5c","#ff7a3d"]}];
 const FAM={hot:["#ff4767","#ff7a3d"],cyan:["#62dfee","#0a8fb0"],green:["#8ee05a","#1a9a45"],gold:["#ffd977","#d48f0b"]};
 const IC={flag:'<path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',list:'<path d="M10 6h10M10 12h10M10 18h10M4 6l1.2 1.2L7.5 5M4 12l1.2 1.2L7.5 11M4 18l1.2 1.2L7.5 17"/>',
   watch:'<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18 6.5l1.3-1.3"/>',star:'<path d="M12 3.8l2.5 5.1 5.6.8-4 4 1 5.6-5.1-2.7-5 2.7 1-5.6-4.1-4 5.6-.8z"/>',
@@ -3087,9 +3090,9 @@ function progress(){
   set.medals=set.medals||{};let dirty=false;
   MEDALS.filter(m=>["pr","race","goal"].includes(m.k)).forEach(m=>{if(st[m.k]>=m.v&&!set.medals[m.id]){set.medals[m.id]=today();dirty=true}if(set.medals[m.id])earned[m.id]=set.medals[m.id]});
   if(dirty)saveSet();
-  let ti=0;TIERS.forEach((t,i)=>{if(varv>=t.v)ti=i});const nx=TIERS[ti+1]||null;
+  let ti=0;TIERS.forEach((t,i)=>{if(st.n>=t.v)ti=i});const nx=TIERS[ti+1]||null;
   const recent=Object.keys(earned).sort((a,b)=>earned[b].localeCompare(earned[a]));
-  return {st,earned,recent,varv,weekVarv:(wk[weekStart(today())]||{v:0}).v,ti,tier:TIERS[ti],next:nx,toNext:nx?nx.v-varv:0,frac:nx?(varv-TIERS[ti].v)/(nx.v-TIERS[ti].v):1};
+  return {st,earned,recent,varv,weekVarv:(wk[weekStart(today())]||{v:0}).v,ti,tier:TIERS[ti],next:nx,toNext:nx?nx.v-st.n:0,frac:nx?(st.n-TIERS[ti].v)/(nx.v-TIERS[ti].v):1};
 }
 function medFrac(m,P){P=P||PROG;return Math.min(1,(P.st[m.k]||0)/m.v)}
 function medProgTxt(m,P){P=P||PROG;const have=P.st[m.k]||0,u=MUNIT[m.k];if(!u)return "Inte klar än";
@@ -3228,15 +3231,15 @@ function openMedal(id){const m=MEDALS.find(x=>x.id===id);if(!m)return;const on=!
   openSheet(`<div class="medpop">${medHTML(m,{on,sz:"lg",shine:on,p:medFrac(m)})}<h2>${esc(m.n)}</h2><p>${esc(m.d)}</p><span class="${on?"delta up":"delta"}">${on?"Tagen "+dshort(PROG.earned[m.id]):medProgTxt(m)}</span></div>`);if(on)HAPTIC("light")}
 function openAllMedals(){
   openSheet(`<div><span class="small">${PROG.recent.length} av ${MEDALS.length} tagna</span><h2>Utmärkelser</h2></div><div class="medals" id="med-sheet">${MEDALS.map(cellHTML).join("")}</div>`,()=>{$("#med-sheet").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)}})}
-function openLevels(){const P=PROG;
-  openSheet(`<div class="medpop">${tierHTML(P.tier,"lg",true)}<h2>${P.tier.n}</h2><p>${P.varv} varv totalt${P.next?`. ${P.toNext} varv kvar till ${P.next.n}.`:". Du har nått högsta nivån."}</p></div>
-   <div class="card"><div class="tierlist">${TIERS.map((t,i)=>`<div class="${i===P.ti?"now":""}">${tierHTML(t,"xs")}<b>${t.n}</b><span>${t.v?t.v+" varv":"Från start"}</span></div>`).join("")}</div></div>
-   <p class="small">Nivån följer med dig och sjunker aldrig. Varv tjänar du på all träning, inte bara den snabba.</p>`)}
+function openLevels(){const P=PROG=progress();
+  openSheet(`<div class="medpop">${tierHTML(P.tier,"lg",true)}<h2>${P.tier.n}</h2><p>${P.st.n} pass loggade${P.next?`. ${P.toNext} pass kvar till ${P.next.n}.`:". Du har nått högsta nivån."}</p></div>
+   <div class="card"><div class="tierlist">${TIERS.map((t,i)=>`<div class="${i===P.ti?"now":""}">${tierHTML(t,"xs")}<b>${t.n}</b><span>${t.v?t.v+" pass":"Från start"}</span></div>`).join("")}</div></div>
+   <p class="small">Varje loggat pass räknas, oavsett hur långt eller snabbt det är. Nivån sjunker aldrig.</p>`)}
 function openFormInfo(){
   openSheet(`<div><span class="small">Framsteg</span><h2>Så fungerar det</h2></div>
    <div class="card"><div class="howto"><h3>Din utveckling</h3><p>Tryck på Pass, Tid, Stationer eller Styrka för att byta diagram, och på en stapel eller punkt för att se just den veckan eller det passet.</p><p>Pass och Tid visar de senaste tolv veckorna. Stationer visar ditt snittempo varje pass, all tid du loggat delat med sträckan eller antalet reps. Högre upp är snabbare. Styrka visar den tyngsta vikten du lyft varje pass, och under Välj övningar bestämmer du vilka tre övningar som visas.</p></div>
    <div class="howto"><h3>Varv</h3><p>Varje pass ger ett varv per tio minuter, högst tolv per pass. Ett klarat veckomål ger fem extra.</p></div>
-   <div class="howto"><h3>Nivåer och utmärkelser</h3><p>Varven tar dig från Start till Elit. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
+   <div class="howto"><h3>Rank och utmärkelser</h3><p>Din rank stiger med antalet loggade pass: Brons efter 10, Silver efter 25, Guld efter 50, Platina efter 100 och Elit efter 200. Du ser den på din profil. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
    <div class="howto"><h3>Topplistan</h3><p>Jämför varv denna vecka, inte fart. Den som tränar jämnt kan alltid vinna veckan. Listan börjar om varje måndag.</p></div></div>`)}
 $("#medals").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)};
 $("#med-all").onclick=openAllMedals;$("#form-info").onclick=openFormInfo;
@@ -3248,7 +3251,7 @@ function checkNewMedals(){
   if(!nw.length&&!up)return;set.seen=set.seen.concat(nw);set.tierSeen=Math.max(PROG.ti,set.tierSeen||0);saveSet();
   const show=()=>{if(!$("#sheet").hidden||TON){setTimeout(show,500);return}
     const ms=nw.map(id=>MEDALS.find(m=>m.id===id));let html;
-    if(up&&!ms.length)html=`<div class="medpop"><span class="small">Ny nivå</span>${tierHTML(PROG.tier,"lg",true)}<h2>${PROG.tier.n}</h2><p>${PROG.varv} varv. ${PROG.next?`Nästa nivå är ${PROG.next.n}.`:"Du har nått högsta nivån."}</p></div>`;
+    if(up&&!ms.length)html=`<div class="medpop"><span class="small">Ny nivå</span>${tierHTML(PROG.tier,"lg",true)}<h2>${PROG.tier.n}</h2><p>${PROG.st.n} pass loggade. ${PROG.next?`${PROG.toNext} pass till ${PROG.next.n}.`:"Du har nått högsta nivån."}</p></div>`;
     else if(ms.length===1)html=`<div class="medpop"><span class="small">Ny utmärkelse</span>${medHTML(ms[0],{on:true,sz:"lg",shine:true})}<h2>${esc(ms[0].n)}</h2><p>${esc(ms[0].d)}${up?` Du är nu på nivå ${PROG.tier.n}.`:""}</p></div>`;
     else html=`<div class="medpop"><span class="small">Bra jobbat</span><div class="medrow">${ms.slice(0,4).map(m=>medHTML(m,{on:true,shine:true})).join("")}</div><h2>${ms.length} nya utmärkelser</h2><p>${ms.slice(0,3).map(m=>esc(m.n)).join(", ")}${ms.length>3?` och ${ms.length-3} till`:""}.${up?` Du är nu på nivå ${PROG.tier.n}.`:""}</p></div>`;
     openSheet(html+`<button class="pill block" id="mp-ok">Fortsätt</button>`,()=>{$("#mp-ok").onclick=closeSheet});setTimeout(confetti,350)};
@@ -4583,6 +4586,7 @@ function renderProfile(){
   $("#pf-name").textContent=pName()||"Din profil";
   const s=evD(set.since);$("#pf-sub").textContent=`Tränar med VARV. sedan ${MONL[s.getMonth()]} ${s.getFullYear()}`;
   $("#pf-stats").innerHTML=`<div class="tile"><b>${LOGS.length}</b><span>pass loggade</span></div><div class="tile"><b>${String(hrs).replace(".",",")} h</b><span>träningstid</span></div><div class="tile"><b>${bestRace()?fmt(bestRace()):"–"}</b><span>bästa Hyrox-tid</span></div><div class="tile"><b>${st.streak}</b><span>veckor i rad</span></div>`;
+  {const P=progress(),nx=P.next;$("#pf-rank").innerHTML=`<button class="lvl pf-rank" id="pf-rank-btn" aria-label="Din rank: ${P.tier.n}">${tierHTML(P.tier)}<div><b>Rank: ${P.tier.n}</b><small>${P.st.n} pass${nx?` · ${P.toNext} kvar till ${nx.n}`:" · högsta ranken"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>`;$("#pf-rank-btn").onclick=openLevels}
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`

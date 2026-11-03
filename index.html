@@ -2830,13 +2830,13 @@ function openEditProfile(){
      ${swRow("ep-showCls","Klass",divText(),!!cd.showCls)}
      ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",!!sh[k])).join("")}
      <div class="field"><label for="ep-partner">Doubles-partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Följ din partner först.</span>`}</div>
-     ${swRow("ep-pub","Offentlig profil","På: alla inloggade kan hitta dig, se din profil och följa dig direkt. Av: bara de du godkänner får följa dig. Namn och kod syns alltid för den som söker på dem.",pub)}
+     ${swRow("ep-pub","Offentlig profil",pubTxt(pub),pub)}
      <p class="small au-msg" id="ep-msg" role="status" aria-live="polite"></p>
      <button class="pill block" id="ep-go" type="submit">Spara</button>
    </form>`,()=>{
     const msg=$("#ep-msg");
     $("#ep-exp").onclick=e=>{const b=e.target.closest("[data-x]");if(!b)return;exp=exp===b.dataset.x?"":b.dataset.x;$$("#ep-exp button").forEach(x=>x.setAttribute("aria-pressed",x.dataset.x===exp))};
-    $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub)};
+    $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub);$("#ep-pub small").textContent=pubTxt(pub)};
     ["showName","showAge","showCls"].forEach(k=>{const b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=!cd[k];b.setAttribute("aria-checked",cd[k])}});
     SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=!sh[k];b.setAttribute("aria-checked",sh[k])}});
     $("#ep-pic").onclick=()=>$("#pf-av-file").click();
@@ -4544,6 +4544,8 @@ let MEINFO=null;
 function pName(){return set.name||(MEINFO&&MEINFO.name)||""}
 function avatarHtml(){return MEINFO&&MEINFO.avatarUrl&&okImg(MEINFO.avatarUrl)&&(!set.name||MYPROF)?`<img src="${esc(MEINFO.avatarUrl)}" alt="">`:`<span>${esc(initials(pName()||(MYPROF&&MYPROF.username)||""))}</span>`}
 function renderAvatar(){const a=$("#avatar-btn");if(a)a.innerHTML=avatarHtml()}
+/* Förklaringen visar bara det som gäller just nu och ändras när man slår om. */
+const pubTxt=on=>on?"Alla som är inloggade kan hitta dig, se din profil och följa dig direkt.":"Bara de du godkänner kan följa dig. Den som söker på ditt namn eller din kod hittar dig ändå.";
 function swRow(id,title,sub,on){return `<button type="button" class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
 function renderProfile(){
   if(!set.since){set.since=today();saveSet()}

@@ -70,6 +70,7 @@ Säkerhet och stabil statistik
 
     Kör supabase/stats.sql igen (koden ändras inte) och därefter supabase/varv-3.sql. Kräver filerna ovan. Går att köra igen.
     varv-3.sql städar profildata från användarna och begränsar felrapporter till 300 i timmen.
+    Kör sist supabase/sakerhet.sql. Den låser titel, typ och datum på inlägg, begränsar kommentarer till 30 i timmen och döljer kommentarer mellan personer som har blockerat varandra.
 
 Kopplingar att ansöka om
 

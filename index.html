@@ -1476,7 +1476,7 @@ a.row{color:inherit;text-decoration:none}
     </div>
     <div class="lgv" data-v="rekord" hidden>
     <div class="sechead"><h2>Personliga rekord</h2><button class="linkbtn" id="pr-add">Lägg till</button></div>
-    <div class="prs" id="prs"></div><div class="card" id="prs-empty" hidden><p class="small">Inga rekord än. Lägg till din bästa tid på en station eller en hel Hyrox.</p></div>
+    <div class="prs" id="prs"></div><div class="card" id="prs-empty" hidden><p class="small">Inga rekord än. Lägg till din bästa tid, till exempel på 100 Wall Balls eller 5 km löpning. Rekorden uppdateras också av sig själva när du loggar ett pass där du slår dem.</p></div>
 
     </div>
     <div class="lgv" data-v="medaljer" hidden>
@@ -3218,16 +3218,20 @@ addEventListener("resize",()=>{if(TON)tourStep()});
 function maybeTour(){if(!set.toured&&set.onboarded)setTimeout(()=>{if(!set.toured&&$("#sheet").hidden)startTour()},700)}
 
 /* ============ Rekord ============ */
-const PRKEYS=[["race","Hel Hyrox"],["km","1 km löpning"],["k5","5 km löpning"],...S.map(s=>[s.id,s.n])];
+/* Rekorden gäller en bestämd mängd, till exempel 100 Wall Balls, så att tiderna går att jämföra. Vikten följer klassen. */
+const PRKEYS=[["race","Hel Hyrox"],["km","1 km löpning"],["k5","5 km löpning"],...S.map(s=>[s.id,(s.id==="wall"?"100":s.q)+" "+s.n])];
+function prWeight(k){const x=exStd(k);if(!x||!x.kg)return "";return k==="farm"?`2 × ${fmtKg(x.kg)} kg`:`${fmtKg(x.kg)} kg`}
+const prName=k=>(PRKEYS.find(x=>x[0]===k)||[k,k])[1];
+const prLabel=k=>[prName(k),prWeight(k)].filter(Boolean).join(" · ");
 function renderPRs(){
   const t=planTimes();const tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
   const have=PRKEYS.filter(([k])=>PRS[k]);$("#prs-empty").hidden=have.length>0;$("#pr-add").hidden=have.length===PRKEYS.length;
   $("#prs").innerHTML=have.map(([k,n])=>{const v=PRS[k],d=v-tg[k];
-    return `<button class="pr" data-pr="${k}"><small>${n}</small><b>${fmt(v)}</b>${tg[k]!=null?`<span class="vs ${d<=0?"ahead":"behind"}">${fmtD(d)} mot plan</span>`:""}</button>`}).join("");
+    return `<button class="pr" data-pr="${k}"><small>${esc(prLabel(k))}</small><b>${fmt(v)}</b>${tg[k]!=null?`<span class="vs ${d<=0?"ahead":"behind"}">${fmtD(d)} mot måltiden</span>`:""}</button>`}).join("");
 }
 function openPR(k){
-  const n=(PRKEYS.find(x=>x[0]===k)||[])[1];const v=PRS[k];
-  openSheet(`<div><span class="small">Personligt rekord</span><h2>${n}</h2></div>
+  const n=prName(k),w=prWeight(k);const v=PRS[k];
+  openSheet(`<div><span class="small">Personligt rekord</span><h2>${esc(n)}</h2>${w?`<p class="small">Med ${esc(w)}, vikten för ${esc(divText())}.</p>`:""}<p class="small">Rekordet uppdateras av sig självt när du loggar ett pass där du slår det.</p></div>
    <div class="field"><label for="pr-in">Tid, skriv bara siffror</label><input type="text" id="pr-in" inputmode="numeric" data-tm="${k==="race"?5:4}" placeholder="${k==="race"?"1:29:30":"4:15"}" value="${v?fmt(v):""}"></div>
    <div class="grid2">${v?`<button class="pill ghost" id="pr-del">Ta bort</button>`:"<span></span>"}<button class="pill" id="pr-save">Spara</button></div>`,()=>{
     const inp=$("#pr-in");setTimeout(()=>inp.focus(),320);
@@ -3237,7 +3241,7 @@ function openPR(k){
 }
 $("#prs").onclick=e=>{const b=e.target.closest("[data-pr]");if(b)openPR(b.dataset.pr)};
 $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
-  openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k,n])=>`<button class="row nob" data-pk="${k}"><div><h3>${n}</h3><p>Mål ${fmt(tg[k])}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
+  openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><p class="small">Välj vad du vill lägga in en tid för. Vikterna gäller ${esc(divText())}.</p><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k])=>`<button class="row nob" data-pk="${k}"><div><h3>${esc(prLabel(k))}</h3><p>${tg[k]!=null?"Målet för din måltid är "+fmt(tg[k]):"Din bästa tid"}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
     $("#pr-pick").onclick=e=>{const b=e.target.closest("[data-pk]");if(b)openPR(b.dataset.pk)}})};
 function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));if(v==="pass")try{drawRings(true)}catch(e){}}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
@@ -3263,7 +3267,7 @@ const EX=[
  {id:"chin",n:"Chins",g:3,k:"r"},{id:"pushup",n:"Armhävningar",g:3,k:"r"},{id:"burpee",n:"Burpees",g:3,k:"r"},{id:"boxj",n:"Boxhopp",g:3,k:"r"},{id:"situp",n:"Situps",g:3,k:"r"},{id:"plank",n:"Plankan",g:3,k:"t"}];
 const LGCOLS={d:[["m","Meter"],["t","Tid"]],r:[["r","Reps"]],c:[["c","Kcal"],["t","Tid"]],t:[["t","Tid"]]};
 /* Kolumnerna för ett set. För övningar med vikt och reps kommer vikten först, sedan reps. */
-function colsOf(it){const base=LGCOLS[it.k]||LGCOLS.r;if(!it.w)return base;return it.k==="r"?[["kg","Kg"]].concat(base):base.concat([["kg","Kg"]])}
+function colsOf(it){let base=LGCOLS[it.k]||LGCOLS.r;if(it.k==="r"&&it.st)base=base.concat([["t","Tid"]]);if(!it.w)return base;return it.k==="r"?[["kg","Kg"]].concat(base):base.concat([["kg","Kg"]])}
 const nz=v=>v!=null&&v!==""&&!isNaN(v)&&+v>0;
 const fmtKg=v=>String(Math.round(+v*10)/10).replace(".",",");
 const fmtM=m=>m>=2000&&m%100===0?String(m/1000).replace(".",",")+" km":m+" m";
@@ -3698,10 +3702,10 @@ function bindLive(){const v=$("#live");
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LIVE&&LIVE.open){wake=null;liveWake();liveTick()}})}
 let LVSOON=null;function renderLiveSoon(){clearTimeout(LVSOON);LVSOON=setTimeout(()=>{if(LIVE&&LIVE.open&&!document.activeElement.matches("#live input"))renderLive()},120)}
 /* Rekord räknas om när ett pass ändras eller tas bort */
-function bestFromLogs(k){const std=k==="km"?1000:(exStd(k)||{}).m;if(!std)return null;let best=null;
-  LOGS.forEach(l=>(l.items||[]).forEach(it=>{const key=it.ex==="run"||it.ex==="tread"?"km":it.ex;if(key!==k)return;(it.sets||[]).forEach(x=>{if(nz(x.t)&&+x.m===std&&(best==null||x.t<best))best=x.t})}));return best}
+function bestFromLogs(k){let best=null;
+  LOGS.forEach(l=>(l.items||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&p.k===k&&(best==null||p.t<best))best=p.t})));return best}
 async function fixPRs(oldItems){let ch=false;const keys=new Set();
-  (oldItems||[]).forEach(it=>{const k=it.ex==="run"||it.ex==="tread"?"km":(S.find(x=>x.id===it.ex)?it.ex:null);if(k&&(it.sets||[]).some(x=>nz(x.t)&&Math.round(x.t)===PRS[k]))keys.add(k)});
+  (oldItems||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&Math.round(p.t)===PRS[p.k])keys.add(p.k)}));
   keys.forEach(k=>{const b=bestFromLogs(k);if(b==null)delete PRS[k];else{const nb=Math.round(b);if(!PRS[k]||nb<PRS[k])prDate(k);PRS[k]=nb}ch=true});
   if(ch){await savePRs();try{renderPRs()}catch(e){}}}
 function prefill(o){openLogger({type:o.type,min:o.min,note:o.note,plan:o.plan,stations:o.stations,kicker:"Från din plan",fresh:o.fresh,forLive:o.forLive});if(o.start&&LG.items.length)startLive()}
@@ -5043,7 +5047,7 @@ function renderHK(){const el=$("#h-hk");if(!el)return;HK_NEW=HK_NEW.filter(w=>!h
   const b=$("#hk-open");if(b)b.onclick=openHK}
 const HK_ICON=`<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 20.5s-7.5-4.4-7.5-10.2A4.3 4.3 0 0 1 12 7.7a4.3 4.3 0 0 1 7.5 2.6c0 5.8-7.5 10.2-7.5 10.2z"/></svg>`;
 function hkEntry(w){return {date:iso(new Date(w.startDate)),type:hkVarvType(w),min:hkMin(w),rpe:3,stations:[],items:hkItems(w),note:"",created:new Date(w.startDate).getTime(),src:"health",ext:hkKey(w)}}
-async function hkAdd(w){const e=hkEntry(w);const ok=await addLog(e);if(!ok)return false;try{onLogged(e)}catch(x){}HK_NEW=HK_NEW.filter(x=>hkKey(x)!==e.ext);renderHK();return true}
+async function hkAdd(w){const e=hkEntry(w);const ok=await addLog(e);if(!ok)return false;try{onLogged(e)}catch(x){}try{checkPRs(e.items)}catch(x){}HK_NEW=HK_NEW.filter(x=>hkKey(x)!==e.ext);renderHK();return true}
 function hkSkip(w){set.health.skip=(set.health.skip||[]).concat(hkKey(w)).slice(-300);saveSet();HK_NEW=HK_NEW.filter(x=>hkKey(x)!==hkKey(w));renderHK()}
 function openHK(){if(!HK_NEW.length){closeSheet();return}
   const rows=()=>HK_NEW.map((w,i)=>`<div class="hk-row"><div><b>${esc(hkLabel(w))}</b><small>${esc(hkWhen(w))} · ${esc(hkFacts(w))}</small><small>Sparas som ${esc(hkVarvType(w))}${w.sourceName?" · från "+esc(w.sourceName):""}</small></div>
@@ -5383,13 +5387,20 @@ function openExercise(id){const e=exStats().find(x=>x.ex===id);if(!e)return;
    <div class="group">${e.ses.slice().reverse().slice(0,30).map(x=>`<div class="row"><div class="badge">${new Date(x.date+"T12:00:00").getDate()}<br>${MON[new Date(x.date+"T12:00:00").getMonth()]}</div><div><h3>${esc(itemTxt(x.it).replace(x.it.n+" ","")||x.it.n)}</h3>${x.m&&e.best&&x.m.v===e.best.v?'<p style="color:var(--green)">Bästa hittills</p>':""}</div><span></span></div>`).join("")}</div>`);
 }
 /* Rekord från loggade pass */
+/* Ett set räknas som rekord när det har en tid och rätt mängd: 1 km eller 5 km löpning, stationens sträcka eller 100 wall balls.
+   Ett par procent längre godtas, eftersom klockor mäter lite olika. En lättare vikt än klassens räknas inte. */
+function prOfSet(it,x){if(!it||!x||!nz(x.t))return null;const t=+x.t;
+  if(it.ex==="run"||it.ex==="tread"){const m=+x.m||0;if(m>=1000&&m<=1030&&t>=120)return {k:"km",t};if(m>=5000&&m<=5150&&t>=600)return {k:"k5",t};return null}
+  if(!S.find(s=>s.id===it.ex))return null;const std=exStd(it.ex)||{};
+  if(nz(x.kg)&&std.kg&&+x.kg<std.kg)return null;
+  if(it.ex==="wall")return +x.r>=100&&+x.r<=105&&t>=60?{k:"wall",t}:null;
+  return std.m&&+x.m>=std.m&&+x.m<=std.m*1.03&&t>=10?{k:it.ex,t}:null}
 function prFromItems(items){const out=[];
-  (items||[]).forEach(it=>{const key=it.ex==="run"||it.ex==="tread"?"km":(S.find(s=>s.id===it.ex)?it.ex:null);if(!key)return;
-    const std=key==="km"?1000:(exStd(it.ex)||{}).m;if(!std)return;
-    (it.sets||[]).forEach(s=>{if(nz(s.t)&&+s.m===std&&(!PRS[key]||s.t<PRS[key])&&(!out.find(o=>o.k===key)||s.t<out.find(o=>o.k===key).t)){const o=out.find(o=>o.k===key);if(o)o.t=s.t;else out.push({k:key,t:+s.t,n:key==="km"?"1 km löpning":it.n})}})});
+  (items||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(!p||(PRS[p.k]&&p.t>=PRS[p.k]))return;
+    const o=out.find(o=>o.k===p.k);if(o){if(p.t<o.t)o.t=p.t}else out.push({k:p.k,t:p.t,n:prName(p.k)})}));
   return out}
 async function checkPRs(items){const nw=prFromItems(items);if(!nw.length)return;
-  nw.forEach(o=>{PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
+  nw.forEach(o=>{prDate(o.k);PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
   const o=nw[0];setTimeout(()=>{toast(`Nytt rekord: ${o.n} ${fmt(o.t)}`);HAPTIC("success")},900);
   nw.forEach(x=>postActivity("rekord",x.n,fmt(x.t)));
 }

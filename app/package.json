@@ -1,7 +1,7 @@
 {
   "name": "varv-app",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "VARV. som app för iPhone och Android, byggd med Capacitor av samma filer som webbsidan.",
   "scripts": {
     "web": "node scripts/kopiera-webb.mjs",

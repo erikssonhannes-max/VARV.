@@ -3281,9 +3281,12 @@ function lastItem(id,skip){const l=sortedLogs().find(x=>x.id!==skip&&x.items&&x.
 let EXLIB=[];let EXLIBP=null;
 const EXMUSC=[["brost","Bröst"],["rygg","Rygg"],["axlar","Axlar"],["biceps","Biceps"],["triceps","Triceps"],["ben","Ben"],["mage","Mage"],["underarmar","Underarmar"]];
 function loadExLib(){if(!EXLIBP)EXLIBP=fetch("data/exercises.json").then(r=>r.ok?r.json():[]).then(a=>{EXLIB=a.map(([id,n,m,w,k])=>({id,n,m,w,k,g:2,_n:exNorm(n)}));if(LG&&LG.view==="pick")renderLG()}).catch(()=>{EXLIBP=null});return EXLIBP}
-const EXSYN=[["en arm","one arm"],["enarms","one arm"],["ett ben","one leg"],["single","one"],["unilateral","one"],["triceps","tricep"],["biceps","bicep"],["push down","pushdown"],["pull down","pulldown"],["push up","pushup"],["pull up","pullup"],["sit up","situp"],["step up","stepup"],["chin up","chinup"],["db ","dumbbell "],["bb ","barbell "],["hantlar","dumbbell"],["hantel","dumbbell"],["skivstång","barbell"],["kabelmaskin","cable"],["kabel","cable"],["maskin","machine"],["knäböj","squat"],["marklyft","deadlift"],["bänkpress","bench press"],["utfall","lunge"],["skivstångsrodd","barbell row"],["rodd","row"],["axelpress","shoulder press"],["militärpress","shoulder press"],["latsdrag","lat pulldown"],["vadpress","calf"],["vadlyft","calf raise"],["benpress","leg press"],["bencurl","leg curl"],["lårcurl","leg curl"],["benspark","leg extension"],["armhävning","pushup"],["höftlyft","hip thrust"],["sidolyft","lateral raise"],["plankan","plank"],["magrulle","ab wheel"],["situps","situp"],["crunches","crunch"],["rygglyft","back extension"]];
+const EXSYN=[["flyes","fly"],["flies","fly"],["flye","fly"],["en arm","one arm"],["enarms","one arm"],["ett ben","one leg"],["single","one"],["unilateral","one"],["triceps","tricep"],["biceps","bicep"],["push down","pushdown"],["pull down","pulldown"],["push up","pushup"],["pull up","pullup"],["sit up","situp"],["step up","stepup"],["chin up","chinup"],["db ","dumbbell "],["bb ","barbell "],["hantlar","dumbbell"],["hantel","dumbbell"],["skivstång","barbell"],["kabelmaskin","cable"],["kabel","cable"],["maskin","machine"],["knäböj","squat"],["marklyft","deadlift"],["bänkpress","bench press"],["utfall","lunge"],["skivstångsrodd","barbell row"],["rodd","row"],["axelpress","shoulder press"],["militärpress","shoulder press"],["latsdrag","lat pulldown"],["vadpress","calf"],["vadlyft","calf raise"],["benpress","leg press"],["bencurl","leg curl"],["lårcurl","leg curl"],["benspark","leg extension"],["armhävning","pushup"],["höftlyft","hip thrust"],["sidolyft","lateral raise"],["plankan","plank"],["magrulle","ab wheel"],["situps","situp"],["crunches","crunch"],["rygglyft","back extension"]];
 function exNorm(s){s=" "+String(s).toLowerCase().replace(/[-–()'’,]/g," ").replace(/\s+/g," ").trim()+" ";EXSYN.forEach(([a,b])=>{s=s.split(a).join(b)});return s.replace(/\s+/g," ").trim()}
-function exDesc(id){const x=EX.find(e=>e.id===id)||EXLIB.find(e=>e.id===id);if(x)return x;for(const l of LOGS)for(const i of (l.items||[]))if(i.ex===id)return {id,n:i.n,k:i.k,w:i.w,st:i.st,g:9};return null}
+/* Egna övningar sparas i kontot: namn, muskelgrupp och typ. */
+const EXMINE=()=>(Array.isArray(set.customEx)?set.customEx:[]).filter(x=>x&&x.id&&x.n).map(x=>Object.assign({g:9,mine:1},x));
+const CUSTOM_KINDS=[["rw","Vikt och reps"],["r","Bara reps"],["t","Tid"],["d","Distans"]];
+function exDesc(id){const x=EX.find(e=>e.id===id)||EXMINE().find(e=>e.id===id)||EXLIB.find(e=>e.id===id);if(x)return x;for(const l of LOGS)for(const i of (l.items||[]))if(i.ex===id)return {id,n:i.n,k:i.k,w:i.w,st:i.st,g:9};return null}
 function newItem(x,empty){
   const base={ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0};
   if(empty)return Object.assign(base,{sets:[{}]});
@@ -3470,6 +3473,7 @@ function lgSum(){const n=LG.items.length,s=LG.items.reduce((a,i)=>a+(i.sets||[])
   return [n?`${n} ${n===1?"övning":"övningar"}`:"",s?`${s} set`:"",`${LG.min} min`].filter(Boolean).join(" · ")}
 function renderLG(){const r=$("#lg");if(!r)return;
   if(LG.view==="pick"){renderPick(r);return}
+  if(LG.view==="custom"){renderCustom(r);return}
   const td=today(),yd=lgYest(),other=LG.date!==td&&LG.date!==yd;
   const dl=new Date(LG.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"});
   const ty=lgType(),last=sortedLogs().find(l=>l.items&&l.items.length&&l.id!==LG.edit);
@@ -3498,6 +3502,13 @@ function renderLG(){const r=$("#lg");if(!r)return;
      ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Starta nu</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button><button type="button" class="linkbtn" id="lg-share" style="justify-self:center">Dela passet</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
      ${LG.edit?`<button type="button" class="pill ghost block" id="lg-del"${LG.delArm?' style="color:var(--bad)"':""}>${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}</div>`;
 }
+function renderCustom(r){const c=LG.cx||(LG.cx={n:"",m:null,k:"rw"});
+  r.innerHTML=`<div><button type="button" class="linkbtn" id="lg-cback">‹ Tillbaka</button><h2>Egen övning</h2><p class="small">Övningen sparas i ditt konto och finns sedan i sökningen.</p></div>
+   <div class="field"><label for="lg-cn">Namn</label><input type="text" id="lg-cn" maxlength="40" autocomplete="off" placeholder="Till exempel Cable Fly" value="${esc(c.n)}"></div>
+   <div class="field"><span class="lbl">Muskelgrupp som används mest</span><div class="chips" id="lg-cm">${EXMUSC.concat([["hel","Helkropp"]]).map(([k,l])=>`<button type="button" class="chip" data-cm="${k}" aria-pressed="${c.m===k}">${l}</button>`).join("")}</div></div>
+   <div class="field"><span class="lbl">Vad loggar du?</span><div class="seg" id="lg-ck">${CUSTOM_KINDS.map(([k,l])=>`<button type="button" data-ck="${k}" aria-pressed="${c.k===k}">${l}</button>`).join("")}</div></div>
+   <p class="small au-msg bad" id="lg-cmsg" role="status" aria-live="polite"></p>
+   <div class="lg-foot"><button type="button" class="pill block" id="lg-csave">Spara och lägg till</button></div>`}
 function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new Set(LG.items.map(i=>i.ex));
   const recent=[];sortedLogs().forEach(l=>(l.items||[]).forEach(i=>{if(!recent.includes(i.ex))recent.push(i.ex)}));
   const row=x=>{const on=LG.pick.includes(x.id),has=added.has(x.id);
@@ -3505,13 +3516,16 @@ function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new S
   let body="";
   if(q){const all=[...EX];recent.forEach(id=>{if(!all.find(e=>e.id===id)){const d=exDesc(id);if(d)all.push(d)}});
     const toks=exNorm(q).split(" ").filter(Boolean),hit=x=>{const n=x._n||(x._n=exNorm(x.n));return toks.every(t=>n.includes(t))};
+    EXMINE().forEach(c=>{if(!all.find(e=>e.id===c.id))all.unshift(c)});
     const m=all.filter(hit).concat(EXLIB.filter(hit));const cap=m.slice(0,60);
-    body=(m.length?`<div class="lg-grp">${cap.map(row).join("")}</div>${m.length>60?`<p class="small">Visar 60 av ${m.length}. Skriv mer för att hitta rätt.</p>`:""}`:"")+(all.concat(EXLIB).some(x=>x.n.toLowerCase()===q)?"":`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Lägg till ”${esc(LG.q.trim())}” som egen övning</span><span class="lg-ck">+</span></button></div>`)}
-  else{const rc=recent.slice(0,6).map(exDesc).filter(Boolean);
+    body=(m.length?`<div class="lg-grp">${cap.map(row).join("")}</div>${m.length>60?`<p class="small">Visar 60 av ${m.length}. Skriv mer för att hitta rätt.</p>`:""}`:"")+(all.concat(EXLIB).some(x=>x.n.toLowerCase()===q)?"":`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Skapa ”${esc(LG.q.trim())}” som egen övning</span><span class="lg-ck">+</span></button></div>`)}
+  else{const rc=recent.slice(0,6).map(exDesc).filter(Boolean),mine=EXMINE();
     if(rc.length)body+=`<span class="lbl">Senast</span><div class="lg-grp">${rc.map(row).join("")}</div>`;
+    if(mine.length)body+=`<span class="lbl">Egna övningar</span><div class="lg-grp">${mine.map(row).join("")}</div>`;
     EXG.forEach((g,gi)=>{body+=`<span class="lbl">${g}</span><div class="lg-grp">${EX.filter(x=>x.g===gi).map(row).join("")}</div>`;
       if(gi===2&&EXLIB.length){body+=`<span class="lbl">Fler styrkeövningar (${EXLIB.length})</span><div class="chips">${EXMUSC.map(([k,l])=>`<button type="button" class="chip" data-musc="${k}" aria-pressed="${LG.musc===k}">${l}</button>`).join("")}</div>`;
-        if(LG.musc)body+=`<div class="lg-grp">${EXLIB.filter(x=>x.m===LG.musc).map(row).join("")}</div>`}})}
+        if(LG.musc)body+=`<div class="lg-grp">${EXMINE().filter(x=>x.m===LG.musc).concat(EXLIB.filter(x=>x.m===LG.musc)).map(row).join("")}</div>`}})
+    body+=`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Hittar du inte övningen? Skapa en egen</span><span class="lg-ck">+</span></button></div>`}
   const n=LG.pick.length;
   r.innerHTML=`<div><button type="button" class="linkbtn" id="lg-back">‹ Tillbaka</button><h2>Välj övningar</h2></div>
    <input type="search" id="lg-q" placeholder="Sök, till exempel single arm tricep pushdown" value="${esc(LG.q)}" autocomplete="off" aria-label="Sök övning">
@@ -3533,8 +3547,20 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
   if(d.musc){LG.musc=LG.musc===d.musc?null:d.musc;renderLG();const c=document.querySelector(`#lg [data-musc="${d.musc}"]`);if(c)c.scrollIntoView({block:"center"});return}
   if(d.pk){const i=LG.pick.indexOf(d.pk);if(i<0)LG.pick.push(d.pk);else LG.pick.splice(i,1);t.setAttribute("aria-pressed",i<0);t.querySelector(".lg-ck").textContent=i<0?"✓":"";
     const b=$("#lg-addsel"),n=LG.pick.length;b.disabled=!n;b.textContent=n?`Lägg till ${n} ${n===1?"övning":"övningar"}`:"Välj övningar";return}
-  if(d.custom!==undefined){const nm=LG.q.trim().slice(0,40);if(!nm)return;const id="c-"+nm.toLowerCase().replace(/[^a-zåäö0-9]+/g,"-");
-    if(!LG.items.some(i=>i.ex===id))LG.items.push(Object.assign(newItem({id,n:nm,k:"r",w:1}),{}));LG.view="main";if(LG.live){saveLive();closeSheet();renderLive();return}renderLG();return}
+  if(d.custom!==undefined){LG.cx={n:LG.q.trim().slice(0,40),m:null,k:"rw"};LG.view="custom";renderLG();$("#sheet").scrollTop=0;setTimeout(()=>{const i=$("#lg-cn");if(i&&!i.value)i.focus()},50);return}
+  if(t.id==="lg-cback"){LG.view="pick";renderLG();return}
+  if(d.cm){LG.cx.m=d.cm;$$("#lg-cm [data-cm]").forEach(b=>b.setAttribute("aria-pressed",b===t));$("#lg-cmsg").textContent="";return}
+  if(d.ck){LG.cx.k=d.ck;$$("#lg-ck [data-ck]").forEach(b=>b.setAttribute("aria-pressed",b===t));return}
+  if(t.id==="lg-csave"){const c=LG.cx,nm=($("#lg-cn").value||"").replace(/\s+/g," ").trim().slice(0,40),msg=$("#lg-cmsg");
+    if(nm.length<2){msg.textContent="Skriv ett namn på övningen.";$("#lg-cn").focus();return}
+    if(!c.m){msg.textContent="Välj vilken muskelgrupp övningen tränar mest.";return}
+    const slug=nm.toLowerCase().replace(/[^a-zåäöé0-9]+/g,"-").replace(/^-|-$/g,"")||"ovning",mine=Array.isArray(set.customEx)?set.customEx.slice():[];
+    let x=mine.find(e=>e.n.toLowerCase()===nm.toLowerCase());
+    if(!x){if(mine.length>=200){msg.textContent="Du har 200 egna övningar. Ta bort någon först.";return}
+      let id="c-"+slug,n2=2;while(mine.some(e=>e.id===id)||EX.some(e=>e.id===id))id="c-"+slug+"-"+(n2++);
+      x={id,n:nm,m:c.m,k:c.k==="rw"?"r":c.k,w:c.k==="rw"?1:0};mine.push(x);set.customEx=mine;saveSet()}
+    if(!LG.items.some(i=>i.ex===x.id))LG.items.push(newItem(Object.assign({g:9},x)));LG.cx=null;LG.q="";LG.view="main";HAPTIC("success");toast(`${nm} är sparad som egen övning`);
+    if(LG.live){saveLive();closeSheet();renderLive();return}renderLG();return}
   if(d.day){LG.date=d.day;renderLG();return}
   if(d.min){LG.min=Math.max(5,Math.min(600,LG.min+ +d.min));$("#lg-minv").value=LG.min;$("#lg-sum").textContent=lgSum();return}
   if(d.quick){
@@ -3555,6 +3581,7 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
 }
 function lgInput(e){const t=e.target;
   if(t.id==="lg-tplname"){LG.tplName=t.value;return}
+  if(t.id==="lg-cn"){if(LG.cx)LG.cx.n=t.value;return}
   if(t.id==="lg-q"){LG.q=t.value;const pos=t.selectionStart;renderLG();const q=$("#lg-q");q.focus();try{q.setSelectionRange(pos,pos)}catch(x){}return}
   if(t.id==="lg-note"){LG.note=t.value;return}
   if(t.id==="lg-minv"){const v=parseInt(t.value,10);if(v>0)LG.min=Math.min(600,v);$("#lg-sum").textContent=lgSum();return}
@@ -4482,7 +4509,7 @@ $("#pf-exp").onclick=async()=>{const data=JSON.stringify({app:"VARV.",v:1,export
   try{const r=await DL.save({filename:`varv-data-${today()}.json`,data});if(r&&r.status==="saved")toast("Dina data är exporterade")}catch(err){saveErr(err)}};
 $("#pf-imp-file").addEventListener("change",async e=>{const f=e.target.files&&e.target.files[0];if(!f)return;
   try{const d=JSON.parse(await f.text());if(!d||d.app!=="VARV."||!Array.isArray(d.logs))throw 0;
-    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace","bench"];
+    const keep=["target","date","days","per","fmt","k","g","age","maxhr","test","name","split","cues","since","hour","planStart","onboarded","height","level","sex","goals","pastRaces","weight","vo2","rhr","pace","bench","customEx"];
     keep.forEach(k=>{if(k==="name"&&set.name)return;if(d.settings&&d.settings[k]!==undefined)set[k]=d.settings[k]});set.per=(set.days||[]).length||set.per;saveSet();
     let n=0;for(const l of d.logs){if(!l||!l.date||LOGS.some(x=>x.id===l.id))continue;const b=Object.assign({},l);const id=b.id||("l"+Date.now()+n);delete b.id;
       if(mode==="db"&&col){try{await col.doc(id).set(b)}catch(err){}}else LOGS.push(Object.assign({id},b));n++}

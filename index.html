@@ -3752,7 +3752,8 @@ function renderLog(){
 function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
   const mon=new Date(weekStart(today())+"T12:00:00"),td=today(),P=progress(),rd=set.restDays||{};let rests=0;
   el.innerHTML=DN.map((n,i)=>{const d=new Date(mon);d.setDate(d.getDate()+i);const ds=iso(d);
-    const pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),dn=LOGS.some(l=>l.date===ds),r=rd[ds];if(r&&!dn)rests++;
+    /* En dag som har passerat utan något loggat pass räknas som vilodag. Aktiv vila markerar man själv. */
+    const pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),dn=LOGS.some(l=>l.date===ds),r=rd[ds]||(!dn&&ds<td&&(!set.since||ds>=set.since)?{k:"rest",auto:1}:null);if(r&&!dn)rests++;
     const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
     return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
   const st=weekStats().streak;

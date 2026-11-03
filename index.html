@@ -797,7 +797,7 @@ a.row{color:inherit;text-decoration:none}
 .k-lopp .po-k{color:var(--link)}.k-rekord .po-k{color:var(--good)}
 .po-big{font-size:clamp(2.2rem,10vw,2.9rem);font-weight:800;letter-spacing:-.05em;line-height:1;font-variant-numeric:tabular-nums;margin-bottom:6px}
 .po-t{font-size:1rem;font-weight:600;letter-spacing:-.02em}
-.po-d{font-size:.86rem;color:var(--muted);line-height:1.4}
+.po-d{font-size:.86rem;color:var(--muted);line-height:1.4;white-space:pre-line}
 .po-pop{position:absolute;inset:0;display:grid;place-items:center;opacity:0;pointer-events:none}
 .po-pop svg{width:80px;height:80px;fill:var(--accent);stroke:#fff;stroke-width:1.2;filter:drop-shadow(0 8px 22px rgba(0,0,0,.25))}
 .po-a{display:flex;align-items:center;gap:4px;padding:6px 10px 2px}
@@ -831,7 +831,7 @@ a.row{color:inherit;text-decoration:none}
 .po-h{justify-content:space-between}.po-who2{display:flex;align-items:center;gap:10px;cursor:pointer;min-height:44px;min-width:0}
 .po-del{font-size:.82rem}.po-own-acts{display:flex;gap:14px;flex:none}
 .po-img{padding:0;min-height:0;background:var(--card)}.po-img img{width:100%;height:auto;max-height:85vh;object-fit:cover;display:block;-webkit-user-drag:none}
-.po-cap{padding:0 16px 10px;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere}.po-cap b{font-weight:600}
+.po-cap{padding:0 16px 10px;font-size:.9rem;line-height:1.4;overflow-wrap:anywhere;white-space:pre-line}.po-cap b{font-weight:600}
 .cp-pick{display:grid;place-items:center;aspect-ratio:4/3;border-radius:16px;background:var(--tile);border:1.5px dashed var(--hair);cursor:pointer;overflow:hidden;position:relative}
 .cp-pick.has{border:0}.cp-pick img{width:100%;height:100%;object-fit:cover}
 .cp-empty{display:grid;justify-items:center;gap:4px;color:var(--muted);text-align:center;padding:20px}.cp-empty svg{width:34px;height:34px;color:var(--ink)}.cp-empty b{color:var(--ink);font-weight:600}.cp-empty small{font-size:.82rem}
@@ -4882,11 +4882,11 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
    ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:`<div class="po-media k-${k}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-k">${fdIcon(k)}${esc(FD_KIND[k])}</span>
      ${big?`<b class="po-big">${esc(big)}</b>`:""}
-     <span class="po-t">${esc(a.title||"")}</span>${a.detail?`<span class="po-d">${richText(a.detail,a.mentions)}</span>`:""}
+     <span class="po-t">${esc(a.title||"")}</span>${a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):a.detail;return `<span class="po-d">${richText(rest,a.mentions)}</span>`})():""}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}</button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
-   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText([a.title==="Delade en bild"?"":a.title,a.detail].filter(Boolean).join(" · "),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
+   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText((()=>{const dl=String(a.detail||"").split("\n");return [[a.title==="Delade en bild"?"":a.title,dl[0]].filter(Boolean).join(" · ")].concat(dl.slice(1)).join("\n")})(),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
 const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;
 const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");
@@ -4965,10 +4965,19 @@ function fdCard(p,top,depth){const why=+p.common?`${p.common} av dem du följer 
   </div>`}
 
 /* ============ Aktivitet för vänner ============ */
-async function postActivity(kind,title,detail){
+/* Texten får vara 600 tecken när supabase/inlagg-text.sql är körd. Annars skickas en kortare version på högst 160 tecken. */
+async function postActivity(kind,title,detail,short){
   if(!SB||!SBUSER)return;
-  try{await SB.from("activity").insert({kind,title:String(title).slice(0,80),detail:detail?String(detail).slice(0,160):null})}catch(e){}
+  const ins=d=>SB.from("activity").insert({kind,title:String(title).slice(0,80),detail:d?String(d).slice(0,600):null});
+  try{const {error}=await ins(detail);if(error&&short!==undefined&&String(detail||"").length>160)await ins(String(short||"").slice(0,160))}catch(e){}
 }
+/* Passet i flödet: tiden på första raden och en övning per rad. */
+function actDetail(e,max,compact){const head=`${e.min} min`,its=(e.items||[]),lines=its.map(it=>compact?`${it.n} · ${(it.sets||[]).length} set`:itemTxt(it));
+  const out=[head];let used=head.length;
+  for(let i=0;i<lines.length;i++){const left=lines.length-i,tail=left>1?`och ${left-1} ${left-1===1?"övning":"övningar"} till`:"";
+    if(used+1+lines[i].length+(tail?tail.length+1:0)>max){out.push(`och ${left} ${left===1?"övning":"övningar"} till`);break}
+    out.push(lines[i]);used+=1+lines[i].length}
+  return out.join("\n")}
 /* ============ Apple Hälsa och Health Connect ============ */
 /* I appen läser VARV. pass som klockan har sparat i Hälsa (iPhone) eller Health Connect (Android).
    Ingenting sparas i kontot förrän användaren själv lägger till passet. Tillägget: @capgo/capacitor-health. */
@@ -5056,10 +5065,7 @@ function openHKSettings(){if(!hkOn()){hkConnect();return}
       Object.assign(set,b);saveSet();renderProfile();toast(`${k.length} värden är uppdaterade`)});
     $("#hk-off").onclick=()=>{set.health=Object.assign({},set.health,{on:false});HK_NEW=[];saveSet();renderHK();closeSheet();renderProfile();toast(HK_NAME()+" är frånkopplad")}})}
 document.addEventListener("visibilitychange",()=>{if(!document.hidden&&hkOn()&&Date.now()-HK_AT>60000)hkSync(false)});
-function onLogged(e){
-  const parts=[`${e.min} min`];if(e.items&&e.items.length)parts.push(e.items.slice(0,2).map(itemTxt).join(", ")+(e.items.length>2?` och ${e.items.length-2} till`:""));
-  postActivity("pass",e.type,parts.join(" · "));
-}
+function onLogged(e){postActivity("pass",e.type,actDetail(e,600),actDetail(e,160,true))}
 
 /* ============ Notiser ============ */
 const PUSHKEY=(window.VARV_SUPABASE&&window.VARV_SUPABASE.pushKey)||"BKngCUNxkMao_gb9Zlpo97GmuYHNvhWmOXMg9AIuwPQEi9frf1S9awn-wFB8ERsy7-LqlU3ctAUwQITxpF_n_Po";

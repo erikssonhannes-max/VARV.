@@ -3617,12 +3617,15 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
         :`<button type="button" class="lv-act chk${s.done?" on":""}" data-ldone="${i}:${j}" aria-pressed="${!!s.done}" aria-label="Set ${j+1} klart">✓</button>`;
        return `<div class="lv-set${s.done?" done":""}" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>`<input type="text" enterkeyhint="done" data-li="${i}" data-lj="${j}" data-lf="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${liveVal(c[0],s[c[0]])}" aria-label="${c[1]}, set ${j+1}">`).join("")}${act}</div>`}).join("")}
      <div class="lv-setbtns"><button type="button" class="linkbtn" data-ladd="${i}">+ Lägg till set</button>${it.sets.length>1&&!it.sets[it.sets.length-1].done?`<button type="button" class="linkbtn lv-muted" data-lsub="${i}">Ta bort sista setet</button>`:""}</div></div>`}).join("");
+  /* Listan ritas om när ett set bockas av. Läget i listan sparas så att man stannar där man är. */
+  const lvOld=v.querySelector(".lv-list"),lvTop=lvOld?lvOld.scrollTop:0;
   v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="small">${done} av ${all} set</span><button type="button" class="linkbtn" id="lv-pause">${LIVE.pausedAt?"Fortsätt":"Pausa"}</button></div>
     <div class="lv-clock"><b id="lv-time">${fmt(liveElapsed())}</b><div class="progress lv-prog"><i style="width:${all?Math.round(done/all*100):0}%"></i></div></div>
     <div class="lv-list">${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}${list}<button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>
       <button type="button" class="linkbtn lv-cancel" id="lv-cancel">${LIVEARM==="cancel"?"Tryck igen för att slänga passet":"Avbryt passet"}</button></div>
     <div class="lv-foot"><div class="lv-rest" id="lv-rest" hidden><span>Vila</span><b id="lv-rest-t"></b><button type="button" data-lrest="-15" aria-label="15 sekunder kortare">−15</button><button type="button" data-lrest="15" aria-label="15 sekunder längre">+15</button><button type="button" data-lrest="0">Hoppa över</button></div>
       <button type="button" class="pill block" id="lv-end">Avsluta passet</button></div>`;
+  if(lvTop){const nl=v.querySelector(".lv-list");if(nl)nl.scrollTop=lvTop}
   liveTick()}
 function liveRest(){const sec=+set.restSec||90;LIVE.rest={until:Date.now()+sec*1000,dur:sec}}
 function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));

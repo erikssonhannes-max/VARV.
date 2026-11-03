@@ -424,6 +424,13 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .howto p{color:var(--muted);font-size:.93rem;line-height:1.45}
 .pg-tabs{margin:0}
 .pg-chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 -2px;padding:0 2px}
+.pg-chips.wrap{flex-wrap:wrap;overflow:visible}
+.pg-scroll{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:32px;cursor:grab}
+.pg-scroll.end{-webkit-mask-image:none;mask-image:none}
+#pgp-list .check[aria-checked="true"] .lab{text-decoration:none;opacity:1;color:inherit}
+.pg-pick{color:var(--link);border-style:dashed}
+.pg-grid{stroke:var(--hair);stroke-width:1;opacity:.6}
+.pg-base{stroke:var(--hair);stroke-width:1}
 .pg-chips::-webkit-scrollbar{display:none}
 .pg-chips .chip{flex:none}
 .pg-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
@@ -433,7 +440,6 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .pg-svg text{fill:var(--muted);font-size:10.5px;font-family:var(--f)}
 .pg-hit{cursor:pointer;outline:none}
 .pg-bar{fill:color-mix(in srgb,var(--accent) 38%,var(--hair))}
-.pg-zero{fill:var(--hair)}
 .pg-hit.on .pg-bar{fill:var(--accent)}
 .pg-hit.on text{fill:var(--ink);font-weight:600}
 .pg-hit:focus-visible .pg-bar,.pg-hit:focus-visible .pg-dot{stroke:var(--link);stroke-width:2}
@@ -1281,7 +1287,7 @@ a.row{color:inherit;text-decoration:none}
     <p class="small" id="h-med" style="margin-top:10px"></p>
 
     <div class="sechead"><h2>Din utveckling</h2><a href="#logg" data-lg="form">Statistik</a></div>
-    <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din utveckling och nivå"></a>
+    <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din utveckling"></a>
 
     <div class="sechead"><h2>Tävlingar nära dig</h2><a href="#race" data-tv-go="kal">Alla tävlingar</a></div>
     <div class="near" id="h-next"></div>
@@ -3026,7 +3032,7 @@ async function renderComm(){
   $("#lb-seg").onclick=e=>{const b=e.target.closest("[data-lb]");if(!b)return;LBV=b.dataset.lb;renderComm()};
 }
 $("#comm").addEventListener("click",e=>{const b=e.target.closest("[data-person]");if(!b)return;const id=b.dataset.person;
-  if(id===ME){$("#lvl-btn")&&openLevels();return}
+  if(id===ME){openLevels();return}
   const d=BOARD[id];const isP=set.partner===id,isF=(set.friends||[]).includes(id),me=boardDoc();
   const cmp=(lbl,a,b,hi)=>{const w=hi===undefined?0:(a>b?1:b>a?2:0);return `<span>${lbl}</span><b class="${w===1?"win":""}">${hi==="t"?TIERS[a].n:a}</b><b class="${w===2?"win":""}">${hi==="t"?TIERS[b].n:b}</b>`};
   openSheet(`<div><span class="small">${isF?"Vän":"Träningskompis"}</span><h2>${esc(pname(id))}</h2>${d?`<p class="small">${esc(d.div||"")}${num(d.race)?" · rekord "+fmt(num(d.race)):""}${num(d.target)?" · måltid "+fmtHM(num(d.target)):""}</p>`:""}</div>
@@ -3095,99 +3101,122 @@ function tierHTML(t,sz,shine){return `<div class="med ${sz||"sm"}${shine?" shine
 function dshort(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(".","")}
 function pathOf(pts){return pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}
 function lenOf(pts){let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return Math.ceil(s)+2}
-/* Din utveckling: ett diagram man kan trycka i. Pass och tid per vecka, tempo på stationerna och beräknat max i styrkeövningar. */
+/* Din utveckling: ett diagram man kan trycka i. Visar bara det som är loggat: pass och tid per vecka, snittempo på stationerna och tyngsta vikten i styrkeövningar. */
 let PGV={tab:"pass",st:null,lift:null,sel:null};
 const PG_TABS=[["pass","Pass"],["tid","Tid"],["st","Stationer"],["sty","Styrka"]];
 const pgMin=m=>{m=Math.round(m);const h=Math.floor(m/60),r=m%60;return h?`${h} h${r?" "+r+" min":""}`:`${r} min`};
 const pgDay=ds=>new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
+const pgDur=t=>Math.round(t)<60?`${Math.round(t)} s`:fmt(t);
+const pgKg=v=>fmtKg(Math.round(v*2)/2)+" kg";
 function pgWeeks(n){const ws=weekStart(today()),out=[],ix={};
   for(let i=n-1;i>=0;i--){const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*i);ix[iso(d)]=out.length;out.push({ws:iso(d),wk:isoWeek(d),n:0,m:0})}
   LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;const i=ix[weekStart(l.date)];if(i===undefined)return;out[i].n++;out[i].m+=(+l.min||0)});return out}
-/* Bästa tiden per dag på en station. Kortare set räknas om till hela stationens längd, och tider från lopp räknas med. */
-function pgStation(id){const i=S.findIndex(s=>s.id===id),std=exStd(id)||{},pts={};
-  const add=(ds,t,full)=>{if(!(t>0))return;if(!pts[ds]||t<pts[ds].v)pts[ds]={ds,v:t,full}};
-  LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;
-    if(l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16)add(l.date,+l.race.sp[2*i+1],1);
-    (l.items||[]).forEach(it=>{if(!it||it.ex!==id)return;(it.sets||[]).forEach(x=>{if(!nz(x.t)||(nz(x.kg)&&std.kg&&+x.kg<std.kg))return;
-      const done=std.r?+x.r||0:+x.m||0,need=std.r||std.m;if(!need||done<need*.5)return;add(l.date,+x.t*need/done,done>=need*.98)})})});
+/* Snittempo per pass: all loggad tid delat med all loggad sträcka (eller alla reps) på stationen det passet. */
+const PG_UNIT={ski:[500,"500 m"],row:[500,"500 m"],push:[12.5,"12,5 m"],pull:[12.5,"12,5 m"],bbj:[10,"10 m"],farm:[100,"100 m"],lunge:[25,"25 m"],wall:[10,"10 reps"]};
+function pgStation(id){const i=S.findIndex(s=>s.id===id),std=exStd(id)||{},u=PG_UNIT[id][0],byReps=!!std.r,pts={};
+  LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;let t=0,d=0;
+    (l.items||[]).forEach(it=>{if(!it||it.ex!==id)return;(it.sets||[]).forEach(x=>{const q=byReps?+x.r||0:+x.m||0;if(nz(x.t)&&q>0){t+=+x.t;d+=q}})});
+    if(!d&&l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16&&+l.race.sp[2*i+1]>0){t=+l.race.sp[2*i+1];d=byReps?std.r:std.m}
+    if(d>0){const v=t/d*u;if(!pts[l.date]||v<pts[l.date].v)pts[l.date]={ds:l.date,v,t,d}}});
   return Object.values(pts).sort((a,b)=>a.ds.localeCompare(b.ds))}
-/* Styrkeövningar med vikt och reps, flest pass först. */
+/* Alla styrkeövningar med loggad vikt, flest pass först. */
 function pgLifts(){const c={};LOGS.forEach(l=>(l&&l.items||[]).forEach(it=>{if(!it||it.st||S.some(s=>s.id===it.ex)||it.ex==="run"||it.ex==="tread")return;
-    if(!(it.sets||[]).some(x=>nz(x.kg)&&nz(x.r)&&+x.r<=20))return;const k=it.ex;c[k]=c[k]||{id:k,n:it.n,c:0,last:""};c[k].c++;if(l.date>c[k].last)c[k].last=l.date}));
-  return Object.values(c).sort((a,b)=>b.c-a.c||b.last.localeCompare(a.last)).slice(0,6)}
-/* Beräknat max för en repetition (Epley): vikt × (1 + reps/30). */
+    if(!(it.sets||[]).some(x=>nz(x.kg)))return;const k=it.ex;c[k]=c[k]||{id:k,n:it.n,c:0,last:""};c[k].c++;if(l.date>c[k].last)c[k].last=l.date}));
+  return Object.values(c).sort((a,b)=>b.c-a.c||b.last.localeCompare(a.last))}
+function pgFavs(L){const f=(Array.isArray(set.pgFav)?set.pgFav:[]).filter(id=>L.some(x=>x.id===id));return (f.length?f:L.slice(0,3).map(x=>x.id)).map(id=>L.find(x=>x.id===id))}
+/* Tyngsta vikten per pass, oavsett antal reps. */
 function pgLift(id){const pts={};LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;(l.items||[]).forEach(it=>{if(!it||it.ex!==id)return;
-    (it.sets||[]).forEach(x=>{if(!nz(x.kg)||!nz(x.r)||+x.r>20)return;const r=+x.r,v=r===1?+x.kg:+x.kg*(1+r/30);if(!pts[l.date]||v>pts[l.date].v)pts[l.date]={ds:l.date,v,kg:+x.kg,r}})})});
+    (it.sets||[]).forEach(x=>{if(!nz(x.kg))return;const v=+x.kg,r=+x.r||0;if(!pts[l.date]||v>pts[l.date].v||(v===pts[l.date].v&&r>pts[l.date].r))pts[l.date]={ds:l.date,v,r}})})});
   return Object.values(pts).sort((a,b)=>a.ds.localeCompare(b.ds))}
-const pgDur=t=>Math.round(t)<60?`${Math.round(t)} s`:fmt(t);
-const pgKg=v=>fmtKg(Math.round(v*2)/2)+" kg";
-function pgBars(vals,labels,sel,unit){const W=320,T=10,B=118,n=vals.length,gw=W/n,bw=Math.min(18,gw*.56),mx=Math.max(1,...vals)*1.12;
-  let h=`<line x1="0" x2="${W}" y1="${B}" y2="${B}" stroke="var(--hair)"/>`;
-  vals.forEach((v,i)=>{const x=i*gw+gw/2,bh=v?Math.max(3,(B-T)*v/mx):0,on=i===sel;
-    h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(labels[i].a)}: ${esc(unit(v))}"><rect x="${(i*gw).toFixed(1)}" y="0" width="${gw.toFixed(1)}" height="${B+18}" fill="transparent"/>`+
-      (v?`<rect class="pg-bar" x="${(x-bw/2).toFixed(1)}" y="${(B-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5,bw/2).toFixed(1)}"/>`:`<rect class="pg-zero" x="${(x-bw/2).toFixed(1)}" y="${B-2}" width="${bw.toFixed(1)}" height="2" rx="1"/>`)+
+/* Jämna steg för axeln, t.ex. 5 kg, 10 kg eller 0:30. */
+function pgStep(raw,c){for(const s of c)if(s>=raw)return s;let s=c[c.length-1];while(s<raw)s*=2;return s}
+const PG_KGS=[.5,1,2,2.5,5,10,20,25,50,100],PG_SEC=[1,2,5,10,15,20,30,60,120,300,600],PG_N=[1,2,5,10,20,50],PG_M=[15,30,60,120,180,300,600];
+function pgBars(vals,labels,sel,unit,isP){const W=320,L=34,T=8,B=118,n=vals.length,gw=(W-L)/n,bw=Math.min(18,gw*.56),raw=Math.max(1,...vals);
+  const st=pgStep(raw/3,isP?PG_N:PG_M),mx=Math.max(st,Math.ceil(raw/st)*st);
+  let h="";for(let v=0;v<=mx+1e-9;v+=st){const y=B-(B-T)*v/mx;h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="${v?"pg-grid":"pg-base"}"/><text x="${L-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${isP?v:v>=60?(v/60).toLocaleString("sv-SE")+" h":v+" m"}</text>`}
+  vals.forEach((v,i)=>{const x=L+i*gw+gw/2,bh=v?Math.max(3,(B-T)*v/mx):0,on=i===sel;
+    h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(labels[i].a)}: ${esc(unit(v))}"><rect x="${(L+i*gw).toFixed(1)}" y="0" width="${gw.toFixed(1)}" height="${B+18}" fill="transparent"/>`+
+      (v?`<rect class="pg-bar" x="${(x-bw/2).toFixed(1)}" y="${(B-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5,bw/2).toFixed(1)}"/>`:"")+
       (labels[i].t?`<text x="${x.toFixed(1)}" y="${B+15}" text-anchor="middle">${labels[i].t}</text>`:"")+`</g>`});
   return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
-function pgLine(pts,sel,invert,unit){const W=320,T=16,B=112,L=10,R=W-10,n=pts.length,vs=pts.map(p=>p.v);
-  let lo=Math.min(...vs),hi=Math.max(...vs);const pad=Math.max((hi-lo)*.18,hi*.04,1);lo-=pad;hi+=pad;
-  const X=i=>n===1?W/2:L+i/(n-1)*(R-L),Y=v=>invert?T+(v-lo)/(hi-lo)*(B-T):B-(v-lo)/(hi-lo)*(B-T),pp=pts.map((p,i)=>[X(i),Y(p.v)]);
-  let h=`<line x1="0" x2="${W}" y1="${B}" y2="${B}" stroke="var(--hair)"/>`;
+/* Linje över tid. Första punkten hamnar längst till vänster och ungefär en tredjedel upp, så att det syns åt vilket håll det går. Med invert ligger lägre värden (snabbare tider) högre upp. */
+function pgLine(pts,sel,invert,yfmt,steps){const W=320,L=40,R=W-8,T=8,B=112,n=pts.length;
+  const g=v=>invert?-v:v,g0=g(pts[0].v),gs=pts.map(p=>g(p.v)),down=g0-Math.min(...gs),up=Math.max(...gs)-g0,base=Math.abs(pts[0].v);
+  const span=Math.max(3*down,1.5*up,base*.12,steps[0]*3)*1.1,lo=g0-span/3,hi=lo+span;
+  const d0=evD(pts[0].ds),d1=evD(pts[n-1].ds),days=Math.max(1,(d1-d0)/864e5),X=p=>n===1?L+8:L+8+(evD(p.ds)-d0)/864e5/days*(R-L-16),Y=v=>B-(g(v)-lo)/(hi-lo)*(B-T);
+  const pp=pts.map(p=>[X(p),Y(p.v)]),st=pgStep(span/4,steps);let h="";
+  for(let k=Math.ceil(lo/st)*st;k<=hi+1e-9;k+=st){const v=invert?-k:k,y=Y(v);h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="pg-grid"/><text x="${L-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${esc(yfmt(v))}</text>`}
+  h+=`<line x1="${L}" x2="${W}" y1="${B}" y2="${B}" class="pg-base"/>`;
   if(n>1)h+=`<path class="pg-area" d="${pathOf(pp)} L${pp[n-1][0].toFixed(1)} ${B} L${pp[0][0].toFixed(1)} ${B} Z"/><path class="pg-line" d="${pathOf(pp)}"/>`;
-  pts.forEach((p,i)=>{const on=i===sel,[x,y]=pp[i];h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(pgDay(p.ds))}: ${esc(unit(p.v))}"><rect x="${(x-Math.max(14,(R-L)/Math.max(1,n-1)/2)).toFixed(1)}" y="0" width="${(2*Math.max(14,(R-L)/Math.max(1,n-1)/2)).toFixed(1)}" height="${B+18}" fill="transparent"/>`+
-    (on?`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${y.toFixed(1)}" y2="${B}" class="pg-guide"/>`:"")+`<circle class="pg-dot${p.full===0?" est":""}" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on?6:4}"/></g>`});
-  h+=`<text x="${L}" y="${B+15}">${esc(pgDay(pts[0].ds))}</text>${n>1?`<text x="${R}" y="${B+15}" text-anchor="end">${esc(pgDay(pts[n-1].ds))}</text>`:""}`;
+  pts.forEach((p,i)=>{const on=i===sel,[x,y]=pp[i],a=i?(pp[i-1][0]+x)/2:L,b=i<n-1?(x+pp[i+1][0])/2:W;
+    h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(pgDay(p.ds))}: ${esc(yfmt(p.v))}"><rect x="${a.toFixed(1)}" y="0" width="${Math.max(1,b-a).toFixed(1)}" height="${B+18}" fill="transparent"/>`+
+      (on?`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${y.toFixed(1)}" y2="${B}" class="pg-guide"/>`:"")+`<circle class="pg-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on?6:4}"/></g>`});
+  h+=`<text x="${L+2}" y="${B+15}">${esc(pgDay(pts[0].ds))}</text>`;
+  if(n>1&&days>=21){const m=new Date(+d0+(d1-d0)/2);h+=`<text x="${((L+8+R-8)/2).toFixed(1)}" y="${B+15}" text-anchor="middle">${esc(pgDay(iso(m)))}</text>`}
+  if(n>1)h+=`<text x="${R}" y="${B+15}" text-anchor="end">${esc(pgDay(pts[n-1].ds))}</text>`;
   return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
-function pgCmp(a,b,unit,more,less){const d=a-b;if(!b&&!a)return "";if(!b)return "";if(Math.abs(d)<1e-9)return "Lika mycket som de fyra veckorna innan.";return `${unit(Math.abs(d))} ${d>0?more:less} än de fyra veckorna innan.`}
+function pgCmp(a,b,unit){if(!b||Math.abs(a-b)<1e-9)return b?"Lika mycket som de fyra veckorna innan.":"";return `${unit(Math.abs(a-b))} ${a>b?"mer":"mindre"} än de fyra veckorna innan.`}
 function renderForm(){
-  const el=$("#form");if(!el)return;const P=PROG,v=PGV;let body="",head="",msg="",chips="";
+  const el=$("#form");if(!el)return;const v=PGV;let body="",head="",msg="",chips="";
   const tabs=`<div class="seg pg-tabs" role="group" aria-label="Visa">${PG_TABS.map(([k,l])=>`<button data-pgt="${k}" aria-pressed="${v.tab===k}">${l}</button>`).join("")}</div>`;
   const big=(b,s)=>`<div class="pg-head"><b>${b}</b><span>${s}</span></div>`;
   if(v.tab==="pass"||v.tab==="tid"){
     const W=pgWeeks(12),isP=v.tab==="pass",vals=W.map(w=>isP?w.n:w.m),sel=v.sel==null||v.sel>=W.length?W.length-1:v.sel,w=W[sel];
     const lab=W.map((x,i)=>({a:i===W.length-1?"Den här veckan":`Vecka ${x.wk}`,t:i===W.length-1?"Nu":i%3===2?`v${x.wk}`:""}));
     const unit=isP?(n=>`${n} pass`):pgMin,s4=vals.slice(-4).reduce((a,b)=>a+b,0),p4=vals.slice(-8,-4).reduce((a,b)=>a+b,0);
-    head=big(isP?w.n:pgMin(w.m),`${isP?(w.n===1?"pass":"pass")+" · ":""}${sel===W.length-1?"den här veckan":"vecka "+w.wk}${isP&&w.m?` · ${pgMin(w.m)}`:!isP&&w.n?` · ${w.n} pass`:""}`);
-    msg=!LOGS.length?"Logga ditt första pass så fylls staplarna på.":(isP?`${s4} pass de senaste fyra veckorna. `:`${pgMin(s4)} träning de senaste fyra veckorna. `)+pgCmp(s4,p4,isP?(n=>`${n} ${n===1?"pass":"pass"}`):pgMin,"mer","mindre");
-    body=pgBars(vals,lab,sel,unit);
+    head=big(isP?w.n:pgMin(w.m),`${isP?"pass · ":""}${sel===W.length-1?"den här veckan":"vecka "+w.wk}${isP&&w.m?` · ${pgMin(w.m)}`:!isP&&w.n?` · ${w.n} pass`:""}`);
+    msg=!LOGS.length?"Logga ditt första pass så fylls staplarna på.":(isP?`${s4} pass de senaste fyra veckorna. `:`${pgMin(s4)} träning de senaste fyra veckorna. `)+pgCmp(s4,p4,isP?(n=>`${n} pass`):pgMin);
+    body=pgBars(vals,lab,sel,unit,isP);
   }else if(v.tab==="st"){
     const have=S.map(s=>({s,p:pgStation(s.id)})),withD=have.filter(x=>x.p.length);
-    let id=v.st&&have.find(x=>x.s.id===v.st)?v.st:(withD.slice().sort((a,b)=>b.p.length-a.p.length)[0]||{s:S[0]}).s.id;
-    const cur=have.find(x=>x.s.id===id),pts=cur.p.slice(-12);
-    chips=`<div class="pg-chips" role="group" aria-label="Station">${S.map(s=>`<button class="chip" data-pgs="${s.id}" aria-pressed="${s.id===id}">${esc(s.n)}</button>`).join("")}</div>`;
-    if(!pts.length){head=big("–",esc(cur.s.n));msg=`Logga tid på ${esc(cur.s.n)}, till exempel ${esc(cur.s.id==="wall"?"100":cur.s.q)}${cur.s.id==="wall"?" reps":""}, så syns ditt tempo här.`;body=`<div class="pg-empty">Inga tider än</div>`}
-    else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,best=Math.min(...pts.map(x=>x.v)),last=pts[pts.length-1].v;
-      head=big(fmt(p.v),`${esc(cur.s.n)} · ${esc(pgDay(p.ds))}${p.full?"":" · omräknad"}`);
-      msg=pts.length<2?`Logga ${esc(cur.s.n)} fler gånger så syns utvecklingen.`:last<first?`${pgDur(first-last)} snabbare än ${esc(pgDay(pts[0].ds))}. Bästa tiden är ${fmt(best)}.`:last>first?`${pgDur(last-first)} långsammare än ${esc(pgDay(pts[0].ds))}. Bästa tiden är ${fmt(best)}.`:`Samma tid som ${esc(pgDay(pts[0].ds))}.`;
-      body=pgLine(pts,sel,true,fmt)+`<p class="pg-note">Högre i diagrammet är snabbare. Tiden gäller hela stationen.</p>`}
+    const id=v.st&&have.find(x=>x.s.id===v.st)?v.st:(withD.slice().sort((a,b)=>b.p.length-a.p.length)[0]||{s:S[0]}).s.id;
+    const cur=have.find(x=>x.s.id===id),pts=cur.p.slice(-16),U=PG_UNIT[id];
+    chips=`<div class="pg-chips pg-scroll" role="group" aria-label="Station">${S.map(s=>`<button class="chip" data-pgs="${s.id}" aria-pressed="${s.id===id}">${esc(s.n)}</button>`).join("")}</div>`;
+    if(!pts.length){head=big("–",`snitt per ${U[1]}`);msg=`Logga tid och ${id==="wall"?"reps":"sträcka"} på ${esc(cur.s.n)}, så syns ditt snittempo här.`;body=`<div class="pg-empty">Inga tider på ${esc(cur.s.n)} än</div>`}
+    else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
+      head=big(fmt(p.v),`snitt per ${U[1]} · ${esc(pgDay(p.ds))}`);
+      const tot=id==="wall"?`${p.d} reps på ${fmt(p.t)}`:`${fmtM(p.d).replace(".",",")} på ${fmt(p.t)}`;
+      msg=`${esc(cur.s.n)}: ${tot}. `+(pts.length<2?"Logga fler pass så syns utvecklingen.":Math.round(first-last)>0?`${pgDur(first-last)} snabbare per ${U[1]} än ${esc(pgDay(pts[0].ds))}.`:Math.round(last-first)>0?`${pgDur(last-first)} långsammare per ${U[1]} än ${esc(pgDay(pts[0].ds))}.`:`Samma tempo som ${esc(pgDay(pts[0].ds))}.`);
+      body=pgLine(pts,sel,true,fmt,PG_SEC)+`<p class="pg-note">Högre upp är snabbare.</p>`}
   }else{
     const L=pgLifts();
-    if(!L.length){head=big("–","beräknat max");msg="Logga en styrkeövning med vikt och reps, till exempel knäböj, så syns hur du blir starkare.";body=`<div class="pg-empty">Inga styrkepass än</div>`}
-    else{const id=v.lift&&L.find(x=>x.id===v.lift)?v.lift:L[0].id,cur=L.find(x=>x.id===id),pts=pgLift(id).slice(-12);
-      chips=`<div class="pg-chips" role="group" aria-label="Övning">${L.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}</div>`;
+    if(!L.length){head=big("–","tyngsta vikt");msg="Logga en styrkeövning med vikt, till exempel knäböj, så syns hur du blir starkare.";body=`<div class="pg-empty">Inga styrkepass än</div>`}
+    else{const F=pgFavs(L),id=v.lift&&F.find(x=>x.id===v.lift)?v.lift:F[0].id,cur=F.find(x=>x.id===id),pts=pgLift(id).slice(-16);
+      chips=`<div class="pg-chips wrap" role="group" aria-label="Övning">${F.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}${L.length>F.length||Array.isArray(set.pgFav)?`<button class="chip pg-pick" id="pg-pick">Välj övningar</button>`:""}</div>`;
       const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
-      head=big(pgKg(p.v),`beräknat max · ${esc(pgDay(p.ds))} · ${fmtKg(p.kg)} kg × ${p.r}`);
-      msg=pts.length<2?`Logga ${esc(cur.n)} fler gånger så syns utvecklingen.`:Math.round((last-first)*2)/2>0?`${pgKg(last-first)} starkare än ${esc(pgDay(pts[0].ds))}.`:Math.round((last-first)*2)/2<0?`${pgKg(first-last)} lägre än ${esc(pgDay(pts[0].ds))}. Det svänger ofta mellan passen.`:`Samma nivå som ${esc(pgDay(pts[0].ds))}.`;
-      body=pgLine(pts,sel,false,pgKg)+`<p class="pg-note">Beräknat max för en repetition utifrån vikt och reps, så att tunga och lätta set går att jämföra.</p>`}
+      head=big(pgKg(p.v),`tyngsta vikt · ${esc(pgDay(p.ds))}${p.r?` · ${p.r} ${p.r===1?"rep":"reps"}`:""}`);
+      msg=pts.length<2?`Logga ${esc(cur.n)} fler gånger så syns utvecklingen.`:last>first?`${pgKg(last-first)} tyngre än ${esc(pgDay(pts[0].ds))}.`:last<first?`${pgKg(first-last)} lättare än ${esc(pgDay(pts[0].ds))}.`:`Samma vikt som ${esc(pgDay(pts[0].ds))}.`;
+      body=pgLine(pts,sel,false,pgKg,PG_KGS)}
   }
-  const nx=P.next;
-  el.innerHTML=`${tabs}${chips}${head}<p class="formmsg">${msg}</p>${body}
-   <button class="lvl" id="lvl-btn">${tierHTML(P.tier)}<div><b>${P.tier.n} · ${P.varv} varv</b><small>${P.weekVarv} denna vecka · ${nx?`${P.toNext} till ${nx.n}`:"högsta nivån"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>`;
-  $("#lvl-btn").onclick=openLevels;
-  const ch=el.querySelector(".pg-chips [aria-pressed=true]");if(ch&&ch.scrollIntoView)ch.parentNode.scrollLeft=Math.max(0,ch.offsetLeft-ch.parentNode.offsetLeft-12);
+  const sx=(c=>c?c.scrollLeft:0)(el.querySelector(".pg-scroll"));
+  el.innerHTML=`${tabs}${chips}${head}<p class="formmsg">${msg}</p>${body}`;
+  const sc=el.querySelector(".pg-scroll");if(sc){sc.scrollLeft=sx;pgScroll(sc)}
 }
+/* Stationerna får inte plats på en rad: svep på mobilen, och på datorn går det att scrolla med hjulet eller dra med musen. */
+function pgScroll(sc){const end=()=>sc.classList.toggle("end",sc.scrollLeft+sc.clientWidth>=sc.scrollWidth-4);end();sc.onscroll=end;
+  sc.onwheel=e=>{if(Math.abs(e.deltaY)>Math.abs(e.deltaX)&&sc.scrollWidth>sc.clientWidth){sc.scrollLeft+=e.deltaY;e.preventDefault()}};
+  let x0=null,s0=0,moved=0;sc.onpointerdown=e=>{if(e.pointerType!=="mouse")return;x0=e.clientX;s0=sc.scrollLeft;moved=0};
+  sc.onpointermove=e=>{if(x0==null)return;const d=e.clientX-x0;if(Math.abs(d)>4)moved=1;sc.scrollLeft=s0-d};
+  sc.onpointerup=sc.onpointerleave=()=>{x0=null};sc.addEventListener("click",e=>{if(moved){e.stopPropagation();e.preventDefault();moved=0}},true)}
+function openPgPick(){const L=pgLifts();let F=pgFavs(L).map(x=>x.id);
+  const draw=()=>{$("#pgp-list").innerHTML=L.map(x=>{const on=F.includes(x.id);return `<button class="check" role="checkbox" aria-checked="${on}" data-pgf="${esc(x.id)}"><span class="box">${on?"✓":""}</span><span class="lab">${esc(x.n)}<small>${x.c} ${x.c===1?"pass":"pass"}</small></span></button>`}).join("");$("#pgp-n").textContent=`${F.length} av 3 valda`};
+  openSheet(`<div><span class="small">Styrka</span><h2>Välj övningar</h2><p class="small">Välj upp till tre övningar att följa i diagrammet.</p></div><p class="small" id="pgp-n"></p><div class="group" id="pgp-list"></div>`,()=>{draw();
+    $("#pgp-list").onclick=e=>{const b=e.target.closest("[data-pgf]");if(!b)return;const id=b.dataset.pgf;
+      if(F.includes(id)){if(F.length===1)return;F=F.filter(x=>x!==id)}else{if(F.length>=3){toast("Du kan välja tre övningar. Ta bort en först.");return}F.push(id)}
+      set.pgFav=F.slice();saveSet();if(!F.includes(PGV.lift))PGV.lift=F[0];PGV.sel=null;draw();renderForm()}})}
 $("#form").addEventListener("click",e=>{const v=PGV;let b;
+  if(e.target.closest("#pg-pick")){openPgPick();return}
   if(b=e.target.closest("[data-pgt]")){if(v.tab===b.dataset.pgt)return;v.tab=b.dataset.pgt;v.sel=null}
   else if(b=e.target.closest("[data-pgs]")){v.st=b.dataset.pgs;v.sel=null}
   else if(b=e.target.closest("[data-pgl]")){v.lift=b.dataset.pgl;v.sel=null}
   else if(b=e.target.closest("[data-pi]")){v.sel=+b.dataset.pi;if(typeof HAPTIC==="function")HAPTIC()}
-  else return;const sx=(el=>el?el.scrollLeft:0)($("#form .pg-chips"));renderForm();const c=$("#form .pg-chips");if(c&&!b.dataset.pgt)c.scrollLeft=sx});
+  else return;renderForm()});
 $("#form").addEventListener("keydown",e=>{const g=e.target.closest&&e.target.closest("[data-pi]");if(!g||(e.key!=="Enter"&&e.key!==" "))return;e.preventDefault();PGV.sel=+g.dataset.pi;renderForm();const n=$(`#form [data-pi="${PGV.sel}"]`);if(n)n.focus()});
 function sparkHome(){
-  const el=$("#h-form");if(!el)return;const P=PROG,W=pgWeeks(8),mx=Math.max(1,...W.map(w=>w.n)),s4=W.slice(-4).reduce((a,w)=>a+w.n,0),m4=W.slice(-4).reduce((a,w)=>a+w.m,0),gw=160/8;
+  const el=$("#h-form");if(!el)return;const W=pgWeeks(8),mx=Math.max(1,...W.map(w=>w.n)),s4=W.slice(-4).reduce((a,w)=>a+w.n,0),m4=W.slice(-4).reduce((a,w)=>a+w.m,0),gw=160/8;
   const bars=W.map((w,i)=>{const h=w.n?Math.max(4,48*w.n/mx):2;return `<rect x="${(i*gw+gw*.2).toFixed(1)}" y="${(54-h).toFixed(1)}" width="${(gw*.6).toFixed(1)}" height="${h.toFixed(1)}" rx="3" class="${i===7?"now":""}${w.n?"":" z"}"/>`}).join("");
   el.innerHTML=`<div class="fm-l"><span>Senaste 4 veckorna</span><b>${s4} pass</b><span class="delta">${pgMin(m4)}</span></div>
-   <svg viewBox="0 0 160 60" aria-hidden="true" class="fm-bars">${bars}</svg>
-   <div class="fm-b">${tierHTML(P.tier,"xs")}<span><b>${P.tier.n}</b> · ${P.varv} varv · ${P.recent.length} ${P.recent.length===1?"utmärkelse":"utmärkelser"}</span><span class="chev" style="flex:none">›</span></div>`;
+   <svg viewBox="0 0 160 60" aria-hidden="true" class="fm-bars">${bars}</svg>`;
 }
 function medalOrder(){const P=PROG;const on=P.recent.map(id=>MEDALS.find(m=>m.id===id));
   const off=MEDALS.filter(m=>!P.earned[m.id]).sort((a,b)=>medFrac(b)-medFrac(a));return on.concat(off)}
@@ -3205,7 +3234,7 @@ function openLevels(){const P=PROG;
    <p class="small">Nivån följer med dig och sjunker aldrig. Varv tjänar du på all träning, inte bara den snabba.</p>`)}
 function openFormInfo(){
   openSheet(`<div><span class="small">Framsteg</span><h2>Så fungerar det</h2></div>
-   <div class="card"><div class="howto"><h3>Din utveckling</h3><p>Tryck på Pass, Tid, Stationer eller Styrka för att byta diagram, och på en stapel eller punkt för att se just den veckan eller det passet.</p><p>Pass och Tid visar de senaste tolv veckorna. Stationer visar din bästa tid per pass, och ett kortare set räknas om till hela stationen. Högre i diagrammet är snabbare. Styrka visar beräknat max för en repetition utifrån vikt och reps, så att du ser om du blir starkare även när du kör olika många reps.</p></div>
+   <div class="card"><div class="howto"><h3>Din utveckling</h3><p>Tryck på Pass, Tid, Stationer eller Styrka för att byta diagram, och på en stapel eller punkt för att se just den veckan eller det passet.</p><p>Pass och Tid visar de senaste tolv veckorna. Stationer visar ditt snittempo varje pass, all tid du loggat delat med sträckan eller antalet reps. Högre upp är snabbare. Styrka visar den tyngsta vikten du lyft varje pass, och under Välj övningar bestämmer du vilka tre övningar som visas.</p></div>
    <div class="howto"><h3>Varv</h3><p>Varje pass ger ett varv per tio minuter, högst tolv per pass. Ett klarat veckomål ger fem extra.</p></div>
    <div class="howto"><h3>Nivåer och utmärkelser</h3><p>Varven tar dig från Start till Elit. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
    <div class="howto"><h3>Topplistan</h3><p>Jämför varv denna vecka, inte fart. Den som tränar jämnt kan alltid vinna veckan. Listan börjar om varje måndag.</p></div></div>`)}

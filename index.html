@@ -3255,7 +3255,9 @@ const EX=[
  {id:"bench",n:"Bänkpress",g:2,k:"r",w:1},{id:"ohp",n:"Militärpress",g:2,k:"r",w:1},{id:"brow",n:"Skivstångsrodd",g:2,k:"r",w:1},{id:"thr",n:"Thrusters",g:2,k:"r",w:1},
  {id:"kbs",n:"Kettlebell swings",g:2,k:"r",w:1},{id:"bss",n:"Bulgarska utfall",g:2,k:"r",w:1},{id:"wlunge",n:"Gående utfall",g:2,k:"r",w:1},{id:"hip",n:"Höftlyft",g:2,k:"r",w:1},
  {id:"chin",n:"Chins",g:3,k:"r"},{id:"pushup",n:"Armhävningar",g:3,k:"r"},{id:"burpee",n:"Burpees",g:3,k:"r"},{id:"boxj",n:"Boxhopp",g:3,k:"r"},{id:"situp",n:"Situps",g:3,k:"r"},{id:"plank",n:"Plankan",g:3,k:"t"}];
-const LGCOLS={d:[["m","Meter"],["t","Tid"]],r:[["r","Antal"]],c:[["c","Kcal"],["t","Tid"]],t:[["t","Tid"]]};
+const LGCOLS={d:[["m","Meter"],["t","Tid"]],r:[["r","Reps"]],c:[["c","Kcal"],["t","Tid"]],t:[["t","Tid"]]};
+/* Kolumnerna för ett set. För övningar med vikt och reps kommer vikten först, sedan reps. */
+function colsOf(it){const base=LGCOLS[it.k]||LGCOLS.r;if(!it.w)return base;return it.k==="r"?[["kg","Kg"]].concat(base):base.concat([["kg","Kg"]])}
 const nz=v=>v!=null&&v!==""&&!isNaN(v)&&+v>0;
 const fmtKg=v=>String(Math.round(+v*10)/10).replace(".",",");
 const fmtM=m=>m>=2000&&m%100===0?String(m/1000).replace(".",",")+" km":m+" m";
@@ -3264,13 +3266,13 @@ function exStd(id){const pro=set.k==="pro",w=set.g==="w",P=(om,ow,pm,pw)=>pro?(w
     lunge:{m:100,kg:P(20,10,30,20)},wall:{r:100,kg:P(6,4,9,6)},run:{m:1000},tread:{m:1000},bikeerg:{m:2000},bike:{c:20},jump:{t:120},plank:{t:60}}[id]||null}
 function setTxt(k,s){const p=[];
   if(k==="d"){if(nz(s.m))p.push(fmtM(+s.m));if(nz(s.t))p.push(fmt(s.t))}
-  else if(k==="r"){if(nz(s.r))p.push(s.r+" st")}
+  else if(k==="r"){if(nz(s.kg)&&nz(s.r))return fmtKg(s.kg)+" kg × "+s.r;if(nz(s.r))p.push(s.r+" reps")}
   else if(k==="c"){if(nz(s.c))p.push(s.c+" kcal");if(nz(s.t))p.push(fmt(s.t))}
   else if(nz(s.t))p.push(fmt(s.t));
   if(nz(s.kg))p.push(fmtKg(s.kg)+" kg");return p.join(" · ")}
 function itemTxt(it){const ss=(it.sets||[]).filter(s=>setTxt(it.k,s));if(!ss.length)return it.n;
   const same=ss.every(s=>setTxt(it.k,s)===setTxt(it.k,ss[0])),n=ss.length;
-  if(it.k==="r"&&same){const s=ss[0];const parts=[];if(n>1)parts.push(n);if(nz(s.r))parts.push(s.r);let t=parts.join(" × ");if(nz(s.kg))t+=(t?" × ":"")+fmtKg(s.kg)+" kg";return `${it.n} ${t}`}
+  if(it.k==="r"&&same){const s=ss[0];if(n===1)return `${it.n} ${setTxt(it.k,s)}`;const reps=nz(s.r)?n+" × "+s.r+(nz(s.kg)?"":" reps"):n+" set";return `${it.n} ${[nz(s.kg)?fmtKg(s.kg)+" kg":"",reps].filter(Boolean).join(" · ")}`}
   if(same)return `${it.n} ${n>1?n+" × ":""}${setTxt(it.k,ss[0])}`;
   return `${it.n} ${ss.map(s=>setTxt(it.k,s)).join(", ")}`}
 const sortedLogs=()=>[...LOGS].sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.created||0)-(a.created||0));
@@ -3471,7 +3473,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
   const td=today(),yd=lgYest(),other=LG.date!==td&&LG.date!==yd;
   const dl=new Date(LG.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"});
   const ty=lgType(),last=sortedLogs().find(l=>l.items&&l.items.length&&l.id!==LG.edit);
-  const exHtml=LG.items.map((it,i)=>{const cols=LGCOLS[it.k].concat(it.w?[["kg","Kg"]]:[]),hint=!LG.edit&&lastItem(it.ex)?itemTxt(lastItem(it.ex)):"";
+  const exHtml=LG.items.map((it,i)=>{const cols=colsOf(it),hint=!LG.edit&&lastItem(it.ex)?itemTxt(lastItem(it.ex)):"";
     const gc=`28px repeat(${cols.length},minmax(0,1fr)) 36px`;
     return `<div class="lg-ex" data-i="${i}"><div class="lg-exh"><span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${hint?`<p class="small">Förra gången: ${esc(hint.replace(it.n+" ",""))}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
       <div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}${c[0]==="kg"&&it.ex==="farm"?" per hand":""}</span>`).join("")}<span></span></div>
@@ -3599,7 +3601,7 @@ function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
       if(left<=0&&!r.rang){r.rang=true;saveLive();HAPTIC("success");if(set.cues&&set.cues.sound!==false){beep(880,180);beep(880,180,.25)}}
       if(left<-30){LIVE.rest=null;saveLive();rb.hidden=true}}
     else rb.hidden=true}}
-function liveColsOf(it){return LGCOLS[it.k].concat(it.w?[["kg","Kg"]]:[])}
+function liveColsOf(it){return colsOf(it)}
 function liveVal(f,v){return nz(v)?(f==="t"?fmt(v):f==="kg"?fmtKg(v):v):""}
 function renderLive(){let v=$("#live"),bar=$("#lv-bar");
   if(!LIVE){if(v)v.hidden=true;if(bar)bar.hidden=true;document.body.classList.remove("live-on");return}
@@ -5281,7 +5283,7 @@ function openOnb(){
 /* ============ Framsteg per övning ============ */
 function exMetric(it){const ss=(it.sets||[]).filter(s=>setTxt(it.k,s));if(!ss.length)return null;
   if(it.k==="r"){const kg=ss.filter(s=>nz(s.kg));if(kg.length){const b=kg.reduce((a,s)=>+s.kg>+a.kg||(+s.kg===+a.kg&&(+s.r||0)>(+a.r||0))?s:a);return {v:+b.kg,lo:false,txt:`${fmtKg(b.kg)} kg${nz(b.r)?" × "+b.r:""}`,u:"kg"}}
-    const b=Math.max(...ss.map(s=>+s.r||0));return b?{v:b,lo:false,txt:b+" st",u:"st"}:null}
+    const b=Math.max(...ss.map(s=>+s.r||0));return b?{v:b,lo:false,txt:b+" reps",u:"reps"}:null}
   if(it.k==="d"){const run=it.ex==="run"||it.ex==="tread",per=run?1000:500;
     const tm=ss.filter(s=>nz(s.t)&&nz(s.m));if(tm.length){const p=Math.min(...tm.map(s=>s.t/s.m*per));return {v:p,lo:true,txt:fmt(p)+(run?" /km":" /500 m"),u:run?"/km":"/500 m"}}
     const kg=ss.filter(s=>nz(s.kg));if(kg.length){const b=Math.max(...kg.map(s=>+s.kg));return {v:b,lo:false,txt:fmtKg(b)+" kg",u:"kg"}}

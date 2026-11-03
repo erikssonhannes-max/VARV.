@@ -2640,7 +2640,7 @@ function profilePayload(){
   const bt=PRS.race&&PRS.race>=600&&PRS.race<=36000?PRS.race:null;
   return {best_time:bt,best_division:divText().slice(0,60),prs,
     next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:me?me.s:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
-    card:cardPayload(),stats:{wk:weekStart(today()),wv:P.weekVarv,sessions:LOGS.length,hours:Math.round(st.total/6)/10,streak:st.streak,week:st.now.n,varv:P.varv,tier:P.tier.n,medals:P.recent.length,since:set.since||null}};
+    card:cardPayload(),stats:{wk:weekStart(today()),wv:P.weekVarv,wmin:Math.round(st.now.min||0),sessions:LOGS.length,hours:Math.round(st.total/6)/10,streak:st.streak,week:st.now.n,varv:P.varv,tier:P.tier.n,medals:P.recent.length,since:set.since||null}};
 }
 function syncProfile(){
   if(!MYPROF||!SB||!SBUSER)return;clearTimeout(syncProfile.t);
@@ -3014,22 +3014,22 @@ function boardAll(){const B=Object.assign({},BOARD);if(ME)B[ME]=boardDoc();retur
 function topMeds(d){return (d.top||[]).map(id=>MEDALS.find(m=>m.id===id)).filter(Boolean)}
 async function renderComm(){
   const el=$("#comm");
-  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#feed"><div><b>${P.weekVarv}</b><span>varv den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dem du följer, och vilka lopp de ska till.":"Logga in och följ andra för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Visa topplistan ›</span></a>`;$("#lb-note").textContent="";return}
+  if(!DBH||!ME){const P=PROG||progress();el.innerHTML=`<a class="card fr-teaser" href="#feed"><div><b>${weekStats().now.n}</b><span>pass den här veckan</span></div><p class="small">${SBUSER?"Se hur du ligger till mot dem du följer, och vilka lopp de ska till.":"Logga in och följ andra för att jämföra veckan och se varandras lopp."}</p><span class="linkbtn">Visa topplistan ›</span></a>`;$("#lb-note").textContent="";return}
   const B=boardAll(),fr=(set.friends||[]);
   await loadProfiles(Object.keys(B).concat(set.partner?[set.partner]:[]));
   let ids=LBV==="friends"?[ME,...fr.filter(i=>B[i])]:Object.keys(B);
-  const rows=ids.map(id=>({id,d:B[id]})).sort((a,b)=>wkVal(b.d,"wv")-wkVal(a.d,"wv")||(b.d.tv||0)-(a.d.tv||0));
+  const rows=ids.map(id=>({id,d:B[id]})).sort((a,b)=>wkVal(b.d,"n")-wkVal(a.d,"n")||wkVal(b.d,"min")-wkVal(a.d,"min"));
   let list=rows;if(LBV==="all"&&rows.length>25){list=rows.slice(0,25);const mi=rows.findIndex(r=>r.id===ME);if(mi>=25)list.push(rows[mi])}
   const rank=id=>rows.findIndex(r=>r.id===id)+1;
   const P=set.partner&&BOARD[set.partner]?BOARD[set.partner]:null;const me=B[ME];
-  const col=(name,d)=>`<div class="col"><h4>${esc(name)}</h4><div class="kv"><span>Varv</span><b>${wkVal(d,"wv")}</b></div><div class="kv"><span>Pass</span><b>${wkVal(d,"n")}</b></div><div class="kv"><span>I rad</span><b>${num(d.streak)} v</b></div><div class="kv"><span>Rekord</span><b>${num(d.race)?fmt(num(d.race)):"–"}</b></div></div>`;
-  const row=r=>{const pr=PROF[r.id],k=rank(r.id),t=TIERS[r.d.tier||0]||TIERS[0];return `<button class="row${r.id===ME?" lbme":""}" data-person="${esc(r.id)}"><span class="rk">${pr&&pr.avatarUrl&&okImg(pr.avatarUrl)?`<img class="av" src="${esc(pr.avatarUrl)}" alt="">`:`<span class="av"></span>`}<i class="${k<=3&&wkVal(r.d,"wv")?"r"+k:"rn"}">${k}</i></span><div><h3>${esc(pname(r.id))}${r.id===set.partner?" · partner":""}${r.id===ME&&!set.share?' <span class="small">· bara du ser dig</span>':""}</h3><p>${t.n} · ${r.d.med||0} ${r.d.med===1?"utmärkelse":"utmärkelser"}</p></div><span class="amt"><b style="color:var(--ink)">${wkVal(r.d,"wv")}</b>&nbsp;varv</span></button>`};
+  const col=(name,d)=>`<div class="col"><h4>${esc(name)}</h4><div class="kv"><span>Pass</span><b>${wkVal(d,"n")}</b></div><div class="kv"><span>Minuter</span><b>${wkVal(d,"min")}</b></div><div class="kv"><span>I rad</span><b>${num(d.streak)} v</b></div><div class="kv"><span>Rekord</span><b>${num(d.race)?fmt(num(d.race)):"–"}</b></div></div>`;
+  const row=r=>{const pr=PROF[r.id],k=rank(r.id),t=TIERS[r.d.tier||0]||TIERS[0];return `<button class="row${r.id===ME?" lbme":""}" data-person="${esc(r.id)}"><span class="rk">${pr&&pr.avatarUrl&&okImg(pr.avatarUrl)?`<img class="av" src="${esc(pr.avatarUrl)}" alt="">`:`<span class="av"></span>`}<i class="${k<=3&&wkVal(r.d,"n")?"r"+k:"rn"}">${k}</i></span><div><h3>${esc(pname(r.id))}${r.id===set.partner?" · partner":""}${r.id===ME&&!set.share?' <span class="small">· bara du ser dig</span>':""}</h3><p>${t.n} · ${r.d.med||0} ${r.d.med===1?"utmärkelse":"utmärkelser"}</p></div><span class="amt"><b style="color:var(--ink)">${wkVal(r.d,"n")}</b>&nbsp;pass</span></button>`};
   el.innerHTML=`<div class="seg" id="lb-seg" role="group" aria-label="Visa" style="margin-bottom:12px"><button data-lb="friends" aria-pressed="${LBV==="friends"}">Vänner</button><button data-lb="all" aria-pressed="${LBV==="all"}">Alla</button></div>
   <div class="group">${list.map(row).join("")}</div>
   ${LBV==="friends"&&ids.length<2?`<div class="card" style="margin-top:10px"><p class="small">Lägg till vänner genom att trycka på dem under Alla. Ni ser sedan varandras vecka här.</p></div>`:""}
-  <p class="small" style="margin:10px 2px 0">Varv denna vecka. Listan börjar om på måndag.</p>
+  <p class="small" style="margin:10px 2px 0">Pass denna vecka. Listan börjar om på måndag.</p>
   ${set.partner?`<div class="sechead" style="margin-top:24px"><h2 style="font-size:1.1rem">Du och din partner</h2><button class="linkbtn" data-person="${esc(set.partner)}">Ändra</button></div>${P?`<div class="duo">${col("Du",me)}${col(pname(set.partner),P)}</div>`:`<div class="card"><p class="small">Din partner syns här när hen har slagit på Visa mig i topplistan.</p></div>`}`:""}
-  <div class="card" style="margin-top:14px"><button type="button" class="switchrow" id="share-tg" role="switch" aria-checked="${!!set.share}"><span><b>Visa mig i topplistan</b><small>Andra ser ditt namn, dina varv och pass denna vecka, din nivå, dina utmärkelser, din svit och ditt rekord. Inget annat delas.</small></span><span class="sw"></span></button></div>`;
+  <div class="card" style="margin-top:14px"><button type="button" class="switchrow" id="share-tg" role="switch" aria-checked="${!!set.share}"><span><b>Visa mig i topplistan</b><small>Andra ser ditt namn, dina pass och din träningstid denna vecka, din nivå, dina utmärkelser, din svit och ditt rekord. Inget annat delas.</small></span><span class="sw"></span></button></div>`;
   $("#share-tg").onclick=()=>{set.share=!set.share;saveSet();renderComm();syncBoard();toast(set.share?"Du syns nu i topplistan":"Du är borttagen från topplistan")};
   $("#lb-seg").onclick=e=>{const b=e.target.closest("[data-lb]");if(!b)return;LBV=b.dataset.lb;renderComm()};
 }
@@ -3039,7 +3039,7 @@ $("#comm").addEventListener("click",e=>{const b=e.target.closest("[data-person]"
   const cmp=(lbl,a,b,hi)=>{const w=hi===undefined?0:(a>b?1:b>a?2:0);return `<span>${lbl}</span><b class="${w===1?"win":""}">${hi==="t"?TIERS[a].n:a}</b><b class="${w===2?"win":""}">${hi==="t"?TIERS[b].n:b}</b>`};
   openSheet(`<div><span class="small">${isF?"Vän":"Träningskompis"}</span><h2>${esc(pname(id))}</h2>${d?`<p class="small">${esc(d.div||"")}${num(d.race)?" · rekord "+fmt(num(d.race)):""}${num(d.target)?" · måltid "+fmtHM(num(d.target)):""}</p>`:""}</div>
    ${d?`<div class="card"><div class="cmpgrid"><span></span><span class="h">Du</span><span class="h">${esc(pname(id).split(" ")[0])}</span>
-     ${cmp("Varv denna vecka",wkVal(me,"wv"),wkVal(d,"wv"),1)}${cmp("Pass denna vecka",wkVal(me,"n"),wkVal(d,"n"),1)}${cmp("Nivå",me.tier||0,TIERS[d.tier]?d.tier:0,"t")}${cmp("Utmärkelser",me.med||0,num(d.med),1)}${cmp("Veckor i rad",me.streak||0,num(d.streak),1)}</div>
+     ${cmp("Pass denna vecka",wkVal(me,"n"),wkVal(d,"n"),1)}${cmp("Minuter denna vecka",wkVal(me,"min"),wkVal(d,"min"),1)}${cmp("Nivå",me.tier||0,TIERS[d.tier]?d.tier:0,"t")}${cmp("Utmärkelser",me.med||0,num(d.med),1)}${cmp("Veckor i rad",me.streak||0,num(d.streak),1)}</div>
      ${topMeds(d).length?`<div class="lbmeds" style="justify-content:center;gap:10px">${topMeds(d).map(m=>medHTML(m,{on:true,sz:"sm"})).join("")}</div>`:""}</div>`:`<p class="small">Syns inte i topplistan just nu.</p>`}
    <button class="pill block" id="pf-fr">${isF?"Ta bort som vän":"Lägg till som vän"}</button>
    <button class="pill ghost block" id="pp">${isP?"Ta bort som partner":"Välj som partner"}</button>`,()=>{
@@ -3238,9 +3238,8 @@ function openLevels(){const P=PROG=progress();
 function openFormInfo(){
   openSheet(`<div><span class="small">Framsteg</span><h2>Så fungerar det</h2></div>
    <div class="card"><div class="howto"><h3>Din utveckling</h3><p>Tryck på Pass, Tid, Stationer eller Styrka för att byta diagram, och på en stapel eller punkt för att se just den veckan eller det passet.</p><p>Pass och Tid visar de senaste tolv veckorna. Stationer visar ditt snittempo varje pass, all tid du loggat delat med sträckan eller antalet reps. Högre upp är snabbare. Styrka visar den tyngsta vikten du lyft varje pass, och under Välj övningar bestämmer du vilka tre övningar som visas.</p></div>
-   <div class="howto"><h3>Varv</h3><p>Varje pass ger ett varv per tio minuter, högst tolv per pass. Ett klarat veckomål ger fem extra.</p></div>
-   <div class="howto"><h3>Rank och utmärkelser</h3><p>Din rank stiger med antalet loggade pass: Brons efter 10, Silver efter 25, Guld efter 50, Platina efter 100 och Elit efter 200. Du ser den på din profil. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
-   <div class="howto"><h3>Topplistan</h3><p>Jämför varv denna vecka, inte fart. Den som tränar jämnt kan alltid vinna veckan. Listan börjar om varje måndag.</p></div></div>`)}
+      <div class="howto"><h3>Rank och utmärkelser</h3><p>Din rank stiger med antalet loggade pass: Brons efter 10, Silver efter 25, Guld efter 50, Platina efter 100 och Elit efter 200. Du ser den på din profil. Utmärkelser får du för milstolpar som tio pass, fyra veckor i rad eller ditt första lopp.</p></div>
+   <div class="howto"><h3>Topplistan</h3><p>Jämför antal pass denna vecka, inte fart. Vid lika många pass går den med mest träningstid före. Listan börjar om varje måndag.</p></div></div>`)}
 $("#medals").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)};
 $("#med-all").onclick=openAllMedals;$("#form-info").onclick=openFormInfo;
 let READY=false;FIRST.then(()=>{READY=true;checkNewMedals();if(hkOn())setTimeout(()=>hkSync(false),1500)});
@@ -3273,7 +3272,7 @@ const TOUR=[
  {v:"feed",t:'.tab[data-v="feed"]',h:"Feed",p:"Ditt och dina vänners senaste pass, lopp och rekord. Ge en tumme upp, och hitta nya att följa genom att svepa bland förslagen."},
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
  {v:"logg",lg:"form",t:'.tab[data-v="logg"]',h:"Statistik",p:"Sista fliken. All din data: träningsprofil, stationsbalans, aktivitet vecka för vecka och dina lopp."},
- {v:"logg",lg:"form",t:"#form",h:"Statistik: din form",p:"Kurvan stiger när du tränar jämnt. Varje pass ger varv som tar dig från Start till Elit, och utmärkelser markerar dina milstolpar."},
+ {v:"logg",lg:"form",t:"#form",h:"Statistik: din utveckling",p:"Se dina pass, din träningstid, dina stationstider och hur du blir starkare. Varje loggat pass tar dig närmare nästa rank."},
  {v:"logg",lg:"form",t:"#st-top",h:"Statistik: veckan",p:"Hur veckan går mot ditt snitt, perioden du väljer och konkreta saker att tänka på, till exempel stationen du tränat minst."},
  {v:"logg",lg:"form",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
  {v:"hem",c:1,end:1,h:"Du är redo.",p:"Logga ditt första pass så börjar formkurvan stiga. Lycka till med träningen."}];
@@ -3860,7 +3859,7 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
     const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
     return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
   const st=weekStats().streak;
-  $("#h-weektxt").textContent=`${P.weekVarv} varv den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} veckor i rad`:"")}
+  $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} veckor i rad`:"")}
 function saveRestDay(ds,v){const m=Object.assign({},set.restDays||{});if(v)m[ds]=v;else delete m[ds];
   const lim=new Date();lim.setDate(lim.getDate()-400);const li=iso(lim);Object.keys(m).forEach(k=>{if(k<li)delete m[k]});set.restDays=m;saveSet();renderHome()}
 function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
@@ -4722,9 +4721,9 @@ async function renderFriends(force){
   if(!FRC)el.innerHTML=`<div class="card"><p class="small">Hämtar…</p></div>`;
   const D=await loadFriendData(force);if(!D||location.hash!=="#feed")return;
   const wk=weekStart(today()),P=PROG||progress();
-  const me={user_id:SBUSER.id,username:MYPROF.username,tag:MYPROF.tag,avatar_url:MYPROF.avatar_url,wv:P.weekVarv,n:weekStats().now.n,me:true};
-  const board=[me].concat(Object.values(D.profs).map(p=>{const s=p.stats||{};const cur=s.wk===wk;return {user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url,wv:cur?(+s.wv||0):0,n:cur?(+s.week||0):0}}))
-    .sort((a,b)=>b.wv-a.wv||b.n-a.n);
+  const ws=weekStats().now,me={user_id:SBUSER.id,username:MYPROF.username,tag:MYPROF.tag,avatar_url:MYPROF.avatar_url,n:ws.n,min:Math.round(ws.min||0),me:true};
+  const board=[me].concat(Object.values(D.profs).map(p=>{const s=p.stats||{};const cur=s.wk===wk;return {user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url,n:cur?(+s.week||0):0,min:cur?(+s.wmin||0):0}}))
+    .sort((a,b)=>b.n-a.n||b.min-a.min);
   const myNr=profilePayload().next_race;
   const races=[];if(myNr&&myNr.date>=today())races.push({u:me,nr:myNr,pid:MYPROF.partner_id});
   Object.values(D.profs).forEach(p=>{if(p.next_race&&isDay(p.next_race.date)&&p.next_race.date>=today())races.push({u:p,nr:p.next_race,pid:p.partner_id})});
@@ -4736,9 +4735,9 @@ async function renderFriends(force){
    <div id="fr-times"${frs==="week"?" hidden":""}>${frs==="week"?"":frTimes(D)}</div><div${frs==="week"?"":" hidden"}>
    ${FRQ_IN.length?`<a class="card fr-reqcard" href="#notiser"><b>${FRQ_IN.length===1?esc((NAMES[FRQ_IN[0].from_user]||{username:"Någon"}).username)+" vill följa dig":FRQ_IN.length+" vill följa dig"}</b><span class="linkbtn">Svara ›</span></a>`:""}
    ${FRIENDS.length?"":`<div class="card fr-empty"><h3>Hitta någon att följa</h3><p class="small">Sök bland offentliga profiler, eller använd namn och kod. Dela din profil så att andra kan följa dig. Ditt namn och kod är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>.</p></div>`}
-   <div class="sechead"><h2>Den här veckan</h2><span class="small">Varv</span></div>
-   <div class="group">${board.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0" aria-label="Visa ${b.me?"din profil":esc(b.username)+"s profil"}"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3><p>${b.n} ${b.n===1?"pass":"pass"}</p></div></div><b class="fr-v">${b.wv}</b></div>`).join("")}</div>
-   <p class="small fr-foot">Ett varv per tio minuters träning. Topplistan jämför flit, inte fart, och börjar om på måndag.</p>
+   <div class="sechead"><h2>Den här veckan</h2><span class="small">Pass</span></div>
+   <div class="group">${board.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0" aria-label="Visa ${b.me?"din profil":esc(b.username)+"s profil"}"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3><p>${b.min?pgMin(b.min):"Inget pass än"}</p></div></div><b class="fr-v">${b.n}</b></div>`).join("")}</div>
+   <p class="small fr-foot">Flest loggade pass den här veckan vinner. Har två lika många pass går den med mest träningstid före. Listan börjar om på måndag.</p>
    <div class="sechead"><h2>Kommande lopp</h2><a href="#race">Alla lopp</a></div>
    ${races.length?`<div class="group">${races.map(r=>{const L=raceLine(r.nr,r.pid);const same=!r.u.me&&myNr&&myNr.date===r.nr.date;const d=Math.round((evD(r.nr.date)-evD(today()))/864e5);
      return `<div class="row fr-race" data-prof="${esc(r.u.user_id)}" role="button" tabindex="0">${avImg(r.u.avatar_url,r.u.username)}<div><h3>${r.u.me?"Du":esc(r.u.username)} · ${esc(L.where)}</h3><p>${esc(L.when)}${L.sub?"<br>"+L.sub:""}</p>${same?`<span class="fr-same">Samma lopp som du</span>`:""}</div><span class="fr-days"><b>${d}</b>${d===1?"dag":"dagar"}</span></div>`}).join("")}</div>`

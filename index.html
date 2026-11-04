@@ -2914,7 +2914,8 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   const nothing=!tiles.length&&!c.train&&!(c.prs&&c.prs.length)&&!(c.st&&Object.keys(c.st).length);
   const per=set.ppPer===90?90:30,T=c.train,dd=T&&(per===30?T.d30:T.d90);
   const chg=(a,b,u)=>{if(!b&&!a)return `<small class="st-d">–</small>`;const d=a-b;return `<small class="st-d ${d>0?"ahead":d<0?"behind":""}">${d>0?"+":d<0?"−":"±"}${ppNum(Math.abs(d))}${u} mot ${per} dagar innan</small>`};
-  const freq=T?(T.n12||[]).reduce((a,b)=>a+b,0)/12:0,active12=T?(T.n12||[]).filter(n=>n>0).length:0;
+  /* Snittet räknas från första veckan med träning, så att en ny användare inte får ett lågt snitt av tomma veckor innan hen började. */
+  const n12=T?(T.n12||[]):[],f0=n12.findIndex(n=>n>0),freq=f0<0?0:Math.round(n12.slice(f0).reduce((a,b)=>a+b,0)/(n12.length-f0)),active12=T?(T.n12||[]).filter(n=>n>0).length:0;
   const name=c.name?esc(c.name):esc(p.username);
   el.innerHTML=`${personCard({url:p.avatar_url,user:p.username,tag:p.tag,name,tier:c.tier,sub:chips.join(" · ")})}
      ${c.bio?`<p class="pp-bio">${esc(c.bio)}</p>`:""}
@@ -2924,9 +2925,9 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
      <div class="pp-tiles two"><div class="tile"><span>Pass</span><b>${dd.n}</b>${chg(dd.n,dd.pn,"")}</div><div class="tile"><span>Minuter</span><b>${ppNum(dd.min)}</b>${chg(dd.min,dd.pmin," min")}</div></div>
      <div class="card"><span class="lbl">Minuter per vecka, 12 veckor</span>${miniBars(T.w12||[])}</div>
      <div class="sechead"><h2>Träningsfrekvens</h2></div>
-     <div class="card pp-freq"><div class="pp-fv"><b>${freq.toLocaleString("sv-SE",{maximumFractionDigits:1})}</b><span>pass per vecka i snitt</span></div>
+     <div class="card pp-freq"><div class="pp-fv"><b>${freq}</b><span>pass per vecka i snitt</span></div>
       <div class="pp-dots" role="img" aria-label="${active12} av 12 veckor med träning">${(T.n12||[]).map(n=>`<i class="${n?"on":""}" title="${n} pass"></i>`).join("")}</div>
-      <p class="small">${active12} av de senaste 12 veckorna med träning. ${ppNum(T.weeks)} aktiva träningsveckor totalt.</p></div>`:""}
+      <p class="small">${active12} av de senaste 12 veckorna med träning. ${ppNum(T.weeks)} ${+T.weeks===1?"aktiv träningsvecka":"aktiva träningsveckor"} totalt.</p></div>`:""}
    ${c.prs&&c.prs.length?`<div class="sechead"><h2>Senaste rekord</h2></div><div class="group">${c.prs.map(r=>{const n=(PRKEYS.find(x=>x[0]===r.k)||[,r.k])[1];return `<div class="row"><span class="ra-ic st-ic g">${icoSvg("up")}</span><div><h3>${esc(n)}</h3><p>${isDay(r.d)?esc(fmtDM(r.d)):""}</p></div><b class="pp-t">${fmt(r.t)}</b></div>`}).join("")}</div>`:""}
    ${c.st&&Object.keys(c.st).length?`<div class="sechead"><h2>Stationerna</h2><span class="small">Bästa tider</span></div><div class="group">${S.map((s,i)=>c.st[s.id]?`<div class="row"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3></div><b class="pp-t">${fmt(c.st[s.id])}</b></div>`:"").join("")}</div>`:""}
    ${nothing?`<div class="card"><p class="small">${me?"Du visar ingen statistik än. Välj vad andra får se under Redigera profil.":esc(p.username)+" delar ingen statistik än."}</p></div>`:""}

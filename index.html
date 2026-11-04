@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="description" content="Hyrox-träning: stationsguider, plan efter måltid, tidtagning, logg och racepass för Garmin.">
+<meta name="description" content="Hyrox-träning: stationsguider, plan efter måltid, tidtagning, och logg.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -761,7 +761,7 @@ a.row{color:inherit;text-decoration:none}
 @keyframes wipe{from{clip-path:inset(0 100% 0 0 round 12px)}to{clip-path:inset(0 0 0 0 round 12px)}}
 @media (prefers-reduced-motion:no-preference){
   .view.on{animation:none}
-  .view.on .pagehead>*, .view.on .hero .wrap>*, .view.on .wrap>.today, .view.on .wrap>.sechead, .view.on .wrap>.tiles>*, .view.on .wrap>.group, .view.on .wrap>.card, .view.on .wrap>.prs>*, .view.on .wrap>.weeks>*, .view.on .wrap>.clock, .view.on .wrap>.divchip, .view.on .wrap>#dbl-wrap, .view.on .wrap>#coach-wrap, .view.on .wrap>#adapt, .view.on .wrap>#comm, .view.on .wrap>#strava, .view.on .wrap>#garmin, .view.on .wrap>#tv-kal, .view.on .wrap>#tv-seg, .view.on .wrap>.pf-head, .view.on .wrap>#log-new, .view.on .wrap>#h-next, .view.on .wrap>#h-med{animation:up .55s var(--ease) both}
+  .view.on .pagehead>*, .view.on .hero .wrap>*, .view.on .wrap>.today, .view.on .wrap>.sechead, .view.on .wrap>.tiles>*, .view.on .wrap>.group, .view.on .wrap>.card, .view.on .wrap>.prs>*, .view.on .wrap>.weeks>*, .view.on .wrap>.clock, .view.on .wrap>.divchip, .view.on .wrap>#dbl-wrap, .view.on .wrap>#coach-wrap, .view.on .wrap>#adapt, .view.on .wrap>#comm, .view.on .wrap>#strava, .view.on .wrap>#tv-kal, .view.on .wrap>#tv-seg, .view.on .wrap>.pf-head, .view.on .wrap>#log-new, .view.on .wrap>#h-next, .view.on .wrap>#h-med{animation:up .55s var(--ease) both}
   .view.on .tiles>*:nth-child(2),.view.on .prs>*:nth-child(2),.view.on .weeks>*:nth-child(2),.view.on .hero .wrap>*:nth-child(2),.view.on .pagehead>*:nth-child(2){animation-delay:.05s}
   .view.on .tiles>*:nth-child(3),.view.on .prs>*:nth-child(3),.view.on .weeks>*:nth-child(3),.view.on .hero .wrap>*:nth-child(3),.view.on .pagehead>*:nth-child(3){animation-delay:.1s}
   .view.on .tiles>*:nth-child(4),.view.on .prs>*:nth-child(4),.view.on .hero .wrap>*:nth-child(4){animation-delay:.15s}
@@ -1639,9 +1639,6 @@ a.row{color:inherit;text-decoration:none}
     <div id="rc-result"></div>
     <div id="rc-hist"></div>
 
-    <div class="sechead"><h2>På klockan</h2></div>
-    <div class="card" id="garmin"></div>
-
     <div class="sechead"><h2>Packlista</h2><span class="pk-links"><button class="linkbtn" id="pk-clear">Rensa</button><button class="linkbtn" id="pk-edit">Ändra</button></span></div>
     <div class="group" id="pack"></div>
 
@@ -1785,8 +1782,8 @@ a.row{color:inherit;text-decoration:none}
     <div class="card" id="pf-push"></div>
     <div class="sechead"><h2>Kalender</h2></div>
     <div class="group"><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span><div><h3>Påminnelser för passen</h3><p>Lägg din plan i kalendern med en påminnelse före varje pass.</p></div><span class="chev">›</span></button></div>
-    <div class="sechead"><h2>Kopplingar</h2></div>
-    <div class="group" id="pf-con"></div>
+    <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
+    <div class="group" id="pf-con"></div></div>
     <div class="sechead"><h2>Följ VARV.</h2></div>
     <div class="group">
       <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge" style="color:var(--ink)"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
@@ -2123,58 +2120,6 @@ function makeZip(files){
 function saveErr(err){const c=err&&err.code;if(c==="declined")return;
   toast(c==="rate_limited"?"Vänta en stund och försök igen":c==="rejected_extension"||c==="extension_not_enabled"?"Den filtypen går inte att spara här":c==="too_large"?"Filen blev för stor":"Filen kunde inte sparas här. Försök i en annan webbläsare.")}
 
-/* ============ Garmin-träningspass (FIT) ============ */
-const FITSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpee BJ",row:"Rodd",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
-function fitCrc(crc,b){const T=[0x0000,0xCC01,0xD801,0x1400,0xF001,0x3C00,0x2800,0xE401,0xA001,0x6C00,0x7800,0xB401,0x5000,0x9C01,0x8801,0x4400];
-  let t=T[crc&0xF];crc=(crc>>4)&0x0FFF;crc=crc^t^T[b&0xF];t=T[crc&0xF];crc=(crc>>4)&0x0FFF;return crc^t^T[(b>>4)&0xF]}
-function fitWorkout(){
-  const t=planTimes(),D=[],enc=new TextEncoder();
-  const u8=v=>D.push(v&255),u16=v=>{u8(v);u8(v>>>8)},u32=v=>{u16(v&0xffff);u16((v>>>16)&0xffff)};
-  const str=(s,n)=>{let c=[...s];while(enc.encode(c.join("")).length>n-1)c.pop();const b=enc.encode(c.join(""));for(let i=0;i<n;i++)u8(i<b.length?b[i]:0)};
-  const def=(local,global,f)=>{u8(0x40|local);u8(0);u8(0);u16(global);u8(f.length);f.forEach(x=>{u8(x[0]);u8(x[1]);u8(x[2])})};
-  const NONE=0xFFFFFFFF,NS=28;
-  const steps=[];
-  S.forEach((s,i)=>{const pace=t.rn[i];
-    steps.push({n:`Löp ${i+1} · ${fmt(pace)}`,tt:0,lo:Math.round(1000/(pace+12)*1000),hi:Math.round(1000/Math.max(120,pace-12)*1000),it:0});
-    steps.push({n:`${FITSHORT[s.id]} · ${fmt(t.st[i])}`,tt:2,lo:NONE,hi:NONE,it:5})});
-  const name=`Hyrox ${fmtHM(set.target)}`;
-  def(0,0,[[0,1,0x00],[1,2,0x84],[2,2,0x84],[4,4,0x86],[3,4,0x8C]]);
-  u8(0);u8(5);u16(255);u16(0);u32(Math.floor(Date.now()/1000)-631065600);u32((Date.now()%2000000000)>>>0||1);
-  def(1,26,[[4,1,0x00],[6,2,0x84],[8,16,0x07]]);
-  u8(1);u8(1);u16(steps.length);str(name,16);
-  def(2,27,[[254,2,0x84],[0,NS,0x07],[1,1,0x00],[2,4,0x86],[3,1,0x00],[4,4,0x86],[5,4,0x86],[6,4,0x86],[7,1,0x00]]);
-  steps.forEach((x,i)=>{u8(2);u16(i);str(x.n,NS);u8(5);u32(NONE);u8(x.tt);u32(x.tt===0?0:NONE);u32(x.lo);u32(x.hi);u8(x.it)});
-  const H=[14,0x20,0,0,0,0,0,0,46,70,73,84];
-  H[2]=2132&255;H[3]=2132>>8;H[4]=D.length&255;H[5]=(D.length>>8)&255;H[6]=(D.length>>16)&255;H[7]=(D.length>>>24)&255;
-  let hc=0;H.forEach(b=>hc=fitCrc(hc,b));H.push(hc&255,hc>>8);
-  const all=H.concat(D);let c=0;all.forEach(b=>c=fitCrc(c,b));all.push(c&255,c>>8);
-  return new Uint8Array(all);
-}
-
-function stepList(){const t=planTimes();return S.map((s,i)=>`<li>Löp ${i+1}: 1 km, mål ${fmt(t.rn[i])}</li><li>${s.n}: ${s.q}, mål ${fmt(t.st[i])}</li>`).join("")}
-function renderGarmin(){
-  const el=$("#garmin");
-  el.innerHTML=`<div class="strava" style="display:grid;margin:0"><span class="sic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="6" y="5" width="12" height="14" rx="4"/><path d="M9 5V2h6v3M9 19v3h6v-3M12 9v3l2 1"/></svg></span>
-   <div><b>Racepass för Garmin</b><span class="small">Alla 16 moment med din måltid per moment, ${fmtHM(set.target)} totalt. Tryck på varvknappen efter varje moment.</span></div></div>
-   <div class="grid2">${DL?`<button class="pill" id="g-save">Skapa fil</button>`:""}<button class="pill ghost" id="g-how"${DL?"":' style="grid-column:1/-1"'}>Så gör du</button></div>`;
-  const b=$("#g-save");if(b)b.onclick=async()=>{try{const nm=`varv-hyrox-${fmtHM(set.target).replace(":","-")}`;const r=await DL.save(DL.raw?{filename:nm+".fit",data:fitWorkout()}:{filename:nm+".zip",data:makeZip([{name:nm+".fit",data:fitWorkout()}])});if(r&&r.status==="saved"){toast("Racepasset är sparat");setTimeout(openGarminHow,400)}}catch(err){saveErr(err)}};
-  $("#g-how").onclick=openGarminHow;
-}
-function openGarminHow(){
-  openSheet(`<div><span class="small">Forerunner 965</span><h2>Racepass på klockan</h2></div>
-   <div><h4>Föra över filen</h4><ul>
-    <li>${DL&&DL.raw?"Spara filen på en dator":"Spara filen på en dator och packa upp zip-filen. Inuti ligger"} <b>${`varv-hyrox-${fmtHM(set.target).replace(":","-")}.fit`}</b>.</li>
-    <li>Anslut klockan med USB-kabeln.</li>
-    <li>Öppna klockan som en enhet, gå till mappen <b>GARMIN</b> och sedan <b>NewFiles</b>, och kopiera in .fit-filen. På Mac behövs ett program som OpenMTP för att se klockan.</li>
-    <li>Koppla ur klockan, så läses passet in.</li></ul></div>
-   <div><h4>Starta loppet</h4><ul>
-    <li>Tryck Start, välj Löpning, gärna Löpning inomhus om du kör inne.</li>
-    <li>Håll in menyknappen och välj Träning, Träningspass och <b>Hyrox ${fmtHM(set.target)}</b>, sedan Gör träningspass.</li>
-    <li>Klockan visar momentet och måltiden. Tryck på varvknappen när du är klar med varje moment.</li></ul></div>
-   <div><h4>Utan dator</h4><p class="small">Skapa passet i Garmin Connect-appen under Träning och planering, Träningspass, Skapa. Lägg in stegen nedan med längden Tryck på varv och skicka det till klockan.</p><ul>${stepList()}</ul></div>
-   <p class="small">Menynamnen kan skilja sig lite beroende på klockans programvara. Efter passet hamnar det i Strava och sedan i din logg vid nästa synk.</p>
-   <button class="pill block" id="gh-ok">Klar</button>`,()=>{$("#gh-ok").onclick=closeSheet});
-}
 function refreshDivision(){$$(".divtxt").forEach(e=>e.textContent=divText());renderCourse();$("#dbl-wrap").hidden=set.fmt==="singel";renderDoubles()}
 
 document.addEventListener("click",e=>{
@@ -2467,7 +2412,7 @@ $("#p-days").onclick=e=>{const b=e.target.closest("[data-day]");if(!b)return;con
   set.days=d;set.per=d.length;saveSet();renderDays();renderPlan();renderLog();renderHome()};
 renderDays();
 let tmr;
-pr.oninput=()=>{set.target=+pr.value;renderSplits();renderHome();if(set.fmt!=="singel")updDbl();clearTimeout(tmr);tmr=setTimeout(()=>{saveSet();renderPlan();renderPRs();renderHome();renderGarmin()},250)};
+pr.oninput=()=>{set.target=+pr.value;renderSplits();renderHome();if(set.fmt!=="singel")updDbl();clearTimeout(tmr);tmr=setTimeout(()=>{saveSet();renderPlan();renderPRs();renderHome()},250)};
 pd.onchange=()=>{if(pd.value){const cur=myEvent();set.date=pd.value;set.noRace=false;if(!(cur&&cur.s<=set.date&&set.date<=cur.e))delete set.race;else set.race=raceKey(cur);set.planStart=today();saveSet();renderPlan();renderHome()}};
 
 /* ============ Lagring: logg och rekord ============ */
@@ -4889,8 +4834,8 @@ function renderProfile(){
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-hap").onclick=()=>{set.cues.haptic=set.cues.haptic===false;saveSet();renderProfile();renderCues()};
-  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}
-    <a class="row" href="#race" data-tv-go="run"><span class="badge">G</span><div><h3>Garmin</h3><p>Skapa ett racepass för klockan under Racedag.</p></div><span class="chev">›</span></a>`;
+  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}`;
+  $("#pf-con-wrap").hidden=!$("#pf-con").innerHTML.trim();
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
@@ -5894,12 +5839,12 @@ if(RACE&&!RACE.end){startTick();keepAwake()}
 route();
 if(!window.claude)initSupabase();
 (async()=>{await initDb();try{if(window.claude&&window.claude.use){MCP=await window.claude.use("mcp");renderStrava();if(MCP&&set.strava){await FIRST;syncStrava(false)}}}catch(e){}})();
-(async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false;renderGarmin()}}catch(e){}})();
+(async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false}}catch(e){}})();
 if(!window.claude&&!IS_NATIVE&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
 if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(IS_NATIVE){try{const f=new File([data],filename,{type:/\.ics$/.test(filename)?"text/calendar":"application/octet-stream"});
     if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:filename});return {status:"saved"}}}catch(e){if(e&&e.name==="AbortError")return {status:"cancelled"}}
     toast("Det går inte att spara filer i appen än. Använd webbversionen på varvtraining.com.");return {status:"failed"}}if(/\.ics$/.test(filename)&&isIOS()){location.href="data:text/calendar;charset=utf-8,"+encodeURIComponent(data);return {status:"saved"}}const u=URL.createObjectURL(new Blob([data],{type:"application/octet-stream"}));const a=document.createElement("a");a.href=u;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),4000);return {status:"saved"}}};$("#cal-btn").hidden=false}
-renderComm();renderGarmin();renderAvatar();renderEvents();setFdView("flow");
+renderComm();renderAvatar();renderEvents();setFdView("flow");
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
   else if(set.onboarded&&passWaiting())setTimeout(openSharedPass,wait);

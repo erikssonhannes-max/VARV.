@@ -1066,6 +1066,15 @@ a.row{color:inherit;text-decoration:none}
 .hx-wtop p{font-size:15px;color:var(--muted);line-height:1.4;margin-top:4px}
 .hx-wtop .hx-delta{font-size:15px}
 .hx-weak .pill.ghost{background:var(--card)}
+/* Hyrox-raden på atletkortet */
+.pf-hx{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));width:min(100%,460px);margin:6px auto 0;border-radius:16px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.pf-hx>div{display:grid;gap:2px;padding:12px 8px;min-width:0;text-align:center}
+.pf-hx>div+div{border-left:1px solid rgba(255,255,255,.1)}
+.pf-hx small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.pf-hx b em{font-style:normal;font-size:13px;font-weight:600;letter-spacing:0;color:rgba(255,255,255,.75)}
+.pf-hx b{font-size:19px;font-weight:700;letter-spacing:-.02em;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-hx span{font-size:12px;color:rgba(255,255,255,.6);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#pf-hx{width:100%}
 /* Redigera profil */
 .ep-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
 .ep-av{position:relative;width:84px;height:84px;border-radius:50%;padding:3px;border:0;background:var(--hot);cursor:pointer;box-shadow:0 14px 28px -16px var(--glow)}
@@ -1767,6 +1776,7 @@ a.row{color:inherit;text-decoration:none}
           <h1 id="pf-name">Din profil</h1>
           <div class="pf-id" id="pf-id" hidden></div>
           <button type="button" class="pf-rankpill" id="pf-rankpill" hidden></button>
+          <div id="pf-hx"></div>
           <p class="pf-sub" id="pf-sub"></p>
         </div>
         <div class="pf-fw" id="pf-fw" hidden></div>
@@ -2900,10 +2910,12 @@ function cardPayload(){const c=set.card||{},sh=c.share||{},o={v:1};
   if(c.showName&&set.name)o.name=String(set.name).slice(0,60);
   if(c.city)o.city=String(c.city).slice(0,40);
   if(c.showAge&&+set.age>=14&&+set.age<=99)o.age=Math.round(+set.age);
-  if(c.showCls)o.cls={k:set.k==="pro"?"Pro":"Open",f:set.fmt==="mixed"?"Mixed Doubles":set.fmt==="doubles"?"Doubles":"Singel"};
+  /* Klass och tävlingsresultat visas som standard, tills man stänger av dem under Redigera profil */
+  if(c.showCls!==false)o.cls={k:set.k==="pro"?"Pro":"Open",f:set.fmt==="mixed"?"Mixed Doubles":set.fmt==="doubles"?"Doubles":"Singel",g:set.fmt==="mixed"?"":set.g==="w"?"Dam":"Herr"};
   if(c.bio)o.bio=String(c.bio).slice(0,200);
   if(/^\d{4}-\d{2}$/.test(c.since||""))o.since=c.since;
-  if(sh.races)o.races={n:racesCount(),best:PRS.race&&PRS.race>=600?Math.round(PRS.race):null};
+  if(sh.races!==false){const br=bestRace();o.races={n:racesCount(),best:br>=600?Math.round(br):null}}
+  {const nr=!set.noRace&&set.date&&set.date>=today()?(myEvent()||{}):null;if(nr)o.next={d:nr.s||set.date,c:nr.c||null}}
   if(sh.run)o.run={k1:PRS.km?Math.round(PRS.km):null,k5:PRS.k5?Math.round(PRS.k5):null};
   if(sh.train){const L=LOGS.filter(l=>l&&l.date&&l.date<=today()),mins=a=>a.reduce((s,l)=>s+(+l.min||0),0),since=(a,b)=>L.filter(l=>l.date>=dAgo(a-1)&&l.date<=dAgo(b));
     const ws=weekStart(today()),w=Array(12).fill(0),wn=Array(12).fill(0);L.forEach(l=>{const i=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(i>=0&&i<12){w[11-i]+=(+l.min||0);wn[11-i]++}});
@@ -2924,14 +2936,21 @@ function personCard(o){const t=TIERS[o.tier],ring=t?`--m1:${t.m[0]};--m2:${t.m[1
     <div class="pf-ring" style="${ring}">${avImg(o.url,o.user,"pf-av")}</div>
     <div class="pf-who"><h1>${o.name}</h1><p class="pf-handle">${esc(o.user)}<span>#${esc(o.tag||"")}</span></p>
       ${t?`<span class="pf-rankpill" role="img" aria-label="Rank ${t.n}">${tierHTML(t,"xs")}<b>${t.n}</b></span>`:""}
+      ${o.card?cardHx(o.card):""}
       ${o.sub?`<p class="pf-sub">${esc(o.sub)}</p>`:""}</div>
     <div class="pf-fw" id="pp-fw"></div></div>`}
 function personCardGo(c){const tr=document.querySelector("#pp-body .pf-track");if(tr)pfTrack(c&&TIERS[c.tier]&&c.tf!=null?c.tf:null,true,tr)}
-function cardSub(c){const x=[];if(!c)return "";if(c.cls)x.push(`${c.cls.k} · ${c.cls.f}`);if(c.city)x.push(c.city);if(c.age)x.push(`${c.age} år`);return x.join(" · ")}
+/* Hyrox på atletkortet: klass, bästa tid och nästa lopp. Samma rad på ditt kort som på det andra ser. */
+function cardHx(c){if(!c)return "";const it=[];
+  if(c.cls)it.push(["Klass",c.cls.f==="Singel"?c.cls.k:c.cls.f==="Doubles"?"Doubles":"Mixed",[c.cls.f==="Singel"?c.cls.g:c.cls.k,c.cls.f==="Singel"?"Singel":c.cls.f==="Doubles"?c.cls.g:""].filter(Boolean).join(" · ")]);
+  if(c.races&&c.races.best)it.push(["Bästa tid",fmt(c.races.best),c.races.n?`${c.races.n} ${c.races.n===1?"lopp":"lopp"}`:""]);
+  if(c.next&&isDay(c.next.d)&&c.next.d>=today()){const d=Math.round((evD(c.next.d)-evD(today()))/864e5);it.push(["Nästa lopp",d===0?"I dag":[d,d===1?"dag":"dagar"],c.next.c||""])}
+  return it.length?`<div class="pf-hx" style="--n:${it.length}">${it.map(([l,v,u])=>`<div><small>${l}</small><b>${Array.isArray(v)?`${v[0]}<em> ${v[1]}</em>`:esc(v)}</b>${u?`<span>${esc(u)}</span>`:""}</div>`).join("")}</div>`:""}
+function cardSub(c){const x=[];if(!c)return "";if(c.age)x.push(`${c.age} år`);return x.join(" · ")}
 async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   if(!SB||!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för att se profiler</h3><button class="pill block" id="pp-login">Logga in</button></div>`;$("#pp-login").onclick=()=>openAuth();return}
   const me=uid===SBUSER.id;if(!el.dataset.uid||el.dataset.uid!==uid)el.innerHTML=`<div class="card"><p class="small">Hämtar profilen…</p></div>`;el.dataset.uid=uid;
-  const {data:p}=await SB.from("profiles").select("user_id,username,tag,avatar_url,card,is_public").eq("user_id",uid).maybeSingle();
+  const {data:p}=await SB.from("profiles").select("user_id,username,tag,avatar_url,card,is_public,next_race").eq("user_id",uid).maybeSingle();
   if(location.hash!=="#u/"+uid)return;
   const basic=p||NAMES[uid]||{username:"Okänd",tag:"0000"};
   if(!p){el.innerHTML=`${personCard({url:basic.avatar_url,user:basic.username,tag:basic.tag,name:esc(basic.username),sub:"Privat profil"})}
@@ -2950,7 +2969,8 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   /* Snittet räknas från första veckan med träning, så att en ny användare inte får ett lågt snitt av tomma veckor innan hen började. */
   const n12=T?(T.n12||[]):[],f0=n12.findIndex(n=>n>0),freq=f0<0?0:Math.round(n12.slice(f0).reduce((a,b)=>a+b,0)/(n12.length-f0)),active12=T?(T.n12||[]).filter(n=>n>0).length:0;
   const name=c.name?esc(c.name):esc(p.username);
-  el.innerHTML=`${personCard({url:p.avatar_url,user:p.username,tag:p.tag,name,tier:c.tier,sub:chips.join(" · ")})}
+  if(!c.next&&p.next_race&&isDay(p.next_race.date))c.next={d:p.next_race.date,c:p.next_race.name||null};
+  el.innerHTML=`${personCard({url:p.avatar_url,user:p.username,tag:p.tag,name,tier:c.tier,card:c,sub:cardSub(c)})}
      ${c.bio?`<p class="pp-bio">”${esc(String(c.bio).trim().replace(/^["”“'’]+|["”“'’]+$/g,""))}”</p>`:""}
    <div class="pp-btns">${me?`<button class="pill ghost block" id="pp-edit">Redigera profil och vad du visar</button>`:friendBtns(uid,me)}</div>
    ${tiles.length?`<div class="pp-tiles">${tiles.map(([l,v])=>`<div class="tile"><span>${esc(l)}</span><b>${esc(v)}</b></div>`).join("")}</div>`:""}
@@ -3057,8 +3077,8 @@ function openEditProfile(){
        <div class="ep-box ep-sw">
          ${swRow("ep-showName","Ditt namn",set.name?esc(set.name):"Namnet du angav när du började",!!cd.showName)}
          ${swRow("ep-showAge","Ålder","Visas som antal år",!!cd.showAge)}
-         ${swRow("ep-showCls","Klass",divText(),!!cd.showCls)}
-         ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",!!sh[k])).join("")}
+         ${swRow("ep-showCls","Klass",divText(),cd.showCls!==false)}
+         ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",k==="races"?sh[k]!==false:!!sh[k])).join("")}
        </div></section>
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-cyan"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9.5" r="2.5"/><path d="M3 19a5.5 5.5 0 0 1 11 0M14.5 15.2A4.5 4.5 0 0 1 21 19"/></svg></span>Doubles</h3>
        <div class="ep-box"><div class="field"><label for="ep-partner">Din partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Följ din partner först, så går hen att välja här.</span>`}</div></div></section>
@@ -3068,8 +3088,8 @@ function openEditProfile(){
    </form>`,()=>{
     const msg=$("#ep-msg");
     $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub);$("#ep-pub small").textContent=pubTxt(pub)};
-    ["showName","showAge","showCls"].forEach(k=>{const b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=!cd[k];b.setAttribute("aria-checked",cd[k])}});
-    SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=!sh[k];b.setAttribute("aria-checked",sh[k])}});
+    ["showName","showAge","showCls"].forEach(k=>{const b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=k==="showCls"?cd[k]===false:!cd[k];b.setAttribute("aria-checked",k==="showCls"?cd[k]!==false:cd[k])}});
+    SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=k==="races"?sh[k]===false:!sh[k];b.setAttribute("aria-checked",k==="races"?sh[k]!==false:sh[k])}});
     $("#ep-pic").onclick=$("#ep-pic2").onclick=()=>$("#pf-av-file").click();
     $("#ep-name").addEventListener("input",e=>{$("#ep-prev").textContent=e.target.value.trim()||MYPROF.username});
     const np=$("#ep-nopic");if(np)np.onclick=()=>busy(np,async()=>{try{await SB.storage.from("avatars").remove([SBUSER.id+"/avatar.jpg"])}catch(e){}
@@ -4890,6 +4910,7 @@ function renderProfile(){
    /* Ranken på atletkortet: medalj, namn och antal pass, och profilbildens ring i rankens metallfärg */
    const rp=$("#pf-rankpill");rp.hidden=false;rp.setAttribute("aria-label",`Rank ${P.tier.n}, ${P.st.n} pass. Visa alla nivåer`);
    rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b>`;rp.onclick=openLevels;
+   {const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload())}
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
   /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */

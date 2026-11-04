@@ -367,7 +367,7 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .formnum span{color:var(--muted);font-size:.95rem}
 .delta{font-size:.8rem;font-weight:600;padding:4px 10px;border-radius:980px;background:var(--card);color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .delta.up{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--good)}
-.formmsg{font-size:.98rem;line-height:1.4;text-wrap:pretty}
+.formmsg{font-size:15px;line-height:1.45;color:var(--muted);text-wrap:pretty}
 .formsvg{width:100%;height:auto;display:block;overflow:visible}
 .formsvg text{fill:var(--muted);font-size:10.5px;font-family:var(--f)}
 .formsvg .fv{fill:var(--accent2);font-weight:700;font-size:12px}
@@ -428,16 +428,18 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .pg-scroll{-webkit-mask-image:linear-gradient(90deg,#000 85%,transparent);mask-image:linear-gradient(90deg,#000 85%,transparent);padding-right:32px;cursor:grab}
 .pg-scroll.end{-webkit-mask-image:none;mask-image:none}
 #pgp-list .check[aria-checked="true"] .lab{text-decoration:none;opacity:1;color:inherit}
-.pg-pick{color:var(--link);border-style:dashed}
+.pg-pick{color:var(--link);display:inline-flex;align-items:center;gap:4px}
 .pg-grid{stroke:var(--hair);stroke-width:1;opacity:.6}
 .pg-base{stroke:var(--hair);stroke-width:1}
 .pg-chips::-webkit-scrollbar{display:none}
-.pg-chips .chip{flex:none}
-.pg-head{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;min-width:0}
-.pg-head b{font-size:2.4rem;font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
-.pg-head span{color:var(--muted);font-size:.92rem}
-.pg-svg{width:100%;height:auto;display:block;overflow:visible;touch-action:manipulation}
-.pg-svg text{fill:var(--muted);font-size:10.5px;font-family:var(--f)}
+.pg-chips .chip{flex:none;min-height:36px;padding:0 14px;border:0;background:var(--card);font-size:14px;font-weight:500;color:var(--ink)}
+.pg-chips .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.pg-chips .chip.pg-pick{background:none;color:var(--link);padding:0 8px}
+.pg-head{display:grid;gap:4px;min-width:0;margin-top:4px}
+.pg-head b{font-size:35px;font-weight:700;letter-spacing:-.035em;line-height:1.05;font-variant-numeric:tabular-nums}
+.pg-head span{color:var(--ink);font-size:15px;font-weight:500}
+.pg-svg{display:block;max-width:100%;overflow:visible;touch-action:manipulation;margin-top:6px}
+.pg-svg text{fill:var(--muted);font-size:12px;font-family:var(--f);font-variant-numeric:tabular-nums}
 .pg-hit{cursor:pointer;outline:none}
 .pg-bar{fill:color-mix(in srgb,var(--accent) 38%,var(--hair))}
 .pg-hit.on .pg-bar{fill:var(--accent)}
@@ -448,8 +450,8 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .pg-dot{fill:var(--tile);stroke:var(--accent);stroke-width:2.4}
 .pg-hit.on .pg-dot{fill:var(--accent2);stroke:var(--tile);stroke-width:2.5}
 .pg-guide{stroke:var(--hair);stroke-width:1.5;stroke-dasharray:3 3}
-.pg-note{color:var(--muted);font-size:.8rem;line-height:1.4;margin-top:-6px}
-.pg-empty{display:grid;place-items:center;height:110px;border-radius:14px;background:var(--card);color:var(--muted);font-size:.9rem}
+.pg-note{color:var(--muted);font-size:13px;line-height:1.4;margin-top:-4px}
+.pg-empty{display:grid;place-items:center;height:150px;border-radius:12px;background:var(--card);color:var(--muted);font-size:15px}
 @media (prefers-reduced-motion:no-preference){.pg-bar{transition:fill .15s ease}}
 .fm-bars rect{fill:color-mix(in srgb,var(--accent) 38%,var(--hair))}
 .fm-bars rect.now{fill:var(--accent)}
@@ -3337,35 +3339,39 @@ function pgLift(id){const pts={};LOGS.forEach(l=>{if(!l||!l.date||l.date>today()
 /* Jämna steg för axeln, t.ex. 5 kg, 10 kg eller 0:30. */
 function pgStep(raw,c){for(const s of c)if(s>=raw)return s;let s=c[c.length-1];while(s<raw)s*=2;return s}
 const PG_KGS=[.5,1,2,2.5,5,10,20,25,50,100],PG_SEC=[1,2,5,10,15,20,30,60,120,300,600],PG_N=[1,2,5,10,20,50],PG_M=[15,30,60,120,180,300,600];
-function pgBars(vals,labels,sel,unit,isP){const W=320,L=34,T=8,B=118,n=vals.length,gw=(W-L)/n,bw=Math.min(18,gw*.56),raw=Math.max(1,...vals);
+function pgBars(vals,labels,sel,unit,isP){const W=PGW,L=40,T=10,B=150,n=vals.length,gw=(W-L)/n,bw=Math.min(18,gw*.56),raw=Math.max(1,...vals);
   const st=pgStep(raw/3,isP?PG_N:PG_M),mx=Math.max(st,Math.ceil(raw/st)*st);
-  let h="";for(let v=0;v<=mx+1e-9;v+=st){const y=B-(B-T)*v/mx;h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="${v?"pg-grid":"pg-base"}"/><text x="${L-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${isP?v:v>=60?(v/60).toLocaleString("sv-SE")+" h":v+" m"}</text>`}
+  let h="";for(let v=0;v<=mx+1e-9;v+=st){const y=B-(B-T)*v/mx;h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="${v?"pg-grid":"pg-base"}"/><text x="${L-8}" y="${(y+4).toFixed(1)}" text-anchor="end">${isP?v:v>=60?(v/60).toLocaleString("sv-SE")+" h":v+" m"}</text>`}
   vals.forEach((v,i)=>{const x=L+i*gw+gw/2,bh=v?Math.max(3,(B-T)*v/mx):0,on=i===sel;
     h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(labels[i].a)}: ${esc(unit(v))}"><rect x="${(L+i*gw).toFixed(1)}" y="0" width="${gw.toFixed(1)}" height="${B+18}" fill="transparent"/>`+
       (v?`<rect class="pg-bar" x="${(x-bw/2).toFixed(1)}" y="${(B-bh).toFixed(1)}" width="${bw.toFixed(1)}" height="${bh.toFixed(1)}" rx="${Math.min(5,bw/2).toFixed(1)}"/>`:"")+
-      (labels[i].t?`<text x="${x.toFixed(1)}" y="${B+15}" text-anchor="middle">${labels[i].t}</text>`:"")+`</g>`});
-  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
+      (labels[i].t?`<text x="${x.toFixed(1)}" y="${B+20}" text-anchor="middle">${labels[i].t}</text>`:"")+`</g>`});
+  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+28}" width="${W}" height="${B+28}" role="group" aria-label="Diagram">${h}</svg>`}
 /* Linje över tid. Första punkten hamnar längst till vänster och ungefär en tredjedel upp, så att det syns åt vilket håll det går. Med invert ligger lägre värden (snabbare tider) högre upp. */
-function pgLine(pts,sel,invert,yfmt,steps){const W=320,L=40,R=W-8,T=8,B=112,n=pts.length;
+function pgLine(pts,sel,invert,yfmt,steps){const W=PGW,L=52,R=W-10,T=12,B=150,n=pts.length;
   const g=v=>invert?-v:v,g0=g(pts[0].v),gs=pts.map(p=>g(p.v)),down=g0-Math.min(...gs),up=Math.max(...gs)-g0,base=Math.abs(pts[0].v);
   const span=Math.max(3*down,1.5*up,base*.12,steps[0]*3)*1.1,lo=g0-span/3,hi=lo+span;
-  const d0=evD(pts[0].ds),d1=evD(pts[n-1].ds),days=Math.max(1,(d1-d0)/864e5),X=p=>n===1?L+8:L+8+(evD(p.ds)-d0)/864e5/days*(R-L-16),Y=v=>B-(g(v)-lo)/(hi-lo)*(B-T);
+  const d0=evD(pts[0].ds),d1=evD(pts[n-1].ds),days=Math.max(1,(d1-d0)/864e5),X=p=>n===1?(L+R)/2:L+12+(evD(p.ds)-d0)/864e5/days*(R-L-24),Y=v=>B-(g(v)-lo)/(hi-lo)*(B-T);
   const pp=pts.map(p=>[X(p),Y(p.v)]),st=pgStep(span/4,steps);let h="";
-  for(let k=Math.ceil(lo/st)*st;k<=hi+1e-9;k+=st){const v=invert?-k:k,y=Y(v);h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="pg-grid"/><text x="${L-6}" y="${(y+3.5).toFixed(1)}" text-anchor="end">${esc(yfmt(v))}</text>`}
+  for(let k=Math.ceil(lo/st)*st;k<=hi+1e-9;k+=st){const v=invert?-k:k,y=Y(v);h+=`<line x1="${L}" x2="${W}" y1="${y.toFixed(1)}" y2="${y.toFixed(1)}" class="pg-grid"/><text x="${L-8}" y="${(y+4).toFixed(1)}" text-anchor="end">${esc(yfmt(v))}</text>`}
   h+=`<line x1="${L}" x2="${W}" y1="${B}" y2="${B}" class="pg-base"/>`;
   if(n>1)h+=`<path class="pg-area" d="${pathOf(pp)} L${pp[n-1][0].toFixed(1)} ${B} L${pp[0][0].toFixed(1)} ${B} Z"/><path class="pg-line" d="${pathOf(pp)}"/>`;
   pts.forEach((p,i)=>{const on=i===sel,[x,y]=pp[i],a=i?(pp[i-1][0]+x)/2:L,b=i<n-1?(x+pp[i+1][0])/2:W;
     h+=`<g class="pg-hit${on?" on":""}" data-pi="${i}" role="button" tabindex="0" aria-label="${esc(pgDay(p.ds))}: ${esc(yfmt(p.v))}"><rect x="${a.toFixed(1)}" y="0" width="${Math.max(1,b-a).toFixed(1)}" height="${B+18}" fill="transparent"/>`+
       (on?`<line x1="${x.toFixed(1)}" x2="${x.toFixed(1)}" y1="${y.toFixed(1)}" y2="${B}" class="pg-guide"/>`:"")+`<circle class="pg-dot" cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${on?6:4}"/></g>`});
-  h+=`<text x="${L+2}" y="${B+15}">${esc(pgDay(pts[0].ds))}</text>`;
-  if(n>1&&days>=21){const m=new Date(+d0+(d1-d0)/2);h+=`<text x="${((L+8+R-8)/2).toFixed(1)}" y="${B+15}" text-anchor="middle">${esc(pgDay(iso(m)))}</text>`}
-  if(n>1)h+=`<text x="${R}" y="${B+15}" text-anchor="end">${esc(pgDay(pts[n-1].ds))}</text>`;
-  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+20}" role="group" aria-label="Diagram">${h}</svg>`}
+  h+=`<text x="${n===1?((L+R)/2).toFixed(1):L+2}" y="${B+20}"${n===1?' text-anchor="middle"':""}>${esc(pgDay(pts[0].ds))}</text>`;
+  if(n>1&&days>=21){const m=new Date(+d0+(d1-d0)/2);h+=`<text x="${((L+R)/2).toFixed(1)}" y="${B+20}" text-anchor="middle">${esc(pgDay(iso(m)))}</text>`}
+  if(n>1)h+=`<text x="${R}" y="${B+20}" text-anchor="end">${esc(pgDay(pts[n-1].ds))}</text>`;
+  return `<svg class="pg-svg" viewBox="0 0 ${W} ${B+28}" width="${W}" height="${B+28}" role="group" aria-label="Diagram">${h}</svg>`}
 function pgCmp(a,b,unit){if(!b||Math.abs(a-b)<1e-9)return b?"Lika mycket som de fyra veckorna innan.":"";return `${unit(Math.abs(a-b))} ${a>b?"mer":"mindre"} än de fyra veckorna innan.`}
+/* Diagrammen ritas i kortets verkliga bredd, så att text och punkter har samma storlek på mobil och dator */
+let PGW=320;
 function renderForm(){
   const el=$("#form");if(!el)return;const v=PGV;let body="",head="",msg="",chips="";
+  {const cs=getComputedStyle(el),w=el.clientWidth-parseFloat(cs.paddingLeft||0)-parseFloat(cs.paddingRight||0);PGW=w>200?Math.round(w):320}
+  if(!el._ro&&window.ResizeObserver){let last=el.clientWidth;el._ro=new ResizeObserver(()=>{const w=el.clientWidth;if(Math.abs(w-last)>8){last=w;renderForm()}});el._ro.observe(el)}
   const tabs=`<div class="seg pg-tabs" role="group" aria-label="Visa">${PG_TABS.map(([k,l])=>`<button data-pgt="${k}" aria-pressed="${v.tab===k}">${l}</button>`).join("")}</div>`;
-  const big=(b,s)=>`<div class="pg-head"><b>${b}</b><span>${s}</span></div>`;
+  const big=(b,s)=>`<div class="pg-head"><b>${b}</b><span>${s.replace(/^(.)/,c=>c.toUpperCase())}</span></div>`;
   if(v.tab==="pass"||v.tab==="tid"){
     const W=pgWeeks(pgN()),isP=v.tab==="pass",vals=W.map(w=>isP?w.n:w.m),sel=v.sel==null||v.sel>=W.length?W.length-1:v.sel,w=W[sel];
     const ls=Math.ceil(W.length/5),lab=W.map((x,i)=>({a:i===W.length-1?"Den här veckan":`Vecka ${x.wk}`,t:i===W.length-1?"Nu":(W.length-1-i)%ls===0?`v${x.wk}`:""}));
@@ -3389,7 +3395,7 @@ function renderForm(){
     const L=pgLifts();
     if(!L.length){head=big("–","tyngsta vikt");msg="Logga en styrkeövning med vikt, till exempel knäböj, så syns hur du blir starkare.";body=`<div class="pg-empty">Inga styrkepass än</div>`}
     else{const F=pgFavs(L),id=v.lift&&F.find(x=>x.id===v.lift)?v.lift:F[0].id,cur=F.find(x=>x.id===id),pts=pgLift(id).filter(x=>x.ds>=pgFrom()).slice(-60);
-      chips=`<div class="pg-chips wrap" role="group" aria-label="Övning">${F.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}${L.length>F.length||Array.isArray(set.pgFav)?`<button class="chip pg-pick" id="pg-pick">Välj övningar</button>`:""}</div>`;
+      chips=`<div class="pg-chips wrap" role="group" aria-label="Övning">${F.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}${L.length>F.length||Array.isArray(set.pgFav)?`<button class="chip pg-pick" id="pg-pick"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Välj övningar</button>`:""}</div>`;
       if(!pts.length){head=big("–","tyngsta vikt");msg=`Inga pass med ${esc(cur.n)} under perioden. Välj en längre period ovan.`;body=`<div class="pg-empty">Inga lyft under perioden</div>`}
       else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
       head=big(pgKg(p.v),`tyngsta vikt · ${esc(pgDay(p.ds))}${p.r?` · ${p.r} ${p.r===1?"rep":"reps"}`:""}`);

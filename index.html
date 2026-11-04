@@ -1722,9 +1722,8 @@ a.row{color:inherit;text-decoration:none}
   <div class="wrap">
     <div class="pagehead"><h1>Vänner.</h1></div>
     <div id="vn-req"></div>
-    <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="following">Följer</button><button data-vn="followers">Följare</button><button data-vn="top">Topplista</button><button data-vn="find">Hitta</button></div>
-    <div class="vnv" data-v="following" id="vn-following"></div>
-    <div class="vnv" data-v="followers" id="vn-followers" hidden></div>
+    <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="friends">Vänner</button><button data-vn="top">Topplista</button><button data-vn="find">Hitta</button></div>
+    <div class="vnv" data-v="friends" id="vn-friends"></div>
     <div class="vnv" data-v="top" hidden><div id="fr-body"></div></div>
     <div class="vnv" data-v="find" hidden><div id="fd-find"></div></div>
   </div>
@@ -5095,21 +5094,24 @@ function greetLine(h,n){const done=LOGS.some(l=>l&&l.date===today());
 function setVnView(v){set.vnsub=v;$$("#v-vanner .vnv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#vn-seg [data-vn]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.vn===v))}
 $("#vn-seg").onclick=e=>{const b=e.target.closest("[data-vn]");if(!b)return;setVnView(b.dataset.vn);saveSet();renderVanner()};
 document.addEventListener("click",e=>{const a=e.target.closest("[data-vn-go]");if(a){set.vnsub=a.dataset.vnGo;saveSet();if(location.hash==="#vanner")renderVanner()}});
-async function renderVanner(){const v=["following","followers","top","find"].includes(set.vnsub)?set.vnsub:"following";setVnView(v);
+async function renderVanner(){const v=["friends","top","find"].includes(set.vnsub)?set.vnsub:"friends";setVnView(v);
   const req=$("#vn-req"),seg=$("#vn-seg");
   if(!SB||!SBUSER){req.innerHTML=`<div class="card"><h3>Träna ihop med andra</h3><p class="small">Logga in för att följa vänner, se deras pass och hitta nya att träna med.</p><button class="pill block" id="vn-login">Logga in</button></div>`;seg.hidden=true;$$("#v-vanner .vnv").forEach(x=>x.hidden=true);$("#vn-login").onclick=()=>openAuth();return}
   seg.hidden=false;
-  $$("#vn-seg [data-vn]").forEach(b=>{const n=b.dataset.vn==="following"?FRIENDS.length:b.dataset.vn==="followers"?FOLLOWERS.length:null;b.textContent=({following:"Följer",followers:"Följare",top:"Topplista",find:"Hitta"}[b.dataset.vn])+(n!=null?` (${n})`:"")});
+  /* En lista: alla du följer, och de som följer dig men som du inte följt tillbaka än */
+  const pals=[...new Set(FRIENDS.concat(FOLLOWERS))];
+  $$("#vn-seg [data-vn]").forEach(b=>{const n=b.dataset.vn==="friends"?FRIENDS.length:null;b.textContent=({friends:"Vänner",top:"Topplista",find:"Hitta"}[b.dataset.vn])+(n?` (${n})`:"")});
   const need=[...new Set(FRIENDS.concat(FOLLOWERS,FRQ_IN.map(r=>r.from_user)))].filter(id=>!NAMES[id]);
   if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
   if(location.hash!=="#vanner")return;
   req.innerHTML=FRQ_IN.length?`<div class="sechead" style="margin-top:0"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div><div class="group" style="margin-bottom:18px">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req">${avImg(p.avatar_url,p.username)}<div data-prof="${esc(r.from_user)}" role="button" tabindex="0"><h3>${handleHtml(p)}</h3><p>Förfrågan · ${agoTxt(r.created_at)}</p></div><div class="nt-acts"><button class="pill nt-yes" data-yes="${esc(r.from_user)}">Godkänn</button><button class="pill ghost nt-no" data-no="${esc(r.from_user)}" aria-label="Avböj ${esc(p.username)}">Avböj</button></div></div>`}).join("")}</div>`:"";
   req.onclick=async e=>{const b=e.target.closest("button");if(b&&!b.disabled){if(b.dataset.yes){b.disabled=true;await answerFriend(b.dataset.yes,true);renderVanner();return}if(b.dataset.no){b.disabled=true;await answerFriend(b.dataset.no,false);renderVanner();return}}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
-  const both=id=>FRIENDS.includes(id)&&FOLLOWERS.includes(id);
-  const list=(ids,empty,sub)=>ids.length?personRows(ids,sub):`<div class="card"><p class="small">${empty}</p><button class="pill block" data-vn-find style="margin-top:12px">Hitta vänner</button></div>`;
-  $("#vn-following").innerHTML=list(FRIENDS,"Du följer ingen än. Hitta någon att träna med.",id=>id===(MYPROF&&MYPROF.partner_id)?"Din Doubles-partner":both(id)?"Ni följer varandra":"");
-  $("#vn-followers").innerHTML=list(FOLLOWERS,"Ingen följer dig än. Dela din profil så hittar andra dig.",id=>FRIENDS.includes(id)?"Ni följer varandra":"Följ tillbaka från profilen");
-  $$("#vn-following,#vn-followers").forEach(el=>el.onclick=e=>{if(e.target.closest("[data-vn-find]")){setVnView("find");saveSet();renderVanner();return}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)});
+  const back=pals.filter(id=>!FRIENDS.includes(id)),mine=pals.filter(id=>FRIENDS.includes(id));
+  const sorted=mine.sort((x,y)=>(y===(MYPROF&&MYPROF.partner_id))-(x===(MYPROF&&MYPROF.partner_id))||String((NAMES[x]||{}).username||"").localeCompare((NAMES[y]||{}).username||"","sv"));
+  $("#vn-friends").innerHTML=pals.length?`${personRows(sorted,id=>id===(MYPROF&&MYPROF.partner_id)?"Din Doubles-partner":"")}
+    ${back.length?`<div class="sechead"><h2>Lägg till som vän</h2></div>${personRows(back,()=>"Följer dig. Lägg till från profilen.")}`:""}`
+    :`<div class="card"><p class="small">Du har inga vänner här än. Hitta någon att träna med.</p><button class="pill block" data-vn-find style="margin-top:12px">Hitta vänner</button></div>`;
+  $("#vn-friends").onclick=e=>{if(e.target.closest("[data-vn-find]")){setVnView("find");saveSet();renderVanner();return}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
   if(v==="find")renderFind();if(v==="top")renderFriends()}
 /* ============ Feed: flöde, hitta vänner och topplista ============ */
 const FD_KIND={lopp:"Tävlade",rekord:"Nytt rekord",pass:"Tränade"};

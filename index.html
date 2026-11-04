@@ -686,7 +686,7 @@ details.more[open] summary{margin-bottom:6px}
 .pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:30px 22px 30px;display:grid;gap:12px;justify-items:center;text-align:center;min-height:310px;align-content:center;box-shadow:0 18px 36px -20px var(--glow)}
 .pf-card::after{content:"";position:absolute;left:-80px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);z-index:-1;pointer-events:none}
 .pf-track{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}
-.pf-track .tr{fill:none;stroke:rgba(255,255,255,.12);stroke-width:22}
+.pf-track .tr{fill:none;stroke:rgba(255,255,255,.12);stroke-width:14}
 .pf-track .st{fill:none;stroke:rgba(255,255,255,.45);stroke-width:2}
 .pf-track .arc{fill:none;stroke:rgba(255,255,255,.7);stroke-width:3;stroke-linecap:round}
 .pf-track .dot{fill:#fff;stroke:rgba(255,255,255,.35);stroke-width:8;paint-order:stroke}
@@ -950,7 +950,7 @@ a.row{color:inherit;text-decoration:none}
 .med.xs{width:26px;height:26px;box-shadow:0 0 0 2px rgba(255,255,255,.9)}.med.xs svg{width:14px;height:14px}
 .pf-card .pf-ring{padding:4px;border-radius:50%;background:linear-gradient(145deg,var(--m1,#fff),var(--m2,#fff));box-shadow:0 0 0 2px rgba(255,255,255,.85),0 12px 28px -12px rgba(0,0,0,.35)}
 .pf-card .pf-ring .pf-av{border-width:3px;background:linear-gradient(135deg,rgba(255,255,255,.3),rgba(255,255,255,.1)),linear-gradient(135deg,var(--accent),var(--accent2))}
-.pf-card .tagchip{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0 4px;min-height:32px;font-weight:600}
+.pf-card .tagchip{background:none;-webkit-backdrop-filter:none;backdrop-filter:none;padding:0 4px;min-height:32px;font-weight:500;font-size:.95rem;color:rgba(255,255,255,.88)}
 .pf-rankpill{display:inline-flex;align-items:center;gap:9px;border:0;cursor:pointer;font:inherit;color:#fff;background:rgba(255,255,255,.2);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border-radius:980px;padding:5px 18px 5px 5px;min-height:44px;box-sizing:border-box;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28)}
 .pf-rankpill b{font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
 .pf-rankpill span{font-size:1rem;font-weight:600;color:rgba(255,255,255,.85);padding-left:9px;border-left:1px solid rgba(255,255,255,.35);font-variant-numeric:tabular-nums}
@@ -959,12 +959,18 @@ a.row{color:inherit;text-decoration:none}
 .pp-rank b{font-size:.9rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .pp-rank .med.xs{box-shadow:none}
 @media (prefers-reduced-motion:no-preference){.view.on .pf-rankpill:not([hidden]){animation:pop .55s var(--spring) .15s both}}
-.pf-handle{font-size:1rem;font-weight:600;color:#fff;min-height:28px;display:flex;align-items:center}.pf-handle span{color:rgba(255,255,255,.8);margin-left:2px}
+.pf-handle{font-size:.95rem;font-weight:500;color:rgba(255,255,255,.88);min-height:28px;display:flex;align-items:center}.pf-handle span{color:rgba(255,255,255,.8);margin-left:2px}
 .pf-fw>div{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 2px}
 .pp-card{margin:34px 0 12px}
 .pp-card .pf-fw:empty{min-height:8px}
 .pp-bio{max-width:none;text-align:center;margin:0 auto 14px;color:var(--ink);font-size:1rem;line-height:1.45;text-wrap:balance}
 .pp-priv{margin-bottom:12px}
+/* Atletkortet: mörkt kort, namnet i varumärkets gradient */
+.pf-card{background:linear-gradient(160deg,#26262b,#111113);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 18px 40px -24px rgba(0,0,0,.55)}
+.pf-card::after{background:radial-gradient(circle,rgba(255,45,85,.3),transparent 70%)}
+.pf-card h1{background:linear-gradient(120deg,#ff2d55,#ff7a45);-webkit-background-clip:text;background-clip:text;color:transparent;padding-bottom:.06em}
+.pf-card .pf-rankpill{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
+.pf-card .pf-fw>span{background:rgba(255,255,255,.35)}
 /* Redigera profil */
 .ep-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
 .ep-av{position:relative;width:84px;height:84px;border-radius:50%;padding:3px;border:0;background:var(--hot);cursor:pointer;box-shadow:0 14px 28px -16px var(--glow)}
@@ -1671,7 +1677,6 @@ a.row{color:inherit;text-decoration:none}
     <div id="pf-main">
     <div class="pf-head">
       <div class="pf-card">
-        <svg class="pf-track" id="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
         <svg class="pf-mark" viewBox="168 276.67 688 459.33" aria-hidden="true"><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>
         <div class="pf-ring"><div class="pf-av" id="pf-av"></div></div>
         <div class="pf-who">
@@ -2818,8 +2823,7 @@ function renderSocial(){
   id.hidden=false;
   id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button>`;
   $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}};
-  const sub=[MYPROF.races_count?`${MYPROF.races_count} ${MYPROF.races_count===1?"tävling":"tävlingar"}`:"",MYPROF.is_public?"Offentlig profil":"Privat profil"].filter(Boolean).join(" · ");
-  $("#pf-sub").textContent=sub;
+  $("#pf-sub").textContent=cardSub(cardPayload());
   const fw=$("#pf-fw");fw.hidden=false;
   fw.innerHTML=`<button type="button" id="fw-ers"><b class="cu">${FOLLOWERS.length}</b> följare</button><span aria-hidden="true"></span><button type="button" id="fw-ing"><b class="cu">${FRIENDS.length}</b> följer</button>`;
   const ac=$("#pf-acts");ac.hidden=false;
@@ -2883,13 +2887,14 @@ const ppNum=v=>(+v||0).toLocaleString("sv-SE");
 const MARK_SVG=`<svg class="pf-mark" viewBox="168 276.67 688 459.33" aria-hidden="true"><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>`;
 /* Atletkortet för någon annans profil: samma kort som på din egen profil */
 function personCard(o){const t=TIERS[o.tier],ring=t?`--m1:${t.m[0]};--m2:${t.m[1]}`:"--m1:#fff;--m2:#fff";
-  return `<div class="pf-card pp-card"><svg class="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>${MARK_SVG}
+  return `<div class="pf-card pp-card">${MARK_SVG}
     <div class="pf-ring" style="${ring}">${avImg(o.url,o.user,"pf-av")}</div>
     <div class="pf-who"><h1>${o.name}</h1><p class="pf-handle">${esc(o.user)}<span>#${esc(o.tag||"")}</span></p>
       ${t?`<span class="pf-rankpill" role="img" aria-label="Rank ${t.n}">${tierHTML(t,"xs")}<b>${t.n}</b></span>`:""}
       ${o.sub?`<p class="pf-sub">${esc(o.sub)}</p>`:""}</div>
     <div class="pf-fw" id="pp-fw"></div></div>`}
 function personCardGo(c){const tr=document.querySelector("#pp-body .pf-track");if(tr)pfTrack(c&&TIERS[c.tier]&&c.tf!=null?c.tf:null,true,tr)}
+function cardSub(c){const x=[];if(!c)return "";if(c.cls)x.push(`${c.cls.k} · ${c.cls.f}`);if(c.city)x.push(c.city);if(c.age)x.push(`${c.age} år`);return x.join(" · ")}
 async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   if(!SB||!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för att se profiler</h3><button class="pill block" id="pp-login">Logga in</button></div>`;$("#pp-login").onclick=()=>openAuth();return}
   const me=uid===SBUSER.id;if(!el.dataset.uid||el.dataset.uid!==uid)el.innerHTML=`<div class="card"><p class="small">Hämtar profilen…</p></div>`;el.dataset.uid=uid;
@@ -4787,7 +4792,7 @@ function renderProfile(){
   const st=weekStats(),hrs=Math.round(st.total/6)/10;
   $("#pf-av").innerHTML=avatarHtml();
   $("#pf-name").textContent=pName()||"Din profil";
-  const s=evD(set.since);$("#pf-sub").textContent=`Tränar med VARV. sedan ${MONL[s.getMonth()]} ${s.getFullYear()}`;
+  $("#pf-sub").textContent=cardSub(cardPayload());
   {const P=progress(),nx=P.next,br=bestRace(),w12=pfWeeks();
    $("#pf-stats").innerHTML=`<button class="pf-lvl" id="pf-rank-btn" aria-label="Din rank: ${P.tier.n}">${tierHTML(P.tier)}<div><b>${P.tier.n}</b><small>${nx?`${P.toNext} pass kvar till ${nx.n}`:"Högsta ranken"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>
     <div class="pf-nums"><div><b><em class="cu">${LOGS.length}</em></b><span>pass</span></div><div><b><em class="cu">${String(hrs).replace(".",",")}</em><small> h</small></b><span>träningstid</span></div><div><b><em class="cu">${st.streak}</em></b><span>veckor i rad</span></div><div><b${br?"":' class="none"'}>${br?`<em class="cu">${fmt(br)}</em>`:"–"}</b><span>bästa lopp</span></div></div>
@@ -4798,6 +4803,8 @@ function renderProfile(){
    rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b>`;rp.onclick=openLevels;
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
+  /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */
+  {const v=$("#v-profil"),k=LOGS.length;if(v&&v.classList.contains("on")&&renderProfile._n!=null&&renderProfile._n!==k)$$("#pf-stats .cu").forEach(countUp);renderProfile._n=k}
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
@@ -4822,23 +4829,28 @@ function pfWeeks(){const ws=new Date(weekStart(today())+"T12:00:00"),m={};LOGS.f
 /* Banan på profilkortet: ett varv runt ovalen, ritat så långt du har kommit mot nästa rank, med löparen som en punkt */
 function pfTrack(frac,play,el){el=el||$("#pf-track");if(!el)return;const unknown=frac==null;
   /* Ovalen följer kortets verkliga form, så att banan alltid går runt innehållet och inte genom det */
-  const bx=el.getBoundingClientRect(),H=bx.width>0&&bx.height>0?Math.round(360*bx.height/bx.width):300;
-  if(!el._run&&el._H!==H){el._built=0;el._H=H;el.setAttribute("viewBox",`0 0 360 ${H}`)}
-  const cx=180,cy=H/2+10,rx=170,ry=H/2-6,a0=-Math.PI*5/6;
+  /* Banan ritas i kortets egna pixlar: samma linjebredd och löpare på mobil och dator, och en flack oval på bred skärm */
+  const bx=el.getBoundingClientRect(),W=bx.width>0?Math.round(bx.width):360,H=bx.height>0?Math.round(bx.height):300;
+  if(!el._run&&(el._W!==W||el._H!==H)){el._built=0;el._W=W;el._H=H;el.setAttribute("viewBox",`0 0 ${W} ${H}`)}
+  const cx=W/2,cy=H/2+10,rx=W/2-14,ry=H/2-6,a0=-Math.PI*5/6;
   el._f=Math.max(.04,Math.min(1,frac||0));
   if(!el._built){const P0=a=>`${(cx+rx*Math.cos(a)).toFixed(1)},${(cy+ry*Math.sin(a)).toFixed(1)}`,d=`M${P0(a0)} A${rx},${ry} 0 1 1 ${P0(a0+Math.PI)} A${rx},${ry} 0 1 1 ${P0(a0)}`;
-    el.innerHTML=`<path d="${d}" class="tr"/><path d="${d}" class="arc" pathLength="100"/><circle r="7" class="dot"/>`;el._built=1}
+    el.innerHTML=`<path d="${d}" class="tr"/><path d="${d}" class="arc" pathLength="100"/><circle r="6" class="dot"/>`;el._built=1}
   const arc=el.querySelector(".arc"),dot=el.querySelector(".dot");arc.style.display=dot.style.display=unknown?"none":"";if(unknown)return;
-  const put=v=>{arc.style.strokeDasharray=`${(v*100).toFixed(2)} 100`;const a=a0+v*2*Math.PI;dot.setAttribute("cx",(cx+rx*Math.cos(a)).toFixed(1));dot.setAttribute("cy",(cy+ry*Math.sin(a)).toFixed(1))};
-  /* Om banan redan ritas klart: uppdatera bara målet så att animationen inte börjar om */
+  const put=v=>{el._shown=v;arc.style.strokeDasharray=`${(v*100).toFixed(2)} 100`;const a=a0+v*2*Math.PI;dot.setAttribute("cx",(cx+rx*Math.cos(a)).toFixed(1));dot.setAttribute("cy",(cy+ry*Math.sin(a)).toFixed(1))};
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  /* Kör banan från ett läge till målet (el._f), som kan ändras medan den springer */
+  const run=(from,delay,dur)=>{el._run=1;dot.classList.remove("land");const t0=performance.now()+delay;
+    const step=now=>{const t=Math.max(0,Math.min(1,(now-t0)/dur));put(from+(el._f-from)*ease(t));dot.style.opacity=from>0||t>0?"1":"0";
+      if(t<1)requestAnimationFrame(step);else{el._run=0;put(el._f);void dot.getBBox();dot.classList.add("land")}};
+    requestAnimationFrame(step)};
+  /* Om banan redan springer: målet är uppdaterat ovan, så den fortsätter dit */
   if(el._run)return;
-  if(!play||RM()){put(el._f);dot.style.opacity="";return}
-  /* Banan ritas från start och löparen springer fram till platsen, landar med en puls */
-  el._run=1;dot.classList.remove("land");put(0);dot.style.opacity="0";
-  const t0=performance.now()+300,dur=1500,ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const step=now=>{const t=Math.max(0,Math.min(1,(now-t0)/dur));put(el._f*ease(t));dot.style.opacity=t>0?"1":"0";
-    if(t<1)requestAnimationFrame(step);else{el._run=0;put(el._f);void dot.getBBox();dot.classList.add("land")}};
-  requestAnimationFrame(step)}
+  const visible=el.isConnected&&bx.width>0&&document.visibilityState==="visible";
+  if(play&&!RM()){put(0);dot.style.opacity="0";run(0,300,1500);return}
+  /* Ny data efter att banan stannat, till exempel när passen laddas från kontot: glid vidare i stället för att hoppa */
+  if(!RM()&&visible&&el._shown!=null&&Math.abs(el._shown-el._f)>.005){run(el._shown,0,900);return}
+  put(el._f);dot.style.opacity=""}
 const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
 function renderFacts(){const el=$("#pf-facts");if(!el)return;
   const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["1 km-test",set.test&&set.test.km?fmt(set.test.km):null],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];

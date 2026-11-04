@@ -22,3 +22,9 @@ $$;
 
 revoke all on function public.delete_my_account() from public, anon;
 grant execute on function public.delete_my_account() to authenticated;
+
+-- Låter användaren lista sina egna inläggsbilder, så att appen kan ta bort
+-- alla bilder i mappen när kontot raderas (även bilder som inte längre hör till ett inlägg).
+drop policy if exists "Inläggsbild: se egna" on storage.objects;
+create policy "Inläggsbild: se egna" on storage.objects for select to authenticated
+  using (bucket_id = 'posts' and (storage.foldername(name))[1] = (select auth.uid())::text);

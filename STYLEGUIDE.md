@@ -83,7 +83,7 @@ Allt är byggt för mobil först: högst 760px brett, minst 44px höga tryckytor
 3. **Huvudsaken först:** dagens pass, nedräkningen eller tidtagningen.
 4. **Sektioner** med `title` och en länk till höger ("Ändra", "Alla tävlingar").
 5. **Fotnot** i `caption` när siffror kommer från en källa.
-6. **Flikraden** längst ned: Hem, Stationer, Plan, Tävla, Logg. Aldrig fler än fem flikar.
+6. **Flikraden** längst ned: Hem, Stationer, Aktivitet, Tävla, Statistik. Aldrig fler än fem flikar. Planen nås från Hem (Den här veckan och Ditt lopp), profilen från profilbilden.
 
 Formulär öppnas i ett ark som glider upp, inte mitt på sidan. Bekräftelser visas som en toast längst ned.
 

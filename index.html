@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta name="description" content="Hyrox-träning: stationsguider, plan efter måltid, tidtagning, och logg.">
+<meta name="description" content="Träna smartare för Hyrox. Stationsguider, plan efter måltid, tidtagning och logg.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -15,10 +15,15 @@
 <link rel="icon" type="image/png" sizes="192x192" href="icons/varv-192.png">
 <link rel="icon" type="image/png" sizes="32x32" href="icons/varv-32.png">
 <meta property="og:title" content="VARV.">
-<meta property="og:description" content="Träning för Hyrox: stationsguider, plan efter måltid, tidtagning och logg.">
-<meta property="og:image" content="https://varvtraining.com/icons/varv-512.png">
-<meta property="og:image:width" content="512">
-<meta property="og:image:height" content="512">
+<meta property="og:description" content="Träna smartare för Hyrox. Stationsguider, plan efter måltid, tidtagning och logg.">
+<meta property="og:site_name" content="VARV.">
+<meta property="og:locale" content="sv_SE">
+<meta property="og:image" content="https://varvtraining.com/icons/varv-og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="VARV. Träna smartare för Hyrox. En löparbana med åtta stationer.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://varvtraining.com/icons/varv-og.png">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://varvtraining.com/">
 <link rel="manifest" href="manifest.webmanifest">
@@ -29,7 +34,7 @@
 
 <meta name="claude:viewport-fit-sides" content="cover">
 <style>
-/* Layout: app med flikrad (Hem, Stationer, Plan, Race, Logg). Stora rubriker, rundade grå kort, grupperade listor, ark som glider upp. */
+/* Layout: app med flikrad (Hem, Stationer, Aktivitet, Tävla, Statistik). Stora rubriker, rundade grå kort, grupperade listor, ark som glider upp. */
 :root{
   --bg:#ffffff; --tile:#f4f4f6; --card:#ffffff; --ink:#111114; --muted:#6e6e76; --hair:#dcdce1;
   --link:#e0123f; --seg:#e9e9ee; --seg-on:#ffffff; --bar:rgba(252,252,253,.86);
@@ -554,9 +559,9 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .gt-hero h1{font-size:clamp(2.4rem,11vw,3.4rem);letter-spacing:-.05em;line-height:1.02;font-weight:700}
 .gt-hero h1 span{background:var(--hot);-webkit-background-clip:text;background-clip:text;color:transparent}
 .gt-hero p{color:var(--muted);font-size:1.05rem;line-height:1.45}
-.gt-seg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.gt-seg button{border:0;cursor:pointer;border-radius:980px;min-height:48px;padding:12px 16px;font:inherit;font-size:1rem;font-weight:500;background:var(--tile);color:var(--ink);transition:background .2s,box-shadow .2s}
-.gt-seg button[aria-pressed="true"]{background:var(--hot);color:#fff;font-weight:600;box-shadow:0 10px 24px -12px var(--glow)}
+.gt-seg{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:3px;border-radius:980px;background:var(--seg)}
+.gt-seg button{border:0;cursor:pointer;border-radius:980px;min-height:44px;padding:10px 16px;font:inherit;font-size:1rem;font-weight:500;background:transparent;color:var(--ink);transition:background .2s,box-shadow .2s}
+.gt-seg button[aria-pressed="true"]{background:var(--seg-on);font-weight:600;box-shadow:0 1px 3px rgba(0,0,0,.12)}
 .gt-seg button:focus-visible{outline:2px solid var(--link);outline-offset:2px}
 .gt-head p{color:var(--muted);font-size:1rem}
 .gt .card{gap:14px}
@@ -1542,13 +1547,13 @@ a.row{color:inherit;text-decoration:none}
     <p class="small" style="margin-bottom:16px">Mediantider från en analys av omkring 700 000 resultat. Klockan går hela tiden, även i Roxzone där du byter mellan löpning och station.</p>
     <button class="divchip" data-open="division" style="margin-bottom:14px"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
     <div class="group" id="course"></div>
-    <p class="small" style="margin-top:10px">Vikter enligt Hyrox regelböcker för singel och doubles, säsong 25/26. Slädens egen vikt ingår.</p>
+    <p class="small" style="margin-top:10px">Vikter enligt HYROX:s regelböcker för singel och doubles, säsong 25/26. Slädens egen vikt ingår.</p>
 
     <div class="sechead"><h2>Klasser</h2></div>
     <div class="group">
       <button class="row" data-open="cls-singel"><div class="badge">1</div><div><h3>Singel, Open och Pro</h3><p>Hela loppet själv. Pro har tyngre vikter.</p></div><span class="chev">›</span></button>
       <button class="row" data-open="cls-doubles"><div class="badge">2</div><div><h3>Doubles</h3><p>Dam, herr och Pro. Ni springer ihop och delar stationerna.</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="cls-mixed"><div class="badge">M</div><div><h3>Mixed Doubles</h3><p>En kvinna och en man. Herrvikter, eget wall ball-mål.</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="cls-mixed"><div class="badge">M</div><div><h3>Mixed Doubles</h3><p>En kvinna och en man. Herrvikter, eget mål på Wall Balls.</p></div><span class="chev">›</span></button>
       <button class="row" data-open="cls-relay"><div class="badge">4</div><div><h3>Relay</h3><p>Lag om fyra. Två km och två stationer var.</p></div><span class="chev">›</span></button>
     </div>
 
@@ -1557,8 +1562,8 @@ a.row{color:inherit;text-decoration:none}
       <a class="row" href="https://hyrox.com/rulebook/" target="_blank" rel="noopener"><div class="badge">§</div><div><h3>HYROX regelböcker</h3><p>De officiella reglerna för singel, doubles och relay.</p></div><span class="chev">↗</span></a>
       <div class="row"><div class="badge">2 min</div><div><h3>Fel båge i Roxzone</h3><p>In via IN, ut via UT. Fel båge ger 2 minuters tillägg varje gång.</p></div><span></span></div>
       <div class="row"><div class="badge">3 min</div><div><h3>Missad slädsträcka</h3><p>Varje 12,5 m-sträcka som saknas ger 3 minuters tillägg.</p></div><span></span></div>
-      <div class="row"><div class="badge">2 min</div><div><h3>Egen kalk</h3><p>Kalk finns bara vid sled pull och farmers carry. Annan kalk ger tillägg.</p></div><span></span></div>
-      <div class="row"><div class="badge">5 s</div><div><h3>Doubles springer ihop</h3><p>Högst 5 sekunder isär. Varje gång ger 1 minuts tillägg.</p></div><span></span></div>
+      <div class="row"><div class="badge">2 min</div><div><h3>Egen kalk</h3><p>Kalk finns bara vid Sled Pull och Farmers Carry. Annan kalk ger tillägg.</p></div><span></span></div>
+      <div class="row"><div class="badge">1 min</div><div><h3>Doubles springer ihop</h3><p>Högst 5 sekunder isär. Varje gång ger 1 minuts tillägg.</p></div><span></span></div>
     </div>
   </div>
 </section>
@@ -1625,7 +1630,7 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= FEED ================= -->
 <section class="view" id="v-feed">
   <div class="wrap">
-    <div class="pagehead"><h1>Aktivitet.</h1></div>
+    <div class="pagehead"><span class="eyebrow">Gemenskap</span><h1>Aktivitet.</h1><p>Pass och händelser från dem du följer.</p></div>
     <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
   </div>
 </section>
@@ -1686,7 +1691,7 @@ a.row{color:inherit;text-decoration:none}
       <div class="row"><div class="badge">1</div><div><h3>Starta lugnt</h3><p>Första kilometern ska kännas för lätt. Spara energin till slädarna.</p></div><span></span></div>
       <div class="row"><div class="badge">2</div><div><h3>Gå banan innan start</h3><p>Lär dig var IN- och UT-bågarna sitter och var din station ligger.</p></div><span></span></div>
       <div class="row"><div class="badge">3</div><div><h3>Ät och drick i tid</h3><p>Ett lätt mål 2–3 timmar före start och vatten i Roxzone.</p></div><span></span></div>
-      <div class="row"><div class="badge">4</div><div><h3>Dela upp wall balls</h3><p>Bestäm set i förväg och håll dig till dem, även när det tar emot.</p></div><span></span></div>
+      <div class="row"><div class="badge">4</div><div><h3>Dela upp Wall Balls</h3><p>Bestäm set i förväg och håll dig till dem, även när det tar emot.</p></div><span></span></div>
     </div>
     </div>
   </div>
@@ -1748,7 +1753,7 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><h1>Vänner.</h1></div>
+    <div class="pagehead"><span class="eyebrow">Gemenskap</span><h1>Vänner.</h1></div>
     <div id="vn-req"></div>
     <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="friends">Vänner</button><button data-vn="top">Topplista</button><button data-vn="find">Hitta</button></div>
     <div class="vnv" data-v="friends" id="vn-friends"></div>
@@ -1846,7 +1851,7 @@ a.row{color:inherit;text-decoration:none}
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1 · Fristående app, ingen koppling till HYROX.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2798,6 +2803,7 @@ async function deleteAccount(){
       try{await SB.storage.from("avatars").remove([SBUSER.id+"/avatar.jpg"])}catch(x){}
       try{const {data:pa}=await SB.from("activity").select("image_url").eq("user_id",SBUSER.id).not("image_url","is",null).limit(1000);
         const paths=(pa||[]).map(r=>r.image_url).filter(okPost).map(u=>u.slice(POSTIMG.length).split("?")[0]);if(paths.length)await SB.storage.from("posts").remove(paths)}catch(x){}
+      for(const b of ["posts","avatars"]){try{const {data:fl}=await SB.storage.from(b).list(SBUSER.id,{limit:1000});const rest=(fl||[]).filter(f=>f&&f.name).map(f=>SBUSER.id+"/"+f.name);if(rest.length)await SB.storage.from(b).remove(rest)}catch(x){}}
       const {error}=await SB.rpc("delete_my_account");
       if(error){msg.textContent=/delete_my_account|404|not find/i.test(String(error.message||error.code||""))?"Radering är inte uppsatt i databasen än. Kontakta oss så raderar vi kontot.":sbErr(error);msg.classList.add("bad");return}
       try{await SB.auth.signOut()}catch(x){}
@@ -5840,7 +5846,7 @@ function renderNear(){const el=$("#h-next");if(!el)return;const g=myGeo(),me=myE
   L.sort((a,b)=>a.e.s.localeCompare(b.e.s));
   if(me&&me.e>=today()){L=L.filter(x=>x.e!==me);L.unshift({e:me,km:GEO[me.c]?kmTo(g,GEO[me.c]):null})}
   L=L.slice(0,6);
-  el.innerHTML=L.length?L.map(({e,km})=>{const a=evD(e.s),d=evIn(e),mine=e===me,live=evLive(e);
+  el.innerHTML=L.length?L.map(({e,km})=>{const mine=e===me,own=mine&&set.date&&!set.noRace&&set.date>=e.s&&set.date<=(e.e||e.s),a=own?new Date(set.date+"T12:00:00"):evD(e.s),d=own?daysLeft():evIn(e),live=evLive(e)&&!own;
     return `<button class="near-card${mine?" mine":""}" data-ev="${e.i}"><span class="near-top"><span class="near-date"><b>${a.getDate()}</b>${MON[a.getMonth()]}</span>${mine?'<span class="evtag me">Mitt lopp</span>':e.vm?'<span class="evtag">VM</span>':""}</span>
       <span class="near-city">${esc(e.c)}</span><span class="near-sub">${esc(e.n)}${km!=null?" · "+distTxt(km):""}</span>
       <span class="near-when">${live?"Pågår nu":d===0?"I dag":d===1?"I morgon":`Om ${d} dagar`}</span></button>`}).join("")

@@ -4327,7 +4327,7 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
     <div class="tile"><span>Veckor i rad</span><b>${streak}</b><small class="st-d">med minst ett pass</small></div>
    </div>
    <p class="small st-note">Siffrorna gäller de senaste ${per2.toLowerCase()} och jämförs med perioden innan.</p>
-   ${ins.length?`<div class="sechead"><h2>Att tänka på</h2></div><div class="group st-ins">${ins.map(x=>`<${x.go?"button":"div"} class="row" ${x.go||""}><span class="ra-ic st-ic ${x.c}">${icoSvg(x.ic)}</span><div><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></div>${x.go?`<span class="chev">›</span>`:"<span></span>"}</${x.go?"button":"div"}>`).join("")}</div>`:""}`;
+   ${ins.length?`<div class="sechead"><h2>Konkreta tips</h2></div><div class="group st-ins">${ins.map(x=>`<${x.go?"button":"div"} class="row" ${x.go||""}><span class="ra-ic st-ic ${x.c}">${icoSvg(x.ic)}</span><div><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></div>${x.go?`<span class="chev">›</span>`:"<span></span>"}</${x.go?"button":"div"}>`).join("")}</div>`:""}`;
   $("#st-per").onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.stper=+b.dataset.per;saveSet();renderStats()};
   if(!LOGS.length){el.innerHTML=`<div class="card"><h3>Här fylls din statistik</h3><p class="small">Logga ditt första pass, så visar VARV. hur du tränar, vilka stationer du missar och hur loppen går.</p><a class="pill block" href="#logg" data-lg="pass">Logga ett pass</a></div>`;return}
   // Grafer

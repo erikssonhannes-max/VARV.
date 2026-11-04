@@ -4798,6 +4798,8 @@ function renderProfile(){
    rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b>`;rp.onclick=openLevels;
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
+  /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */
+  {const v=$("#v-profil"),k=LOGS.length;if(v&&v.classList.contains("on")&&renderProfile._n!=null&&renderProfile._n!==k)$$("#pf-stats .cu").forEach(countUp);renderProfile._n=k}
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
@@ -4829,16 +4831,20 @@ function pfTrack(frac,play,el){el=el||$("#pf-track");if(!el)return;const unknown
   if(!el._built){const P0=a=>`${(cx+rx*Math.cos(a)).toFixed(1)},${(cy+ry*Math.sin(a)).toFixed(1)}`,d=`M${P0(a0)} A${rx},${ry} 0 1 1 ${P0(a0+Math.PI)} A${rx},${ry} 0 1 1 ${P0(a0)}`;
     el.innerHTML=`<path d="${d}" class="tr"/><path d="${d}" class="arc" pathLength="100"/><circle r="7" class="dot"/>`;el._built=1}
   const arc=el.querySelector(".arc"),dot=el.querySelector(".dot");arc.style.display=dot.style.display=unknown?"none":"";if(unknown)return;
-  const put=v=>{arc.style.strokeDasharray=`${(v*100).toFixed(2)} 100`;const a=a0+v*2*Math.PI;dot.setAttribute("cx",(cx+rx*Math.cos(a)).toFixed(1));dot.setAttribute("cy",(cy+ry*Math.sin(a)).toFixed(1))};
-  /* Om banan redan ritas klart: uppdatera bara målet så att animationen inte börjar om */
+  const put=v=>{el._shown=v;arc.style.strokeDasharray=`${(v*100).toFixed(2)} 100`;const a=a0+v*2*Math.PI;dot.setAttribute("cx",(cx+rx*Math.cos(a)).toFixed(1));dot.setAttribute("cy",(cy+ry*Math.sin(a)).toFixed(1))};
+  const ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
+  /* Kör banan från ett läge till målet (el._f), som kan ändras medan den springer */
+  const run=(from,delay,dur)=>{el._run=1;dot.classList.remove("land");const t0=performance.now()+delay;
+    const step=now=>{const t=Math.max(0,Math.min(1,(now-t0)/dur));put(from+(el._f-from)*ease(t));dot.style.opacity=from>0||t>0?"1":"0";
+      if(t<1)requestAnimationFrame(step);else{el._run=0;put(el._f);void dot.getBBox();dot.classList.add("land")}};
+    requestAnimationFrame(step)};
+  /* Om banan redan springer: målet är uppdaterat ovan, så den fortsätter dit */
   if(el._run)return;
-  if(!play||RM()){put(el._f);dot.style.opacity="";return}
-  /* Banan ritas från start och löparen springer fram till platsen, landar med en puls */
-  el._run=1;dot.classList.remove("land");put(0);dot.style.opacity="0";
-  const t0=performance.now()+300,dur=1500,ease=t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2;
-  const step=now=>{const t=Math.max(0,Math.min(1,(now-t0)/dur));put(el._f*ease(t));dot.style.opacity=t>0?"1":"0";
-    if(t<1)requestAnimationFrame(step);else{el._run=0;put(el._f);void dot.getBBox();dot.classList.add("land")}};
-  requestAnimationFrame(step)}
+  const visible=el.isConnected&&bx.width>0&&document.visibilityState==="visible";
+  if(play&&!RM()){put(0);dot.style.opacity="0";run(0,300,1500);return}
+  /* Ny data efter att banan stannat, till exempel när passen laddas från kontot: glid vidare i stället för att hoppa */
+  if(!RM()&&visible&&el._shown!=null&&Math.abs(el._shown-el._f)>.005){run(el._shown,0,900);return}
+  put(el._f);dot.style.opacity=""}
 const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
 function renderFacts(){const el=$("#pf-facts");if(!el)return;
   const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["1 km-test",set.test&&set.test.km?fmt(set.test.km):null],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];

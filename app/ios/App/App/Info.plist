@@ -22,8 +22,6 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
-	<key>NSHealthShareUsageDescription</key>
-	<string>VARV. läser dina träningspass, puls, VO2max, vilopuls, vikt och längd från Hälsa, så att pass från klockan kan läggas in i din logg och planen anpassas efter dig. Inget delas utan att du själv sparar passet.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>VARV. använder kameran när du tar en bild till ett inlägg eller din profilbild.</string>
 	<key>NSPhotoLibraryUsageDescription</key>

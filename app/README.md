@@ -11,13 +11,6 @@ Ni fortsätter alltså ändra i `index.html` i roten som vanligt. Appen hämtar 
 - I koden avgör `IS_NATIVE` de få saker som skiljer appen från webben: ingen service worker, länkar i mejl går till webbsidan,
   externa länkar öppnas i telefonens webbläsare, och webbnotiser är avstängda i väntan på riktiga notiser.
 
-## Apple Hälsa och Health Connect
-
-Tillägget `@capgo/capacitor-health` läser pass, VO2max, vilopuls, vikt och längd. Användaren kopplar under Profil → Kopplingar
-eller i startfrågorna. Nya pass från klockan visas som ett kort på Hem och sparas först när användaren lägger till dem.
-Kräver att app-id:t har HealthKit påslaget på developer.apple.com (Identifiers → com.varvtraining.app → HealthKit).
-Behörighetstexten finns i `ios/App/App/Info.plist`, och rätten att läsa i `ios/App/App/App.entitlements`.
-
 ## Bygga
 
 Byggen görs i molnet med Codemagic, se `codemagic.yaml` i roten:

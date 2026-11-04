@@ -1110,13 +1110,6 @@ a.row{color:inherit;text-decoration:none}
 .sw-tag.yes{left:20px;color:var(--good);opacity:var(--yes,0);transform:rotate(-8deg)}.sw-tag.no{right:20px;color:var(--bad);opacity:var(--no,0);transform:rotate(8deg)}
 .deck-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Pass från klockan */
-.hk-card{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;width:100%;text-align:left;border:0;cursor:pointer;font:inherit;color:var(--ink);margin-bottom:12px;padding:14px 16px}
-.hk-card b{display:block;font-weight:600}.hk-card small{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
-.hk-ic,.hk-b{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,#ff2d55 16%,var(--card));color:#ff2d55}
-.hk-list{display:grid;gap:10px}.hk-row{background:var(--tile);border-radius:16px;padding:14px;display:grid;gap:12px}
-.hk-row b{display:block;font-weight:600}.hk-row small{display:block;color:var(--muted);font-size:.86rem;margin-top:2px}
-.hk-acts{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.hk-acts .pill{min-height:40px;padding:9px 16px;font-size:.92rem}
-.hk-fill{display:flex;gap:8px}.hk-fill svg{color:#ff2d55}
 /* Dra för att uppdatera flödet */
 #ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:43;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--card);color:var(--accent);display:grid;place-items:center;box-shadow:0 8px 24px -10px rgba(0,0,0,.45);opacity:0;transform:translateY(-60px);pointer-events:none}
 #ptr.go{transition:transform .25s var(--spring),opacity .2s}#ptr.spin svg{animation:ptrSpin .8s linear infinite}
@@ -1469,7 +1462,6 @@ a.row{color:inherit;text-decoration:none}
 
   <div class="wrap">
     <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Ny till Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Börja enkelt och logga dina pass, så växer statistiken.</p></a><div class="today" id="today" hidden></div>
-    <div id="h-hk"></div>
     <div id="h-go"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
@@ -3503,7 +3495,7 @@ function openFormInfo(){
    <div class="howto"><h3>Topplistan</h3><p>Jämför antal pass denna vecka, inte fart. Vid lika många pass går den med mest träningstid före. Listan börjar om varje måndag.</p></div></div>`)}
 $("#medals").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)};
 $("#med-all").onclick=openAllMedals;$("#form-info").onclick=openFormInfo;
-let READY=false;FIRST.then(()=>{READY=true;checkNewMedals();if(hkOn())setTimeout(()=>hkSync(false),1500)});
+let READY=false;FIRST.then(()=>{READY=true;checkNewMedals()});
 function checkNewMedals(){
   if(!READY||!PROG)return;const ids=Object.keys(PROG.earned);
   if(!Array.isArray(set.seen)){set.seen=ids;set.tierSeen=PROG.ti;saveSet();return}
@@ -4188,7 +4180,7 @@ function dayMsg(h,n){
   if(wd===0||wd===6)return pick(["Helg"+N+". Perfekt för ett långpass.","Helg. Tid för ett längre pass?"]);
   return (h<10?"God morgon":h<18?"Redo för ett pass":"God kväll")+N+(h>=10&&h<18?"?":".");
 }
-function renderHome(){try{renderGo()}catch(e){}try{renderHK()}catch(e){}
+function renderHome(){try{renderGo()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
@@ -4889,9 +4881,8 @@ function renderProfile(){
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-hap").onclick=()=>{set.cues.haptic=set.cues.haptic===false;saveSet();renderProfile();renderCues()};
-  $("#pf-con").innerHTML=`${HK()?`<button class="row" id="pf-hk"><span class="badge hk-b">${HK_ICON}</span><div><h3>${esc(HK_NAME())}</h3><p>${hkOn()?"Kopplad. Pass från klockan dyker upp på Hem.":"Hämta pass från klockan automatiskt."}</p></div><span class="chev">›</span></button>`:""}${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}
+  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}
     <a class="row" href="#race" data-tv-go="run"><span class="badge">G</span><div><h3>Garmin</h3><p>Skapa ett racepass för klockan under Racedag.</p></div><span class="chev">›</span></a>`;
-  {const hb=$("#pf-hk");if(hb)hb.onclick=openHKSettings}
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
@@ -5407,93 +5398,6 @@ function actDetail(e,max,compact){const head=`${e.min} min`,its=(e.items||[]),li
     if(used+1+lines[i].length+(tail?tail.length+1:0)>max){out.push(`och ${left} ${left===1?"övning":"övningar"} till`);break}
     out.push(lines[i]);used+=1+lines[i].length}
   return out.join("\n")}
-/* ============ Apple Hälsa och Health Connect ============ */
-/* I appen läser VARV. pass som klockan har sparat i Hälsa (iPhone) eller Health Connect (Android).
-   Ingenting sparas i kontot förrän användaren själv lägger till passet. Tillägget: @capgo/capacitor-health. */
-const HK=()=>IS_NATIVE&&window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.Health||null;
-const HK_NAME=()=>window.Capacitor&&typeof window.Capacitor.getPlatform==="function"&&window.Capacitor.getPlatform()==="android"?"Health Connect":"Apple Hälsa";
-const HK_READ=["workouts","heartRate","vo2Max","restingHeartRate","weight","height","distance","calories"];
-const HK_TYPE={running:"Löpning",runningTreadmill:"Löpning",trackAndField:"Löpning",highIntensityIntervalTraining:"Intervaller",
-  functionalStrengthTraining:"Styrka och stationer",traditionalStrengthTraining:"Styrka",strengthTraining:"Styrka",crossTraining:"Styrka och stationer",
-  weightlifting:"Styrka",coreTraining:"Styrka",bootCamp:"Styrka och stationer",calisthenics:"Styrka",mixedCardio:"Löpning och stationer",
-  rowing:"Motor (SkiErg/rodd)",rowingMachine:"Motor (SkiErg/rodd)",crossCountrySkiing:"Motor (SkiErg/rodd)",elliptical:"Motor (SkiErg/rodd)",bikingStationary:"Motor (SkiErg/rodd)"};
-const HK_SV={running:"Löpning",runningTreadmill:"Löpband",trackAndField:"Löpning på bana",highIntensityIntervalTraining:"Intervaller",functionalStrengthTraining:"Funktionell styrka",
-  traditionalStrengthTraining:"Styrketräning",strengthTraining:"Styrketräning",crossTraining:"Crossträning",mixedCardio:"Blandad kondition",rowing:"Rodd",rowingMachine:"Roddmaskin",
-  crossCountrySkiing:"Skidor eller SkiErg",cycling:"Cykling",bikingStationary:"Cykel inomhus",walking:"Promenad",hiking:"Vandring",swimming:"Simning",yoga:"Yoga",elliptical:"Crosstrainer",
-  coreTraining:"Bålträning",weightlifting:"Tyngdlyftning",bootCamp:"Bootcamp",calisthenics:"Kroppsviktsträning",stretching:"Stretch",other:"Träning"};
-let HK_NEW=[],HK_BUSY=false,HK_AT=0;
-const hkOn=()=>!!(HK()&&set.health&&set.health.on);
-const hkKey=w=>"hk:"+String(w.platformId||((w.startDate||"")+"|"+Math.round(+w.duration||0))).slice(0,120);
-const hkMin=w=>Math.max(1,Math.min(600,Math.round((+w.duration||0)/60)));
-const hkLabel=w=>HK_SV[w.workoutType]||HK_SV.other;
-function hkVarvType(w){const t=HK_TYPE[w.workoutType]||"Annat",km=(+w.totalDistance||0)/1000;
-  if(t==="Löpning"&&km>=8&&(+w.duration||0)/km>330)return "Lugn distans";return t}
-function hkItems(w){const d=Math.round(+w.totalDistance||0),t=w.workoutType;
-  const id=t==="runningTreadmill"?"tread":/^(running|trackAndField)$/.test(t)?"run":/rowing/i.test(t)?"row":t==="crossCountrySkiing"?"ski":null;
-  const x=id&&d>=50&&EX.find(e=>e.id===id);if(!x)return [];
-  return [{ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:[{m:d,t:Math.round(+w.duration||0)}]}]}
-function hkFacts(w){const p=[hkMin(w)+" min"];const km=(+w.totalDistance||0)/1000;if(km>=.05)p.push(String(Math.round(km*10)/10).replace(".",",")+" km");
-  if(+w.totalEnergyBurned>0)p.push(Math.round(+w.totalEnergyBurned)+" kcal");return p.join(" · ")}
-const hkWhen=w=>{const d=new Date(w.startDate);return d.toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"}).replace(".","")+" "+d.toLocaleTimeString("sv-SE",{hour:"2-digit",minute:"2-digit"})};
-/* Ett pass som redan har loggats i VARV. under samma tid, till exempel med tidtagningen, räknas som samma pass. */
-function hkDuplicate(w){const k=hkKey(w),a=new Date(w.startDate).getTime(),b=new Date(w.endDate||w.startDate).getTime()+30*6e4,day=iso(new Date(w.startDate));
-  return LOGS.some(l=>l&&(l.ext===k||(l.date===day&&+l.created>=a&&+l.created<=b)))}
-async function hkAuthorize(){const H=HK();if(!H){toast("Kopplingen finns bara i appen.");return false}
-  try{const a=await H.isAvailable();
-    if(!a||!a.available){toast(HK_NAME()==="Health Connect"?"Installera Health Connect från Play Butik först.":"Hälsa finns inte på den här enheten.");return false}
-    await H.requestAuthorization({read:HK_READ});return true}
-  catch(e){toast("Kunde inte koppla "+HK_NAME()+". Försök igen.");return false}}
-/* Senaste värdet av VO2max, vilopuls, vikt och längd. Fält som redan är ifyllda skrivs bara över om man ber om det. */
-async function hkBody(){const H=HK();if(!H)return {};const out={};
-  const last=async t=>{try{const r=await H.readSamples({dataType:t,limit:1,ascending:false,startDate:new Date(Date.now()-365*864e5).toISOString(),endDate:new Date().toISOString()});return r&&r.samples&&r.samples[0]||null}catch(e){return null}};
-  const [v,r,w,h]=await Promise.all(["vo2Max","restingHeartRate","weight","height"].map(last));
-  if(v&&+v.value>=20&&+v.value<=95)out.vo2=Math.round(+v.value);
-  if(r&&+r.value>=30&&+r.value<=120)out.rhr=Math.round(+r.value);
-  if(w&&+w.value>=30&&+w.value<=250)out.weight=Math.round(+w.value*10)/10;
-  if(h){const cm=h.unit==="meter"?+h.value*100:+h.value;if(cm>=120&&cm<=230)out.height=Math.round(cm)}
-  return out}
-async function hkConnect(){if(!await hkAuthorize())return false;
-  set.health=Object.assign({since:new Date(Date.now()-14*864e5).toISOString(),skip:[]},set.health||{},{on:true});
-  const b=await hkBody();let n=0;Object.entries(b).forEach(([k,v])=>{if(!set[k]){set[k]=v;n++}});saveSet();
-  HAPTIC("success");toast(`${HK_NAME()} är kopplad`+(n?`. ${n} värden hämtades till din profil.`:"."));
-  await hkSync(true);if(location.hash==="#profil")renderProfile();return true}
-async function hkSync(show){if(!hkOn()||HK_BUSY)return;HK_BUSY=true;HK_AT=Date.now();
-  try{const H=HK(),from=set.health.last||set.health.since||new Date(Date.now()-14*864e5).toISOString();
-    const r=await H.queryWorkouts({startDate:from,endDate:new Date().toISOString(),ascending:true,limit:50});
-    const skip=new Set(set.health.skip||[]),ws=((r&&r.workouts)||[]).filter(w=>w&&w.startDate&&(+w.duration||0)>=300);
-    HK_NEW=HK_NEW.concat(ws.filter(w=>!skip.has(hkKey(w))&&!hkDuplicate(w)&&!HK_NEW.some(x=>hkKey(x)===hkKey(w))));
-    if(ws.length){const end=ws.map(w=>w.endDate||w.startDate).sort().pop();if(end)set.health.last=end;saveSet()}
-    renderHK();if(show&&HK_NEW.length)setTimeout(openHK,400)}
-  catch(e){}finally{HK_BUSY=false}}
-function renderHK(){const el=$("#h-hk");if(!el)return;HK_NEW=HK_NEW.filter(w=>!hkDuplicate(w));const n=HK_NEW.length;
-  el.innerHTML=n?`<button class="card hk-card" id="hk-open"><span class="hk-ic" aria-hidden="true">${HK_ICON}</span><span><b>${n===1?"Ett nytt pass":n+" nya pass"} från klockan</b><small>${esc(hkLabel(HK_NEW[n-1]))} · ${esc(hkFacts(HK_NEW[n-1]))}${n>1?` och ${n-1} till`:""}</small></span><span class="chev">›</span></button>`:"";
-  const b=$("#hk-open");if(b)b.onclick=openHK}
-const HK_ICON=`<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12 20.5s-7.5-4.4-7.5-10.2A4.3 4.3 0 0 1 12 7.7a4.3 4.3 0 0 1 7.5 2.6c0 5.8-7.5 10.2-7.5 10.2z"/></svg>`;
-function hkEntry(w){return {date:iso(new Date(w.startDate)),type:hkVarvType(w),min:hkMin(w),rpe:3,stations:[],items:hkItems(w),note:"",created:new Date(w.startDate).getTime(),src:"health",ext:hkKey(w)}}
-async function hkAdd(w){const e=hkEntry(w);const ok=await addLog(e);if(!ok)return false;try{onLogged(e)}catch(x){}try{checkPRs(e.items)}catch(x){}HK_NEW=HK_NEW.filter(x=>hkKey(x)!==e.ext);renderHK();return true}
-function hkSkip(w){set.health.skip=(set.health.skip||[]).concat(hkKey(w)).slice(-300);saveSet();HK_NEW=HK_NEW.filter(x=>hkKey(x)!==hkKey(w));renderHK()}
-function openHK(){if(!HK_NEW.length){closeSheet();return}
-  const rows=()=>HK_NEW.map((w,i)=>`<div class="hk-row"><div><b>${esc(hkLabel(w))}</b><small>${esc(hkWhen(w))} · ${esc(hkFacts(w))}</small><small>Sparas som ${esc(hkVarvType(w))}${w.sourceName?" · från "+esc(w.sourceName):""}</small></div>
-     <div class="hk-acts"><button class="pill" data-hka="${i}">Lägg till</button><button class="pill ghost" data-hke="${i}">Ändra först</button><button class="linkbtn" data-hks="${i}">Hoppa över</button></div></div>`).join("");
-  openSheet(`<div><span class="small">Från ${esc(HK_NAME())}</span><h2>Pass från klockan</h2><p class="small">Lägg till passen i din logg. Med Ändra först kan du fylla i stationer, vikter och hur det kändes.</p></div>
-   <div class="hk-list" id="hk-list">${rows()}</div>${HK_NEW.length>1?`<button class="pill ghost block" id="hk-all">Lägg till alla ${HK_NEW.length}</button>`:""}`,()=>{
-    const redraw=()=>{if(!HK_NEW.length){closeSheet();return}$("#hk-list").innerHTML=rows();const all=$("#hk-all");if(all){all.hidden=HK_NEW.length<2;all.textContent=`Lägg till alla ${HK_NEW.length}`}};
-    $("#hk-list").onclick=e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset,i=+(d.hka||d.hke||d.hks),w=HK_NEW[i];if(!w)return;
-      if(d.hka!==undefined)busy(b,async()=>{if(await hkAdd(w)){toast("Passet är tillagt");redraw()}});
-      else if(d.hke!==undefined){const e2=hkEntry(w);closeSheet();setTimeout(()=>{openLogger({type:e2.type,min:e2.min,date:e2.date,kicker:"Från "+HK_NAME(),fresh:true});LG.items=e2.items;LG.ext=e2.ext;LG.extCreated=e2.created;renderLG()},320)}
-      else{hkSkip(w);redraw()}};
-    const all=$("#hk-all");if(all)all.onclick=()=>busy(all,async()=>{let n=0;for(const w of HK_NEW.slice()){if(await hkAdd(w))n++}toast(`${n} pass är tillagda`);HAPTIC("success");redraw()})})}
-function openHKSettings(){if(!hkOn()){hkConnect();return}
-  openSheet(`<div><span class="small">Kopplingar</span><h2>${esc(HK_NAME())}</h2><p class="small">Pass som klockan sparar i ${esc(HK_NAME())} dyker upp på Hem, och du väljer själv vilka som läggs till. Ingenting delas med andra förrän du sparar passet.</p></div>
-   <button class="pill block" id="hk-now">Hämta nya pass nu</button>
-   <button class="pill ghost block" id="hk-body">Hämta VO2max, vilopuls, vikt och längd</button>
-   <button class="pill ghost block" id="hk-off">Koppla från</button>
-   <p class="small">${HK_NAME()==="Health Connect"?"Vilka uppgifter VARV. får läsa ändrar du i Health Connect.":"Vilka uppgifter VARV. får läsa ändrar du i appen Hälsa under Delning → Appar → VARV."}</p>`,()=>{
-    $("#hk-now").onclick=()=>busy($("#hk-now"),async()=>{await hkSync(false);if(HK_NEW.length)openHK();else toast("Inga nya pass från klockan")});
-    $("#hk-body").onclick=()=>busy($("#hk-body"),async()=>{const b=await hkBody(),k=Object.keys(b);if(!k.length){toast("Hittade inga värden i "+HK_NAME());return}
-      Object.assign(set,b);saveSet();renderProfile();toast(`${k.length} värden är uppdaterade`)});
-    $("#hk-off").onclick=()=>{set.health=Object.assign({},set.health,{on:false});HK_NEW=[];saveSet();renderHK();closeSheet();renderProfile();toast(HK_NAME()+" är frånkopplad")}})}
-document.addEventListener("visibilitychange",()=>{if(!document.hidden&&hkOn()&&Date.now()-HK_AT>60000)hkSync(false)});
 function onLogged(e){postActivity("pass",e.type,actDetail(e,600),actDetail(e,160,true))}
 
 /* ============ Notiser ============ */
@@ -5682,7 +5586,7 @@ function openOnb(){
         return st.races.some(r=>r.t)?null:["Fyll i minst en tid, eller välj Nej."]}},
     body:{eye:"Din form",h:"Några siffror om dig.",p:"Allt är valfritt. Ju mer du fyller i, desto mer träffsäkra blir tempo och pulszoner.",skip:"Hoppa över",
       html:()=>{const f=(id,l,v,ph,mn,mx,im)=>`<div class="field"><label for="${id}">${l}</label><input type="${im?"text":"number"}" id="${id}" inputmode="${id==="ob-w"?"decimal":"numeric"}"${im?` data-tm="${im}"`:` min="${mn}" max="${mx}"`} placeholder="${ph}" value="${v==null?"":esc(v)}"></div>`;
-        return `${HK()?`<button type="button" class="pill ghost block hk-fill" data-hkfill>${HK_ICON} Hämta från ${esc(HK_NAME())}</button>`:""}<div class="grid2">${f("ob-w","Vikt (kg)",st.weight,"75",30,250)}${f("ob-ht","Längd (cm)",st.height,"178",120,230)}</div>
+        return `<div class="grid2">${f("ob-w","Vikt (kg)",st.weight,"75",30,250)}${f("ob-ht","Längd (cm)",st.height,"178",120,230)}</div>
         <div class="grid2">${f("ob-vo2","VO2max",st.vo2,"48",20,95)}${f("ob-rhr","Vilopuls",st.rhr,"55",30,120)}</div>
         <div class="grid2">${f("ob-max","Maxpuls",st.maxhr,st.age?String(220-st.age):"190",120,230)}${f("ob-pace","Snittempo per km",st.pace,"5:15",0,0,"4")}</div>
         <p class="ob-note">Vet du inte? Klockor som Garmin, Apple Watch och Polar visar VO2max, vilopuls och maxpuls. Snittempot är vad du brukar springa på ett vanligt lugnt pass. Skriv bara siffror, till exempel 515 för 5:15.</p>`},
@@ -5744,8 +5648,6 @@ function openOnb(){
     else if(d.past){st.past=d.past==="ja";if(st.past&&!st.races.length)st.races.push({n:"",d:"",t:""})}
     else if(d.add!==undefined){if(st.races.length<10)st.races.push({n:"",d:"",t:""});draw();const n=$("#ob-rn"+(st.races.length-1));if(n)n.focus();return}
     else if(d.rm){st.races.splice(+d.rm,1)}
-    else if(d.hkfill!==undefined){busy(b,async()=>{if(!await hkAuthorize())return;set.health=Object.assign({since:new Date(Date.now()-14*864e5).toISOString(),skip:[]},set.health||{},{on:true});saveSet();
-      const r=await hkBody(),k=Object.keys(r);Object.entries(r).forEach(([x,v])=>{if(st[x]==null||st[x]==="")st[x]=v});draw();toast(k.length?`${k.length} värden hämtades från ${HK_NAME()}`:`Hittade inga värden i ${HK_NAME()}`)});return}
     else return;
     say("");draw()};
   body.onchange=e=>{if(e.target.id==="ob-d"){st.date=e.target.value;say("")}};

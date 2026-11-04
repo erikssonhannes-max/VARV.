@@ -683,28 +683,29 @@ details.more[open] summary{margin-bottom:6px}
 .pf-top{padding-top:22px}
 .pf-rank{margin-top:12px}
 .pf-head{display:grid;gap:12px;padding-top:6px}
-.pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:22px 22px 6px;display:grid;gap:14px;justify-items:start;box-shadow:0 18px 36px -20px var(--glow)}
+.pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:30px 22px 16px;display:grid;gap:12px;justify-items:center;text-align:center;box-shadow:0 18px 36px -20px var(--glow)}
 .pf-card::after{content:"";position:absolute;left:-80px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);z-index:-1;pointer-events:none}
 .pf-track{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}
-.pf-track .tr{fill:none;stroke:rgba(255,255,255,.13);stroke-width:16}
+.pf-track .tr{fill:none;stroke:rgba(255,255,255,.12);stroke-width:22}
 .pf-track .st{fill:none;stroke:rgba(255,255,255,.45);stroke-width:2}
-.pf-track .arc{fill:none;stroke:rgba(255,255,255,.75);stroke-width:4;stroke-linecap:round;stroke-dasharray:var(--f) 100}
+.pf-track .arc{fill:none;stroke:rgba(255,255,255,.7);stroke-width:3;stroke-linecap:round;stroke-dasharray:var(--f) 100}
 .pf-track .dot{fill:#fff;stroke:rgba(255,255,255,.35);stroke-width:8;paint-order:stroke}
 .pf-mark{position:absolute;top:22px;right:22px;width:34px;height:auto;opacity:.95}
 .pf-ring{position:relative}
-.pf-card .pf-av{width:88px;height:88px;border:3px solid #fff;box-sizing:border-box;background:rgba(255,255,255,.2);box-shadow:none;font-size:2rem;overflow:visible}
+.pf-card .pf-av{width:96px;height:96px;border:3px solid #fff;box-sizing:border-box;background:rgba(255,255,255,.2);box-shadow:none;font-size:2rem;overflow:visible}
 .pf-card .pf-av img{border-radius:50%}
 .pf-card .pf-cam{right:-4px;bottom:-4px;width:30px;height:30px;background:#fff;color:var(--accent);border:0;box-shadow:0 4px 12px -4px rgba(0,0,0,.35)}
-.pf-who{display:grid;gap:8px;justify-items:start}
+.pf-who{display:grid;gap:8px;justify-items:center}
 .pf-card h1{font-size:clamp(2rem,9vw,2.6rem);font-weight:700;letter-spacing:-.045em;line-height:1.02;color:#fff;text-wrap:balance}
-.pf-card .pf-id{justify-content:flex-start}
+.pf-card .pf-id{justify-content:center}
 .pf-card .tagchip{background:rgba(255,255,255,.2);color:#fff;font-size:1rem;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
 .pf-card .tagchip span,.pf-card .tagchip svg{color:rgba(255,255,255,.8)}
-.pf-sub{font-size:1rem;font-weight:600;color:rgba(255,255,255,.88);line-height:1.35;max-width:30ch}
+.pf-sub{font-size:1rem;font-weight:600;color:rgba(255,255,255,.88);line-height:1.35;max-width:30ch;text-wrap:balance}
 .pf-sub:empty{display:none}
-.pf-fw{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:600;color:rgba(255,255,255,.85);width:100%;border-top:1px solid rgba(255,255,255,.22);padding-top:2px}
+.pf-fw{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:600;color:rgba(255,255,255,.85);width:100%}
 .pf-fw button{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 2px}
 .pf-fw b{color:#fff;font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pf-card .pf-fw{justify-content:center}
 .pf-fw>span{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.5)}
 .pf-acts{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
 .pf-acts .pill{padding-inline:20px}
@@ -1624,7 +1625,7 @@ a.row{color:inherit;text-decoration:none}
     <div id="pf-main">
     <div class="pf-head">
       <div class="pf-card">
-        <svg class="pf-track" id="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"></svg>
+        <svg class="pf-track" id="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>
         <svg class="pf-mark" viewBox="200 270 640 500" aria-hidden="true"><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>
         <div class="pf-ring"><div class="pf-av" id="pf-av"></div></div>
         <div class="pf-who">
@@ -1643,8 +1644,8 @@ a.row{color:inherit;text-decoration:none}
     <button type="button" class="pf-facts" id="pf-facts" aria-label="Ändra dina uppgifter"></button>
     <div class="group pf-more-rows">
       <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Dina fem zoner, räknade från maxpuls och vilopuls.</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/></svg></span><div><h3>Gör om starttestet</h3><p>Nya tider ger en plan som passar dig nu.</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls.</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/></svg></span><div><h3>Gör om starttestet</h3><p>Uppdatera planen efter din form.</p></div><span class="chev">›</span></button>
     </div>
     <div id="pf-about-home" hidden>
     <div class="card" id="pf-about">
@@ -1663,7 +1664,7 @@ a.row{color:inherit;text-decoration:none}
     </div>
     <div class="sechead"><h2>Konto</h2></div>
     <div class="group">
-      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, kopplingar, hjälp och dina data</p></div><span class="chev">›</span></button>
+      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser och kopplingar</p></div><span class="chev">›</span></button>
     </div>
     <div class="group" id="pf-acc" style="margin-top:10px"></div>
     </div>
@@ -2510,9 +2511,9 @@ async function sbSignOut(){
 function renderAccount(){
   const el=$("#pf-acc");if(!el)return;
   if(SBUSER){
-    el.innerHTML=`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>${esc(SBUSER.email||"")}<br>Dina pass, rekord och din plan sparas i kontot och följer med mellan enheter.</p></div><span></span></div>
-      <button class="row" id="au-out"><span class="badge">↩</span><div><h3>Logga ut</h3><p>Dina data ligger kvar i kontot tills du loggar in igen.</p></div><span class="chev">›</span></button>
-      <button class="row" id="au-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt som sparats i det.</p></div><span class="chev">›</span></button>`;
+    el.innerHTML=`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>${esc(SBUSER.email||"")}</p></div><span></span></div>
+      <button class="row" id="au-out"><span class="badge">↩</span><div><h3>Logga ut</h3><p>Dina data ligger kvar i kontot.</p></div><span class="chev">›</span></button>
+      <button class="row" id="au-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt i det.</p></div><span class="chev">›</span></button>`;
     $("#au-out").onclick=sbSignOut;$("#au-del").onclick=deleteAccount;
   }else{
     el.innerHTML=`<button class="row" id="au-open"><span class="badge">→</span><div><h3>Logga in eller skapa konto</h3><p>Spara dina pass i ett konto och använd VARV. på flera enheter. Det du loggat hittills följer med.</p></div><span class="chev">›</span></button>`;
@@ -2774,8 +2775,8 @@ function renderSocial(){
   $("#pf-edit").onclick=openEditProfile;
   soc.innerHTML=`<div class="sechead"><h2>Vänner</h2></div>
    <div class="group">
-    <button class="row" id="fr-add"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span><div><h3>Hitta atleter</h3><p>Sök på namn eller namn och kod.</p></div><span class="chev">›</span></button>
-    <button class="row" id="fr-qr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2"/><rect x="4" y="14" width="6" height="6" rx="1.2"/><path d="M14 14h2.5v2.5H14zM20 14v2.5M14 20h6M17.5 17.5V20"/></svg></span><div><h3>Visa QR-kod</h3><p>Låt någon skanna den och följa dig direkt.</p></div><span class="chev">›</span></button>
+    <button class="row" id="fr-add"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span><div><h3>Hitta atleter</h3><p>Sök på namn eller kod.</p></div><span class="chev">›</span></button>
+    <button class="row" id="fr-qr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2"/><rect x="4" y="14" width="6" height="6" rx="1.2"/><path d="M14 14h2.5v2.5H14zM20 14v2.5M14 20h6M17.5 17.5V20"/></svg></span><div><h3>Visa QR-kod</h3><p>Låt någon skanna och följa dig.</p></div><span class="chev">›</span></button>
     <button class="row" id="pf-view"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div><h3>Visa min profil</h3><p>Så ser andra den.</p></div><span class="chev">›</span></button>
    </div>`;
   $("#fr-add").onclick=openAddFriend;$("#fw-ers").onclick=()=>openPeople("followers");$("#fw-ing").onclick=()=>openPeople("following");$("#fr-link").onclick=shareFriendLink;$("#fr-qr").onclick=showFriendQR;$("#pf-view").onclick=()=>viewProfile(SBUSER.id);
@@ -4741,16 +4742,15 @@ function renderProfile(){
 function pfWeeks(){const ws=new Date(weekStart(today())+"T12:00:00"),m={};LOGS.forEach(l=>{if(l.date){const k=weekStart(l.date);m[k]=(m[k]||0)+(+l.min||0)}});
   const v=[];for(let i=11;i>=0;i--){const x=new Date(ws);x.setDate(x.getDate()-i*7);v.push(Math.round(m[iso(x)]||0))}return v}
 /* Banan på profilkortet: ett varv runt ovalen, ritat så långt du har kommit mot nästa rank, med löparen som en punkt */
-function pfTrack(frac){const el=$("#pf-track");if(!el)return;const cx=300,cy=235,rx=210,ry=175,f=Math.max(.04,Math.min(1,frac||0));
+function pfTrack(frac){const el=$("#pf-track");if(!el)return;const cx=180,cy=166,rx=170,ry=150,f=Math.max(.04,Math.min(1,frac||0));
   const pt=a=>[cx+rx*Math.cos(a),cy+ry*Math.sin(a)],a0=-Math.PI/2,[dx,dy]=pt(a0+f*2*Math.PI);
   const d=`M${cx},${cy-ry} A${rx},${ry} 0 1 1 ${cx},${cy+ry} A${rx},${ry} 0 1 1 ${cx},${cy-ry}`;
-  const st=[...Array(8)].map((_,i)=>pt(a0+(i+.5)*Math.PI/4)).filter(([x])=>x>190).map(([x,y])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" class="st"/>`).join("");
-  el.innerHTML=`<path d="${d}" class="tr"/>${st}<path d="${d}" class="arc" pathLength="100" style="--f:${(f*100).toFixed(1)}"/><circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="7" class="dot"/>`}
+  el.innerHTML=`<path d="${d}" class="tr"/><path d="${d}" class="arc" pathLength="100" style="--f:${(f*100).toFixed(1)}"/><circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="7" class="dot"/>`}
 const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
 function renderFacts(){const el=$("#pf-facts");if(!el)return;
   const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["Nivå",LVLL[set.level||"mellan"]],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];
   const miss=f.filter(x=>!x[1]).length;
-  el.innerHTML=`<span class="pf-fgrid">${f.map(([l,v,u])=>`<span><small>${l}</small><b${v?"":' class="none"'}>${v?esc(String(v))+(u?`<i> ${u}</i>`:""):"–"}</b></span>`).join("")}</span>${miss?`<span class="pf-fnote">${miss===1?"En uppgift saknas":`${miss} uppgifter saknas`}. Fyll i dem så blir planen och pulszonerna mer träffsäkra.</span>`:""}`}
+  el.innerHTML=`<span class="pf-fgrid">${f.map(([l,v,u])=>`<span><small>${l}</small><b${v?"":' class="none"'}>${v?esc(String(v))+(u?`<i> ${u}</i>`:""):"–"}</b></span>`).join("")}</span>${miss?`<span class="pf-fnote">${miss===1?"En uppgift saknas":`${miss} uppgifter saknas`}. Fyll i dem för en träffsäkrare plan.</span>`:""}`}
 function openPfAbout(){openSheet(`<div><span class="small">Profil</span><h2>Om mig</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider. Allt utom namnet går att ändra.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
 $("#pf-about-edit").onclick=openPfAbout;$("#pf-facts").onclick=openPfAbout;
 $("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};

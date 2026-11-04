@@ -1276,7 +1276,25 @@ a.row{color:inherit;text-decoration:none}
 .wd.active i,.wd-legend .k-active{background:#3cc4d8}
 .wd.pass i,.wd.rest i{color:#fff}.wd.active i{color:#06343f}
 .wd.pass.now i,.wd.rest.now i{color:#fff}.wd.active.now i{color:#06343f}
-.wd-legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.76rem;color:var(--muted)}
+.wd-legend{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:.76rem;color:var(--muted)}
+.wd-hint{flex-basis:100%;margin-top:2px}
+.wd-today{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;background:var(--card);border-radius:14px;padding:8px 8px 8px 14px;min-height:44px}
+.wd-today[hidden]{display:none}
+.wd-q{display:inline-flex;align-items:center;gap:8px;font-size:.95rem;font-weight:600}
+.wd-q span{font-weight:400}.wd-q b{font-weight:600}
+.wd-q i,.wd-rb i,.dy-rest i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
+.wd-today .linkbtn{min-height:44px;padding:0 8px}
+.wd-btns{display:flex;gap:8px;flex-wrap:wrap}
+.wd-rb{display:inline-flex;align-items:center;gap:7px;min-height:40px;padding:0 14px;border:0;border-radius:980px;background:var(--tile);color:var(--ink);font:inherit;font-size:.9rem;font-weight:600;cursor:pointer}
+.wd-rb:active,.dy-rest button:active{transform:scale(.97);transition:transform .15s var(--ease)}
+.dy-rest{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.dy-rest button{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start;text-align:left;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);padding:14px;font:inherit;cursor:pointer;min-height:44px;box-shadow:inset 0 0 0 2px transparent;transition:box-shadow .2s}
+.dy-rest button i{margin-top:5px}
+.dy-rest b{display:block;font-weight:600}
+.dy-rest small{display:block;color:var(--muted);font-size:.82rem;line-height:1.35;margin-top:2px}
+.dy-rest button[aria-pressed="true"]{box-shadow:inset 0 0 0 2px var(--ink)}
+.wd-q .k-rest,.wd-rb .k-rest,.dy-rest .k-rest{background:#0a8fb0}
+.wd-q .k-active,.wd-rb .k-active,.dy-rest .k-active{background:#3cc4d8}
 .wd-legend span{display:inline-flex;align-items:center;gap:5px}
 .wd-legend i{width:9px;height:9px;border-radius:50%;display:block}
 .day-t:first-letter{text-transform:uppercase}
@@ -1335,7 +1353,7 @@ a.row{color:inherit;text-decoration:none}
     <div id="h-go"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
-    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-legend" aria-hidden="true"><span><i class="k-pass"></i>Pass</span><span><i class="k-rest"></i>Vila</span><span><i class="k-active"></i>Aktiv vila</span></div></div>
+    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span><span class="wd-hint">Tryck på en dag för att logga</span></div></div>
     <div class="tiles" style="margin-top:10px" hidden>
       <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
       <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
@@ -3950,29 +3968,42 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
     const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
     return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
   const st=weekStats().streak;
-  $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} veckor i rad`:"")}
+  $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} ${st===1?"vecka":"veckor"} i rad`:"");
+  renderRestPrompt()}
+/* Vila i dag: en fråga direkt i veckokortet, så att man inte behöver veta att dagarna går att trycka på */
+function restTxt(r){if(!r)return "";if(r.k!=="active")return "Vilodag";const x=[r.what||"Aktiv vila",r.km?String(r.km).replace(".",",")+" km":"",r.min?r.min+" min":""].filter(Boolean);return "Aktiv vila · "+x.join(" · ")}
+function renderRestPrompt(){const el=$("#h-rest");if(!el)return;const td=today(),r=(set.restDays||{})[td],dn=LOGS.some(l=>l.date===td);
+  if(dn){el.hidden=true;el.innerHTML="";return}el.hidden=false;
+  el.innerHTML=r?`<span class="wd-q"><i class="${r.k==="active"?"k-active":"k-rest"}" aria-hidden="true"></i><span>I dag: <b>${esc(restTxt(r))}</b></span></span><button type="button" class="linkbtn" id="rq-edit">Ändra</button>`
+   :`<span class="wd-q">Vilar du i dag?</span><span class="wd-btns"><button type="button" class="wd-rb" id="rq-rest"><i class="k-rest" aria-hidden="true"></i>Vilodag</button><button type="button" class="wd-rb" id="rq-active"><i class="k-active" aria-hidden="true"></i>Aktiv vila</button></span>`;
+  const q=id=>el.querySelector(id);
+  if(r)q("#rq-edit").onclick=()=>openDay(td);
+  else{q("#rq-rest").onclick=()=>{saveRestDay(td,{k:"rest"});HAPTIC("success");toast("Vilodagen är sparad.")};q("#rq-active").onclick=()=>openDay(td,"active")}}
 function saveRestDay(ds,v){const m=Object.assign({},set.restDays||{});if(v)m[ds]=v;else delete m[ds];
   const lim=new Date();lim.setDate(lim.getDate()-400);const li=iso(lim);Object.keys(m).forEach(k=>{if(k<li)delete m[k]});set.restDays=m;saveSet();renderHome()}
-function openDay(ds){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
+function openDay(ds,pre){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.date===ds),r=(set.restDays||{})[ds];
   const title=new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
   const ses=[];PLAN.forEach((w,wi)=>w.ses.forEach((x,si)=>{if(x.date===ds)ses.push({x,wi,si})}));
   const planH=ses.length?`<div class="group">${ses.map(({x,wi,si})=>`<button class="row nob" data-dplan="${wi}:${si}"><div><h3>${esc(x.t)}</h3><p>${x.m} min enligt din plan</p></div><span class="chev">›</span></button>`).join("")}</div>`:"";
   if(future){openSheet(`<div><span class="small">Kommande dag</span><h2 class="day-t">${esc(title)}</h2></div>${planH||`<p class="small">Inget pass planerat den här dagen.</p>`}`);return}
-  const st={k:r?r.k:null,what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
-  const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=!st.k};
+  const st={k:pre||(r?r.k:null),what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
+  const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$("#dy-save").textContent="Spara aktiv vila";$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=st.k!=="active"};
   openSheet(`<div><span class="small">${ds===td?"I dag":"Den här dagen"}</span><h2 class="day-t">${esc(title)}</h2></div>
    ${logs.length?`<div class="group">${logs.map(l=>`<button class="row nob" data-dlog="${esc(l.id)}"><div><h3>${esc(l.type)}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
    <button class="pill block" id="dy-log">Logga pass</button>
-   <div class="field"><span class="lbl">Eller markera vila</span><div class="seg" id="dy-seg" role="group" aria-label="Vila"><button type="button" data-rk="rest">Vilodag</button><button type="button" data-rk="active">Aktiv vila</button></div></div>
+   <div class="field"><span class="lbl">${logs.length?"Eller markera vila":"Vilade du?"}</span><div class="dy-rest" id="dy-seg" role="group" aria-label="Vila">
+     <button type="button" data-rk="rest"><i class="k-rest" aria-hidden="true"></i><span><b>Vilodag</b><small>Ingen träning. Sparas direkt.</small></span></button>
+     <button type="button" data-rk="active"><i class="k-active" aria-hidden="true"></i><span><b>Aktiv vila</b><small>Promenad, cykel, yoga eller rörlighet.</small></span></button></div></div>
    <div id="dy-active" hidden style="display:grid;gap:14px">
      <div class="chips" id="dy-what">${["Promenad","Cykling","Yoga","Rörlighet","Annat"].map(w=>`<button type="button" class="chip" data-w="${w}">${w}</button>`).join("")}</div>
      <div class="grid2"><div class="field"><label for="dy-km">Distans (km)</label><input type="text" id="dy-km" inputmode="decimal" autocomplete="off" placeholder="Valfritt" value="${esc(String(st.km).replace(".",","))}"></div>
      <div class="field"><label for="dy-min">Tid (min)</label><input type="text" id="dy-min" inputmode="numeric" autocomplete="off" placeholder="Valfritt" value="${esc(st.min)}"></div></div></div>
-   <button class="pill ghost block" id="dy-save" hidden>Spara</button>
+   <button class="pill ghost block" id="dy-save" hidden>Spara aktiv vila</button>
    ${r?`<button class="linkbtn" id="dy-clear" style="justify-self:center;color:var(--bad)">Ta bort markeringen</button>`:""}`,()=>{
     draw();
     $("#dy-log").onclick=()=>{closeSheet();setTimeout(()=>openLogger({date:ds}),320)};
-    $("#dy-seg").onclick=e=>{const b=e.target.closest("[data-rk]");if(b){st.k=b.dataset.rk;draw()}};
+    $("#dy-seg").onclick=e=>{const b=e.target.closest("[data-rk]");if(!b)return;st.k=b.dataset.rk;
+      if(st.k==="rest"){saveRestDay(ds,{k:"rest"});closeSheet();toast("Vilodagen är sparad.");HAPTIC("success");return}draw()};
     $("#dy-what").onclick=e=>{const b=e.target.closest("[data-w]");if(b){st.what=b.dataset.w;draw()}};
     document.querySelectorAll("#sheet-in [data-dlog]").forEach(b=>b.onclick=()=>{const id=b.dataset.dlog;closeSheet();setTimeout(()=>openEditLog(id),320)});
     $("#dy-save").onclick=()=>{let v={k:st.k};if(st.k==="active"){const km=parseFloat($("#dy-km").value.replace(",",".")),min=parseInt($("#dy-min").value,10);v.what=st.what;if(km>0)v.km=Math.min(300,Math.round(km*10)/10);if(min>0)v.min=Math.min(1440,min)}

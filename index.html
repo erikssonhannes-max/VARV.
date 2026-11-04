@@ -683,7 +683,7 @@ details.more[open] summary{margin-bottom:6px}
 .pf-top{padding-top:22px}
 .pf-rank{margin-top:12px}
 .pf-head{display:grid;gap:12px;padding-top:6px}
-.pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:30px 22px 16px;display:grid;gap:12px;justify-items:center;text-align:center;min-height:310px;align-content:center;box-shadow:0 18px 36px -20px var(--glow)}
+.pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:30px 22px 30px;display:grid;gap:12px;justify-items:center;text-align:center;min-height:310px;align-content:center;box-shadow:0 18px 36px -20px var(--glow)}
 .pf-card::after{content:"";position:absolute;left:-80px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);z-index:-1;pointer-events:none}
 .pf-track{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}
 .pf-track .tr{fill:none;stroke:rgba(255,255,255,.12);stroke-width:22}
@@ -959,6 +959,12 @@ a.row{color:inherit;text-decoration:none}
 .pp-rank b{font-size:.9rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
 .pp-rank .med.xs{box-shadow:none}
 @media (prefers-reduced-motion:no-preference){.view.on .pf-rankpill:not([hidden]){animation:pop .55s var(--spring) .15s both}}
+.pf-handle{font-size:1rem;font-weight:600;color:#fff;min-height:28px;display:flex;align-items:center}.pf-handle span{color:rgba(255,255,255,.8);margin-left:2px}
+.pf-fw>div{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:0 2px}
+.pp-card{margin:34px 0 12px}
+.pp-card .pf-fw:empty{min-height:8px}
+.pp-bio{max-width:none;text-align:center;margin:0 auto 14px;color:var(--ink);font-size:1rem;line-height:1.45;text-wrap:balance}
+.pp-priv{margin-bottom:12px}
 /* Redigera profil */
 .ep-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
 .ep-av{position:relative;width:84px;height:84px;border-radius:50%;padding:3px;border:0;background:var(--hot);cursor:pointer;box-shadow:0 14px 28px -16px var(--glow)}
@@ -2853,7 +2859,7 @@ const SHARE=[["races","Tävlingar och bästa sluttid"],["run","Löprekord, 1 km 
 const MONF=["januari","februari","mars","april","maj","juni","juli","augusti","september","oktober","november","december"];
 function racesCount(){return Math.max(+(MYPROF&&MYPROF.races_count)||0,resAll().filter(x=>x.kind==="race").length)}
 function cardPayload(){const c=set.card||{},sh=c.share||{},o={v:1};
-  try{o.tier=(PROG||progress()).ti}catch(e){}
+  try{const P=PROG||progress();o.tier=P.ti;o.tf=Math.round(P.frac*100)/100}catch(e){}
   if(c.showName&&set.name)o.name=String(set.name).slice(0,60);
   if(c.city)o.city=String(c.city).slice(0,40);
   if(c.showAge&&+set.age>=14&&+set.age<=99)o.age=Math.round(+set.age);
@@ -2874,14 +2880,24 @@ function prDate(k){set.prd=Object.assign({},set.prd||{});set.prd[k]=today();save
 /* Profilsidan som egen vy, adress #u/<id> */
 async function viewProfile(uid){if(!uid)return;closeSheet();if(location.hash==="#u/"+uid){renderPerson(uid);return}location.hash="#u/"+uid}
 const ppNum=v=>(+v||0).toLocaleString("sv-SE");
+const MARK_SVG=`<svg class="pf-mark" viewBox="168 276.67 688 459.33" aria-hidden="true"><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>`;
+/* Atletkortet för någon annans profil: samma kort som på din egen profil */
+function personCard(o){const t=TIERS[o.tier],ring=t?`--m1:${t.m[0]};--m2:${t.m[1]}`:"--m1:#fff;--m2:#fff";
+  return `<div class="pf-card pp-card"><svg class="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true"></svg>${MARK_SVG}
+    <div class="pf-ring" style="${ring}">${avImg(o.url,o.user,"pf-av")}</div>
+    <div class="pf-who"><h1>${o.name}</h1><p class="pf-handle">${esc(o.user)}<span>#${esc(o.tag||"")}</span></p>
+      ${t?`<span class="pf-rankpill" role="img" aria-label="Rank ${t.n}">${tierHTML(t,"xs")}<b>${t.n}</b></span>`:""}
+      ${o.sub?`<p class="pf-sub">${esc(o.sub)}</p>`:""}</div>
+    <div class="pf-fw" id="pp-fw"></div></div>`}
+function personCardGo(c){const tr=document.querySelector("#pp-body .pf-track");if(tr)pfTrack(c&&TIERS[c.tier]&&c.tf!=null?c.tf:null,true,tr)}
 async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   if(!SB||!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för att se profiler</h3><button class="pill block" id="pp-login">Logga in</button></div>`;$("#pp-login").onclick=()=>openAuth();return}
   const me=uid===SBUSER.id;if(!el.dataset.uid||el.dataset.uid!==uid)el.innerHTML=`<div class="card"><p class="small">Hämtar profilen…</p></div>`;el.dataset.uid=uid;
   const {data:p}=await SB.from("profiles").select("user_id,username,tag,avatar_url,card,is_public").eq("user_id",uid).maybeSingle();
   if(location.hash!=="#u/"+uid)return;
   const basic=p||NAMES[uid]||{username:"Okänd",tag:"0000"};
-  if(!p){el.innerHTML=`<div class="pp-head">${avImg(basic.avatar_url,basic.username,"pp-av")}<h1>${esc(basic.username)}</h1><p class="pp-handle">${esc(basic.username)}#${esc(basic.tag||"")}</p></div>
-     <div class="card"><p class="small">Profilen är privat. Följ för att se det ${esc(basic.username)} delar.</p></div><div class="pp-btns">${friendBtns(uid,me)}</div>`;bindFriendBtns(uid);return}
+  if(!p){el.innerHTML=`${personCard({url:basic.avatar_url,user:basic.username,tag:basic.tag,name:esc(basic.username),sub:"Privat profil"})}
+     <div class="card pp-priv"><p class="small">Profilen är privat. Följ för att se det ${esc(basic.username)} delar.</p></div><div class="pp-btns">${friendBtns(uid,me)}</div>`;bindFriendBtns(uid);personCardGo(null);return}
   NAMES[uid]=Object.assign({},NAMES[uid]||{},{user_id:uid,username:p.username,tag:p.tag,avatar_url:p.avatar_url});
   const c=me?cardPayload():(p.card||{}),chips=[];
   if(c.cls)chips.push(`${c.cls.k} · ${c.cls.f}`);if(c.city)chips.push(c.city);if(c.age)chips.push(`${c.age} år`);
@@ -2895,10 +2911,8 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   const chg=(a,b,u)=>{if(!b&&!a)return `<small class="st-d">–</small>`;const d=a-b;return `<small class="st-d ${d>0?"ahead":d<0?"behind":""}">${d>0?"+":d<0?"−":"±"}${ppNum(Math.abs(d))}${u} mot ${per} dagar innan</small>`};
   const freq=T?(T.n12||[]).reduce((a,b)=>a+b,0)/12:0,active12=T?(T.n12||[]).filter(n=>n>0).length:0;
   const name=c.name?esc(c.name):esc(p.username);
-  el.innerHTML=`<div class="pp-head">${avImg(p.avatar_url,p.username,"pp-av")}<h1>${name}</h1><p class="pp-handle">${esc(p.username)}<span>#${esc(p.tag)}</span></p>
-     ${TIERS[c.tier]?`<span class="pp-rank">${tierHTML(TIERS[c.tier],"xs")}<b>${TIERS[c.tier].n}</b></span>`:""}
-     ${chips.length?`<div class="pp-chips">${chips.map(x=>`<span>${esc(x)}</span>`).join("")}</div>`:""}
-     ${c.bio?`<p class="pp-bio">${esc(c.bio)}</p>`:""}<p class="small pp-fw" id="pp-fw"></p></div>
+  el.innerHTML=`${personCard({url:p.avatar_url,user:p.username,tag:p.tag,name,tier:c.tier,sub:chips.join(" · ")})}
+     ${c.bio?`<p class="pp-bio">${esc(c.bio)}</p>`:""}
    <div class="pp-btns">${me?`<button class="pill ghost block" id="pp-edit">Redigera profil och vad du visar</button>`:friendBtns(uid,me)}</div>
    ${tiles.length?`<div class="pp-tiles">${tiles.map(([l,v])=>`<div class="tile"><span>${esc(l)}</span><b>${esc(v)}</b></div>`).join("")}</div>`:""}
    ${T?`<div class="sechead"><h2>Utveckling</h2><div class="seg pp-per" id="pp-per" role="group" aria-label="Period"><button data-per="30" aria-pressed="${per===30}">30 dagar</button><button data-per="90" aria-pressed="${per===90}">90 dagar</button></div></div>
@@ -2912,9 +2926,9 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
    ${c.st&&Object.keys(c.st).length?`<div class="sechead"><h2>Stationerna</h2><span class="small">Bästa tider</span></div><div class="group">${S.map((s,i)=>c.st[s.id]?`<div class="row"><span class="ra-ic st-ic g"><b>${i+1}</b></span><div><h3>${esc(s.n)}</h3></div><b class="pp-t">${fmt(c.st[s.id])}</b></div>`:"").join("")}</div>`:""}
    ${nothing?`<div class="card"><p class="small">${me?"Du visar ingen statistik än. Välj vad andra får se under Redigera profil.":esc(p.username)+" delar ingen statistik än."}</p></div>`:""}
    <div class="sechead"><h2>Inlägg</h2></div><div id="pp-posts"><div class="card"><p class="small">Hämtar inlägg…</p></div></div>`;
-  const ed=$("#pp-edit");if(ed)ed.onclick=openEditProfile;bindFriendBtns(uid);
+  const ed=$("#pp-edit");if(ed)ed.onclick=openEditProfile;bindFriendBtns(uid);personCardGo(c);
   const pp=$("#pp-per");if(pp)pp.onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.ppPer=+b.dataset.per;saveSet();renderPerson(uid)};
-  SB.rpc("varv_follow_counts",{p_id:uid}).then(({data})=>{const k=data&&data[0],f=$("#pp-fw");if(k&&f)f.textContent=`${ppNum(k.followers)} följare · ${ppNum(k.following)} följer`},()=>{});
+  SB.rpc("varv_follow_counts",{p_id:uid}).then(({data})=>{const k=data&&data[0],f=$("#pp-fw");if(k&&f)f.innerHTML=`<div><b>${ppNum(k.followers)}</b> följare</div><span aria-hidden="true"></span><div><b>${ppNum(k.following)}</b> följer</div>`},()=>{});
   const D=await loadPosts(uid);if(location.hash!=="#u/"+uid)return;const box=$("#pp-posts");if(!box)return;
   if(!D){box.innerHTML=`<div class="card"><p class="small">${me?"":"Följ "+esc(p.username)+" för att se inläggen."}</p></div>`;return}
   box.innerHTML=D.acts.length?D.acts.map(a=>fdPost(a,D)).join(""):`<div class="card"><p class="small">${me?"Du har inte delat något än.":esc(p.username)+" har inte delat något än."}</p></div>`;
@@ -4806,11 +4820,15 @@ function renderProfile(){
 function pfWeeks(){const ws=new Date(weekStart(today())+"T12:00:00"),m={};LOGS.forEach(l=>{if(l.date){const k=weekStart(l.date);m[k]=(m[k]||0)+(+l.min||0)}});
   const v=[];for(let i=11;i>=0;i--){const x=new Date(ws);x.setDate(x.getDate()-i*7);v.push(Math.round(m[iso(x)]||0))}return v}
 /* Banan på profilkortet: ett varv runt ovalen, ritat så långt du har kommit mot nästa rank, med löparen som en punkt */
-function pfTrack(frac,play){const el=$("#pf-track");if(!el)return;const cx=180,cy=166,rx=170,ry=150,a0=-Math.PI*5/6;
+function pfTrack(frac,play,el){el=el||$("#pf-track");if(!el)return;const unknown=frac==null;
+  /* Ovalen följer kortets verkliga form, så att banan alltid går runt innehållet och inte genom det */
+  const bx=el.getBoundingClientRect(),H=bx.width>0&&bx.height>0?Math.round(360*bx.height/bx.width):300;
+  if(!el._run&&el._H!==H){el._built=0;el._H=H;el.setAttribute("viewBox",`0 0 360 ${H}`)}
+  const cx=180,cy=H/2+10,rx=170,ry=H/2-6,a0=-Math.PI*5/6;
   el._f=Math.max(.04,Math.min(1,frac||0));
   if(!el._built){const P0=a=>`${(cx+rx*Math.cos(a)).toFixed(1)},${(cy+ry*Math.sin(a)).toFixed(1)}`,d=`M${P0(a0)} A${rx},${ry} 0 1 1 ${P0(a0+Math.PI)} A${rx},${ry} 0 1 1 ${P0(a0)}`;
     el.innerHTML=`<path d="${d}" class="tr"/><path d="${d}" class="arc" pathLength="100"/><circle r="7" class="dot"/>`;el._built=1}
-  const arc=el.querySelector(".arc"),dot=el.querySelector(".dot");
+  const arc=el.querySelector(".arc"),dot=el.querySelector(".dot");arc.style.display=dot.style.display=unknown?"none":"";if(unknown)return;
   const put=v=>{arc.style.strokeDasharray=`${(v*100).toFixed(2)} 100`;const a=a0+v*2*Math.PI;dot.setAttribute("cx",(cx+rx*Math.cos(a)).toFixed(1));dot.setAttribute("cy",(cy+ry*Math.sin(a)).toFixed(1))};
   /* Om banan redan ritas klart: uppdatera bara målet så att animationen inte börjar om */
   if(el._run)return;

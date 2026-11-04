@@ -681,10 +681,73 @@ details.more[open] summary{margin-bottom:6px}
 .avatar-btn{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);right:max(16px,env(safe-area-inset-right,0px));z-index:30;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:.85rem;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));text-decoration:none;overflow:hidden;box-shadow:0 0 0 2px var(--bg),0 6px 14px -6px var(--glow)}
 .avatar-btn img,.pf-av img,.pf-mini img{width:100%;height:100%;object-fit:cover;display:block}
 .pf-top{padding-top:22px}
-#pf-stats .tile b{color:var(--accent2)}
 .pf-rank{margin-top:12px}
-#v-profil .pf-cam{background:var(--hot);color:#fff}
-.pf-head{display:grid;justify-items:center;text-align:center;gap:8px;padding:12px 0 22px}
+.pf-head{display:grid;gap:12px;padding-top:6px}
+.pf-card{position:relative;isolation:isolate;overflow:hidden;background:var(--hot);color:#fff;border-radius:var(--r);padding:22px 22px 6px;display:grid;gap:14px;justify-items:start;box-shadow:0 18px 36px -20px var(--glow)}
+.pf-card::after{content:"";position:absolute;left:-80px;top:-90px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.22),transparent 70%);z-index:-1;pointer-events:none}
+.pf-track{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;overflow:visible}
+.pf-track .tr{fill:none;stroke:rgba(255,255,255,.13);stroke-width:16}
+.pf-track .st{fill:none;stroke:rgba(255,255,255,.45);stroke-width:2}
+.pf-track .arc{fill:none;stroke:rgba(255,255,255,.75);stroke-width:4;stroke-linecap:round;stroke-dasharray:var(--f) 100}
+.pf-track .dot{fill:#fff;stroke:rgba(255,255,255,.35);stroke-width:8;paint-order:stroke}
+.pf-mark{position:absolute;top:22px;right:22px;width:34px;height:auto;opacity:.95}
+.pf-ring{position:relative}
+.pf-card .pf-av{width:88px;height:88px;border:3px solid #fff;box-sizing:border-box;background:rgba(255,255,255,.2);box-shadow:none;font-size:2rem;overflow:visible}
+.pf-card .pf-av img{border-radius:50%}
+.pf-card .pf-cam{right:-4px;bottom:-4px;width:30px;height:30px;background:#fff;color:var(--accent);border:0;box-shadow:0 4px 12px -4px rgba(0,0,0,.35)}
+.pf-who{display:grid;gap:8px;justify-items:start}
+.pf-card h1{font-size:clamp(2rem,9vw,2.6rem);font-weight:700;letter-spacing:-.045em;line-height:1.02;color:#fff;text-wrap:balance}
+.pf-card .pf-id{justify-content:flex-start}
+.pf-card .tagchip{background:rgba(255,255,255,.2);color:#fff;font-size:1rem;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+.pf-card .tagchip span,.pf-card .tagchip svg{color:rgba(255,255,255,.8)}
+.pf-sub{font-size:1rem;font-weight:600;color:rgba(255,255,255,.88);line-height:1.35;max-width:30ch}
+.pf-sub:empty{display:none}
+.pf-fw{display:flex;align-items:center;gap:10px;font-size:1rem;font-weight:600;color:rgba(255,255,255,.85);width:100%;border-top:1px solid rgba(255,255,255,.22);padding-top:2px}
+.pf-fw button{all:unset;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;gap:6px;padding:0 2px}
+.pf-fw b{color:#fff;font-weight:700;font-size:1.15rem;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.pf-fw>span{width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.5)}
+.pf-acts{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+.pf-acts .pill{padding-inline:20px}
+.pf-lvl .lvbar i{background:var(--accent)}
+.pf-nums em{font-style:normal}
+.pf-weeks{border-top:1px solid var(--hair);padding:16px 18px 18px}
+.pf-wh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:.85rem;color:var(--muted)}
+.pf-wh b{color:var(--ink);font-weight:600;font-size:.95rem;font-variant-numeric:tabular-nums}
+.pf-wh b small{color:var(--muted);font-weight:400;font-size:.85rem}
+.pf-weeks .pp-bars{height:64px}
+.pf-weeks .pp-bars span{background:none}
+.pf-weeks .pp-bars i{background:color-mix(in srgb,var(--ink) 18%,transparent)}
+.pf-weeks .pp-bars i.now{background:var(--accent)}
+@media (prefers-reduced-motion:no-preference){
+ .view.on .pf-track .arc{animation:pfArc 1.1s var(--ease) .25s both}
+ .view.on .pf-track .dot{animation:pfDot .5s var(--spring) 1.25s both;transform-box:fill-box;transform-origin:center}
+ .view.on .pf-card .pf-av{animation:pop .55s var(--spring) both}}
+@keyframes pfArc{from{stroke-dasharray:0 100}}
+@keyframes pfDot{from{transform:scale(0);opacity:0}}
+.pf-sum{background:var(--tile);border-radius:var(--r);overflow:hidden}
+.pf-lvl{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:14px;align-items:center;width:100%;padding:16px 18px;border:0;background:none;text-align:left;color:inherit;cursor:pointer;font:inherit}
+.pf-lvl b{font-weight:600;font-size:1.05rem;letter-spacing:-.01em}
+.pf-lvl small{display:block;color:var(--muted);font-size:.84rem;margin-top:1px}
+.pf-lvl .chev{color:var(--muted)}
+.pf-nums{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--hair)}
+.pf-nums>div{padding:16px 18px 18px;display:grid;gap:3px;min-width:0}
+.pf-nums>div:nth-child(odd){border-right:1px solid var(--hair)}
+.pf-nums>div:nth-child(-n+2){border-bottom:1px solid var(--hair)}
+.pf-nums b{font-size:clamp(1.7rem,7.5vw,2.2rem);font-weight:700;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.pf-nums b small{font-size:.55em;font-weight:600;color:var(--muted);letter-spacing:0}
+.pf-nums b.none,.pf-fgrid b.none{color:var(--muted);font-weight:500}
+.pf-nums span{color:var(--muted);font-size:.85rem}
+.pf-facts{all:unset;box-sizing:border-box;display:grid;gap:14px;width:100%;background:var(--tile);border-radius:var(--r);padding:18px;cursor:pointer}
+.pf-fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px}
+.pf-fgrid>span{display:grid;gap:2px;min-width:0}
+.pf-fgrid small{color:var(--muted);font-size:.8rem}
+.pf-fgrid b{font-size:1.05rem;font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-fgrid i{font-style:normal;font-weight:400;color:var(--muted);font-size:.85em}
+.pf-fnote{color:var(--muted);font-size:.84rem;line-height:1.4;border-top:1px solid var(--hair);padding-top:12px}
+.pf-more-rows{margin-top:10px}
+#pf-about{gap:14px}
+#pf-about-done{margin-top:6px}
+@media (prefers-reduced-motion:no-preference){.view.on #pf-main>*{animation:up .55s var(--ease) both}.view.on #pf-main>:nth-child(2){animation-delay:.05s}.view.on #pf-main>:nth-child(3){animation-delay:.1s}.view.on #pf-main>:nth-child(4){animation-delay:.15s}.view.on #pf-main>:nth-child(n+5){animation-delay:.2s}.pf-acts .pill:active,.pf-lvl:active,.pf-facts:active{transform:scale(.97);transition:transform .15s var(--ease)}}
 .pf-av{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;overflow:hidden;color:#fff;font-size:2.4rem;font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 18px 36px -18px var(--glow)}
 .pf-head h1{font-size:clamp(1.8rem,7vw,2.3rem);letter-spacing:-.04em}
 .pf-mini{overflow:hidden;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
@@ -1541,28 +1604,50 @@ a.row{color:inherit;text-decoration:none}
   <div class="wrap">
     <div class="pf-top"><button class="linkbtn" id="pf-back">‹ Tillbaka</button></div>
     <div id="pf-main">
-    <div class="pf-head"><div class="pf-av" id="pf-av"></div><h1 id="pf-name">Din profil</h1><div class="pf-id" id="pf-id" hidden></div><p class="small" id="pf-sub"></p>
-      <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button></div>
-    <div class="tiles" id="pf-stats"></div>
-    <div id="pf-rank"></div>
+    <div class="pf-head">
+      <div class="pf-card">
+        <svg class="pf-track" id="pf-track" viewBox="0 0 360 300" preserveAspectRatio="xMaxYMax slice" aria-hidden="true"></svg>
+        <svg class="pf-mark" viewBox="200 270 640 500" aria-hidden="true"><path d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" fill="none" stroke="#fff" stroke-width="88" stroke-linecap="round" stroke-dasharray="1272.7 1611"/><circle cx="343.5" cy="338.7" r="58" fill="#fff"/></svg>
+        <div class="pf-ring"><div class="pf-av" id="pf-av"></div></div>
+        <div class="pf-who">
+          <h1 id="pf-name">Din profil</h1>
+          <div class="pf-id" id="pf-id" hidden></div>
+          <p class="pf-sub" id="pf-sub"></p>
+        </div>
+        <div class="pf-fw" id="pf-fw" hidden></div>
+      </div>
+      <div class="pf-acts" id="pf-acts" hidden></div>
+    </div>
+    <div class="sechead"><h2>Din träning</h2></div>
+    <div class="pf-sum" id="pf-stats"></div>
     <div id="pf-social"></div>
-    <div class="sechead"><h2>Konto</h2></div>
-    <div class="group" id="pf-acc"></div>
-    <div class="sechead"><h2>Om mig</h2></div>
-    <div class="card">
+    <div class="sechead"><h2>Om mig</h2><button class="linkbtn" id="pf-about-edit">Ändra</button></div>
+    <button type="button" class="pf-facts" id="pf-facts" aria-label="Ändra dina uppgifter"></button>
+    <div class="group pf-more-rows">
+      <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Dina fem zoner, räknade från maxpuls och vilopuls.</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/></svg></span><div><h3>Gör om starttestet</h3><p>Nya tider ger en plan som passar dig nu.</p></div><span class="chev">›</span></button>
+    </div>
+    <div id="pf-about-home" hidden>
+    <div class="card" id="pf-about">
       <div class="field"><label for="pf-in-name">Namn</label><div class="pf-fixed" id="pf-name-fixed" hidden></div><div class="pf-name-set" id="pf-name-set"><input type="text" id="pf-in-name" autocomplete="name" maxlength="60"><button type="button" class="pill" id="pf-name-save">Spara</button></div><span class="small" id="pf-name-note"></span></div>
       <div class="grid2"><div class="field"><label for="pf-in-age">Ålder</label><input type="number" id="pf-in-age" inputmode="numeric" min="16" max="90" placeholder="30"></div>
       <div class="field"><label for="pf-in-h">Längd (cm)</label><input type="number" id="pf-in-h" inputmode="numeric" min="120" max="230" placeholder="175"></div>
-      <div class="field"><label for="pf-in-max">Maxpuls</label><input type="number" id="pf-in-max" inputmode="numeric" min="120" max="230" placeholder="Valfritt"></div>
-      <div class="field"><label for="pf-in-lv">Nivå</label><select id="pf-in-lv"><option value="ny">Ny</option><option value="mellan">Mellan</option><option value="elit">Elit</option></select></div>
-      <div class="field"><label for="pf-in-sex">Kön</label><select id="pf-in-sex"><option value="">Välj</option><option value="w">Kvinna</option><option value="m">Man</option><option value="x">Annat</option></select></div>
       <div class="field"><label for="pf-in-w">Vikt (kg)</label><input type="number" id="pf-in-w" inputmode="decimal" min="30" max="250" placeholder="Valfritt"></div>
-      <div class="field"><label for="pf-in-vo2">VO2max</label><input type="number" id="pf-in-vo2" inputmode="numeric" min="20" max="95" placeholder="Valfritt"></div>
+      <div class="field"><label for="pf-in-sex">Kön</label><select id="pf-in-sex"><option value="">Välj</option><option value="w">Kvinna</option><option value="m">Man</option><option value="x">Annat</option></select></div>
+      <div class="field"><label for="pf-in-lv">Nivå</label><select id="pf-in-lv"><option value="ny">Ny</option><option value="mellan">Mellan</option><option value="elit">Elit</option></select></div>
+      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="numeric" data-tm="4" placeholder="5:15"></div>
+      <div class="field"><label for="pf-in-max">Maxpuls</label><input type="number" id="pf-in-max" inputmode="numeric" min="120" max="230" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-rhr">Vilopuls</label><input type="number" id="pf-in-rhr" inputmode="numeric" min="30" max="120" placeholder="Valfritt"></div>
-      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="numeric" data-tm="4" placeholder="5:15"></div></div>
-      <div class="chiprow"><button class="divchip" data-open="test">Gör om starttestet</button><button class="divchip" data-open="hr">Pulszoner</button></div>
+      <div class="field"><label for="pf-in-vo2">VO2max</label><input type="number" id="pf-in-vo2" inputmode="numeric" min="20" max="95" placeholder="Valfritt"></div></div>
+      <button type="button" class="pill block" id="pf-about-done">Klar</button>
     </div>
-    <div class="group" style="margin-top:28px"><button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, kopplingar, hjälp och dina data</p></div><span class="chev">›</span></button></div>
+    </div>
+    <div class="sechead"><h2>Konto</h2></div>
+    <div class="group">
+      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, kopplingar, hjälp och dina data</p></div><span class="chev">›</span></button>
+    </div>
+    <div class="group" id="pf-acc" style="margin-top:10px"></div>
     </div>
     <div id="pf-more" hidden>
     <div class="pagehead"><span class="eyebrow">Profil</span><h1>Inställningar.</h1></div>
@@ -1791,6 +1876,7 @@ function confetti(){
 var SHEETGEN=0;
 function openSheet(html,mount){
   {const lf=$("#logform"),sin=$("#sheet-in");if(lf&&sin.contains(lf))$("#log-holder").append(lf)}
+  {const pa=$("#pf-about"),sin=$("#sheet-in");if(pa&&sin.contains(pa))$("#pf-about-home").append(pa)}
   $("#sheet-in").innerHTML=`<div class="shtop"><span></span><span class="grab"></span><button class="close" id="sh-x" aria-label="Stäng">✕</button></div>`+html;
   const sh=$("#sheet"),sc=$("#scrim");sh.hidden=false;sc.hidden=false;sh.scrollTop=0;
   const gen=++SHEETGEN;requestAnimationFrame(()=>{if(gen===SHEETGEN){sh.classList.add("on");sc.classList.add("on")}});
@@ -2653,22 +2739,27 @@ function profErr(e){const c=e&&e.code;if(c==="23505")return "Det namnet är reda
 function renderSocial(){
   const id=$("#pf-id"),soc=$("#pf-social");if(!id||!soc)return;
   const av=$("#pf-av");av.classList.toggle("edit",!!MYPROF);
+  if(!SBUSER||!MYPROF){$("#pf-fw").hidden=true;$("#pf-acts").hidden=true}
   if(!SBUSER){id.hidden=true;soc.innerHTML="";return}
   if(!MYPROF){id.hidden=true;soc.innerHTML=`<div class="sechead"><h2>Vänner</h2></div><div class="card"><p class="small">Profiler och vänner är inte uppsatta än. Kör supabase/profiler.sql i Supabase.</p></div>`;return}
   $("#pf-name").textContent=MYPROF.username;
   if(!av.querySelector(".pf-cam"))av.insertAdjacentHTML("beforeend",`<span class="pf-cam" aria-hidden="true">${CAM}</span>`);
   id.hidden=false;
-  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button><button class="divchip" id="pf-edit">Redigera profil</button><button class="divchip" id="pf-view">Visa min profil</button>`;
-  $("#pf-view").onclick=()=>viewProfile(SBUSER.id);
+  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button>`;
   $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}};
-  $("#pf-edit").onclick=openEditProfile;
   const sub=[expTxt(MYPROF.experience),MYPROF.races_count?`${MYPROF.races_count} ${MYPROF.races_count===1?"tävling":"tävlingar"}`:"",MYPROF.is_public?"Offentlig profil":"Privat profil"].filter(Boolean).join(" · ");
   $("#pf-sub").textContent=sub;
-  const partner=MYPROF.partner_id&&NAMES[MYPROF.partner_id];
-  soc.innerHTML=`<div class="sechead"><h2>Följare</h2><button class="linkbtn" id="fr-add">Hitta atleter</button></div>
-   <div class="fw-counts"><button type="button" id="fw-ers"><b>${FOLLOWERS.length}</b><span>följare</span></button><button type="button" id="fw-ing"><b>${FRIENDS.length}</b><span>följer</span></button></div>
-   <div class="fr-share"><button class="pill ghost" id="fr-link" type="button">Dela min profil</button><button class="pill ghost" id="fr-qr" type="button">Visa QR-kod</button></div>
-   <button class="pill ghost block" id="pf-view" style="margin-top:10px">Visa min profil som andra ser den</button>`;
+  const fw=$("#pf-fw");fw.hidden=false;
+  fw.innerHTML=`<button type="button" id="fw-ers"><b class="cu">${FOLLOWERS.length}</b> följare</button><span aria-hidden="true"></span><button type="button" id="fw-ing"><b class="cu">${FRIENDS.length}</b> följer</button>`;
+  const ac=$("#pf-acts");ac.hidden=false;
+  ac.innerHTML=`<button class="pill ghost" id="pf-edit" type="button">Redigera profil</button><button class="pill ghost" id="fr-link" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7h14v-7"/></svg>Dela</button>`;
+  $("#pf-edit").onclick=openEditProfile;
+  soc.innerHTML=`<div class="sechead"><h2>Vänner</h2></div>
+   <div class="group">
+    <button class="row" id="fr-add"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span><div><h3>Hitta atleter</h3><p>Sök på namn eller namn och kod.</p></div><span class="chev">›</span></button>
+    <button class="row" id="fr-qr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2"/><rect x="4" y="14" width="6" height="6" rx="1.2"/><path d="M14 14h2.5v2.5H14zM20 14v2.5M14 20h6M17.5 17.5V20"/></svg></span><div><h3>Visa QR-kod</h3><p>Låt någon skanna den och följa dig direkt.</p></div><span class="chev">›</span></button>
+    <button class="row" id="pf-view"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div><h3>Visa min profil</h3><p>Så ser andra den.</p></div><span class="chev">›</span></button>
+   </div>`;
   $("#fr-add").onclick=openAddFriend;$("#fw-ers").onclick=()=>openPeople("followers");$("#fw-ing").onclick=()=>openPeople("following");$("#fr-link").onclick=shareFriendLink;$("#fr-qr").onclick=showFriendQR;$("#pf-view").onclick=()=>viewProfile(SBUSER.id);
   soc.querySelectorAll("[data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof));
 }
@@ -4591,8 +4682,12 @@ function renderProfile(){
   $("#pf-av").innerHTML=avatarHtml();
   $("#pf-name").textContent=pName()||"Din profil";
   const s=evD(set.since);$("#pf-sub").textContent=`Tränar med VARV. sedan ${MONL[s.getMonth()]} ${s.getFullYear()}`;
-  $("#pf-stats").innerHTML=`<div class="tile"><b>${LOGS.length}</b><span>pass loggade</span></div><div class="tile"><b>${String(hrs).replace(".",",")} h</b><span>träningstid</span></div><div class="tile"><b>${bestRace()?fmt(bestRace()):"–"}</b><span>bästa Hyrox-tid</span></div><div class="tile"><b>${st.streak}</b><span>veckor i rad</span></div>`;
-  {const P=progress(),nx=P.next;$("#pf-rank").innerHTML=`<button class="lvl pf-rank" id="pf-rank-btn" aria-label="Din rank: ${P.tier.n}">${tierHTML(P.tier)}<div><b>Rank: ${P.tier.n}</b><small>${P.st.n} pass${nx?` · ${P.toNext} kvar till ${nx.n}`:" · högsta ranken"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>`;$("#pf-rank-btn").onclick=openLevels}
+  {const P=progress(),nx=P.next,br=bestRace(),w12=pfWeeks();
+   $("#pf-stats").innerHTML=`<button class="pf-lvl" id="pf-rank-btn" aria-label="Din rank: ${P.tier.n}">${tierHTML(P.tier)}<div><b>${P.tier.n}</b><small>${nx?`${P.toNext} pass kvar till ${nx.n}`:"Högsta ranken"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>
+    <div class="pf-nums"><div><b><em class="cu">${LOGS.length}</em></b><span>pass</span></div><div><b><em class="cu">${String(hrs).replace(".",",")}</em><small> h</small></b><span>träningstid</span></div><div><b><em class="cu">${st.streak}</em></b><span>veckor i rad</span></div><div><b${br?"":' class="none"'}>${br?`<em class="cu">${fmt(br)}</em>`:"–"}</b><span>bästa lopp</span></div></div>
+    <div class="pf-weeks"><div class="pf-wh"><span>Minuter per vecka</span><b>${w12[11]} min<small> den här veckan</small></b></div>${miniBars(w12)}</div>`;
+   $("#pf-rank-btn").onclick=openLevels;pfTrack(P.frac)}
+  renderFacts();
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
@@ -4611,14 +4706,31 @@ function renderProfile(){
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
+/* Minuter per vecka, de senaste tolv veckorna, äldst först */
+function pfWeeks(){const ws=new Date(weekStart(today())+"T12:00:00"),m={};LOGS.forEach(l=>{if(l.date){const k=weekStart(l.date);m[k]=(m[k]||0)+(+l.min||0)}});
+  const v=[];for(let i=11;i>=0;i--){const x=new Date(ws);x.setDate(x.getDate()-i*7);v.push(Math.round(m[iso(x)]||0))}return v}
+/* Banan på profilkortet: ett varv runt ovalen, ritat så långt du har kommit mot nästa rank, med löparen som en punkt */
+function pfTrack(frac){const el=$("#pf-track");if(!el)return;const cx=300,cy=235,rx=210,ry=175,f=Math.max(.04,Math.min(1,frac||0));
+  const pt=a=>[cx+rx*Math.cos(a),cy+ry*Math.sin(a)],a0=-Math.PI/2,[dx,dy]=pt(a0+f*2*Math.PI);
+  const d=`M${cx},${cy-ry} A${rx},${ry} 0 1 1 ${cx},${cy+ry} A${rx},${ry} 0 1 1 ${cx},${cy-ry}`;
+  const st=[...Array(8)].map((_,i)=>pt(a0+(i+.5)*Math.PI/4)).filter(([x])=>x>190).map(([x,y])=>`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="5" class="st"/>`).join("");
+  el.innerHTML=`<path d="${d}" class="tr"/>${st}<path d="${d}" class="arc" pathLength="100" style="--f:${(f*100).toFixed(1)}"/><circle cx="${dx.toFixed(1)}" cy="${dy.toFixed(1)}" r="7" class="dot"/>`}
+const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
+function renderFacts(){const el=$("#pf-facts");if(!el)return;
+  const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["Nivå",LVLL[set.level||"mellan"]],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];
+  const miss=f.filter(x=>!x[1]).length;
+  el.innerHTML=`<span class="pf-fgrid">${f.map(([l,v,u])=>`<span><small>${l}</small><b${v?"":' class="none"'}>${v?esc(String(v))+(u?`<i> ${u}</i>`:""):"–"}</b></span>`).join("")}</span>${miss?`<span class="pf-fnote">${miss===1?"En uppgift saknas":`${miss} uppgifter saknas`}. Fyll i dem så blir planen och pulszonerna mer träffsäkra.</span>`:""}`}
+function openPfAbout(){openSheet(`<div><span class="small">Profil</span><h2>Om mig</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider. Allt utom namnet går att ändra.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
+$("#pf-about-edit").onclick=openPfAbout;$("#pf-facts").onclick=openPfAbout;
+$("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};
 function saveProfileFields(){set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
   {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);
-   const pv=$("#pf-in-pace").value.trim(),pp=pv?parseRes(pv):null;if(!pv)set.pace=null;else if(pp&&pp>=150&&pp<=720)set.pace=pp}saveSet();renderAvatar();$("#pf-av").innerHTML=avatarHtml();$("#pf-name").textContent=pName()||"Din profil"}
+   const pv=$("#pf-in-pace").value.trim(),pp=pv?parseRes(pv):null;if(!pv)set.pace=null;else if(pp&&pp>=150&&pp<=720)set.pace=pp}saveSet();renderAvatar();renderFacts()}
 $("#pf-name-save").onclick=()=>{const v=$("#pf-in-name").value.trim().replace(/\s+/g," ").slice(0,60);
   if(!NAME_OK(v)){toast("Skriv ditt för- och efternamn med bokstäver.");$("#pf-in-name").focus();return}
   set.name=v;saveSet();renderAvatar();renderProfile();renderHome();toast("Namnet är sparat");HAPTIC("success")};
-$("#pf-in-sex").addEventListener("change",e=>{set.sex=e.target.value||null;if(set.sex==="w"||set.sex==="m"){set.g=set.sex;refreshDivision()}saveSet()});
-$("#pf-in-lv").addEventListener("change",e=>{saveAbout({age:set.age,height:set.height,level:e.target.value});saveSet();renderPlan();renderHome();toast("Planen är uppdaterad.")});
+$("#pf-in-sex").addEventListener("change",e=>{set.sex=e.target.value||null;if(set.sex==="w"||set.sex==="m"){set.g=set.sex;refreshDivision()}saveSet();renderFacts()});
+$("#pf-in-lv").addEventListener("change",e=>{saveAbout({age:set.age,height:set.height,level:e.target.value});saveSet();renderFacts();renderPlan();renderHome();toast("Planen är uppdaterad.")});
 ["#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr","#pf-in-pace"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
 function setPfMore(on){$("#pf-more").hidden=!on;$("#pf-main").hidden=on;window.scrollTo(0,0)}
 $("#pf-more-btn").onclick=()=>setPfMore(true);$("#pf-blocked").onclick=()=>{if(!SB||!SBUSER){toast("Logga in först.");return}openBlocked()};
@@ -5649,7 +5761,7 @@ function route(){
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
-  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=!SBUSER||v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="vanner")renderVanner();if(v==="profil"){renderProfile();renderNotis()}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
+  if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=!SBUSER||v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="vanner")renderVanner();if(v==="profil"){renderProfile();renderNotis();$$("#v-profil .cu").forEach(countUp)}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
   if(v==="logg"){drawRings(true);renderLog()}
 }

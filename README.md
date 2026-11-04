@@ -58,6 +58,7 @@ Simulations-race under Tävlingar
     Kör supabase/simrace.sql i Supabase. Kräver profiler.sql och notiser.sql.
     Race letas upp varje vecka av en schemalagd uppgift, som kontrollerar dem och uppdaterar data/sim-races.json. Kontrollera filen med node scripts/check-sim-races.mjs. Ta bort ett race genom att radera det ur filen och lägga dess key i data/sim-races-blockerade.txt.
     Teamets egna race läggs till i Table Editor → sim_races: title, city och day krävs, url ska börja med https:// och leda till arrangörens anmälan. Sätt hidden till true för att dölja ett race.
+    Nästa simulering visas på profilens atletkort och sparas i profiles.card, så ingen ny SQL behövs. Egna race visas om "Visa på min profil" är på, och alla kan stängas av under Redigera profil.
     Användare kan lägga in egna race längst ner under Simuleringar. De sparas i användarens inställningar (mySims) och syns bara för användaren. Inbjudningar är länkar (?lopp=) med uppgifterna i själva länken, och mottagaren får en egen kopia.
     Anmälan sker hos arrangören. Knappen i appen är en markering, inte en bokning.
 

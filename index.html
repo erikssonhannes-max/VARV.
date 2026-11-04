@@ -1072,9 +1072,15 @@ a.row{color:inherit;text-decoration:none}
 .hx-wtop .hx-delta{font-size:15px}
 .hx-weak .pill.ghost{background:var(--card)}
 /* Hyrox-raden på atletkortet */
-.pf-hx{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));width:min(100%,460px);margin:6px auto 0;border-radius:16px;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
-.pf-hx>div{display:grid;gap:2px;padding:12px 8px;min-width:0;text-align:center}
-.pf-hx>div+div{border-left:1px solid rgba(255,255,255,.1)}
+.pf-hx{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));width:min(100%,460px);margin:6px auto 0;border-radius:16px;overflow:hidden;background:rgba(255,255,255,.06);box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.pf-hx>*{display:grid;gap:2px;align-content:start;padding:12px 8px;min-width:0;min-height:44px;text-align:center}
+.pf-hx>*+*{border-left:1px solid rgba(255,255,255,.1)}
+.pf-hx>button{width:100%;font:inherit;color:inherit;background:none;border-top:0;border-right:0;border-bottom:0;cursor:pointer;border-radius:0}
+.pf-hx>button:first-child{border-left:0}
+.pf-hx>button:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+.pf-hx.four{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pf-hx.four>:nth-child(odd){border-left:0}
+.pf-hx.four>:nth-child(n+3){border-top:1px solid rgba(255,255,255,.1)}
 .pf-hx small{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.55)}
 .pf-hx b em{font-style:normal;font-size:13px;font-weight:600;letter-spacing:0;color:rgba(255,255,255,.75)}
 .pf-hx b{font-size:19px;font-weight:700;letter-spacing:-.02em;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2997,6 +3003,7 @@ function cardPayload(){const c=set.card||{},sh=c.share||{},o={v:1};
   if(/^\d{4}-\d{2}$/.test(c.since||""))o.since=c.since;
   if(sh.races!==false){const br=bestRace();o.races={n:racesCount(),best:br>=600?Math.round(br):null}}
   {const nr=!set.noRace&&set.date&&set.date>=today()?(myEvent()||{}):null;if(nr)o.next={d:nr.s||set.date,c:nr.c||null}}
+  if(c.showSim!==false){try{const x=simForCard();if(x)o.sim=x}catch(e){}}
   if(sh.run)o.run={k1:PRS.km?Math.round(PRS.km):null,k5:PRS.k5?Math.round(PRS.k5):null};
   if(sh.train){const L=LOGS.filter(l=>l&&l.date&&l.date<=today()),mins=a=>a.reduce((s,l)=>s+(+l.min||0),0),since=(a,b)=>L.filter(l=>l.date>=dAgo(a-1)&&l.date<=dAgo(b));
     const ws=weekStart(today()),w=Array(12).fill(0),wn=Array(12).fill(0);L.forEach(l=>{const i=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(i>=0&&i<12){w[11-i]+=(+l.min||0);wn[11-i]++}});
@@ -3022,11 +3029,24 @@ function personCard(o){const t=TIERS[o.tier],ring=t?`--m1:${t.m[0]};--m2:${t.m[1
     <div class="pf-fw" id="pp-fw"></div></div>`}
 function personCardGo(c){const tr=document.querySelector("#pp-body .pf-track");if(tr)pfTrack(c&&TIERS[c.tier]&&c.tf!=null?c.tf:null,true,tr)}
 /* Hyrox på atletkortet: klass, bästa tid och nästa lopp. Samma rad på ditt kort som på det andra ser. */
-function cardHx(c){if(!c)return "";const it=[];
+function cardHx(c,mine){if(!c)return "";const it=[],when=x=>{const d=Math.round((evD(x)-evD(today()))/864e5);return d===0?"I dag":[d,d===1?"dag":"dagar"]};
   if(c.cls)it.push(["Klass",c.cls.f==="Singel"?c.cls.k:c.cls.f==="Doubles"?"Doubles":"Mixed",[c.cls.f==="Singel"?c.cls.g:c.cls.k,c.cls.f==="Singel"?"Singel":c.cls.f==="Doubles"?c.cls.g:""].filter(Boolean).join(" · ")]);
   if(c.races&&c.races.best)it.push(["Bästa tid",fmt(c.races.best),c.races.n?`${c.races.n} ${c.races.n===1?"lopp":"lopp"}`:""]);
-  if(c.next&&isDay(c.next.d)&&c.next.d>=today()){const d=Math.round((evD(c.next.d)-evD(today()))/864e5);it.push(["Nästa lopp",d===0?"I dag":[d,d===1?"dag":"dagar"],c.next.c||""])}
-  return it.length?`<div class="pf-hx" style="--n:${it.length}">${it.map(([l,v,u])=>`<div><small>${l}</small><b>${Array.isArray(v)?`${v[0]}<em> ${v[1]}</em>`:esc(v)}</b>${u?`<span>${esc(u)}</span>`:""}</div>`).join("")}</div>`:""}
+  if(c.next&&isDay(c.next.d)&&c.next.d>=today())it.push(["Nästa lopp",when(c.next.d),c.next.c||"",c.next.c?`data-card-ev="${esc(c.next.c+"|"+c.next.d)}"`:""]);
+  const sm=c.sim&&typeof c.sim==="object"&&isDay(c.sim.d)&&c.sim.d>=today()&&typeof c.sim.i==="string"?c.sim:null;
+  if(sm)it.push(["Simulering",when(sm.d),typeof sm.c==="string"?sm.c:"",`data-card-sim="${esc(JSON.stringify(sm))}"`]);
+  else if(mine&&(set.card||{}).showSim!==false)it.push(["Simulering","Välj","Lägg till",'data-card-sim-pick="1"']);
+  const cell=([l,v,u,a])=>{const inner=`<small>${l}</small><b>${Array.isArray(v)?`${v[0]}<em> ${v[1]}</em>`:esc(v)}</b>${u?`<span>${esc(u)}${a?" ›":""}</span>`:""}`;return a?`<button type="button" ${a}>${inner}</button>`:`<div>${inner}</div>`};
+  return it.length?`<div class="pf-hx${it.length===4?" four":""}" style="--n:${it.length}">${it.map(cell).join("")}</div>`:""}
+/* Tryck på loppen på ett atletkort: samma ark som under Tävla, där man kan anmäla sig. Kortet kommer från en annan användare och kontrolleras när det öppnas. */
+document.addEventListener("click",async e=>{
+  if(e.target.closest("[data-card-sim-pick]")){set.tsub="sim";saveSet();if(location.hash==="#race")renderTv();else location.hash="#race";return}
+  const ev=e.target.closest("[data-card-ev]");
+  if(ev){const [c,d]=ev.dataset.cardEv.split("|"),i=EVENTS.findIndex(x=>x.c===c&&x.s<=d&&d<=x.e);if(i>=0)openEvent(i);else{set.tsub="kal";saveSet();location.hash="#race"}return}
+  const b=e.target.closest("[data-card-sim]");if(!b)return;let j=null;try{j=JSON.parse(b.dataset.cardSim)}catch(x){}if(!j)return;
+  if(/^own-/.test(j.i||"")){const r=simInvParse(j);if(!r){toast("Racet gick inte att öppna.");return}const have=simOwn().find(x=>x.id===r.inv||x.inv===r.inv);if(have)openOwnSim(have);else openSimInvite(r,"Från en profil");return}
+  if(!simById(j.i))await loadSims(true);
+  if(simById(j.i))openSim(j.i);else toast("Racet finns inte längre i listan.")});
 function cardSub(c){const x=[];if(!c)return "";if(c.age)x.push(`${c.age} år`);return x.join(" · ")}
 async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   if(!SB||!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för att se profiler</h3><button class="pill block" id="pp-login">Logga in</button></div>`;$("#pp-login").onclick=()=>openAuth();return}
@@ -3159,6 +3179,7 @@ function openEditProfile(){
          ${swRow("ep-showName","Ditt namn",set.name?esc(set.name):"Namnet du angav när du började",!!cd.showName)}
          ${swRow("ep-showAge","Ålder","Visas som antal år",!!cd.showAge)}
          ${swRow("ep-showCls","Klass",divText(),cd.showCls!==false)}
+         ${swRow("ep-showSim","Nästa simulering","Racet du har markerat, med datum och plats",cd.showSim!==false)}
          ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",k==="races"?sh[k]!==false:!!sh[k])).join("")}
        </div></section>
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-cyan"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9.5" r="2.5"/><path d="M3 19a5.5 5.5 0 0 1 11 0M14.5 15.2A4.5 4.5 0 0 1 21 19"/></svg></span>Doubles</h3>
@@ -3169,7 +3190,7 @@ function openEditProfile(){
    </form>`,()=>{
     const msg=$("#ep-msg");
     $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub);$("#ep-pub small").textContent=pubTxt(pub)};
-    ["showName","showAge","showCls"].forEach(k=>{const b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=k==="showCls"?cd[k]===false:!cd[k];b.setAttribute("aria-checked",k==="showCls"?cd[k]!==false:cd[k])}});
+    ["showName","showAge","showCls","showSim"].forEach(k=>{const dflt=k==="showCls"||k==="showSim",b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=dflt?cd[k]===false:!cd[k];b.setAttribute("aria-checked",dflt?cd[k]!==false:cd[k])}});
     SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=k==="races"?sh[k]===false:!sh[k];b.setAttribute("aria-checked",k==="races"?sh[k]!==false:sh[k])}});
     $("#ep-pic").onclick=$("#ep-pic2").onclick=()=>$("#pf-av-file").click();
     $("#ep-name").addEventListener("input",e=>{$("#ep-prev").textContent=e.target.value.trim()||MYPROF.username});
@@ -4846,7 +4867,7 @@ function evRow(e){const a=evD(e.s),me=myEvent()===e;
   return `<button class="row" data-ev="${e.i}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${e.c}${me?'<span class="evtag me">Mitt lopp</span>':""}${e.vm?'<span class="evtag">VM</span>':""}</h3><p>${e.n}${e.v?" · "+e.v:""}${e.pre?" · preliminärt":""}</p></div><span class="amt">${evWhen(e)}</span></button>`}
 /* ============ Simulations-race ============ */
 /* Race hämtas automatiskt till data/sim-races.json, och teamet kan lägga till egna i sim_races. Anmälan sker hos arrangören, markeringen i appen ger antal och vänner. */
-var SIMS=null,SIMN={},SIMGO=[],SIMAT=0;
+var SIMS=null,SIMN={},SIMGO=[],SIMAT=0,SIMREADY=null;
 try{const c=JSON.parse(localStorage.getItem("varv-sims")||"null");if(Array.isArray(c))SIMS=c}catch(e){}
 const simOwn=()=>(Array.isArray(set.mySims)?set.mySims:[]).filter(x=>x&&typeof x.id==="string"&&/^\d{4}-\d{2}-\d{2}$/.test(x.day||"")&&x.title&&x.city);
 const simById=id=>(SIMS||[]).concat(simOwn()).find(s=>s.id===id);
@@ -4855,6 +4876,11 @@ const simFriends=id=>SIMGO.filter(g=>g.race_id===id&&(!SBUSER||g.user_id!==SBUSE
 const simCount=(id,n)=>n===1?"1 anmäld":n+" anmälda";
 function simFriendTxt(id){const f=simFriends(id);if(!f.length)return "";return f.length===1?f[0]+" ska dit":f.length===2?f[0]+" och "+f[1]+" ska dit":f[0]+" och "+(f.length-1)+" till ska dit"}
 const simNextMine=()=>(SIMS||[]).filter(s=>simMine(s.id)).concat(simOwn().filter(s=>s.mine)).filter(s=>s.day>=today()).sort((a,b)=>a.day.localeCompare(b.day))[0]||null;
+/* Nästa simulering på profilen. Innan markeringarna har hämtats behålls det som redan står på profilen, så att det inte töms av misstag. Egna race visas bara om "Visa på min profil" är på, och aldrig med anteckningarna. */
+function simForCard(){const t=today();
+  if(!SBUSER||SIMREADY!==SBUSER.id){const k=MYPROF&&MYPROF.card&&MYPROF.card.sim;return k&&isDay(k.d)&&k.d>=t?k:null}
+  const x=(SIMS||[]).filter(s=>simMine(s.id)).concat(simOwn().filter(s=>s.mine&&s.pub)).filter(s=>s.day>=t).sort((a,b)=>a.day.localeCompare(b.day))[0];
+  return !x?null:x.own?simInvObj(x):{i:x.id,d:x.day,c:x.city}}
 function renderHomeSim(){const el=$("#h-sim");if(!el)return;const x=simNextMine();el.hidden=!x;if(!x)return;const d=Math.round((evD(x.day)-evD(today()))/864e5);
   $("#h-sim-d").textContent=d;$("#h-sim-t").textContent=d===1?"dag till simuleringen":"dagar till simuleringen";$("#h-sim-p").textContent=x.city+" · "+evD(x.day).toLocaleDateString("sv-SE",{day:"numeric",month:"long"})}
 function simHtml(){
@@ -4873,10 +4899,10 @@ function simOwnHtml(){
   const t=today(),L=simOwn().sort((a,b)=>(a.day<t)-(b.day<t)||(a.day<t?b.day.localeCompare(a.day):a.day.localeCompare(b.day)));
   const row=s=>{const a=evD(s.day),d=Math.round((a-evD(t))/864e5);
     return `<button class="row" data-sim="${esc(s.id)}"><span class="badge evd"><b>${a.getDate()}</b><small>${MON[a.getMonth()]}</small></span><div><h3>${esc(s.title)}${s.mine?'<span class="evtag me">Min</span>':""}</h3><p>${esc(s.city)}${a.getFullYear()!==evD(t).getFullYear()?" · "+a.getFullYear():""}</p></div><span class="amt">${d<0?"Har varit":d===0?"I dag":d===1?"i morgon":`om ${d} d`}</span></button>`};
-  return `<div class="sechead sim-land"><h2>Egna race</h2>${L.length?`<span class="small">${L.length}</span>`:""}</div>${L.length?`<div class="group">${L.map(row).join("")}</div>`:`<div class="card"><p class="small">Hittar du inte ditt race i listan? Lägg in det själv. Det syns bara för dig och dem du bjuder in.</p></div>`}<button class="pill ghost block" data-sim-add style="margin-top:12px">Lägg till eget race</button>`}
+  return `<div class="sechead sim-land"><h2>Egna race</h2>${L.length?`<span class="small">${L.length}</span>`:""}</div>${L.length?`<div class="group">${L.map(row).join("")}</div>`:`<div class="card"><p class="small">Hittar du inte ditt race i listan? Lägg in det själv. Markerar du det som din simulering kan det visas på din profil, så att andra kan hänga med.</p></div>`}<button class="pill ghost block" data-sim-add style="margin-top:12px">Lägg till eget race</button>`}
 const simUrl=v=>{v=String(v||"").trim();if(!v)return "";try{const u=new URL(/^[a-z][a-z0-9+.-]*:/i.test(v)?v:"https://"+v);if(u.protocol==="http:")u.protocol="https:";return u.protocol==="https:"&&u.hostname.includes(".")?u.href:null}catch(e){return null}};
 function openOwnForm(id){const s=id?simOwn().find(x=>x.id===id):null;if(id&&!s)return;const v=k=>esc((s&&s[k])||"");
-  openSheet(`<div><span class="small">Syns bara för dig och dem du bjuder in</span><h2>${s?"Ändra race":"Lägg till eget race"}</h2></div>
+  openSheet(`<div><span class="small">Eget race</span><h2>${s?"Ändra race":"Lägg till eget race"}</h2></div>
    <div class="field"><label for="so-title">Namn på racet</label><input type="text" id="so-title" maxlength="80" value="${v("title")}" placeholder="Till exempel: Hyrox-simulering på gymmet"></div>
    <div class="field"><label for="so-city">Plats</label><input type="text" id="so-city" maxlength="60" value="${v("city")}" placeholder="Stad eller ort"></div>
    <div class="field"><label for="so-land">Land</label><input type="text" id="so-land" maxlength="40" value="${s?v("country"):"Sverige"}"></div>
@@ -4899,7 +4925,7 @@ function openOwnForm(id){const s=id?simOwn().find(x=>x.id===id):null;if(id&&!s)r
       if(url===null){toast("Länken ser inte rätt ut. Skriv hela adressen.");$("#so-url").focus();return}
       const all=Array.isArray(set.mySims)?set.mySims:[];
       if(!s&&all.length>=50){toast("Du har 50 egna race. Ta bort något först.");return}
-      const r={id:s?s.id:"own-"+Date.now().toString(36),own:true,mine:!!(s&&s.mine),inv:(s&&s.inv)||undefined,pending:(s&&s.pending)||!SBSETOK||undefined,title,city,country:g("land")||null,day,start_time:g("time")||null,organizer:g("org")||null,venue:g("venue")||null,price:g("price")||null,url:url||null,info:g("info")||null};
+      const r={id:s?s.id:"own-"+Date.now().toString(36),own:true,mine:!!(s&&s.mine),pub:s?s.pub:true,inv:(s&&s.inv)||undefined,pending:(s&&s.pending)||!SBSETOK||undefined,title,city,country:g("land")||null,day,start_time:g("time")||null,organizer:g("org")||null,venue:g("venue")||null,price:g("price")||null,url:url||null,info:g("info")||null};
       set.mySims=s?all.map(x=>x&&x.id===s.id?r:x):all.concat(r);saveSet();renderSims();openOwnSim(r);toast(s?"Racet är ändrat.":"Racet är tillagt.");if(!s)HAPTIC("success")};
     const del=$("#so-del");if(del)del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen för att ta bort";del.style.color="var(--bad)";return}
       set.mySims=set.mySims.filter(x=>!x||x.id!==s.id);saveSet();renderSims();closeSheet();toast("Racet är borttaget.")};
@@ -4913,20 +4939,23 @@ function openOwnSim(s){const link=/^https:\/\//.test(s.url||"")?s.url:"",up=s.da
    ${s.info?`<p class="small" style="white-space:pre-line">${esc(s.info)}</p>`:""}
    ${up?`<button class="pill${s.mine?" ghost":""} block" id="so-mine" aria-pressed="${!!s.mine}">${s.mine?"Ta bort som min simulering":"Markera som min simulering"}</button>`:""}
    ${link?`<a class="pill ghost block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Öppna anmälan ↗</a>`:""}
+   ${up?swRow("so-pub","Visa på min profil","När det är din nästa simulering. Alla som kan se din profil ser uppgifterna, men inte dina anteckningar.",!!s.pub):""}
    ${up?`<button class="pill ghost block" id="so-share">Bjud in</button><p class="small">Inbjudan är en länk med racets uppgifter, utan dina anteckningar. Den som öppnar den får en egen kopia, så ändringar du gör senare följer inte med.</p>`:""}
    <p class="small">Du har lagt in racet själv, och VARV. har inte kontrollerat uppgifterna.</p>
    <button class="pill ghost block" id="so-edit">Ändra eller ta bort</button>`,()=>{
     $("#so-edit").onclick=()=>openOwnForm(s.id);
     const m=$("#so-mine");if(m)m.onclick=()=>{const on=!s.mine;set.mySims=set.mySims.map(x=>x&&x.id===s.id?Object.assign({},x,{mine:on}):x);saveSet();renderSims();closeSheet();toast(on?"Racet är din simulering.":"Markeringen är borttagen.");if(on)HAPTIC("success")};
+    const pb=$("#so-pub");if(pb)pb.onclick=()=>{const on=pb.getAttribute("aria-checked")!=="true";pb.setAttribute("aria-checked",on);s=Object.assign({},s,{pub:on});set.mySims=set.mySims.map(x=>x&&x.id===s.id?Object.assign({},x,{pub:on}):x);saveSet();renderSims()};
     const b=$("#so-share");if(b)b.onclick=()=>simShare(s)})}
 /* Inbjudan: racets uppgifter ligger i själva länken, inget sparas på servern. Länken är data från någon annan och kontrolleras när den öppnas. */
-function simInvLink(s){const j=JSON.stringify({i:s.inv||s.id,t:s.title,c:s.city,l:s.country||"",d:s.day,h:s.start_time||"",o:s.organizer||"",v:s.venue||"",p:s.price||"",u:s.url||""});
+const simInvObj=s=>({i:s.inv||s.id,t:s.title,c:s.city,l:s.country||"",d:s.day,h:s.start_time||"",o:s.organizer||"",v:s.venue||"",p:s.price||"",u:s.url||""});
+function simInvLink(s){const j=JSON.stringify(simInvObj(s));
   const b=btoa(String.fromCharCode(...new TextEncoder().encode(j))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");return "https://varvtraining.com/?lopp="+b}
 async function simShare(s){const url=simInvLink(s),a=evD(s.day),text=`Häng med på ${s.title} i ${s.city}, ${a.getDate()} ${MON[a.getMonth()]} ${a.getFullYear()}.`;
   try{if(navigator.share){await navigator.share({title:"VARV.",text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
   try{await navigator.clipboard.writeText(url);toast("Länken är kopierad")}catch(e){toast("Kunde inte kopiera länken.")}}
-function simInvParse(b){try{if(typeof b!=="string"||b.length>2500)return null;
-    const j=JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0))));
+function simInvParse(b){try{if(typeof b==="string"&&b.length>2500)return null;
+    const j=typeof b==="string"?JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(b.replace(/-/g,"+").replace(/_/g,"/")),c=>c.charCodeAt(0)))):b;if(!j||typeof j!=="object")return null;
     const t=(k,m)=>{const v=j[k];if(v==null||v==="")return null;if(typeof v!=="string")throw 0;const x=v.trim().slice(0,m);return x||null};
     const r={inv:t("i",30),title:t("t",80),city:t("c",60),country:t("l",40),day:t("d",10),start_time:t("h",5),organizer:t("o",80),venue:t("v",120),price:t("p",40),url:simUrl(t("u",300))||null};
     if(!/^own-[a-z0-9]{1,24}$/.test(r.inv||"")||!r.title||!r.city||!/^\d{4}-\d{2}-\d{2}$/.test(r.day||"")||isNaN(evD(r.day)))return null;
@@ -4937,17 +4966,21 @@ function simInvWaiting(){try{return !!localStorage.getItem("varv-lopp")}catch(e)
 function openInvite(){let v=null;try{v=localStorage.getItem("varv-lopp");if(v)localStorage.removeItem("varv-lopp")}catch(e){}
   if(!v)return;const r=simInvParse(v);if(!r){toast("Inbjudan gick inte att läsa.");return}
   const have=simOwn().find(x=>x.id===r.inv||x.inv===r.inv);if(have){openOwnSim(have);return}
+  openSimInvite(r,"Du är inbjuden")}
+function openSimInvite(r,head){
   let host="";try{host=r.url?new URL(r.url).hostname.replace(/^www\./,""):""}catch(e){}
   const up=r.day>=today();
-  openSheet(`<div><span class="small">Du är inbjuden${r.organizer?" · "+esc(r.organizer):""}</span><h2>${esc(r.title)}</h2></div>
+  openSheet(`<div><span class="small">${esc(head)}${r.organizer?" · "+esc(r.organizer):""}</span><h2>${esc(r.title)}</h2></div>
    ${simFacts(r)}
    ${r.url?`<a class="pill ghost block" href="${esc(r.url)}" target="_blank" rel="noopener noreferrer">Öppna anmälan på ${esc(host)} ↗</a>`:""}
-   <p class="small">Uppgifterna kommer från den som bjöd in dig. VARV. har inte kontrollerat dem.</p>
+   <p class="small">Uppgifterna kommer från den som lade in racet. VARV. har inte kontrollerat dem. Lägger du till det visas det på din profil. Det kan du ändra på racet.</p>
    ${up?'<button class="pill block" id="inv-add">Lägg till som min simulering</button>':'<p class="small">Racet har redan varit.</p>'}`,()=>{
     const b=$("#inv-add");if(b)b.onclick=()=>{const all=Array.isArray(set.mySims)?set.mySims:[];if(all.length>=50){toast("Du har 50 egna race. Ta bort något först.");return}
-      set.mySims=all.concat(Object.assign({},r,{id:"own-"+Date.now().toString(36),own:true,mine:true,info:null,pending:SBSETOK?undefined:true}));saveSet();set.tsub="sim";saveSet();closeSheet();
+      set.mySims=all.concat(Object.assign({},r,{id:"own-"+Date.now().toString(36),own:true,mine:true,pub:true,info:null,pending:SBSETOK?undefined:true}));saveSet();set.tsub="sim";saveSet();closeSheet();
       if(location.hash==="#race")renderTv();else location.hash="#race";renderSims();toast("Racet är din simulering.");HAPTIC("success")}})}
-function renderSims(){const el=$("#ev-sim");if(el)el.innerHTML=simHtml()+simOwnHtml();renderHomeSim();const b=document.querySelector('#tv-seg [data-tv="sim"]');if(b){const n=(SIMS||[]).filter(x=>x.day>=today()).length;b.textContent=n?`Simuleringar (${n})`:"Simuleringar"}}
+function renderSims(){const el=$("#ev-sim");if(el)el.innerHTML=simHtml()+simOwnHtml();renderHomeSim();const b=document.querySelector('#tv-seg [data-tv="sim"]');if(b){const n=(SIMS||[]).filter(x=>x.day>=today()).length;b.textContent=n?`Simuleringar (${n})`:"Simuleringar"}
+  /* Atletkortet följer med när nästa simulering ändras */
+  try{const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload(),true);syncProfile()}catch(e){}}
 async function loadSims(force){
   const C=window.VARV_SUPABASE||{};if(!C.url||!C.anonKey||window.claude)return;
   if(!force&&Date.now()-SIMAT<60000)return;SIMAT=Date.now();
@@ -4960,7 +4993,7 @@ async function loadSims(force){
     SIMS=auto.concat(own).filter(x=>x&&typeof x.id==="string"&&isDay(x.day)&&x.title&&x.city).sort((a,b)=>a.day.localeCompare(b.day));try{localStorage.setItem("varv-sims",JSON.stringify(SIMS))}catch(e){}
     const c=await fetch(C.url+"/rest/v1/rpc/varv_sim_counts",{method:"POST",headers:Object.assign({"Content-Type":"application/json"},H),body:"{}"});
     if(c.ok){const m={};(await c.json()).forEach(x=>{m[x.race_id]=x.n});SIMN=m}
-    if(SB&&SBUSER){const {data,error}=await SB.from("sim_going").select("race_id,user_id");if(!error)SIMGO=data||[];
+    if(SB&&SBUSER){const {data,error}=await SB.from("sim_going").select("race_id,user_id");if(!error){SIMGO=data||[];SIMREADY=SBUSER.id}
       const miss=[...new Set(SIMGO.map(g=>g.user_id))].filter(u=>u!==SBUSER.id&&!NAMES[u]);
       if(miss.length){const {data:n}=await SB.rpc("varv_names",{p_ids:miss});(n||[]).forEach(p=>{NAMES[p.user_id]=p})}}
     else SIMGO=[];
@@ -4977,7 +5010,7 @@ function openSim(id){const s=simById(id);if(!s)return;if(s.own){openOwnSim(s);re
    ${s.info?`<p class="small" style="white-space:pre-line">${esc(s.info)}</p>`:""}
    ${n||fr?`<p class="small">${n?simCount(id,n)+" i VARV.":""}${n&&fr?" · ":""}${esc(fr)}</p>`:""}
    ${link?`<a class="pill block" href="${esc(link)}" target="_blank" rel="noopener noreferrer">Anmäl dig hos arrangören ↗</a>`:`<p class="small">Arrangören har inte lagt ut någon anmälan än.</p>`}
-   <p class="small">${s.auto?"Uppgifterna är hämtade automatiskt från arrangörens sida, så kontrollera dem där innan du anmäler dig. ":""}Anmälan sker hos arrangören. Markera här när du är anmäld, så ser dina följare att du ska dit.</p>
+   <p class="small">${s.auto?"Uppgifterna är hämtade automatiskt från arrangörens sida, så kontrollera dem där innan du anmäler dig. ":""}Anmälan sker hos arrangören. Markera här när du är anmäld, så syns det på din profil och andra kan hänga med. Det kan du stänga av under Redigera profil.</p>
    <button class="pill ghost block" id="sim-go" aria-pressed="${mine}">${SBUSER?(mine?"Ta bort min markering":"Markera att jag är anmäld"):"Logga in för att markera"}</button>`,()=>{
     $("#sim-go").onclick=()=>{
       if(!SB||!SBUSER){closeSheet();openAuth();return}
@@ -5061,7 +5094,7 @@ function renderProfile(){
    /* Ranken på atletkortet: medalj, namn och antal pass, och profilbildens ring i rankens metallfärg */
    const rp=$("#pf-rankpill");rp.hidden=false;rp.setAttribute("aria-label",`Rank ${P.tier.n}, ${P.st.n} pass. Visa alla nivåer`);
    rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b>`;rp.onclick=openLevels;
-   {const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload())}
+   {const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload(),true)}
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
   /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */

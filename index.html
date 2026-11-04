@@ -2918,7 +2918,7 @@ async function renderPerson(uid){const el=$("#pp-body");if(!el)return;
   const n12=T?(T.n12||[]):[],f0=n12.findIndex(n=>n>0),freq=f0<0?0:Math.round(n12.slice(f0).reduce((a,b)=>a+b,0)/(n12.length-f0)),active12=T?(T.n12||[]).filter(n=>n>0).length:0;
   const name=c.name?esc(c.name):esc(p.username);
   el.innerHTML=`${personCard({url:p.avatar_url,user:p.username,tag:p.tag,name,tier:c.tier,sub:chips.join(" · ")})}
-     ${c.bio?`<p class="pp-bio">${esc(c.bio)}</p>`:""}
+     ${c.bio?`<p class="pp-bio">”${esc(String(c.bio).trim().replace(/^["”“'’]+|["”“'’]+$/g,""))}”</p>`:""}
    <div class="pp-btns">${me?`<button class="pill ghost block" id="pp-edit">Redigera profil och vad du visar</button>`:friendBtns(uid,me)}</div>
    ${tiles.length?`<div class="pp-tiles">${tiles.map(([l,v])=>`<div class="tile"><span>${esc(l)}</span><b>${esc(v)}</b></div>`).join("")}</div>`:""}
    ${T?`<div class="sechead"><h2>Utveckling</h2><div class="seg pp-per" id="pp-per" role="group" aria-label="Period"><button data-per="30" aria-pressed="${per===30}">30 dagar</button><button data-per="90" aria-pressed="${per===90}">90 dagar</button></div></div>

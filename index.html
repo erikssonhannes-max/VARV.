@@ -1042,6 +1042,30 @@ a.row{color:inherit;text-decoration:none}
 .cm-send{width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;cursor:pointer;background:var(--hot);color:#fff;box-shadow:0 8px 18px -10px var(--glow)}
 .cm-send svg{width:20px;height:20px}
 .cm-send:disabled{opacity:.5}
+/* Hem: racetid i dag och svagaste station */
+.hx-est{display:grid;gap:10px;margin-top:10px;padding:18px}
+.hx-k{font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.hx-row{display:flex;align-items:baseline;justify-content:space-between;gap:6px 12px;flex-wrap:wrap}
+.hx-big{font-size:clamp(2.4rem,11vw,3.1rem);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.hx-big.hx-none{color:var(--muted)}
+.hx-delta{font-size:15px;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.hx-delta.ahead{color:var(--good)}.hx-delta.behind{color:var(--bad)}
+.hx-bar{display:flex;gap:3px;height:10px;border-radius:5px;overflow:hidden}
+.hx-bar i,.hx-leg i{display:block}
+.hx-bar .r,.hx-leg .r{background:var(--accent)}.hx-bar .s,.hx-leg .s{background:var(--green)}.hx-bar .x,.hx-leg .x{background:var(--cyan)}
+.hx-leg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:14px;color:var(--muted)}
+.hx-leg span{display:inline-flex;align-items:center;gap:6px}.hx-leg i{width:8px;height:8px;border-radius:50%}
+.tile .hx-leg b{color:var(--ink);font-size:14px;font-weight:600;letter-spacing:0;line-height:1.3;font-variant-numeric:tabular-nums}
+.tile .hx-wtop b{font-size:21px;line-height:1.2}
+.hx-foot,.hx-sub{font-size:13px;line-height:1.4;color:var(--muted)}
+.hx-ic svg{stroke:#fff;color:#fff}
+.hx-weak{display:grid;gap:14px;margin-top:10px;padding:18px}
+.hx-wtop{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;align-items:start}
+.hx-ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--green),var(--green2))}
+.hx-wtop b{display:block;font-size:21px;font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:2px}
+.hx-wtop p{font-size:15px;color:var(--muted);line-height:1.4;margin-top:4px}
+.hx-wtop .hx-delta{font-size:15px}
+.hx-weak .pill.ghost{background:var(--card)}
 /* Redigera profil */
 .ep-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;align-items:center}
 .ep-av{position:relative;width:84px;height:84px;border-radius:50%;padding:3px;border:0;background:var(--hot);cursor:pointer;box-shadow:0 14px 28px -16px var(--glow)}
@@ -1479,9 +1503,11 @@ a.row{color:inherit;text-decoration:none}
     <div class="tiles">
       <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
       <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:1.05rem;letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
-      <a class="tile tap" href="#race" data-tv-go="run"><b id="h-target">1:30</b><span>måltid</span></a>
-      <a class="tile tap" href="#race" data-tv-go="run"><b id="h-pace">–</b><span>snittempo per km</span></a>
+      <a class="tile tap" href="#race" data-tv-go="run" hidden><b id="h-target">1:30</b><span>måltid</span></a>
+      <a class="tile tap" href="#race" data-tv-go="run" hidden><b id="h-pace">–</b><span>snittempo per km</span></a>
     </div>
+    <a class="tile tap hx-est" id="h-est" href="#plan" aria-label="Din uppskattade sluttid i dag"></a>
+    <div class="tile hx-weak" id="h-weak"></div>
     <p class="small" id="h-med" style="margin-top:10px"></p>
 
     <div class="sechead"><h2>Din utveckling</h2><a href="#logg" data-lg="form">Statistik</a></div>
@@ -4138,7 +4164,45 @@ function dayMsg(h,n){
   if(wd===0||wd===6)return pick(["Helg"+N+". Perfekt för ett långpass.","Helg. Tid för ett längre pass?"]);
   return (h<10?"God morgon":h<18?"Redo för ett pass":"God kväll")+N+(h>=10&&h<18?"?":".");
 }
-function renderHome(){try{renderGo()}catch(e){}
+
+/* ============ Hem: racetid i dag och svagaste station ============ */
+/* Uppskattad sluttid i dag. Löpningen från senaste loppet, 1 km-testet eller snittempot. Stationerna från dina rekord,
+   lite långsammare än i ett eget pass eftersom man är trött i loppet. Saknas ett rekord används snittet i Open. */
+const HX_FATIGUE=1.06;
+function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+set.test.km)||0,rsum=RUNM.reduce((a,b)=>a+b,0);
+  let runs=0,rsrc="";
+  if(rl&&rl.date>=dAgo(365)){runs=[0,2,4,6,8,10,12,14].reduce((a,j)=>a+(+rl.race.sp[j]||0),0);rsrc="senaste loppet"}
+  if(!runs&&km>=150&&km<=900){runs=km*1.22*rsum;rsrc="ditt 1 km-test"}
+  if(!runs&&+set.pace>=150){runs=+set.pace*1.05*rsum;rsrc="ditt snittempo"}
+  /* Stationstid i ett lopp räknas som den är. Rekord från egna pass får lite extra, eftersom man är trött i loppet. */
+  const own=[],st=S.map((x,i)=>{const iso=+PRS[x.id]>0?+PRS[x.id]*HX_FATIGUE:0;let race=0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1];if(t>0&&(!race||t<race))race=t});
+    const v=iso&&race?Math.min(iso,race):iso||race;if(v){own.push(i);return v}return stRef(x.id).open});
+  if(!runs)return {none:true,own:own.length};
+  /* Från ett loggat lopp ingår Roxzone redan i löpningen */
+  const inRun=rsrc==="senaste loppet",sta=st.reduce((a,b)=>a+b,0),rox=inRun?0:(runs+sta)*ROXSHARE/(1-ROXSHARE),T=runs+sta+rox;
+  return {T,runs,sta,rox,st,own:own.length,rsrc,inRun}}
+function hxWeak(){let best=null;S.forEach((x,i)=>{const pr=stPR(i);if(!pr)return;const d=pr-stRef(x.id).open;if(!best||d>best.d)best={i,s:x,pr,d}});return best}
+function hxSigned(d){const r=Math.round(Math.abs(d));return (d>0?"+":d<0?"−":"±")+fmt(r)}
+function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E||!K)return;const e=hxEstimate(),goal=set.target*60,cls=set.g==="w"?"dam":"herr";
+  if(e.none){E.innerHTML=`<span class="hx-k">Racetid i dag</span><b class="hx-big hx-none">–</b><p class="hx-sub">Gör starttestet eller fyll i ditt snittempo under Profil, så räknar VARV. ut var du står i dag.</p>`;E.href="#profil"}
+  else{const d=e.T-goal,dTxt=Math.abs(d)<30?"Precis på din måltid":d>0?`${fmt(Math.round(d))} från målet ${fmtHM(set.target)}`:`${fmt(Math.round(-d))} under målet ${fmtHM(set.target)}`;
+    E.href="#plan";
+    E.innerHTML=`<span class="hx-k">Racetid i dag${set.fmt!=="singel"?" · som singel":""}</span>
+     <div class="hx-row"><b class="hx-big">${fmt(Math.round(e.T))}</b><span class="hx-delta ${d>30?"behind":d<-30?"ahead":""}">${esc(dTxt)}</span></div>
+     <div class="hx-bar" aria-hidden="true"><i class="r" style="flex-grow:${e.runs}"></i><i class="s" style="flex-grow:${e.sta}"></i>${e.rox?`<i class="x" style="flex-grow:${e.rox}"></i>`:""}</div>
+     <div class="hx-leg"><span><i class="r"></i>Löpning <b>${fmt(Math.round(e.runs))}</b></span><span><i class="s"></i>Stationer <b>${fmt(Math.round(e.sta))}</b></span>${e.rox?`<span><i class="x"></i>Roxzone <b>${fmt(Math.round(e.rox))}</b></span>`:""}</div>
+     <p class="hx-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open ${cls}.`:`Stationerna utgår från snittet i Open ${cls} tills du loggar egna tider.`}</p>`}
+  const w=hxWeak();
+  if(!w){K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><b>Var tappar du mest?</b><p>Logga tid på en station, så jämför VARV. med snittet i Open och visar vad du ska träna.</p></div></div><a class="pill ghost block" href="#stationer">Visa stationerna</a>`;return}
+  const ahead=w.d<=0;
+  K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><span class="hx-k">${ahead?"Närmast snittet":"Kostar dig mest"}</span><b>${esc(w.s.n)}</b><p><span class="hx-delta ${ahead?"ahead":"behind"}">${hxSigned(w.d)}</span> mot snittet i Open ${cls} · ditt rekord ${fmt(Math.round(w.pr))}</p></div></div>
+   <button class="pill ghost block" id="h-weak-go" type="button">Träna ${esc(w.s.n)}</button>`;
+  $("#h-weak-go").onclick=()=>openFocus(w.i)}
+/* Fokuspass: stationen trött, som i loppet. Fyra varv med 1 km löpning och en halv station. */
+function openFocus(i){const s=S[i],std=exStd(s.id)||{},half=std.r?{r:Math.round(std.r/2)}:{m:Math.round(std.m/2)};
+  openPass({name:`Fokus: ${s.n}`,type:"Löpning och stationer",m:40,why:`Träna ${s.n} trött, som i loppet. Håll ett jämnt tempo på löpningen och gå direkt in i stationen.`,hint:"Fyra varv. Vila högst en minut efter varje varv.",items:[sugItem("run",4,{m:1000}),sugItem(s.id,4,half)]},"Fokuspass")}
+const STATION_IC='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h3l2-5 4 10 2-5h7"/></svg>';
+function renderHome(){try{renderGo()}catch(e){}try{renderHyroxHome()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});

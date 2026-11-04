@@ -1594,7 +1594,7 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= FEED ================= -->
 <section class="view" id="v-feed">
   <div class="wrap">
-    <div class="pagehead"><h1>Aktivitet.</h1><p>Vad du och dina vänner har tränat.</p></div>
+    <div class="pagehead"><h1>Aktivitet.</h1></div>
     <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
   </div>
 </section>
@@ -1720,7 +1720,7 @@ a.row{color:inherit;text-decoration:none}
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Vänner</span><h1>Dina vänner.</h1><p>De du följer, dina följare och nya att träna med.</p></div>
+    <div class="pagehead"><h1>Vänner.</h1></div>
     <div id="vn-req"></div>
     <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="following">Följer</button><button data-vn="followers">Följare</button><button data-vn="top">Topplista</button><button data-vn="find">Hitta</button></div>
     <div class="vnv" data-v="following" id="vn-following"></div>
@@ -3020,7 +3020,7 @@ async function loadPosts(uid){const {data:acts,error}=await actSel(c=>SB.from("a
 function postClick(e,D){
   const mn=e.target.closest(".mention");if(mn){viewProfile(mn.dataset.prof);return true}
   const pm=e.target.closest("[data-pomenu]");if(pm){const id=+pm.dataset.pomenu;
-    openSheet(`<div><span class="small">Ditt inlägg</span><h2>Inlägget</h2></div><div class="group">${ACT_EDIT?`<button class="row" id="pm-edit"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><div><h3>Ändra inlägget</h3><p>Rubrik, text och taggar.</p></div><span class="chev">›</span></button>`:""}<button class="row" id="pm-share"><span class="badge">${SHAREI}</span><div><h3>Dela utanför appen</h3><p>Som bild eller länk.</p></div><span class="chev">›</span></button><button class="row" id="pm-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Ta bort inlägget</h3><p id="pm-delp">Inlägget och kommentarerna försvinner.</p></div><span></span></button></div>`,()=>{
+    openSheet(`<div><h2>Ditt inlägg</h2></div><div class="group">${ACT_EDIT?`<button class="row" id="pm-edit"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></span><div><h3>Ändra inlägget</h3><p>Rubrik, text och taggar.</p></div><span class="chev">›</span></button>`:""}<button class="row" id="pm-share"><span class="badge">${SHAREI}</span><div><h3>Dela utanför appen</h3><p>Som bild eller länk.</p></div><span class="chev">›</span></button><button class="row" id="pm-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Ta bort inlägget</h3><p id="pm-delp">Inlägget och kommentarerna försvinner.</p></div><span></span></button></div>`,()=>{
       const e1=$("#pm-edit");if(e1)e1.onclick=()=>{closeSheet();setTimeout(()=>openEditPost(id,D),320)};
       $("#pm-share").onclick=()=>{closeSheet();setTimeout(()=>sharePost(id,D),320)};
       $("#pm-del").onclick=()=>{const b=$("#pm-del");if(!b.dataset.c){b.dataset.c=1;$("#pm-delp").textContent="Tryck igen för att ta bort.";return}closeSheet();deletePost(id,D)}});return true}

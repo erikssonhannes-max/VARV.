@@ -3364,6 +3364,9 @@ const pgMin=m=>{m=Math.round(m);const h=Math.floor(m/60),r=m%60;return h?`${h} h
 const pgDay=ds=>new Date(ds+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"");
 const pgDur=t=>Math.round(t)<60?`${Math.round(t)} s`:fmt(t);
 const pgKg=v=>fmtKg(Math.round(v*2)/2)+" kg";
+/* Antal veckor i graferna: perioden på Statistik, minst fyra och högst ett år. */
+const pgN=()=>Math.max(4,Math.min(52,Math.ceil(stDays()/7)));
+const pgFrom=()=>dAgo(stDays()-1);
 function pgWeeks(n){const ws=weekStart(today()),out=[],ix={};
   for(let i=n-1;i>=0;i--){const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*i);ix[iso(d)]=out.length;out.push({ws:iso(d),wk:isoWeek(d),n:0,m:0})}
   LOGS.forEach(l=>{if(!l||!l.date||l.date>today())return;const i=ix[weekStart(l.date)];if(i===undefined)return;out[i].n++;out[i].m+=(+l.min||0)});return out}
@@ -3417,8 +3420,8 @@ function renderForm(){
   const tabs=`<div class="seg pg-tabs" role="group" aria-label="Visa">${PG_TABS.map(([k,l])=>`<button data-pgt="${k}" aria-pressed="${v.tab===k}">${l}</button>`).join("")}</div>`;
   const big=(b,s)=>`<div class="pg-head"><b>${b}</b><span>${s}</span></div>`;
   if(v.tab==="pass"||v.tab==="tid"){
-    const W=pgWeeks(12),isP=v.tab==="pass",vals=W.map(w=>isP?w.n:w.m),sel=v.sel==null||v.sel>=W.length?W.length-1:v.sel,w=W[sel];
-    const lab=W.map((x,i)=>({a:i===W.length-1?"Den här veckan":`Vecka ${x.wk}`,t:i===W.length-1?"Nu":i%3===2?`v${x.wk}`:""}));
+    const W=pgWeeks(pgN()),isP=v.tab==="pass",vals=W.map(w=>isP?w.n:w.m),sel=v.sel==null||v.sel>=W.length?W.length-1:v.sel,w=W[sel];
+    const ls=Math.ceil(W.length/5),lab=W.map((x,i)=>({a:i===W.length-1?"Den här veckan":`Vecka ${x.wk}`,t:i===W.length-1?"Nu":(W.length-1-i)%ls===0?`v${x.wk}`:""}));
     const unit=isP?(n=>`${n} pass`):pgMin,s4=vals.slice(-4).reduce((a,b)=>a+b,0),p4=vals.slice(-8,-4).reduce((a,b)=>a+b,0);
     head=big(isP?w.n:pgMin(w.m),`${isP?"pass · ":""}${sel===W.length-1?"den här veckan":"vecka "+w.wk}${isP&&w.m?` · ${pgMin(w.m)}`:!isP&&w.n?` · ${w.n} pass`:""}`);
     msg=!LOGS.length?"Logga ditt första pass så fylls staplarna på.":(isP?`${s4} pass de senaste fyra veckorna. `:`${pgMin(s4)} träning de senaste fyra veckorna. `)+pgCmp(s4,p4,isP?(n=>`${n} pass`):pgMin);
@@ -3426,9 +3429,10 @@ function renderForm(){
   }else if(v.tab==="st"){
     const have=S.map(s=>({s,p:pgStation(s.id)})),withD=have.filter(x=>x.p.length);
     const id=v.st&&have.find(x=>x.s.id===v.st)?v.st:(withD.slice().sort((a,b)=>b.p.length-a.p.length)[0]||{s:S[0]}).s.id;
-    const cur=have.find(x=>x.s.id===id),pts=cur.p.slice(-16),U=PG_UNIT[id];
+    const cur=have.find(x=>x.s.id===id),pts=cur.p.filter(x=>x.ds>=pgFrom()).slice(-60),U=PG_UNIT[id];
     chips=`<div class="pg-chips pg-scroll" role="group" aria-label="Station">${S.map(s=>`<button class="chip" data-pgs="${s.id}" aria-pressed="${s.id===id}">${esc(s.n)}</button>`).join("")}</div>`;
-    if(!pts.length){head=big("–",`snitt per ${U[1]}`);msg=`Logga tid och ${id==="wall"?"reps":"sträcka"} på ${esc(cur.s.n)}, så syns ditt snittempo här.`;body=`<div class="pg-empty">Inga tider på ${esc(cur.s.n)} än</div>`}
+    if(!pts.length&&cur.p.length){head=big("–",`snitt per ${U[1]}`);msg=`Inga pass med ${esc(cur.s.n)} under perioden. Välj en längre period ovan.`;body=`<div class="pg-empty">Inga tider under perioden</div>`}
+    else if(!pts.length){head=big("–",`snitt per ${U[1]}`);msg=`Logga tid och ${id==="wall"?"reps":"sträcka"} på ${esc(cur.s.n)}, så syns ditt snittempo här.`;body=`<div class="pg-empty">Inga tider på ${esc(cur.s.n)} än</div>`}
     else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
       head=big(fmt(p.v),`snitt per ${U[1]} · ${esc(pgDay(p.ds))}`);
       const tot=id==="wall"?`${p.d} reps på ${fmt(p.t)}`:`${fmtM(p.d).replace(".",",")} på ${fmt(p.t)}`;
@@ -3437,12 +3441,13 @@ function renderForm(){
   }else{
     const L=pgLifts();
     if(!L.length){head=big("–","tyngsta vikt");msg="Logga en styrkeövning med vikt, till exempel knäböj, så syns hur du blir starkare.";body=`<div class="pg-empty">Inga styrkepass än</div>`}
-    else{const F=pgFavs(L),id=v.lift&&F.find(x=>x.id===v.lift)?v.lift:F[0].id,cur=F.find(x=>x.id===id),pts=pgLift(id).slice(-16);
+    else{const F=pgFavs(L),id=v.lift&&F.find(x=>x.id===v.lift)?v.lift:F[0].id,cur=F.find(x=>x.id===id),pts=pgLift(id).filter(x=>x.ds>=pgFrom()).slice(-60);
       chips=`<div class="pg-chips wrap" role="group" aria-label="Övning">${F.map(x=>`<button class="chip" data-pgl="${esc(x.id)}" aria-pressed="${x.id===id}">${esc(x.n)}</button>`).join("")}${L.length>F.length||Array.isArray(set.pgFav)?`<button class="chip pg-pick" id="pg-pick">Välj övningar</button>`:""}</div>`;
-      const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
+      if(!pts.length){head=big("–","tyngsta vikt");msg=`Inga pass med ${esc(cur.n)} under perioden. Välj en längre period ovan.`;body=`<div class="pg-empty">Inga lyft under perioden</div>`}
+      else{const sel=v.sel==null||v.sel>=pts.length?pts.length-1:v.sel,p=pts[sel],first=pts[0].v,last=pts[pts.length-1].v;
       head=big(pgKg(p.v),`tyngsta vikt · ${esc(pgDay(p.ds))}${p.r?` · ${p.r} ${p.r===1?"rep":"reps"}`:""}`);
       msg=pts.length<2?`Logga ${esc(cur.n)} fler gånger så syns utvecklingen.`:last>first?`${pgKg(last-first)} tyngre än ${esc(pgDay(pts[0].ds))}.`:last<first?`${pgKg(first-last)} lättare än ${esc(pgDay(pts[0].ds))}.`:`Samma vikt som ${esc(pgDay(pts[0].ds))}.`;
-      body=pgLine(pts,sel,false,pgKg,PG_KGS)}
+      body=pgLine(pts,sel,false,pgKg,PG_KGS)}}
   }
   const sx=(c=>c?c.scrollLeft:0)(el.querySelector(".pg-scroll"));
   el.innerHTML=`${tabs}${chips}${head}<p class="formmsg">${msg}</p>${body}`;
@@ -4310,8 +4315,11 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
     const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)}})}
 /* Statistik: tydlig översikt med period, insikter och grafer */
-const STPER=[[28,"4 veckor"],[84,"12 veckor"],[182,"6 månader"]];
-function stPer(){const d=+set.stper;return STPER.some(p=>p[0]===d)?d:28}
+/* Perioden för alla grafer på Statistik: 30 dagar, 90 dagar eller sedan start (0). */
+const STPER=[[30,"30 dagar"],[90,"90 dagar"],[0,"Sedan start"]];
+function stPer(){const d=+set.stper;return STPER.some(p=>p[0]===d)?d:30}
+/* Antal dagar i perioden. Sedan start räknas från första loggade passet. */
+function stDays(){const p=stPer();if(p)return p;const f=LOGS.map(l=>l&&l.date).filter(Boolean).sort()[0];if(!f)return 30;return Math.max(7,Math.round((evD(today())-evD(f))/864e5)+1)}
 function stLogs(from,to){return LOGS.filter(l=>l&&l.date&&l.date>=from&&l.date<=to)}
 const dAgo=n=>{const d=new Date(today()+"T12:00:00");d.setDate(d.getDate()-n);return iso(d)};
 const hrs=m=>(m/60).toLocaleString("sv-SE",{maximumFractionDigits:1});
@@ -4350,7 +4358,7 @@ function heatHtml(minsByDay,weeks){const ws=weekStart(today());const start=new D
 const stIc={st:'<path d="M9 8a3 3 0 0 1 6 0"/><path d="M7.5 9.5h9L18 19a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 6 19z"/>',bolt:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',cal:'<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>',flag:'<path d="M6 21V4h11l-2 4 2 4H6"/>',up:'<path d="M5 15l7-7 7 7"/>'};
 const icoSvg=k=>`<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${stIc[k]}</svg>`;
 function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return;
-  const per=stPer(),td=today(),from=dAgo(per-1),pFrom=dAgo(2*per-1),pTo=dAgo(per);
+  const per0=stPer(),per=stDays(),td=today(),from=dAgo(per-1),pFrom=dAgo(2*per-1),pTo=dAgo(per);
   const Lp=stLogs(from,td),Lq=stLogs(pFrom,pTo);
   const sum=(L,f)=>L.reduce((a,l)=>a+f(l),0),mins=L=>sum(L,l=>+l.min||0),rpe=L=>L.length?sum(L,l=>+l.rpe||3)/L.length:0;
   // Veckan
@@ -4377,25 +4385,25 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
   if(Lp.length)ins.push({ic:"cal",c:weeksTr>=weeksAll-1?"g":"m",h:`${weeksTr} av ${weeksAll} veckor med träning`,p:streak>1?`${streak} veckor i rad just nu.`:"Jämnhet slår enstaka stora veckor."});
   if(lastR&&prevR){const d=spSum(lastR.race.sp)-spSum(prevR.race.sp);ins.push({ic:"flag",c:d<=0?"g":"a",h:d<=0?`${fmt(-d)} snabbare än förra loppet`:`${fmt(d)} långsammare än förra loppet`,p:`${fmt(spSum(lastR.race.sp))} den ${fmtDM(lastR.date)} mot ${fmt(spSum(prevR.race.sp))} den ${fmtDM(prevR.date)}.`,go:`data-rav="${esc(lastR.id)}"`})}
   const dl=(v,u,flip)=>{if(!Lq.length)return `<small class="st-d">–</small>`;const c=Math.abs(v)<1e-9?"":(v>0)!==!!flip?"ahead":"behind";return `<small class="st-d ${c}">${sgn(v,u)} mot förra</small>`};
-  const per2=STPER.find(p=>p[0]===per)[1];
+  const per2=STPER.find(p=>p[0]===per0)[1];
   top.innerHTML=`<div class="card st-week"><div class="st-wh"><span class="lbl">Den här veckan</span><span class="small">${thisN} ${thisN===1?"pass":"pass"}</span></div>
      <div class="st-wv"><b>${Math.round(thisM)}</b><span>min</span>${avg4?`<small>av ${Math.round(avg4)} i snitt</small>`:""}</div>
      <div class="st-bar" role="img" aria-label="${avg4?`${pct} procent av ditt veckosnitt`:"Inget snitt än"}"><i style="width:${avg4?Math.min(100,pct):0}%"></i>${avg4?`<span class="mk" style="left:${Math.min(100,10000/Math.max(100,pct))}%"></span>`:""}</div>
      <p class="small">${wkTxt}</p></div>
-   <div class="seg st-per" id="st-per" role="group" aria-label="Period">${STPER.map(([d,l])=>`<button data-per="${d}" aria-pressed="${d===per}">${l}</button>`).join("")}</div>
+   <div class="seg st-per" id="st-per" role="group" aria-label="Period">${STPER.map(([d,l])=>`<button data-per="${d}" aria-pressed="${d===per0}">${l}</button>`).join("")}</div>
    <div class="tiles st-tiles">
     <div class="tile"><span>Pass</span><b>${Lp.length}</b>${dl(Lp.length-Lq.length,v=>v)}</div>
     <div class="tile"><span>Timmar</span><b>${hrs(mins(Lp))}</b>${dl((mins(Lp)-mins(Lq))/60,v=>hrs(v*60))}</div>
     <div class="tile"><span>Snittkänsla</span><b>${Lp.length?rpe(Lp).toLocaleString("sv-SE",{maximumFractionDigits:1}):"–"}<small> av 5</small></b>${Lp.length&&Lq.length?`<small class="st-d">${sgn(Math.round((rpe(Lp)-rpe(Lq))*10)/10,v=>v.toLocaleString("sv-SE"))} mot förra</small>`:`<small class="st-d">–</small>`}</div>
     <div class="tile"><span>Veckor i rad</span><b>${streak}</b><small class="st-d">med minst ett pass</small></div>
    </div>
-   <p class="small st-note">Siffrorna gäller de senaste ${per2.toLowerCase()} och jämförs med perioden innan.</p>
+   <p class="small st-note">${per0?`Siffrorna och graferna gäller de senaste ${per0} dagarna. Siffrorna jämförs med perioden innan.`:"Siffrorna och graferna gäller all träning sedan ditt första pass."}</p>
    ${ins.length?`<div class="sechead"><h2>Konkreta tips</h2></div><div class="group st-ins">${ins.map(x=>`<${x.go?"button":"div"} class="row" ${x.go||""}><span class="ra-ic st-ic ${x.c}">${icoSvg(x.ic)}</span><div><h3>${esc(x.h)}</h3><p>${esc(x.p)}</p></div>${x.go?`<span class="chev">›</span>`:"<span></span>"}</${x.go?"button":"div"}>`).join("")}</div>`:""}`;
-  $("#st-per").onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.stper=+b.dataset.per;saveSet();renderStats()};
+  $("#st-per").onclick=e=>{const b=e.target.closest("[data-per]");if(!b)return;set.stper=+b.dataset.per;saveSet();PGV.sel=null;renderStats();renderForm()};
   if(!LOGS.length){el.innerHTML=`<div class="card"><h3>Här fylls din statistik</h3><p class="small">Logga ditt första pass, så visar VARV. hur du tränar, vilka stationer du missar och hur loppen går.</p><a class="pill block" href="#logg" data-lg="pass">Logga ett pass</a></div>`;return}
   // Grafer
   const byDay={};LOGS.forEach(l=>{if(l&&l.date)byDay[l.date]=(byDay[l.date]||0)+(+l.min||0)});
-  const wl=wkM.slice(1).map((_,i)=>{const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-7*(11-i));return i%3===2?`v${isoWeek(d)}`:""});
+  const PW=pgWeeks(pgN()),pws=Math.ceil(PW.length/5),wl=PW.map((w,i)=>(PW.length-1-i)%pws===0?`v${w.wk}`:"");
   const byT={};Lp.forEach(l=>{const k=l.type||"Övrigt";byT[k]=(byT[k]||0)+(+l.min||0)});const types=Object.entries(byT).sort((a,b)=>b[1]-a[1]).slice(0,6),tmax=Math.max(1,...types.map(t=>t[1]));
   const wd=[0,0,0,0,0,0,0];Lp.forEach(l=>{wd[(new Date(l.date+"T12:00:00").getDay()+6)%7]++});const wdm=Math.max(1,...wd);
   const R=raceLogs().slice().reverse().slice(-10),pts=R.map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
@@ -4410,8 +4418,8 @@ function renderStats(){const el=$("#stats"),top=$("#st-top");if(!el||!top)return
    <div class="group st-list">${stRows}</div>
    <div class="sechead"><h2>Aktivitet</h2><span class="small">${HY.n} pass senaste året</span></div>
    <div class="card hy-card">${HY.html}</div>
-   <div class="sechead"><h2>Minuter per vecka</h2><span class="small">12 veckor</span></div>
-   <div class="card">${weekBarsSvg(wkM.slice(1),wl,"Träningsminuter per vecka de senaste tolv veckorna")}<p class="small">Den rosa stapeln är den här veckan. Strecket är snittet för veckorna innan.</p></div>
+   <div class="sechead"><h2>Minuter per vecka</h2><span class="small">${PW.length} veckor</span></div>
+   <div class="card">${weekBarsSvg(PW.map(w=>w.m),wl,`Träningsminuter per vecka de senaste ${PW.length} veckorna`)}<p class="small">Den rosa stapeln är den här veckan. Strecket är snittet för veckorna innan.</p></div>
    ${Lp.length?`<div class="sechead"><h2>Intensitet</h2><span class="small">${per2}</span></div>
    <div class="card"><div class="st-int" role="img" aria-label="${ep} procent lugnt, ${mp} procent måttligt, ${hp} procent hårt"><i class="e" style="flex-grow:${easyM}"></i><i class="m" style="flex-grow:${modM}"></i><i class="h" style="flex-grow:${hardM}"></i></div>
     <div class="st-intl"><span><i class="e"></i>Lugnt <b>${ep} %</b></span><span><i class="m"></i>Måttligt <b>${mp} %</b></span><span><i class="h"></i>Hårt <b>${hp} %</b></span></div>

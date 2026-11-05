@@ -2824,6 +2824,8 @@ async function busy(btn,fn){if(!btn||btn.disabled)return;btn.disabled=true;try{a
 const GSVG=`<svg viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.6 5.4 2.6 13.2l7.9 6.2C12.4 13.7 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.6c0-1.6-.1-3.1-.4-4.6H24v9h12.4c-.5 2.9-2.2 5.3-4.6 6.9l7.5 5.8c4.4-4 6.8-10 6.8-17.1z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.5-5.8c-2.1 1.4-4.8 2.3-8.4 2.3-6.3 0-11.6-4.2-13.5-10l-7.9 6.2C6.6 42.6 14.6 48 24 48z"/></svg>`;
 
 function openAuth(view){
+  /* Konton skapas bara i startvyn, där man godkänner villkoren och intygar sin ålder. */
+  if(view==="up"){closeSheet();GATE_MODE="up";showGate();return}
   const up=view==="up",reset=view==="reset";
   const title=up?"Skapa konto":reset?"Nytt lösenord":"Logga in";
   const intro=reset?"Skriv din e-post så skickar vi en länk där du väljer ett nytt lösenord.":"Dina pass, rekord och din plan sparas i kontot och följer med mellan dina enheter.";
@@ -2845,19 +2847,15 @@ function openAuth(view){
     const g=$("#au-g");if(g)g.onclick=()=>busy(g,async()=>{const {error}=await SB.auth.signInWithOAuth({provider:"google",options:{redirectTo:sbRedirect()}});if(error)say(sbErr(error),true)});
     const otp=$("#au-otp");if(otp)otp.onclick=()=>busy(otp,async()=>{
       const em=mail.value.trim();if(!okMail(em)){say("Skriv en giltig e-postadress.",true);mail.focus();return}
-      say("Skickar…");const {error}=await SB.auth.signInWithOtp({email:em,options:{emailRedirectTo:sbRedirect()}});
-      if(error){say(sbErr(error),true);return}openCode(em)});
+      say("Skickar…");const {error}=await SB.auth.signInWithOtp({email:em,options:{emailRedirectTo:sbRedirect(),shouldCreateUser:false}});
+      /* Samma svar oavsett om kontot finns, så att ingen kan ta reda på vilka adresser som har konto. */
+      if(error&&!/signups? not allowed|otp_disabled|user not found/i.test(String(error.message||error.code||""))){say(sbErr(error),true);return}openCode(em)});
     $("#au-f").onsubmit=e=>{e.preventDefault();busy($("#au-go"),async()=>{
       const em=mail.value.trim();if(!okMail(em)){say("Skriv en giltig e-postadress.",true);mail.focus();return}
       if(reset){say("Skickar…");const {error}=await SB.auth.resetPasswordForEmail(em,{redirectTo:sbRedirect()});
         if(error)say(sbErr(error),true);else say(`Klart. Öppna länken i mejlet till ${em} på den här enheten.`);return}
       const pw=$("#au-pw").value;if(pw.length<(up?8:1)){say(up?"Lösenordet behöver minst 8 tecken.":"Skriv ditt lösenord.",true);$("#au-pw").focus();return}
       say(up?"Skapar konto…":"Loggar in…");
-      if(up){const {data,error}=await SB.auth.signUp({email:em,password:pw,options:{emailRedirectTo:sbRedirect()}});
-        if(error){say(sbErr(error),true);return}
-        if(data.user&&Array.isArray(data.user.identities)&&!data.user.identities.length){say("Det finns redan ett konto med den e-posten. Logga in istället.",true);return}
-        if(!data.session){say(`Nästan klart. Bekräfta kontot via länken vi skickade till ${em}.`);return}
-        closeSheet();toast("Kontot är skapat");HAPTIC("success");return}
       const {error}=await SB.auth.signInWithPassword({email:em,password:pw});
       if(error){say(sbErr(error),true);return}
       closeSheet();toast("Du är inloggad");HAPTIC("success")})};
@@ -2865,7 +2863,7 @@ function openAuth(view){
   });
 }
 function openCode(em){
-  openSheet(`<div><span class="small">Konto</span><h2>Kolla din e-post</h2><p class="small">Vi har skickat ett mejl till ${esc(em)}. Skriv in koden här, eller öppna länken i mejlet på den här enheten.</p></div>
+  openSheet(`<div><span class="small">Konto</span><h2>Kolla din e-post</h2><p class="small">Har ${esc(em)} ett konto får du ett mejl. Skriv in koden här, eller öppna länken i mejlet på den här enheten.</p></div>
    <form id="cd-f" novalidate style="display:grid;gap:14px">
      <div class="field"><label for="cd-in">Kod</label><input type="text" id="cd-in" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"></div>
      <p class="small au-msg" id="cd-msg" role="status" aria-live="polite"></p>

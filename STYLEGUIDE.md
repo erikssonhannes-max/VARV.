@@ -32,6 +32,8 @@ Hex för ljust och mörkt tema. Använd alltid token, aldrig hex direkt i kod.
 | `good` | #1a9a45 | #30d158 | Före plan, alltid med tecken: −0:12 |
 | `bad` | #e0123f | #ff4d6d | Efter plan och fel, alltid med tecken: +0:08 |
 
+Dagar och kalendrar följer samma färger: grönt för ett loggat pass, turkos (`cyan`) för vila och ljust turkos (`cyan2`) för aktiv vila. Text i versaler är alltid halvfet, med spärrning 0,04em.
+
 **Hot** = `linear-gradient(135deg, accent, accent2)`. Text på hot är vit, halvfet och minst 16px.
 
 | Gör så | Inte så |

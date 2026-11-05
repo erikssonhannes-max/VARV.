@@ -5721,7 +5721,7 @@ async function renderFeed(force){
   if(!D.actOk){el.innerHTML=`<div class="card"><p class="small">Aktiviteten är inte uppsatt än.</p></div>`;return}
   const posts=D.acts.filter(a=>a.user_id===SBUSER.id||!BLOCKED.includes(a.user_id));
   const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att komma igång</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><a class="pill block" href="#vanner" data-vn-go="find">Hitta vänner</a></div>`:"";
-  el.innerHTML=`<button type="button" class="fd-compose" data-fd-new>${avImg(MYPROF.avatar_url,MYPROF.username,"fd-cav")}<span>Dela något med dina vänner</span><span class="fd-cic">${CAMI}</span></button>`+empty+`<div id="fd-know"></div>`+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
+  el.innerHTML=`<div id="fd-know"></div><button type="button" class="fd-compose" data-fd-new>${avImg(MYPROF.avatar_url,MYPROF.username,"fd-cav")}<span>Dela något med dina vänner</span><span class="fd-cic">${CAMI}</span></button>`+empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
   el.onclick=e=>{if(e.target.closest("[data-fd-new]")){openComposer();return}
     if(e.target.closest("#fd-know")){knowClick(e);return}
     postClick(e,D)};

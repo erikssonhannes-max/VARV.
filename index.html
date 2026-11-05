@@ -1357,32 +1357,59 @@ a.row{color:inherit;text-decoration:none}
 #live{position:fixed;inset:0;z-index:44;background:var(--bg);display:flex;flex-direction:column;overflow:hidden}
 #live[hidden]{display:none}
 .live-on{overflow:hidden}
-.lv-top{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 12px) 16px 0;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
-.lv-clock{text-align:center;padding:4px 16px 12px;display:grid;gap:10px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
-.lv-clock b{font-size:3.2rem;font-weight:700;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
-.lv-prog{height:6px;background:var(--seg);border-radius:6px;overflow:hidden;display:block}
-.lv-prog i{display:block;height:100%;background:var(--green);border-radius:6px;transition:width .3s}
-.lv-list{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:0 16px 20px;display:grid;gap:12px;align-content:start;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
-.lv-ex{background:var(--tile);border-radius:var(--r);padding:14px;display:grid;gap:8px}
-.lv-exh{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.lv-exh h3{font-size:1.05rem;font-weight:600}
-.lv-x{min-width:44px;min-height:44px;margin:-8px -8px -8px 0;border:0;background:none;color:var(--muted);cursor:pointer;font-size:.9rem}
-.lv-set{display:grid;gap:8px;align-items:center}
-.lv-set input{text-align:center;padding:10px 4px;min-height:44px;box-sizing:border-box;font-variant-numeric:tabular-nums;font-weight:600;border-color:transparent;min-width:0}
-.lv-set.done input{background:transparent;color:var(--muted)}
-.lv-act{min-height:44px;border:0;border-radius:12px;background:var(--card);color:var(--ink);font-weight:600;font-size:.86rem;cursor:pointer;padding:0 2px;font-variant-numeric:tabular-nums}
-.lv-act.chk{font-size:1.1rem;color:var(--muted)}
-.lv-act.chk.on{background:var(--green);color:#fff}
-.lv-act.run{background:var(--ink);color:var(--bg)}
-.lv-setbtns{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.lv-muted{color:var(--muted)}
-.lv-cancel{justify-self:center;color:var(--muted)}
-.lv-foot{display:grid;gap:8px;padding:10px 16px calc(env(safe-area-inset-bottom,0px) + 12px);border-top:.5px solid var(--hair);background:var(--bg);max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
-.lv-rest{display:grid;grid-template-columns:auto 1fr auto auto auto;align-items:center;gap:8px;background:var(--tile);border-radius:14px;padding:6px 8px 6px 14px}
-.lv-rest[hidden]{display:none}
-.lv-rest b{font-size:1.25rem;font-variant-numeric:tabular-nums}
-.lv-rest button{min-height:44px;min-width:44px;border:0;background:none;color:var(--link);font-weight:600;font-size:.86rem;cursor:pointer;padding:0 4px}
-.lv-rest.over b{color:var(--green)}
+.lv-top{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:calc(env(safe-area-inset-top,0px) + 10px) 16px 0;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
+.lv-top>:first-child{justify-self:start}.lv-top>:last-child{justify-self:end}
+.lv-count{font-size:.9rem;font-weight:600;font-variant-numeric:tabular-nums}
+.lv-steps{display:flex;gap:4px;padding:10px 16px 0;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
+.lv-steps i{flex:1;height:5px;border-radius:5px;background:var(--seg);transition:background .3s var(--ease)}
+.lv-steps i.done{background:var(--green)}.lv-steps i.now{background:var(--ink)}
+.lv-main{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:flex;flex-direction:column;gap:10px;padding:10px 16px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
+.lv-now{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;min-height:190px}
+.lv-now.in{animation:lvIn .42s var(--spring) both}
+@keyframes lvIn{from{opacity:0;transform:translateX(28px)}}
+.lv-now h2{font-size:clamp(1.5rem,6.5vw,2rem);font-weight:600;letter-spacing:-.025em;line-height:1.15;text-wrap:balance;margin:0}
+.lv-goal{color:var(--muted);font-size:1rem;margin:0}
+.lv-timer{display:block;font-size:clamp(4.6rem,25vw,7.5rem);font-weight:700;letter-spacing:-.045em;line-height:1.08;font-variant-numeric:tabular-nums;margin-top:4px;transition:opacity .25s}
+.lv-paused .lv-timer{opacity:.4}
+.lv-cmp{min-height:1.3em;color:var(--muted);font-size:.95rem;margin:0;font-variant-numeric:tabular-nums}
+.lv-good{color:var(--good);font-weight:600}.lv-bad{color:var(--bad);font-weight:600}
+.lv-stats b{font-size:1.2rem}
+.lv-prev{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:.92rem;color:var(--muted);padding:0 4px;min-height:44px}
+.lv-prev span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-variant-numeric:tabular-nums}
+.lv-next{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 10px;width:100%;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);font:inherit;text-align:left;padding:12px 16px;min-height:60px;cursor:pointer}
+.lv-next small{color:var(--muted);font-size:.8rem;font-weight:600;grid-column:1}
+.lv-next b{font-weight:600;font-size:1.06rem;grid-column:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-next .chev{grid-column:2;grid-row:1/3}
+.lv-foot{display:grid;gap:8px;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--bg);max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
+.lv-big{min-height:76px;font-size:1.4rem;font-weight:600;letter-spacing:-.01em}
+.lv-big:active{transform:scale(.97)}
+.lv-ready{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:14px;align-content:start;padding:18px 16px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
+.lv-ready h2{font-size:clamp(2.4rem,11vw,3.2rem);font-weight:600;letter-spacing:-.035em;line-height:1;margin:0}
+.lv-rows{display:grid;gap:8px}
+.lv-ri{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:4px;background:var(--tile);border-radius:16px;padding:6px 8px 6px 4px;min-height:60px;box-sizing:border-box}
+.lv-ri h3{font-size:1.02rem;font-weight:600;line-height:1.25;margin:0}
+.lv-ri p{font-size:.86rem;color:var(--muted);margin:1px 0 0;font-variant-numeric:tabular-nums}
+.lv-ri .lv-n{justify-self:center;color:var(--muted);font-weight:600;font-variant-numeric:tabular-nums}
+.lv-ri.is-done .lv-n{color:var(--green)}
+.lv-ri.is-now{background:var(--card);outline:1.5px solid var(--ink);outline-offset:-1.5px}
+.lv-ri b{font-variant-numeric:tabular-nums;font-weight:600;padding-right:8px}
+.lv-x{min-width:44px;min-height:44px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:.9rem}
+.dnd-grip{display:grid;place-items:center;width:44px;height:44px;border:0;background:none;color:var(--muted);cursor:grab;padding:0;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;border-radius:12px}
+.dnd-grip:active{cursor:grabbing;color:var(--ink)}
+.dnd-grip svg{pointer-events:none}
+body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
+.dnd-move{transition:transform .26s var(--ease)}
+.dnd-lift{position:relative;z-index:5;transition:box-shadow .2s var(--ease);box-shadow:0 16px 34px -14px rgba(0,0,0,.42);will-change:transform}
+.dnd-settle{position:relative;z-index:5;transition:transform .24s var(--spring),box-shadow .24s var(--ease)}
+.lg-exh.has-grip{grid-template-columns:36px auto minmax(0,1fr) 32px}
+.lg-exh .dnd-grip{width:36px;margin:-8px 0 -8px -8px}
+.lg-still .lg-ex{animation:none}
+.lg-sorting .lg-ex{padding-bottom:14px}
+.lg-sorting .lg-cols,.lg-sorting .lg-set,.lg-sorting .lg-add,.lg-sorting .lg-exh p{display:none}
+.lg-unfold{animation:lgUnfold .3s var(--ease) both}
+@keyframes lgUnfold{from{opacity:0}}
+@media (max-height:640px){.lv-now{min-height:150px}.lv-timer{font-size:4.2rem}.lv-big{min-height:62px}.lv-stats div{padding:7px 12px}}
+@media (prefers-reduced-motion:reduce){.lv-now.in,.lg-unfold{animation:none}.dnd-move,.dnd-settle,.lv-steps i{transition:none}}
 #lv-bar{position:fixed;left:12px;right:12px;bottom:calc(env(safe-area-inset-bottom,0px) + 74px);z-index:41;display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;min-height:52px;padding:0 16px;border:0;border-radius:16px;background:var(--ink);color:var(--bg);font:inherit;font-weight:600;cursor:pointer;text-align:left;max-width:696px;margin:0 auto}
 #lv-bar[hidden]{display:none}
 #lv-bar .chev{color:inherit}
@@ -3849,7 +3876,7 @@ function tplSave(name,items,type){const clean=items.map(i=>({ex:i.ex,n:i.n,k:i.k
 function liveFrom(items,type,hint,bench){if(LIVE){openLogger();toast("Du har redan ett pass igång.");return}
   openLogger({type:type||"Styrka och stationer",forLive:true});LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));if(hint)LG.hint=hint;LG.bench=bench||null;startLive()}
 function buildFrom(items,type,o){openLogger(Object.assign({type:type||"Styrka och stationer",kicker:"Nytt pass"},o));LG.typeSet=!!type;LG.items=JSON.parse(JSON.stringify(items));renderLG()}
-function prepRows(){return (set.tpls||[]).slice().reverse().map(t=>`<div class="prep"><button type="button" class="prep-n" data-prep-edit="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"} · Ändra</span></button><button type="button" class="prep-go" data-prep-go="${esc(t.id)}">Starta</button><button type="button" class="lg-x" data-prep-del="${esc(t.id)}" aria-label="Ta bort ${esc(t.name)}">✕</button></div>`).join("")}
+function prepRows(){return (set.tpls||[]).slice().reverse().map(t=>`<div class="prep"><button type="button" class="prep-n" data-prep-edit="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"} · Ändra</span></button><button type="button" class="prep-go" data-prep-go="${esc(t.id)}">Kör</button><button type="button" class="lg-x" data-prep-del="${esc(t.id)}" aria-label="Ta bort ${esc(t.name)}">✕</button></div>`).join("")}
 function renderPrep(){try{renderGo()}catch(e){}const el=$("#lg-prep");if(!el)return;el.innerHTML=(set.tpls||[]).length?`<span class="lbl">Förberedda pass</span><div class="lg-grp prep-l">${prepRows()}</div>`:""}
 const GOI={now:'<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',sug:'<path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="currentColor" stroke="none"/>',pre:'<path d="M13 2L5 13h6l-1 9 8-11h-6z" fill="currentColor" stroke="none"/>',prep:'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>',after:'<path d="M4 12.5l5 5L20 6.5"/>'};
 const goIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GOI[k]}</svg>`;
@@ -3871,7 +3898,7 @@ function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stat
    ${PASS_WHAT[x.t]?`<p class="muted">${esc(PASS_WHAT[x.t])}</p>`:""}
    ${its.length?`<div><span class="lbl">Övningar</span><div class="group" style="margin-top:8px">${its.map((n,i)=>`<div class="row"><span class="badge">${i+1}</span><div><h3>${esc(n)}</h3></div><span></span></div>`).join("")}</div></div>`:""}
    <div class="card"><span class="lbl">Så här gör du</span><p style="margin:0;line-height:1.5">${esc(x.d)}</p>${x.z?`<span class="small">${esc(zoneTxt(x.z))}</span>`:""}</div>
-   <button class="pill block" id="pp-go">Starta passet</button>
+   <button class="pill block" id="pp-go">Kör passet</button>
    <button class="pill ghost block" id="pp-log">Redan kört? Logga det</button>`,()=>{
     $("#pp-go").onclick=()=>prefill(Object.assign({start:true},o));
     $("#pp-log").onclick=()=>prefill(Object.assign({fresh:true},o))})}
@@ -3919,7 +3946,7 @@ function benchSave(id,t,date){const x=PRESETS.find(p=>p.id===id);if(!x)return nu
 function benchHtml(id){const m=benchMine(id),tries=LOGS.filter(l=>l.bench&&l.bench.id===id).sort((a,b)=>b.date.localeCompare(a.date)||(b.created||0)-(a.created||0)).slice(0,3);
   return `<div class="card bm-card"><div class="bm-top"><span class="lbl">Ditt rekord</span><b>${m?fmt(m.t):"–"}</b>${m?`<span class="small">${dshort(m.date)} · ${m.n} ${m.n===1?"försök":"försök"}</span>`:""}</div>
    ${tries.length>1?`<div class="bm-tries">${tries.map(l=>`<span${l.bench.t===m.t?' class="on"':""}>${fmt(l.bench.t)}<small>${dshort(l.date)}</small></span>`).join("")}</div>`:""}
-   <p class="small">${m?"Kör passet igen med klockan och försök slå din tid.":"Kör passet med klockan så sparas din tid som rekord."} Tiden räknas bara när alla set är avbockade.</p></div>
+   <p class="small">${m?"Kör passet igen med klockan och försök slå din tid.":"Kör passet med klockan så sparas din tid som rekord."} Tiden räknas bara när alla övningar är klara.</p></div>
    <div id="bm-lb"></div>`}
 async function benchBoard(id){const el=$("#bm-lb");if(!el)return;
   if(!SB||!SBUSER||!MYPROF){el.innerHTML="";return}
@@ -4004,11 +4031,14 @@ function lgMount(){const r=$("#lg");
     r.addEventListener("click",lgClick);r.addEventListener("input",lgInput);r.addEventListener("change",lgChange);
     r.addEventListener("focusin",e=>{const t=e.target;if(t.matches&&t.matches(".lg-set input,#lg-minv"))setTimeout(()=>{try{t.select()}catch(x){}},0)});
     r.addEventListener("focusout",e=>{const t=e.target;if(t.dataset&&t.dataset.f==="t"&&t.value){const v=parseT(t.value);if(v)t.value=fmt(v)}});
+    dragSort({root:r,item:".lg-ex",scroller:()=>$("#sheet"),collapse:"lg-sorting",still:"lg-still",unfold:".lg-cols,.lg-set,.lg-add,.lg-exh p",
+      drop:(a,b)=>{LG.items.splice(b,0,LG.items.splice(a,1)[0]);LG.still=true;renderLG()}});
     renderLG()}
 function lgYest(){const d=new Date(today()+"T12:00:00");d.setDate(d.getDate()-1);return iso(d)}
 function lgSum(){const n=LG.items.length,s=LG.items.reduce((a,i)=>a+(i.sets||[]).filter(x=>setTxt(i.k,x)).length,0);
   return [n?`${n} ${n===1?"övning":"övningar"}`:"",s?`${s} set`:"",`${LG.min} min`].filter(Boolean).join(" · ")}
 function renderLG(){const r=$("#lg");if(!r)return;
+  r.classList.toggle("lg-still",!!LG.still);LG.still=false;
   if(LG.view==="pick"){renderPick(r);return}
   if(LG.view==="custom"){renderCustom(r);return}
   const td=today(),yd=lgYest(),other=LG.date!==td&&LG.date!==yd;
@@ -4016,7 +4046,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
   const ty=lgType(),last=sortedLogs().find(l=>l.items&&l.items.length&&l.id!==LG.edit);
   const exHtml=LG.items.map((it,i)=>{const cols=colsOf(it),hint=!LG.edit&&lastItem(it.ex)?itemTxt(lastItem(it.ex)):"";
     const gc=`28px repeat(${cols.length},minmax(0,1fr)) 36px`;
-    return `<div class="lg-ex" data-i="${i}"><div class="lg-exh"><span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${hint?`<p class="small">Förra gången: ${esc(hint.replace(it.n+" ",""))}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
+    const grip=LG.items.length>1;return `<div class="lg-ex" data-i="${i}"><div class="lg-exh${grip?" has-grip":""}">${grip?dndGrip(it.n):""}<span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${nz(it.sec)?`<p class="small">Tid ${fmt(it.sec)}</p>`:""}${hint?`<p class="small">Förra gången: ${esc(hint.replace(it.n+" ",""))}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
       <div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}${c[0]==="kg"&&it.ex==="farm"?" per hand":""}</span>`).join("")}<span></span></div>
       ${it.sets.map((s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];const val=nz(v)?(c[0]==="t"?fmt(v):c[0]==="kg"?fmtKg(v):v):"";
         return `<input type="text" enterkeyhint="next" data-i="${i}" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${val}" aria-label="${c[1]}, set ${j+1}">`}).join("")}
@@ -4025,7 +4055,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
   r.innerHTML=`<div><span class="small">${esc(LG.kicker)}</span><h2>${LG.edit?"Ändra pass":LG.forLive?"Bygg ditt pass":LG.fromLive?"Spara passet":"Logga pass"}</h2></div>
    ${LG.draft?`<div class="lg-draft"><span>Du fortsätter där du slutade.</span><button type="button" class="linkbtn" data-fresh>Börja om</button></div>`:""}
    <section class="lg-sec"><div class="lg-h"><h3>Övningar</h3>${LG.items.length?`<span class="small">${LG.items.length}</span>`:""}</div>
-     ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Du kan ändra allt under passet.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
+     ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Dra i raderna för att ändra ordningen.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
        ${(set.tpls||[]).length?`<div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button></div>`).join("")}</div>`:""}
        <div class="chips">${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
      <button type="button" class="pill ghost block" id="lg-open">+ Lägg till övning</button></section>
@@ -4036,7 +4066,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
    <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
-     ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Starta nu</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button><button type="button" class="linkbtn" id="lg-share" style="justify-self:center">Dela passet</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
+     ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Kör passet</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button><button type="button" class="linkbtn" id="lg-share" style="justify-self:center">Dela passet</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
      ${LG.edit?`<button type="button" class="pill ghost block" id="lg-del"${LG.delArm?' style="color:var(--bad)"':""}>${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}</div>`;
 }
 function renderCustom(r){const c=LG.cx||(LG.cx={n:"",m:null,k:"rw"});
@@ -4131,7 +4161,7 @@ function lgInput(e){const t=e.target;
 }
 function lgChange(e){if(e.target.id==="lg-date"&&e.target.value){LG.date=e.target.value>today()?today():e.target.value;renderLG()}}
 async function saveLG(btn){if(btn.disabled)return;
-  const items=LG.items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,sets:(i.sets||[]).map(s=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(s[f]))o[f]=Math.round(+s[f]*10)/10});return o}).filter(s=>Object.keys(s).length)}));
+  const items=LG.items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,...(nz(i.sec)?{sec:Math.round(+i.sec)}:{}),sets:(i.sets||[]).map(s=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(s[f]))o[f]=Math.round(+s[f]*10)/10});return o}).filter(s=>Object.keys(s).length)}));
   const f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
@@ -4145,89 +4175,180 @@ async function saveLG(btn){if(btn.disabled)return;
   try{if(typeof onLogged==="function")onLogged(entry)}catch(x){}
   try{checkPRs(entry.items)}catch(x){}
 }
+/* ============ Dra för att ändra ordning ============ */
+/* Fungerar med finger, mus och piltangenter. Bara rader med handtag går att dra, och ordningen ändras först när raden släpps. */
+const dndGrip=n=>`<button type="button" class="dnd-grip" aria-label="Flytta ${esc(n)}. Använd pil upp och pil ned."><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 8h14M5 12h14M5 16h14"/></svg></button>`;
+function dragSort(o){const root=o.root;let S=null;
+  const list=()=>[...root.querySelectorAll(o.item)].filter(el=>el.querySelector(".dnd-grip"));
+  const place=()=>{const c=S.sc,top=S.y+c.scrollTop-S.grab,f=S.from,me=S.slots[f];
+    S.el.style.transform=`translate3d(0,${top-me.top}px,0) scale(1.02)`;
+    const mid=top+me.h/2;let to=f;
+    S.slots.forEach((x,j)=>{const m=x.top+x.h/2;if(j<f&&mid<m&&j<to)to=j;if(j>f&&mid>m&&j>to)to=j});
+    if(to!==S.to){S.to=to;HAPTIC("light");const step=me.h+S.gap;
+      S.els.forEach((el,j)=>{if(j===f)return;el.style.transform=j>f&&j<=to?`translate3d(0,${-step}px,0)`:j<f&&j>=to?`translate3d(0,${step}px,0)`:""})}};
+  const loop=()=>{if(!S||!S.on)return;const c=S.sc,r=c.getBoundingClientRect(),zone=70;let v=0;
+    if(S.y<r.top+zone)v=-Math.min(14,(r.top+zone-S.y)/5);else if(S.y>r.bottom-zone)v=Math.min(14,(S.y-r.bottom+zone)/5);
+    if(v){const b=c.scrollTop;c.scrollTop+=v;if(c.scrollTop!==b)place()}S.raf=requestAnimationFrame(loop)};
+  const activate=()=>{if(!S||S.on)return;S.on=true;clearTimeout(S.timer);
+    if(document.activeElement&&document.activeElement.matches("input,textarea"))document.activeElement.blur();
+    const c=S.sc,old=S.els.map(el=>el.getBoundingClientRect().top),oldMe=old[S.from];
+    if(o.still)root.classList.add(o.still);if(o.collapse)root.classList.add(o.collapse);
+    let now=S.el.getBoundingClientRect().top;c.scrollTop+=now-oldMe;
+    const tops=S.els.map(el=>el.getBoundingClientRect());
+    S.slots=tops.map(x=>({top:x.top+c.scrollTop,h:x.height}));
+    S.gap=S.els.length>1?Math.max(0,S.slots[1].top-S.slots[0].top-S.slots[0].h):0;
+    now=tops[S.from].top;S.grab=Math.min(S.y-oldMe,tops[S.from].height/2);if(S.grab<0)S.grab=tops[S.from].height/2;
+    S.els.forEach((el,j)=>{if(j===S.from)return;const d=old[j]-tops[j].top;if(d&&!RM())el.animate([{transform:`translateY(${d}px)`},{transform:"none"}],{duration:240,easing:"cubic-bezier(.2,.8,.2,1)"});el.classList.add("dnd-move")});
+    S.el.classList.add("dnd-lift");document.body.classList.add("dnd-on");HAPTIC("medium");place();S.raf=requestAnimationFrame(loop)};
+  const finish=cancel=>{const X=S;if(!X)return;S=null;clearTimeout(X.timer);cancelAnimationFrame(X.raf);
+    try{X.h.releasePointerCapture(X.id)}catch(e){}
+    window.removeEventListener("pointermove",onMove);window.removeEventListener("pointerup",onUp);window.removeEventListener("pointercancel",onCancel);
+    if(!X.on)return;document.body.classList.remove("dnd-on");
+    const to=cancel?X.from:X.to,me=X.slots[X.from],end=to>X.from?X.slots[to].top+X.slots[to].h-me.h:X.slots[to].top;
+    X.el.classList.remove("dnd-lift");X.el.classList.add("dnd-settle");X.el.style.transform=`translate3d(0,${end-me.top}px,0)`;
+    if(cancel)X.els.forEach((el,j)=>{if(j!==X.from)el.style.transform=""});
+    setTimeout(()=>{const order=X.els.slice();order.splice(to,0,order.splice(X.from,1)[0]);
+      const oldT=order.map(el=>el.getBoundingClientRect().top);
+      X.els.forEach(el=>{el.classList.remove("dnd-move","dnd-settle");el.style.transform=""});
+      if(o.collapse)root.classList.remove(o.collapse);
+      if(to!==X.from){o.drop(+X.els[X.from].dataset.i,+X.els[to].dataset.i);HAPTIC("light")}
+      const fresh=list(),anchor=fresh[to];if(!anchor||RM())return;
+      X.sc.scrollTop+=anchor.getBoundingClientRect().top-oldT[to];
+      fresh.forEach((el,j)=>{const d=oldT[j]-el.getBoundingClientRect().top;if(d)el.animate([{transform:`translateY(${d}px)`},{transform:"none"}],{duration:280,easing:"cubic-bezier(.2,.8,.2,1)"});
+        if(o.unfold)el.querySelectorAll(o.unfold).forEach(u=>{u.classList.add("lg-unfold")})})},RM()?0:230)};
+  function onMove(e){if(!S||e.pointerId!==S.id)return;S.y=e.clientY;if(!S.on&&Math.abs(e.clientY-S.y0)>3)activate();if(S.on)place()}
+  function onUp(e){if(S&&e.pointerId===S.id)finish(false)}
+  function onCancel(e){if(S&&e.pointerId===S.id)finish(true)}
+  root.addEventListener("pointerdown",e=>{const h=e.target.closest(".dnd-grip");if(!h||S||e.button)return;const el=h.closest(o.item),els=list();if(!el||els.length<2||!els.includes(el))return;
+    e.preventDefault();S={h,el,els,id:e.pointerId,from:els.indexOf(el),to:els.indexOf(el),y:e.clientY,y0:e.clientY,sc:o.scroller(h),on:false};
+    try{h.setPointerCapture(e.pointerId)}catch(x){}
+    window.addEventListener("pointermove",onMove);window.addEventListener("pointerup",onUp);window.addEventListener("pointercancel",onCancel);
+    S.timer=setTimeout(activate,140)});
+  /* iOS får inte börja skrolla medan raden dras */
+  root.addEventListener("touchmove",e=>{if(S)e.preventDefault()},{passive:false});
+  root.addEventListener("keydown",e=>{if((e.key!=="ArrowUp"&&e.key!=="ArrowDown")||!e.target.matches(".dnd-grip"))return;const els=list(),i=els.indexOf(e.target.closest(o.item)),j=i+(e.key==="ArrowUp"?-1:1);
+    e.preventDefault();if(i<0||!els[j])return;o.drop(+els[i].dataset.i,+els[j].dataset.i);HAPTIC("light");const g=list()[j];if(g)g.querySelector(".dnd-grip").focus()})}
 /* ============ Träning i realtid ============ */
-/* Allt sparas i webbläsaren efter varje ändring och tiden räknas från tidsstämplar, så passet överlever att appen stängs eller att nätet försvinner. */
-let LIVE=null,LIVETICK=null,LIVEARM=null;
-try{const l=JSON.parse(localStorage.getItem("varv-live")||"null");if(l&&l.lg&&l.startedAt)LIVE=l}catch(e){}
+/* Allt sparas i webbläsaren efter varje ändring och tiden räknas från tidsstämplar, så passet överlever att appen stängs eller att nätet försvinner.
+   Passets klocka står still under paus. Övningens tid är skillnaden mot passets klocka när övningen började (exAt). */
+let LIVE=null,LIVETICK=null,LVPREV={},LVIN=false,LVUNDO=null;
+try{const l=JSON.parse(localStorage.getItem("varv-live")||"null");if(l&&l.lg&&(l.startedAt||l.ready))LIVE=l}catch(e){}
 function saveLive(){try{LIVE?localStorage.setItem("varv-live",JSON.stringify(LIVE)):localStorage.removeItem("varv-live")}catch(e){}}
-const liveElapsed=()=>{if(!LIVE)return 0;const end=LIVE.pausedAt||Date.now();return Math.max(0,Math.round((end-LIVE.startedAt-(LIVE.pausedMs||0))/1000))};
+const liveElapsed=()=>{if(!LIVE||LIVE.ready||!LIVE.startedAt)return 0;const end=LIVE.pausedAt||Date.now();return Math.max(0,Math.round((end-LIVE.startedAt-(LIVE.pausedMs||0))/1000))};
+/* Ett pass som startades i den tidigare versionen fortsätter på första övningen som inte är klar */
+if(LIVE&&!LIVE.ready&&LIVE.cur==null){const its=LIVE.lg.items||[];let c=its.findIndex(i=>(i.sets||[]).some(x=>!x.done));if(c<0)c=Math.max(0,its.length-1);LIVE.cur=c;LIVE.exAt=liveElapsed();saveLive()}
 function liveWake(){keepAwake()}
 function liveRelease(){if(!(RACE&&!RACE.end))releaseWake()}
 function startLive(){if(!LG||!LG.items.length){toast("Lägg till minst en övning.");return}
   const lg=JSON.parse(JSON.stringify(Object.assign({},LG,{view:"main",pick:[],q:"",forLive:false,draft:false,live:true})));
-  LIVE={startedAt:Date.now(),pausedMs:0,pausedAt:null,rest:null,open:true,lg};LG.saved=true;dropDraft();saveLive();closeSheet();HAPTIC("success");liveWake();renderLive();liveTickStart();try{renderGo()}catch(e){}}
-function liveTickStart(){clearInterval(LIVETICK);if(LIVE)LIVETICK=setInterval(liveTick,500);liveTick()}
+  LIVE={ready:true,startedAt:null,pausedMs:0,pausedAt:null,cur:0,exAt:0,open:true,lg};LG.saved=true;dropDraft();saveLive();closeSheet();HAPTIC("success");liveWake();renderLive();liveTickStart();try{renderGo()}catch(e){}}
+function liveBegin(){LIVE.ready=false;LIVE.startedAt=Date.now();LIVE.pausedMs=0;LIVE.pausedAt=null;LIVE.cur=0;LIVE.exAt=0;LVIN=true;LVUNDO=null;saveLive();HAPTIC("medium");liveWake();renderLive();liveTickStart()}
+function liveTickStart(){clearInterval(LIVETICK);if(LIVE)LIVETICK=setInterval(liveTick,250);liveTick()}
+function lastSec(id){const l=sortedLogs().find(x=>(x.items||[]).some(i=>i.ex===id&&nz(i.sec)));return l?+l.items.find(i=>i.ex===id&&nz(i.sec)).sec:null}
+/* Målet för övningen. Tiden visas bara när tiden är själva målet, annars står den redan i klockan. */
+const lvGoal=it=>{const c=it.k==="t"?it:Object.assign({},it,{sets:(it.sets||[]).map(x=>{const y=Object.assign({},x);delete y.t;return y})}),t=itemTxt(c);return t===it.n?"":t.slice(it.n.length+1)};
+const lvEx=()=>Math.max(0,liveElapsed()-(LIVE.exAt||0));
+const lvDelta=d=>{d=Math.round(d);return d?`<span class="${d<0?"lv-good":"lv-bad"}">${fmtD(d)}</span>`:`<span>±0:00</span>`};
+const lvItems=()=>LIVE.lg.items;
+const lvDone=()=>lvItems().filter((it,i)=>i<LIVE.cur&&nz(it.sec));
+function lvAvg(){const d=lvDone();return d.length?d.reduce((a,i)=>a+ +i.sec,0)/d.length:null}
+/* Hur man ligger till: summan av skillnaderna mot förra gången, för övningar som har en tid att jämföra med */
+function lvVsLast(){const d=lvDone().filter(i=>LVPREV[i.ex]!=null);return d.length?d.reduce((a,i)=>a+ +i.sec-LVPREV[i.ex],0):null}
+/* Tid kvar: förra gångens tid om den finns, annars snittet hittills */
+function lvLeft(start){const its=lvItems(),avg=lvAvg();let sum=0;
+  for(let i=start;i<its.length;i++){const e=LVPREV[its[i].ex]!=null?LVPREV[its[i].ex]:avg;if(e==null)return null;sum+=i===LIVE.cur&&!LIVE.ready?Math.max(0,e-lvEx()):e}
+  return sum}
 function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
-  const t=fmt(liveElapsed()),a=$("#lv-time"),b=$("#lv-bar-time");if(a)a.textContent=t;if(b)b.textContent=t;
-  document.querySelectorAll("[data-run]").forEach(el=>{el.textContent=fmt(Math.max(0,(Date.now()-+el.dataset.run)/1000))});
-  const r=LIVE.rest,rb=$("#lv-rest");if(rb){if(r){const left=Math.ceil((r.until-Date.now())/1000);rb.hidden=false;
-      $("#lv-rest-t").textContent=left>0?fmt(left):"Dags";rb.classList.toggle("over",left<=0);
-      if(left<=0&&!r.rang){r.rang=true;saveLive();HAPTIC("success");if(set.cues&&set.cues.sound!==false){beep(880,180);beep(880,180,.25)}}
-      if(left<-30){LIVE.rest=null;saveLive();rb.hidden=true}}
-    else rb.hidden=true}}
-function liveColsOf(it){return colsOf(it)}
-function liveVal(f,v){return nz(v)?(f==="t"?fmt(v):f==="kg"?fmtKg(v):v):""}
+  const tot=fmt(liveElapsed()),a=$("#lv-total"),b=$("#lv-bar-time");if(a)a.textContent=tot;if(b)b.textContent=LIVE.ready?"":tot;
+  if(LIVE.ready||!LIVE.open)return;
+  const ex=lvEx(),t=$("#lv-time");if(t)t.textContent=fmt(ex);
+  const it=lvItems()[LIVE.cur],p=it?LVPREV[it.ex]:null,c=$("#lv-cmp");
+  if(c){const h=p==null?"":`Förra gången ${fmt(p)}${ex>p?` · ${lvDelta(ex-p)}`:""}`;if(c.dataset.h!==h){c.dataset.h=h;c.innerHTML=h}}
+  const k=$("#lv-kvar");if(k){const l=lvLeft(LIVE.cur);k.textContent=l==null?"–":fmt(l)}}
+function lvRows(){const cur=LIVE.ready?-1:LIVE.cur,its=lvItems();
+  return its.map((it,i)=>{const d=i<cur,now=i===cur,can=!d&&!now,g=lvGoal(it);
+    return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?"✓":i+1}</span>`}<div><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</div>${d?`<b>${nz(it.sec)?fmt(it.sec):"–"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
+function renderReady(v){const L=LIVE.lg,n=L.items.length,left=(()=>{let s=0;for(const it of L.items){if(LVPREV[it.ex]==null)return null;s+=LVPREV[it.ex]}return s})();
+  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-back">‹ Ändra passet</button><span></span><span></span></div>
+    <div class="lv-ready" id="lv-scroll"><div><span class="small">${esc(L.tplName||L.type||"Ditt pass")}</span><h2>Redo.</h2><p class="muted" style="margin:8px 0 0">${n} ${n===1?"övning":"övningar"}${left?` · ungefär ${Math.max(1,Math.round(left/60))} min`:""}. Klockan startar när du trycker på Starta.</p></div>
+      ${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}<div class="lv-rows">${lvRows()}</div></div>
+    <div class="lv-foot"><button type="button" class="pill block lv-big" id="lv-go"${n?"":" disabled"}>Starta</button></div>`}
 function renderLive(){let v=$("#live"),bar=$("#lv-bar");
   if(!LIVE){if(v)v.hidden=true;if(bar)bar.hidden=true;document.body.classList.remove("live-on");return}
   bar.hidden=LIVE.open;v.hidden=!LIVE.open;document.body.classList.toggle("live-on",!!LIVE.open);
-  $("#lv-bar-name").textContent=LIVE.pausedAt?"Passet är pausat":"Pass pågår";
-  if(!LIVE.open)return;
-  const L=LIVE.lg,done=L.items.reduce((a,i)=>a+i.sets.filter(s=>s.done).length,0),all=L.items.reduce((a,i)=>a+i.sets.length,0);
-  const list=L.items.map((it,i)=>{const cols=liveColsOf(it),gc=`24px repeat(${cols.length},minmax(0,1fr)) 62px`,hasT=cols.some(c=>c[0]==="t");
-    return `<div class="lv-ex"><div class="lv-exh"><h3>${esc(it.n)}</h3><button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">${LIVEARM==="x"+i?"Ta bort?":"✕"}</button></div>
-     <div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}</span>`).join("")}<span></span></div>
-     ${it.sets.map((s,j)=>{const running=!!s.runAt;const act=running?`<button type="button" class="lv-act run" data-lstop="${i}:${j}" aria-label="Stoppa tiden för set ${j+1}"><span data-run="${s.runAt}">0:00</span></button>`
-        :hasT&&!nz(s.t)&&!s.done?`<button type="button" class="lv-act" data-lrun="${i}:${j}" aria-label="Starta tiden för set ${j+1}">Starta</button>`
-        :`<button type="button" class="lv-act chk${s.done?" on":""}" data-ldone="${i}:${j}" aria-pressed="${!!s.done}" aria-label="Set ${j+1} klart">✓</button>`;
-       return `<div class="lv-set${s.done?" done":""}" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>`<input type="text" enterkeyhint="done" data-li="${i}" data-lj="${j}" data-lf="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${liveVal(c[0],s[c[0]])}" aria-label="${c[1]}, set ${j+1}">`).join("")}${act}</div>`}).join("")}
-     <div class="lv-setbtns"><button type="button" class="linkbtn" data-ladd="${i}">+ Lägg till set</button>${it.sets.length>1&&!it.sets[it.sets.length-1].done?`<button type="button" class="linkbtn lv-muted" data-lsub="${i}">Ta bort sista setet</button>`:""}</div></div>`}).join("");
-  /* Listan ritas om när ett set bockas av. Läget i listan sparas så att man stannar där man är. */
-  const lvOld=v.querySelector(".lv-list"),lvTop=lvOld?lvOld.scrollTop:0;
-  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="small">${done} av ${all} set</span><button type="button" class="linkbtn" id="lv-pause">${LIVE.pausedAt?"Fortsätt":"Pausa"}</button></div>
-    <div class="lv-clock"><b id="lv-time">${fmt(liveElapsed())}</b><div class="progress lv-prog"><i style="width:${all?Math.round(done/all*100):0}%"></i></div></div>
-    <div class="lv-list">${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}${list}<button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>
-      <button type="button" class="linkbtn lv-cancel" id="lv-cancel">${LIVEARM==="cancel"?"Tryck igen för att slänga passet":"Avbryt passet"}</button></div>
-    <div class="lv-foot"><div class="lv-rest" id="lv-rest" hidden><span>Vila</span><b id="lv-rest-t"></b><button type="button" data-lrest="-15" aria-label="15 sekunder kortare">−15</button><button type="button" data-lrest="15" aria-label="15 sekunder längre">+15</button><button type="button" data-lrest="0">Hoppa över</button></div>
-      <button type="button" class="pill block" id="lv-end">Avsluta passet</button></div>`;
-  if(lvTop){const nl=v.querySelector(".lv-list");if(nl)nl.scrollTop=lvTop}
-  liveTick()}
-function liveRest(){const sec=+set.restSec||90;LIVE.rest={until:Date.now()+sec*1000,dur:sec}}
+  $("#lv-bar-name").textContent=LIVE.ready?"Passet är redo":LIVE.pausedAt?"Passet är pausat":"Pass pågår";
+  LVPREV={};lvItems().forEach(it=>{LVPREV[it.ex]=lastSec(it.ex)});
+  if(!LIVE.open){liveTick();return}
+  if(LIVE.ready){renderReady(v);return}
+  const its=lvItems();if(LIVE.cur>=its.length)LIVE.cur=Math.max(0,its.length-1);
+  const it=its[LIVE.cur],nx=its[LIVE.cur+1],pv=its[LIVE.cur-1],paused=!!LIVE.pausedAt,g=it?lvGoal(it):"",vs=lvVsLast(),avg=lvAvg();
+  const pd=pv&&nz(pv.sec)&&LVPREV[pv.ex]!=null?+pv.sec-LVPREV[pv.ex]:null;
+  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="lv-count">Övning ${LIVE.cur+1} av ${its.length}</span><button type="button" class="linkbtn" id="lv-all">Alla</button></div>
+    <div class="lv-steps" aria-hidden="true">${its.map((_,i)=>`<i class="${i<LIVE.cur?"done":i===LIVE.cur?"now":""}"></i>`).join("")}</div>
+    <div class="lv-main${paused?" lv-paused":""}">
+      <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2>${g?`<p class="lv-goal">${esc(g)}</p>`:""}
+        <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p></div>
+      <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>Snitt per övning</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar, ungefär</small><b id="lv-kvar">–</b></div>`}</div>
+      ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${nz(pv.sec)?fmt(pv.sec):"–"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
+      <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b><span class="chev" aria-hidden="true">›</span></button></div>
+    <div class="lv-foot">${paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
+      :`<button type="button" class="pill block lv-big" id="lv-next">${nx?"Nästa övning":"Klar med passet"}</button><div class="grid2"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-stop">Avbryt passet</button></div>`}</div>`;
+  LVIN=false;liveTick()}
+/* Stämplar tiden på övningen. Med ett enda set och en tidskolumn blir tiden också setets tid, så att rekord räknas som vanligt. */
+function lvStamp(it){const sec=Math.max(1,lvEx());it.sec=sec;it.sets.forEach(x=>{x.done=true});
+  if(it.sets.length===1&&colsOf(it).some(c=>c[0]==="t")){it.prevT=nz(it.sets[0].t)?it.sets[0].t:null;it.sets[0].t=sec}}
+function lvUnstamp(it){const sec=+it.sec;delete it.sec;it.sets.forEach(x=>{delete x.done});
+  if("prevT" in it){it.sets[0].t=it.prevT;delete it.prevT}return sec}
+function liveNext(){const its=lvItems(),it=its[LIVE.cur];if(!it)return;lvStamp(it);
+  if(LIVE.cur>=its.length-1){HAPTIC("success");saveLive();liveFinish();return}
+  LIVE.cur++;LIVE.exAt=liveElapsed();LVIN=true;LVUNDO=LIVE.cur;saveLive();HAPTIC("success");renderLive()}
+function liveUndo(){if(!LIVE.cur)return;LIVE.cur--;const sec=lvUnstamp(lvItems()[LIVE.cur]);LIVE.exAt=liveElapsed()-sec;LVUNDO=null;saveLive();HAPTIC("light");renderLive()}
+function livePause(){if(LIVE.pausedAt){LIVE.pausedMs=(LIVE.pausedMs||0)+Date.now()-LIVE.pausedAt;LIVE.pausedAt=null}else LIVE.pausedAt=Date.now();HAPTIC("light");saveLive();renderLive()}
+function lvMove(a,b){const its=lvItems();its.splice(b,0,its.splice(a,1)[0]);saveLive()}
+function lvRemove(i){lvItems().splice(i,1);saveLive();if(LIVE.ready&&!lvItems().length){liveBackToBuild();return}renderLive();lvAllDraw()}
+function liveBackToBuild(){const L=LIVE.lg;clearLive();LG=Object.assign(L,{live:false,forLive:true,saved:false,view:"main",still:false});openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
+function lvAllDraw(){const r=$("#lv-allrows");if(r)r.innerHTML=lvRows()}
+function openLvAll(){const any=LIVE.cur>0||lvEx()>=10;
+  openSheet(`<div id="lv-allw" style="display:grid;gap:14px"><div><span class="small">${fmt(liveElapsed())} hittills</span><h2>Alla övningar</h2><p class="small">Dra i kommande övningar för att ändra ordningen, till exempel om en maskin är upptagen.</p></div>
+    <div class="lv-rows" id="lv-allrows">${lvRows()}</div>
+    <button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>${any?`<button type="button" class="pill ghost block" id="lv-save">Avsluta och spara</button>`:""}</div>`,()=>{
+    const w=$("#lv-allw");
+    dragSort({root:w,item:".lv-ri",scroller:()=>$("#sheet"),drop:(a,b)=>{lvMove(a,b);lvAllDraw();renderLive()}});
+    w.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;
+      if(b.dataset.lrm!==undefined){lvRemove(+b.dataset.lrm);return}
+      if(b.id==="lv-add"){LG=LIVE.lg;LG.live=true;LG.view="pick";LG.pick=[];LG.q="";openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
+      if(b.id==="lv-save"){closeSheet();lvSaveEarly()}})})}
+/* Avslutar i förtid. Övningen som pågår räknas om den har pågått en stund. */
+function lvSaveEarly(){const it=lvItems()[LIVE.cur];if(it&&lvEx()>=10)lvStamp(it);saveLive();liveFinish()}
+function openLvStop(){const can=LIVE.cur>0||lvEx()>=10;let arm=false;
+  openSheet(`<div><span class="small">${fmt(liveElapsed())} hittills</span><h2>Avbryta passet?</h2>${can?`<p class="small">Spara det du har hunnit, eller släng passet.</p>`:""}</div>
+    ${can?`<button type="button" class="pill block" id="st-save">Spara det du hann</button>`:""}<button type="button" class="pill ghost block" id="st-back">Fortsätt passet</button><button type="button" class="linkbtn" id="st-drop" style="justify-self:center;color:var(--bad);min-height:44px">Släng passet</button>`,()=>{
+    if(can)$("#st-save").onclick=()=>{closeSheet();lvSaveEarly()};
+    $("#st-back").onclick=closeSheet;
+    $("#st-drop").onclick=e=>{if(!arm){arm=true;e.target.textContent="Tryck igen för att slänga passet";return}closeSheet();clearLive();toast("Passet är slängt.")}})}
 function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
-  L.items.forEach(it=>it.sets.forEach(s=>{if(s.runAt){const t=Math.round((Date.now()-s.runAt)/1000);if(t>0)s.t=t;s.done=true}delete s.runAt}));
   const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0;
   if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
-  L.items.forEach(i=>i.sets.forEach(x=>delete x.done));
+  L.items.forEach(i=>{delete i.prevT;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
   const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
-  LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom alla set inte bockades av"):dropped?`${dropped} set som inte bockades av är borttagna`:"Passet är klart",view:"main",forLive:false,draft:false});
+  LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du inte hann med är borttagna`:"Passet är klart",view:"main",forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
-function clearLive(){LIVE=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
+function clearLive(){LIVE=null;LVUNDO=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
 function bindLive(){const v=$("#live");
-  v.addEventListener("input",e=>{const t=e.target;if(!t.dataset.lf)return;const it=LIVE.lg.items[+t.dataset.li],j=+t.dataset.lj,x=it.sets[j],f=t.dataset.lf,val=t.value.trim(),prev=nz(x[f])?+x[f]:null;
-    x[f]=!val?null:f==="t"?parseT(val):parseFloat(val.replace(",","."));if(!nz(x[f]))x[f]=null;
-    if(f!=="t")for(let k=j+1;k<it.sets.length;k++){const o=it.sets[k];if(o.done||(nz(o[f])?+o[f]:null)!==prev)break;o[f]=x[f];
-      const inp=v.querySelector(`input[data-li="${t.dataset.li}"][data-lj="${k}"][data-lf="${f}"]`);if(inp)inp.value=liveVal(f,x[f])}
-    saveLive()});
-  v.addEventListener("focusout",e=>{const t=e.target;if(t.dataset.lf==="t"){const x=LIVE&&LIVE.lg.items[+t.dataset.li].sets[+t.dataset.lj];if(x){t.value=liveVal("t",x.t);
-      const need=x&&nz(x.t)&&!x.done&&!x.runAt;if(need)renderLiveSoon()}}});
-  v.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.matches("input"))e.target.blur()});
-  v.addEventListener("focusin",e=>{const t=e.target;if(t.matches("input"))setTimeout(()=>{try{t.select()}catch(x){}},0)});
-  v.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;const d=b.dataset,items=LIVE.lg.items;const armKeep=b.id==="lv-cancel"||d.lrm!==undefined;const prevArm=LIVEARM;if(!armKeep)LIVEARM=null;
+  dragSort({root:v,item:".lv-ri",scroller:()=>$("#lv-scroll"),drop:(a,b)=>{lvMove(a,b);renderLive()}});
+  v.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;const d=b.dataset;
+    if(b.id==="lv-go"){liveBegin();return}
+    if(b.id==="lv-back"){liveBackToBuild();return}
     if(b.id==="lv-min"){LIVE.open=false;saveLive();renderLive();return}
-    if(b.id==="lv-pause"){if(LIVE.pausedAt){LIVE.pausedMs=(LIVE.pausedMs||0)+Date.now()-LIVE.pausedAt;LIVE.pausedAt=null}else LIVE.pausedAt=Date.now();saveLive();renderLive();return}
-    if(b.id==="lv-end"){liveFinish();return}
-    if(b.id==="lv-cancel"){if(prevArm!=="cancel"){LIVEARM="cancel";renderLive();return}LIVEARM=null;clearLive();toast("Passet är slängt.");return}
-    if(b.id==="lv-add"){LG=LIVE.lg;LG.live=true;LG.view="pick";LG.pick=[];LG.q="";openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
-    if(d.lrest!==undefined){const n=+d.lrest;if(!LIVE.rest)return;if(!n)LIVE.rest=null;else{LIVE.rest.until+=n*1000;LIVE.rest.rang=false;set.restSec=Math.max(15,Math.min(600,(+set.restSec||90)+n));saveSet()}saveLive();liveTick();return}
-    if(d.lrun){const [i,j]=d.lrun.split(":").map(Number);items[i].sets[j].runAt=Date.now();LIVE.rest=null;saveLive();HAPTIC("light");renderLive();return}
-    if(d.lstop){const [i,j]=d.lstop.split(":").map(Number),x=items[i].sets[j];x.t=Math.max(1,Math.round((Date.now()-x.runAt)/1000));delete x.runAt;x.done=true;liveRest();saveLive();HAPTIC("success");renderLive();return}
-    if(d.ldone){const [i,j]=d.ldone.split(":").map(Number),x=items[i].sets[j];x.done=!x.done;if(x.done){liveRest();HAPTIC("success")}saveLive();renderLive();return}
-    if(d.ladd!==undefined){const it=items[+d.ladd],p=it.sets[it.sets.length-1]||{},n=Object.assign({},p);delete n.done;delete n.runAt;if(LGCOLS[it.k].some(c=>c[0]==="t"))n.t=null;it.sets.push(n);saveLive();renderLive();return}
-    if(d.lsub!==undefined){items[+d.lsub].sets.pop();saveLive();renderLive();return}
-    if(d.lrm!==undefined){const i=+d.lrm,has=items[i].sets.some(x=>x.done);if(has&&prevArm!=="x"+i){LIVEARM="x"+i;renderLive();return}LIVEARM=null;items.splice(i,1);saveLive();renderLive();return}
+    if(b.id==="lv-next"){liveNext();return}
+    if(b.id==="lv-undo"){liveUndo();return}
+    if(b.id==="lv-pause"){livePause();return}
+    if(b.id==="lv-stop"){openLvStop();return}
+    if(b.id==="lv-all"||b.id==="lv-nextcard"){openLvAll();return}
+    if(d.lrm!==undefined){lvRemove(+d.lrm);return}
   });
   $("#lv-bar").onclick=()=>{if(LIVE){LIVE.open=true;saveLive();renderLive();liveWake()}};
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LIVE&&LIVE.open){wake=null;liveWake();liveTick()}})}
-let LVSOON=null;function renderLiveSoon(){clearTimeout(LVSOON);LVSOON=setTimeout(()=>{if(LIVE&&LIVE.open&&!document.activeElement.matches("#live input"))renderLive()},120)}
 /* Rekord räknas om när ett pass ändras eller tas bort */
 function bestFromLogs(k){let best=null;
   LOGS.forEach(l=>(l.items||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&p.k===k&&(best==null||p.t<best))best=p.t})));return best}
@@ -4274,7 +4395,7 @@ function renderLog(){
   let lastWk="";const wkSum={};list.forEach(l=>{const k=weekStart(l.date);wkSum[k]=wkSum[k]||{n:0,m:0};wkSum[k].n++;wkSum[k].m+=+l.min||0});
   $("#hist").innerHTML=list.length?list.slice(0,HN).map(l=>{const d=new Date(l.date+"T12:00:00"),wk=weekStart(l.date),cw=weekStart(today());
     let head="";if(wk!==lastWk){lastWk=wk;const w=wkSum[wk];head=`<div class="hist-wk"><b>${wk===cw?"Den här veckan":"Vecka "+getWeek(wk)}</b><span>${w.n} pass · ${w.m} min</span></div>`}
-    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(itemTxt).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Tryck Nytt pass ovan för att komma igång.</div>`;
+    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(x=>itemTxt(x)+(nz(x.sec)&&!colsOf(x).some(c=>c[0]==="t")?` (${fmt(x.sec)})`:"")).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Tryck Nytt pass ovan för att komma igång.</div>`;
   {let mb=$("#hist-more");if(!mb){mb=document.createElement("button");mb.id="hist-more";mb.className="pill ghost block";mb.style.marginTop="10px";$("#hist").after(mb);mb.onclick=()=>{HN+=20;renderLog()}}mb.hidden=list.length<=HN;mb.textContent=`Visa fler pass (${list.length-HN} till)`}
   renderProgress();try{renderExList()}catch(e){}
 }

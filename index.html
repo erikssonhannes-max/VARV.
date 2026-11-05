@@ -5281,10 +5281,12 @@ function renderEvents(){
 }
 /* På iPhone öppnas loppet direkt i Kalender via en länk, i stället för att en fil skapas. Svarar inte länken används filen som reserv. */
 async function evCalOpen(e){const base=(window.VARV_SUPABASE&&window.VARV_SUPABASE.url)||"";if(!isIOS()||!base)return false;
-  const u=base+"/functions/v1/varv-cal?"+new URLSearchParams({ev:"1",c:e.c||"",v:e.v||"",s:e.s,e:e.e||e.s});
+  const u=base+"/functions/v1/varv-cal?"+new URLSearchParams({ev:"1",c:e.c||"",n:e.n||"",v:e.v||"",s:e.s,e:e.e||e.s,r:evRange(e),k:divText(),u:e.url||"https://hyrox.com",vm:e.vm?"1":""});
   try{const r=await fetch(u);if(!r.ok||!/text\/calendar/.test(r.headers.get("content-type")||""))return false;location.href=u;return true}catch(x){return false}}
 function evIcs(e){const st=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",nx=evD(e.e);nx.setDate(nx.getDate()+1);
-  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VARV//SV","BEGIN:VEVENT",`UID:ev-${e.c.replace(/\W/g,"")}-${e.s}@varv`,`DTSTAMP:${st}`,`DTSTART;VALUE=DATE:${e.s.replace(/-/g,"")}`,`DTEND;VALUE=DATE:${iso(nx).replace(/-/g,"")}`,`SUMMARY:HYROX ${e.c}`,`LOCATION:${(e.v?e.v+"\\, ":"")+e.c}`,"END:VEVENT","END:VCALENDAR"].join("\r\n")}
+  const x=v=>String(v).replace(/([\\;,])/g,"\\$1").replace(/\n/g,"\\n"),fold=v=>v.match(/.{1,60}/g).map((p,i)=>(i?" ":"")+p).join("\r\n"),u=e.url||"https://hyrox.com",t=`HYROX ${e.vm?"Världsmästerskap ":""}${e.c}`;
+  const about=[t+(e.n?`, ${e.n}`:""),e.v?`Plats: ${e.v}`:"",`Datum: ${evRange(e)}`,`Din klass: ${divText()}`,`Anmälan: ${u}`,"Tillagt från VARV."].filter(Boolean).join("\n");
+  return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VARV//SV","BEGIN:VEVENT",`UID:ev-${e.c.replace(/\W/g,"")}-${e.s}@varv`,`DTSTAMP:${st}`,`DTSTART;VALUE=DATE:${e.s.replace(/-/g,"")}`,`DTEND;VALUE=DATE:${iso(nx).replace(/-/g,"")}`,fold(`SUMMARY:${x(t)}`),fold(`LOCATION:${x([e.v,e.c,e.n].filter(Boolean).join(", "))}`),fold(`DESCRIPTION:${x(about)}`),fold(`URL:${u}`),"TRANSP:TRANSPARENT","END:VEVENT","END:VCALENDAR"].join("\r\n")}
 function openEvent(i){const e=EVENTS[i];if(!e)return;const me=myEvent()===e,live=evLive(e),d=evIn(e);
   const days=[];for(let x=evD(e.s);iso(x)<=e.e;x.setDate(x.getDate()+1)){const s=iso(x);if(s>=today())days.push(s)}
   const pick=me?set.date:days[0];

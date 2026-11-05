@@ -2722,6 +2722,8 @@ async function initSupabase(){
     const u=session&&session.user;
     /* inga andra Supabase-anrop direkt i lyssnaren, därav setTimeout */
     setTimeout(()=>{
+      /* Extra skydd utöver inställningen i Supabase: en obekräftad e-post släpps aldrig in. */
+      if(u&&!u.email_confirmed_at&&!u.confirmed_at){SB.auth.signOut();toast("Bekräfta din e-post först. Kolla inkorgen.");return}
       if(ev==="PASSWORD_RECOVERY")openNewPassword();
       if(u&&GATE_ON){hideGate();closeSheet()}
       if(u&&(!SBUSER||SBUSER.id!==u.id))sbStart(u);

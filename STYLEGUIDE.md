@@ -61,6 +61,23 @@ En familj: systemtypsnittet, som blir SF Pro på Apple-enheter. Rubriker har neg
 
 Vid mobilbredd skalas `hero` och `large-title` ned med `clamp()`, aldrig under 34px.
 
+I koden finns skalan som variabler. Använd alltid dessa och skriv aldrig egna storlekar:
+
+| Variabel | Storlek | Används till |
+| --- | --- | --- |
+| `--t-micro` | 11px | Korta versala etiketter på små ytor, som medaljer och kort |
+| `--t-cap` | 13px | Fotnoter, etiketter, `eyebrow` |
+| `--t-sub` | 15px | Beskrivningar, länkar, listrader i kort |
+| `--t-body` | 17px | Brödtext, knappar, fält |
+| `--t-lead` | 19px | Ingress och siffror i små rutor |
+| `--t-head` | 22px | Sektionsrubriker och korttitlar |
+| `--t-num`, `--t-num-l` | 28px, 35px | Siffror i rutor |
+| `--t-num-xl` | 42–54px | Huvudsiffran på ett kort |
+| `--t-sheet` | 28–32px | Rubrik i ark och i genomgången |
+| `--t-title` | 34–51px | Sidans titel |
+
+Bara klockor och nedräkningar får vara större än skalan.
+
 ## Avstånd och former
 
 | Token | Värde | Används till |

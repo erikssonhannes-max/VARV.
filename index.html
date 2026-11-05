@@ -1699,7 +1699,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <p class="small" style="margin-bottom:16px">Mediantider från en analys av omkring 700 000 resultat. Klockan går hela tiden, även i Roxzone där du byter mellan löpning och station.</p>
     <button class="divchip" data-open="division" style="margin-bottom:14px"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
     <div class="group" id="course"></div>
-    <p class="small" style="margin-top:10px">Vikter enligt HYROX:s regelböcker för singel och doubles, säsong 25/26. Slädens egen vikt ingår.</p>
+    <p class="small" style="margin-top:10px">Vikter enligt HYROX:s regelböcker för singel och doubles, säsong 26/27. Slädens egen vikt ingår.</p>
 
     <div class="sechead"><h2>Klasser</h2></div>
     <div class="group">
@@ -1713,9 +1713,9 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <div class="group">
       <a class="row" href="https://hyrox.com/rulebook/" target="_blank" rel="noopener"><div class="badge">§</div><div><h3>HYROX regelböcker</h3><p>De officiella reglerna för singel, doubles och relay.</p></div><span class="chev">↗</span></a>
       <div class="row"><div class="badge">2 min</div><div><h3>Fel båge i Roxzone</h3><p>In via IN, ut via UT. Fel båge ger 2 minuters tillägg varje gång.</p></div><span></span></div>
-      <div class="row"><div class="badge">3 min</div><div><h3>Missad slädsträcka</h3><p>Varje 12,5 m-sträcka som saknas ger 3 minuters tillägg.</p></div><span></span></div>
+      <div class="row"><div class="badge">3 min</div><div><h3>Missad slädsträcka</h3><p>Varje 12,5 m-sträcka som saknas ger 3 minuters tillägg i singel. I doubles blir det diskvalificering.</p></div><span></span></div>
       <div class="row"><div class="badge">2 min</div><div><h3>Egen kalk</h3><p>Kalk finns bara vid Sled Pull och Farmers Carry. Annan kalk ger tillägg.</p></div><span></span></div>
-      <div class="row"><div class="badge">1 min</div><div><h3>Doubles springer ihop</h3><p>Högst 5 sekunder isär. Varje gång ger 1 minuts tillägg.</p></div><span></span></div>
+      <div class="row"><div class="badge">1 min</div><div><h3>Doubles springer ihop</h3><p>Högst 10 sekunder isär. Varje gång ger 1 minuts tillägg, och fler än tre gånger gör att laget inte rankas.</p></div><span></span></div>
     </div>
   </div>
 </section>
@@ -1936,6 +1936,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <button type="button" class="pf-facts" id="pf-facts" aria-label="Ändra dina uppgifter"></button>
     <div class="group pf-more-rows">
       <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
+      <button class="row" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l.9-5.4A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm till oss.</p></div><span class="chev">›</span></button>
       <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls.</p></div><span class="chev">›</span></button>
       <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/></svg></span><div><h3>Gör om starttestet</h3><p>Uppdatera planen efter din form.</p></div><span class="chev">›</span></button>
     </div>
@@ -2066,51 +2067,51 @@ const S=[
  {id:"ski",n:"SkiErg",q:"1000 m",share:.055,
   tech:["Fäll i höften och låt bål och ben göra jobbet, armarna följer med.","Dra handtagen ned förbi höfterna och res dig lugnt igen.","Håll ett jämnt tempo. Första stationen frestar till en för hård start."],
   miss:["Dra bara med armarna.","Gå ut för hårt och få syra innan släden."],
-  rule:"Displayen måste visa 1000 m innan du får lämna.", dbl:"Ni byter på maskinen. Den som vilar står i markerat område och får inte justera handtag eller dämpare åt den andra.",
+  rule:"Displayen måste visa 1000 m innan du får lämna. Fötterna ska stå på plattan och får inte nudda golvet. Hopp är tillåtna om du landar på plattan. Dämparen står på 6 och får ändras.", dbl:"Ni byter på maskinen. Den som vilar står i markerat område och får inte justera handtag eller dämpare åt den andra.",
   drill:["4–6 × 250 m, 1 min vila","10 min jämnt i tänkt tävlingstempo","Raka marklyft och latsdrag"]},
  {id:"push",n:"Sled Push",q:"50 m",share:.045,
   tech:["Låg position med lutad överkropp och raka eller lätt böjda armar.","Korta, snabba steg och tryck från fotbladet.","Håll farten. Att få igång släden igen kostar mest kraft."],
   miss:["Stå för upprätt.","Ta långa steg och tappa greppet mot mattan."],
-  rule:"Hela släden måste passera 12,5 m-linjen innan du vänder. Varje sträcka som saknas ger 3 minuters tillägg.", dbl:"Den som vilar går direkt bakom släden utan att hindra andra.",
+  rule:"Hela släden måste passera 12,5 m-linjen innan du vänder, och du ska vara vänd i färdriktningen. En sträcka som saknas ger 3 minuters tillägg i singel och diskvalificering i doubles.", dbl:"Den som vilar går direkt bakom släden utan att hindra andra.",
   drill:["Tunga slädpush 4–6 × 12,5 m","Knäböj och bulgarska utfall","Saknas släde: backsprinter med viktväst"]},
  {id:"pull",n:"Sled Pull",q:"50 m",share:.06,
   tech:["Luta bakåt och använd kroppsvikten.","Dra hand över hand och gå bakåt i ditt område för att få med benen.","Lägg repet ordnat bakom dig så att det inte trasslar."],
   miss:["Dra bara med armarna och tappa greppet.","Stå upprätt utan att använda kroppsvikten."],
-  rule:"Du står kvar i ditt område bakom linjen medan du drar. Kalk finns på stationen.", dbl:"Partnern får stå bakom och coacha men inte röra repet eller kliva på linjerna.",
+  rule:"Du står upp hela tiden och stannar i ditt område, utan att kliva på linjerna medan du håller i repet. En sträcka som saknas ger 3 minuters tillägg i singel och diskvalificering i doubles. Kalk finns på stationen.", dbl:"Partnern får stå bakom och coacha men inte röra repet eller kliva på linjerna.",
   drill:["Repdrag eller slädpull 4 × 12,5 m","Hantelrodd och face pulls","Hängningar i stång för greppet"]},
  {id:"bbj",n:"Burpee Broad Jumps",q:"80 m",share:.065,
   tech:["Bröst och höft i golvet, sedan upp och hoppa framåt med båda fötterna.","Landa mjukt med fötterna ihop.","Hitta en rytm du kan hålla hela vägen, maxa inte hoppen."],
   miss:["För långa hopp som tömmer benen inför löpningen.","Händerna för långt fram vid nedgången."],
-  rule:"Hopp och landning görs med båda fötterna samtidigt. Händerna placeras nära fötterna.", dbl:"Den som vilar går bakom den som hoppar. Byt ofta, korta pass sparar benen.",
+  rule:"Bröstet ska i golvet i varje burpee och händerna får vara högst 30 cm framför tårna. Hoppa och landa med båda fötterna, högst 5 cm förskjutna, utan extra steg. Landar en fot på mållinjen krävs en till. Fel ger 15 sekunder efter en varning.", dbl:"Den som vilar går bakom den som hoppar. Byt ofta, korta pass sparar benen.",
   drill:["5 × 10 burpee broad jumps","EMOM 10 min: 6 st","Plankan och hoppsquats"]},
  {id:"row",n:"Rowing",q:"1000 m",share:.055,
   tech:["Ordning i draget: ben, kropp, armar. Tillbaka: armar, kropp, ben.","Ungefär 26–30 tag per minut med kraft i varje tag.","Här kan du ta ned pulsen lite utan att tappa mycket tid."],
   miss:["Dra med armarna innan benen sträckts.","För hög tagfrekvens med svaga tag."],
-  rule:"Displayen måste visa 1000 m.", dbl:"Byt på maskinen. Fotremmar och dämpare får inte ställas in åt den andra.",
+  rule:"Displayen måste visa 1000 m, och du sitter kvar tills domaren har bekräftat. Dämparen står på 6 och fotplattan på 4. Båda får ändras.", dbl:"Byt på maskinen. Fotremmar och dämpare får inte ställas in åt den andra.",
   drill:["4 × 500 m, 90 s vila","2000 m med fokus på teknik","Marklyft och skivstångsrodd"]},
  {id:"farm",n:"Farmers Carry",q:"200 m",share:.025,
   tech:["Axlarna ned och bålen spänd.","Korta, snabba steg. Lätt jogg om greppet håller.","Måste du ställa ned, gör det kontrollerat och kort."],
   miss:["Långa steg som får klockorna att svänga.","Vila för länge när greppet tröttnar."],
-  rule:"Kettlebellen bärs, den får inte rullas eller släppas. Kalk finns på stationen.", dbl:"Den som vilar går bakom. Dela gärna sträckan i 50 m-bitar.",
+  rule:"Bär båda kettlebells med raka armar vid sidorna. Du får ställa ned dem för att vila om de inte flyttas framåt. Ställ tillbaka dem i rutan med handtagen upp, annars 30 sekunders tillägg. Kalk finns på stationen.", dbl:"Den som vilar går direkt bakom. Kettlebells lämnas över åt sidan eller bakåt, aldrig framåt. Dela gärna sträckan i 50 m-bitar.",
   drill:["4 × 50 m tung bärning","Marklyft och shrugs","Hängningar 3 × max"]},
  {id:"lunge",n:"Sandbag Lunges",q:"100 m",share:.055,
   tech:["Bakre knät nuddar golvet varje steg.","Sträck ut höften helt mellan stegen.","Jämn takt. Andas i samma rytm som stegen."],
-  miss:["Knät når inte golvet, då underkänns steget.","För korta steg som tar längre tid totalt."],
-  rule:"Säcken bärs på axlarna, och bakre knät ska i golvet i varje steg.", dbl:"Den som vilar går bakom. Lämna över säcken kontrollerat.",
+  miss:["Knät når inte golvet, vilket ger 15 sekunders tillägg.","För korta steg som tar längre tid totalt."],
+  rule:"Säcken bärs på axlarna och får inte vila på golvet, avspärrningar eller fötterna. Bakre knät ska i golvet i varje steg och du ska resa dig helt. Varje fel ger 15 sekunder.", dbl:"Den som vilar går direkt bakom. Säcken lämnas över åt sidan eller bakåt, aldrig framåt.",
   drill:["Gående utfall 4 × 25 m med säck","Bulgarska utfall 3 × 10 per ben","Knäböj för benstyrka"]},
  {id:"wall",n:"Wall Balls",q:"100 st",share:.06,
   tech:["Höften ned under knähöjd i varje knäböj.","Kasta med benens kraft och fånga bollen in i nästa knäböj.","Dela upp i set innan du är slut, till exempel 25-20-20-15-10-10."],
   miss:["Kast som inte träffar målet räknas inte.","För långa vilopauser mellan seten."],
-  rule:"Bollen måste träffa målet och knäböjen gå djupt nog för att repetitionen ska räknas.", dbl:"Den som vilar står i markerat område under riggen. Byt genom att låta bollen studsa i golvet eller räcka över den. Kastade byten räknas inte.",
+  rule:"Börja stående. Höften ska under knäna och bollen träffa målet, annars räknas inte repetitionen. Det finns inga varningar. Varje repetition som saknas ger 15 sekunder i singel, och under 80 ger diskvalificering. I doubles krävs alla 100.", dbl:"Den som vilar står i markerat område under riggen. Byt genom att låta bollen studsa i golvet eller räcka över den. Kastade byten räknas inte.",
   drill:["EMOM 10 min: 15 wall balls","5 × 20 med 30 s vila","Frontböj och thrusters"]}
 ];
 const RUNM=[.93,1,1.02,1,1,1.01,1.02,1.02], RUNSHARE=.50, ROXSHARE=.08;
 const PACK=[["Löparskor med bra grepp","Banan är inomhus, ofta på matta eller betong"],["Tävlingskläder","Testa dem på ett hårt pass först"],["Varma kläder till uppvärmningen",""],["Handskar till slädarna","Valfritt, prova i träning"],["Vattenflaska",""],["Snabb energi före start","Banan, gel eller sportdryck"],["Biljett och legitimation",""],["Ombyte och handduk",""],["Mat till efteråt","Kolhydrater och protein"],["Kolla din starttid","Kom minst en timme innan"]];
 const CLS={
- "cls-singel":{h:"Singel",p:"Du gör hela loppet själv: 8 km löpning och alla åtta stationer.",l:["<b>Open:</b> den vanligaste klassen och rätt start för de flesta.","<b>Pro:</b> tyngre slädar, kettlebells, säck och boll. Begränsad till vissa åldersgrupper.","Åldersgrupp utgår från din ålder på tävlingsdagen."]},
- "cls-doubles":{h:"Doubles",p:"Två personer i samma lag. Finns för dam, herr, Pro dam och Pro herr.",l:["<b>Spring tillsammans:</b> båda springer alla 8 km, högst 5 sekunder isär. Varje gång ni glider isär kostar 1 minut, och efter fyra gånger diskas laget.","<b>En åt gången:</b> på stationerna jobbar en medan den andra vilar intill. Ni bestämmer själva hur ni delar upp arbetet.","<b>In och ut ihop:</b> ni går in på stationen tillsammans och lämnar den tillsammans när allt är klart.","<b>Vikter:</b> samma som singel i respektive klass.","<b>Åldersgrupp:</b> snittet av era åldrar. 24 och 38 år blir 31, alltså 30–34."]},
+ "cls-singel":{h:"Singel",p:"Du gör hela loppet själv: 8 km löpning och alla åtta stationer.",l:["<b>Open:</b> den vanligaste klassen och rätt start för de flesta.","<b>Pro:</b> tyngre slädar, kettlebells, säck och boll. Från 60 år går VM-kvalet bara via Open.","Åldersgrupp utgår från din ålder på tävlingsdagen."]},
+ "cls-doubles":{h:"Doubles",p:"Två personer i samma lag. Finns för dam, herr, Pro dam och Pro herr.",l:["<b>Spring tillsammans:</b> båda springer alla 8 km, högst 10 sekunder isär. Varje gång ni glider isär kostar 1 minut, och fler än tre gånger gör att laget inte rankas.","<b>En åt gången:</b> på stationerna jobbar en medan den andra vilar intill. Ni bestämmer själva hur ni delar upp arbetet.","<b>In och ut ihop:</b> ni går in på stationen tillsammans och lämnar den tillsammans när allt är klart.","<b>Vikter:</b> samma som singel i respektive klass.","<b>Åldersgrupp:</b> snittet av era åldrar. 24 och 38 år blir 31, alltså 30–34."]},
  "cls-mixed":{h:"Mixed Doubles",p:"En kvinna och en man i samma lag. Finns bara i Open.",l:["<b>Vikter:</b> båda använder herrarnas Open-vikter, till exempel 152 kg sled push och 2 × 24 kg farmers carry.","<b>Wall balls:</b> båda kastar 6 kg. Kvinnan kastar mot målet på 2,7 m och mannen mot 3 m.","<b>Samma regler som doubles:</b> ni springer ihop, delar stationerna och jobbar en i taget.","<b>Tips:</b> låt den starkare ta en större del av slädarna och fördela wall balls och burpees jämnare. Använd arbetsfördelningen i Plan."]},
- "cls-relay":{h:"Relay",p:"Lag om fyra. Varje person springer två km och gör två stationer.",l:["Laget växlar efter varannan station.","Finns för dam, herr och mixed.","Bra sätt att prova Hyrox för första gången tillsammans med vänner."]}
+ "cls-relay":{h:"Relay",p:"Lag om fyra. Varje person springer två km och gör två stationer.",l:["Ni bestämmer själva vem som tar vilka sträckor och stationer. En person är igång åt gången, och alla fyra går i mål tillsammans.","Finns för dam, herr och mixed.","Bra sätt att prova Hyrox för första gången tillsammans med vänner."]}
 };
 
 /* ============ Inställningar ============ */
@@ -3316,6 +3317,7 @@ async function uploadAvatar(file){
     MYPROF.avatar_url=pub;MEINFO=Object.assign({},MEINFO||{},{avatarUrl:pub});renderAvatar();renderProfile();closeSheet();toast("Ny profilbild sparad");HAPTIC("success");
   }catch(e){toast("Kunde inte läsa bilden. Prova en JPG eller PNG.")}
 }
+$("#pf-feedback").onclick=()=>openFeedback();
 $("#pf-av-file").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];e.target.value="";uploadAvatar(f)});
 /* Tryck på bilden för att se den större. Kameran byter bild, och utan bild öppnas väljaren direkt. */
 $("#pf-av").addEventListener("click",e=>{const img=$("#pf-av img");if(img&&!e.target.closest(".pf-cam")){openViewer(img.src,"Profilbild");return}if(MYPROF)$("#pf-av-file").click()});
@@ -3780,7 +3782,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
     if(!pr)return `<button type="button" class="so-stt" data-st="${i}"><span>${esc(x.n)}</span><b class="none">–</b><div class="so-bul" aria-hidden="true"><u style="left:66.7%"></u></div><small>Snittet ${fmt(o)}</small></button>`;
     const d=pr-o,f=Math.min(100,pr/(o*1.5)*100);
     return `<button type="button" class="so-stt" data-st="${i}" aria-label="${esc(x.n)}: ${fmt(pr)}, ${hxSigned(d)} mot snittet"><span>${esc(x.n)}</span><b>${fmt(pr)}</b><div class="so-bul" aria-hidden="true"><i class="${d>0?"slow":""}" style="width:${f}%"></i><u style="left:66.7%"></u></div><small class="${Math.abs(d)<1?"":d<0?"good":"bad"}">${hxSigned(d)} mot snittet</small></button>`}).join("")+`</div>
-   <p class="small so-note">Strecket visar snittet i Open ${cls}. Dina tider är dina rekord och lopp.</p>`;
+   <p class="small so-note">Strecket visar snittet i Open ${cls}. Snittet är ungefärligt och varierar mellan lopp. Dina tider är dina rekord och lopp.</p>`;
   el.innerHTML=h;soBindSel(el);
   el.querySelectorAll("[data-solg]").forEach(b=>b.onclick=()=>{setLgView(b.dataset.solg);window.scrollTo({top:0,behavior:"smooth"})});
   if(!el._ro&&window.ResizeObserver){let last=el.clientWidth;el._ro=new ResizeObserver(()=>{const cw=el.clientWidth;if(cw&&Math.abs(cw-last)>8){last=cw;renderOverview()}});el._ro.observe(el)}}
@@ -4594,9 +4596,9 @@ function dayMsg(h,n){
 /* Uppskattad sluttid i dag. Löpningen från senaste loppet, 1 km-testet eller snittempot. Stationerna från dina rekord,
    lite långsammare än i ett eget pass eftersom man är trött i loppet. Saknas ett rekord används snittet i Open. */
 const HX_FATIGUE=1.06;
-/* Klassen ändrar stationstiden, löpningen är densamma. Doubles och Mixed: räknat från mediantiderna i omkring 700 000 resultat,
+/* Klassen ändrar stationstiden, löpningen är densamma. Doubles och Mixed: stationstiderna i MatchRox medianer för 676 000 lag jämfört med singelns,
    med löpning och Roxzone oförändrade. Pro: uppskattning av samma person med Pro-vikterna, eftersom medianen i Pro är lägre bara för att snabbare atleter väljer den. */
-const HX_TEAM={m:.68,w:.8,mixed:.76},HX_PRO={push:1.2,pull:1.25,farm:1.1,lunge:1.15,wall:1.15};
+const HX_TEAM={m:.71,w:.77,mixed:.76},HX_PRO={push:1.2,pull:1.25,farm:1.1,lunge:1.15,wall:1.15};
 function hxFactor(id,c){if(!c||c.f==="singel"&&c.k!=="pro")return 1;return (c.f==="mixed"?HX_TEAM.mixed:c.f==="doubles"?HX_TEAM[c.g==="w"?"w":"m"]:1)*(c.k==="pro"&&c.f!=="mixed"?HX_PRO[id]||1:1)}
 function hxClsOf(key){if(key==="mixed")return {f:"mixed",k:"open"};const a=String(key||"").split("-");return a.length===3?{k:a[0],g:a[1],f:a[2]}:null}
 function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+set.test.km)||0,rsum=RUNM.reduce((a,b)=>a+b,0);
@@ -4971,7 +4973,7 @@ $("#c-go").onclick=async()=>{
   const out=$("#c-out");out.hidden=false;out.textContent="Tänker…";$("#c-go").disabled=true;
   const t=planTimes(),st=weekStats();
   const ctx=`Du är en erfaren Hyrox-coach. Svara på svenska, kort och konkret (högst 180 ord), med punktlista om det passar. Ge inga medicinska diagnoser; vid smärta som inte går över, råd personen att kontakta vårdpersonal.
-Fakta: Hyrox = 8 × 1 km löpning, varje följd av en station: SkiErg 1000 m, Sled Push 50 m, Sled Pull 50 m, Burpee Broad Jumps 80 m, Rodd 1000 m, Farmers Carry 200 m, Sandbag Lunges 100 m, Wall Balls 100 st. I doubles springer partnerna ihop (högst 5 s isär) och jobbar en i taget på stationerna. Mixed doubles använder herrarnas Open-vikter, wall ball 6 kg för båda, mål 2,7 m för kvinnan och 3 m för mannen.
+Fakta: Hyrox = 8 × 1 km löpning, varje följd av en station: SkiErg 1000 m, Sled Push 50 m, Sled Pull 50 m, Burpee Broad Jumps 80 m, Rodd 1000 m, Farmers Carry 200 m, Sandbag Lunges 100 m, Wall Balls 100 st. I doubles springer partnerna ihop (högst 10 s isär) och jobbar en i taget på stationerna. Mixed doubles använder herrarnas Open-vikter, wall ball 6 kg för båda, mål 2,7 m för kvinnan och 3 m för mannen.
 Användaren: ${divText()}, måltid ${fmtHM(set.target)}, snittempo ${fmt(t.pace)}/km, ${daysLeft()} dagar till loppet, ${set.per} pass/vecka, ${st.now.n} pass loggade denna vecka.
 Max puls: ${hrmax()||"okänd"}. Starttest: ${set.test?`1 km ${fmt(set.test.km)}${set.test.ski?", SkiErg "+fmt(set.test.ski):""}${set.test.wb?", 50 wall balls "+fmt(set.test.wb):""}`:"inte gjort"}.
 Planens anpassning just nu: ${ADAPT?ADAPT.mode+". "+ADAPT.note:"ingen"}.
@@ -5393,6 +5395,19 @@ function renderFacts(){const el=$("#pf-facts");if(!el)return;
   const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["1 km-test",set.test&&set.test.km?fmt(set.test.km):null],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];
   const miss=f.filter(x=>!x[1]).length;
   el.innerHTML=`<span class="pf-fgrid">${f.map(([l,v,u])=>`<span><small>${l}</small><b${v?"":' class="none"'}>${v?esc(String(v))+(u?`<i> ${u}</i>`:""):"–"}</b></span>`).join("")}</span>${miss?`<span class="pf-fnote">${miss===1?"En uppgift saknas":`${miss} uppgifter saknas`}. Fyll i dem för en träffsäkrare plan.</span>`:""}`}
+/* Tyck till: meddelandet skrivs här och skickas från användarens egen e-post */
+const FB_MAIL="info@varvtraining.com";
+function openFeedback(){let kind="Förslag";
+  openSheet(`<div><span class="small">Din åsikt gör VARV. bättre</span><h2>Tyck till</h2><p class="muted" style="margin:6px 0 0">Vad saknar du? Vad borde funka bättre? Vi läser allt.</p></div>
+   <div class="seg" id="fb-kind" role="group" aria-label="Typ av meddelande">${["Förslag","Något är fel","Beröm"].map(k=>`<button type="button" data-k="${k}" aria-pressed="${k===kind}">${k}</button>`).join("")}</div>
+   <div class="field"><label for="fb-text">Ditt meddelande</label><textarea id="fb-text" rows="5" maxlength="1500" placeholder="Skriv här"></textarea></div>
+   <p class="small au-msg bad" id="fb-msg" role="status" aria-live="polite"></p>
+   <button type="button" class="pill block" id="fb-send">Öppna i e-post</button>
+   <p class="small" style="text-align:center">Du granskar och skickar från din egen e-post, till <a href="mailto:${FB_MAIL}" style="color:var(--link)">${FB_MAIL}</a>.</p>`,()=>{
+    $("#fb-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(!b)return;kind=b.dataset.k;$$("#fb-kind button").forEach(x=>x.setAttribute("aria-pressed",x===b))};
+    $("#fb-text").oninput=()=>{$("#fb-msg").textContent=""};
+    $("#fb-send").onclick=()=>{const t=$("#fb-text").value.trim();if(!t){$("#fb-msg").textContent="Skriv ett meddelande först.";$("#fb-text").focus();return}
+      location.href=`mailto:${FB_MAIL}?subject=${encodeURIComponent("VARV.: "+kind)}&body=${encodeURIComponent(t)}`;closeSheet();HAPTIC("success");toast("Din e-post öppnas.")}})}
 function openPfAbout(){openSheet(`<div><span class="small">Profil</span><h2>Om mig</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider. Allt utom namnet går att ändra.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
 $("#pf-about-edit").onclick=openPfAbout;$("#pf-facts").onclick=openPfAbout;
 $("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};

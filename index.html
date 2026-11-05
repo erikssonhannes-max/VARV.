@@ -577,6 +577,8 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 /* Profiler och vänner */
 .pf-av{position:relative}
 .pf-av.edit{cursor:pointer}
+#pf-av img,.pp-card .pf-av img,.pp-av img{cursor:zoom-in}
+.pf-cam::after{content:"";position:absolute;inset:-8px;border-radius:50%}
 .pf-cam{position:absolute;right:2px;bottom:2px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;border:3px solid var(--bg)}
 .pf-cam svg{width:15px;height:15px}
 .pf-wrapav{position:relative;display:inline-block}
@@ -3320,7 +3322,9 @@ async function uploadAvatar(file){
   }catch(e){toast("Kunde inte läsa bilden. Prova en JPG eller PNG.")}
 }
 $("#pf-av-file").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];e.target.value="";uploadAvatar(f)});
-$("#pf-av").addEventListener("click",()=>{if(MYPROF)$("#pf-av-file").click()});
+/* Tryck på bilden för att se den större. Kameran byter bild, och utan bild öppnas väljaren direkt. */
+$("#pf-av").addEventListener("click",e=>{const img=$("#pf-av img");if(img&&!e.target.closest(".pf-cam")){openViewer(img.src,"Profilbild");return}if(MYPROF)$("#pf-av-file").click()});
+document.addEventListener("click",e=>{const img=e.target.closest&&e.target.closest(".pp-card .pf-av img,.pp-av img");if(img)openViewer(img.src,"Profilbild")});
 
 /* ============ Vän via länk och QR-kod ============ */
 const FRIEND_URL=p=>`https://varvtraining.com/?van=${encodeURIComponent(p.username+"-"+p.tag)}`;

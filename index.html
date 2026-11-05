@@ -2272,7 +2272,9 @@ function makeZip(files){
 function saveErr(err){const c=err&&err.code;if(c==="declined")return;
   toast(c==="rate_limited"?"Vänta en stund och försök igen":c==="rejected_extension"||c==="extension_not_enabled"?"Den filtypen går inte att spara här":c==="too_large"?"Filen blev för stor":"Filen kunde inte sparas här. Försök i en annan webbläsare.")}
 
-function refreshDivision(){$$(".divtxt").forEach(e=>e.textContent=divText());renderCourse();$("#dbl-wrap").hidden=set.fmt==="singel";renderDoubles()}
+function refreshDivision(){$$(".divtxt").forEach(e=>e.textContent=divText());renderCourse();$("#dbl-wrap").hidden=set.fmt==="singel";renderDoubles();
+  /* Racetiden och atletkortet följer klassen */
+  try{renderHyroxHome();const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload(),true);syncProfile();renderLog()}catch(e){}}
 
 document.addEventListener("click",e=>{
   const o=e.target.closest("[data-open]");if(!o)return;const k=o.dataset.open;
@@ -3057,7 +3059,7 @@ function personCard(o){const t=TIERS[o.tier],ring=t?`--m1:${t.m[0]};--m2:${t.m[1
 function personCardGo(c){const tr=document.querySelector("#pp-body .pf-track");if(tr)pfTrack(c&&TIERS[c.tier]&&c.tf!=null?c.tf:null,true,tr)}
 /* Hyrox på atletkortet: klass, bästa tid och nästa lopp. Samma rad på ditt kort som på det andra ser. */
 function cardHx(c,mine){if(!c)return "";const it=[],when=x=>{const d=Math.round((evD(x)-evD(today()))/864e5);return d===0?"I dag":[d,d===1?"dag":"dagar"]};
-  if(c.cls)it.push(["Klass",c.cls.f==="Singel"?c.cls.k:c.cls.f==="Doubles"?"Doubles":"Mixed",[c.cls.f==="Singel"?c.cls.g:c.cls.k,c.cls.f==="Singel"?"Singel":c.cls.f==="Doubles"?c.cls.g:""].filter(Boolean).join(" · ")]);
+  if(c.cls)it.push(["Klass",c.cls.f==="Singel"?c.cls.k:c.cls.f==="Doubles"?"Doubles":"Mixed",[c.cls.f==="Singel"?c.cls.g:c.cls.k,c.cls.f==="Singel"?"Singel":c.cls.f==="Doubles"?c.cls.g:""].filter(Boolean).join(" · "),mine?'data-open="division" aria-label="Ändra klass"':""]);
   if(c.races&&c.races.best)it.push(["Bästa tid",fmt(c.races.best),c.races.n?`${c.races.n} ${c.races.n===1?"lopp":"lopp"}`:""]);
   if(c.next&&isDay(c.next.d)&&c.next.d>=today())it.push(["Nästa lopp",when(c.next.d),c.next.c||"",c.next.c?`data-card-ev="${esc(c.next.c+"|"+c.next.d)}"`:""]);
   const sm=c.sim&&typeof c.sim==="object"&&isDay(c.sim.d)&&c.sim.d>=today()&&typeof c.sim.i==="string"?c.sim:null;
@@ -3649,7 +3651,7 @@ function renderLoad(){const el=$("#load");if(!el)return;const ws=weekStart(today
   el.innerHTML=`<div class="sechead"><h2>Belastning</h2><span class="small">Minuter × känsla</span></div><div class="card"><div class="facts3"><div><small>Den här veckan</small><b>${Math.round(wk[0])}</b></div><div><small>Snitt, 4 veckor</small><b>${Math.round(avg)}</b></div><div><small>Skillnad</small><b>${r==null?"–":(r>=1?"+":"−")+Math.abs(Math.round((r-1)*100))+" %"}</b></div></div><p class="small">${txt}</p></div>`}
 /* ============ Statistik: översikt ============ */
 /* Beräknad sluttid (samma uträkning som Hem), sparad en gång per vecka så att kurvan kan visa utvecklingen. */
-function soSnap(e){if(!e||e.none)return;const k=weekStart(today()),v=Math.round(e.T),h=set.estHist&&typeof set.estHist==="object"?set.estHist:{};
+function soSnap(e){if(!e||e.none)return;const k=weekStart(today()),v=Math.round(e.base),h=set.estHist&&typeof set.estHist==="object"?set.estHist:{};
   if(h[k]===v)return;h[k]=v;const ks=Object.keys(h).sort();ks.slice(0,Math.max(0,ks.length-52)).forEach(x=>delete h[x]);set.estHist=h;saveSet()}
 function soChart(pts,goal,W){const H=120,ys=pts.map(p=>p.v).concat(goal),lo=Math.min(...ys)-45,hi=Math.max(...ys)+45,
   y=v=>+(8+(v-lo)/(hi-lo)*(H-16)).toFixed(1),x=i=>+(pts.length<2?W:i*(W-8)/(pts.length-1)).toFixed(1);
@@ -3670,13 +3672,13 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
     <div class="so-row"><span class="so-big none">–</span></div>
     <p class="so-sub">Gör starttestet eller fyll i ditt snittempo under Profil, så räknar VARV. ut din sluttid och följer den vecka för vecka.</p>
     <a class="pill ghost block" href="#profil" style="margin-top:14px;background:var(--card)">Fyll i ditt tempo</a></section>`}
-  else{const T=Math.round(e.T),d=T-goal,hist=Object.entries(set.estHist||{}).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12).map(([k,v])=>({k,v:+v})).filter(p=>p.v>0);
+  else{const T=Math.round(e.T),d=T-goal,hist=Object.entries(set.estHist||{}).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12).map(([k,v])=>({k,v:Math.round(+v*e.T/e.base)})).filter(p=>p.v>0);
     if(!hist.length||hist[hist.length-1].k!==weekStart(td))hist.push({k:weekStart(td),v:T});hist[hist.length-1].v=T;
     const first=hist[0],ch=T-first.v,cw=el.clientWidth||$("#v-logg .wrap").clientWidth||358,W=Math.max(240,Math.round(cw-36));
     const dTxt=!goal?"":Math.abs(d)<30?"Precis på målet":d<0?`${hxSigned(d)} under målet`:`${hxSigned(d)} från målet`;
     const chTxt=hist.length<2?"Kurvan ritas när du har tränat två veckor med VARV.":Math.abs(ch)<5?`Samma som vecka ${getWeek(first.k)}.`:ch<0?`${fmt(-ch)} snabbare än vecka ${getWeek(first.k)}.`:`${fmt(ch)} långsammare än vecka ${getWeek(first.k)}.`;
     const tot=Math.max(1,e.runs+e.sta+e.rox),pc=v=>Math.round(v/tot*1000)/10,pace=e.runs/8;
-    h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid${set.fmt&&set.fmt!=="singel"?" · som singel":""}</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
+    h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid · ${esc(divText())}</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
      <div class="so-row"><span class="so-big">${fmt(T)}</span>${dTxt?`<span class="so-d ${Math.abs(d)<30?"":d<0?"good":"bad"}">${dTxt}</span>`:""}</div>
      <p class="so-sub">${chTxt}</p>
      ${hist.length>=2&&goal?`<div class="so-chart">${soChart(hist,goal,W)}<div class="so-ax"><span>v. ${getWeek(first.k)} · ${fmt(first.v)}</span><span>Nu</span></div></div>`:""}
@@ -3918,24 +3920,30 @@ function staleStations(){const seen={};sortedLogs().slice().reverse().forEach(l=
   return EX.filter(x=>x.st).sort((a,b)=>(seen[a.id]||"").localeCompare(seen[b.id]||""))}
 function sugItem(id,count,val){const x=EX.find(e=>e.id===id),ny=(set.level||"mellan")==="ny",l=lastItem(id),o=l&&l.sets.filter(y=>nz(y.kg)).pop(),std=exStd(id);
   const k=o?o.kg:std&&std.kg?(ny?Math.round(std.kg*.7/5)*5||std.kg:std.kg):null,one=Object.assign({},val);if(x.w&&k)one.kg=k;return {ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:Array.from({length:Math.max(1,count)},()=>Object.assign({},one))}}
+/* Ett moment per rad, i den ordning de körs, så att passet går att följa steg för steg med tidtagning på varje moment.
+   Loppets mängder och vikter följer klassen, oavsett vad du lyfte senast. */
+function raceItem(id){const x=EX.find(e=>e.id===id);return {ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:[Object.assign({},exStd(id))]}}
+function runStep(nr,m){return Object.assign(sugItem("run",1,{m:m||1000}),{n:"Löpning "+nr})}
+function raceSteps(ids){const out=[];ids.forEach((id,i)=>{out.push(runStep(i+1),raceItem(id))});return out}
+function roundSteps(rounds,make){const out=[];for(let r=0;r<rounds;r++)out.push(...make(r+1));return out}
 /* Färdiga pass, skrivna för VARV. */
 const PRESETS=[
  /* Hyrox: loppspecifikt */
- {id:"hela",bm:1,n:"Hela banan",c:"hyrox",lv:"Hårt",m:80,t:"Racesimulering",w:"Generalrepetition av loppet",y:"Du får testa tempo, byten och energi över hela distansen innan det gäller.",h:"1 km löpning före varje station, i den ordning de kommer i loppet. Kör den tre till sex veckor före loppet, inte oftare än varannan vecka.",it:()=>[sugItem("run",8,{m:1000})].concat(EX.filter(x=>x.st).map(x=>sugItem(x.id,1,exStd(x.id))))},
- {id:"halva",bm:1,n:"Halva banan",c:"hyrox",lv:"Hårt",m:45,t:"Racesimulering",w:"Första halvan av loppet",y:"Lär dig hålla igen på de första stationerna så att du har kvar kraft till slutet.",h:"1 km löpning före var och en av de fyra första stationerna, i tävlingstempo.",it:()=>[sugItem("run",4,{m:1000})].concat(["ski","push","pull","bbj"].map(i=>sugItem(i,1,exStd(i))))},
- {id:"tunga",bm:1,n:"Tunga ben",c:"hyrox",lv:"Hårt",m:40,t:"Löpning och stationer",w:"Löpning efter stationer",y:"Slutet av loppet avgörs av hur du springer när benen redan är trötta.",h:"Tre rundor: 1 km löpning, 50 m sandbag lunges och 50 wall balls. Så lite vila som möjligt mellan momenten.",it:()=>[sugItem("run",3,{m:1000}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:50})]},
- {id:"sandwich",bm:1,n:"Sandwich",c:"hyrox",lv:"Medel",m:40,t:"Löpning och stationer",w:"Byten mellan maskin och löpning",y:"Varje station följs av löpning i loppet. Här tränar du att komma upp i fart direkt efter maskinen.",h:"Två rundor: SkiErg 1000 m, sedan 1 km löpning, sedan rodd 1000 m. Byt direkt utan vila. Vila 3 min mellan rundorna.",it:()=>[sugItem("ski",2,{m:1000}),sugItem("run",2,{m:1000}),sugItem("row",2,{m:1000})]},
- {n:"Roxzone-EMOM",c:"hyrox",lv:"Hårt",m:30,t:"Löpning och stationer",w:"Jämnt tempo under trötthet",y:"Klockan styr, så du lär dig ett tempo du klarar att hålla när det blir tungt.",h:"Starta en klocka. Varje ny minut gör du ett moment och vilar resten av minuten. Minut 1: 10 m burpee broad jumps. Minut 2: 15 wall balls. Minut 3: 250 m rodd. Upprepa tio varv.",it:()=>[sugItem("bbj",10,{m:10}),sugItem("wall",10,{r:15}),sugItem("row",10,{m:250})]},
+ {id:"hela",bm:1,n:"Hela banan",c:"hyrox",lv:"Hårt",m:80,t:"Racesimulering",w:"Generalrepetition av loppet",y:"Du får testa tempo, byten och energi över hela distansen innan det gäller.",h:"1 km löpning före varje station, i den ordning de kommer i loppet. Kör den tre till sex veckor före loppet, inte oftare än varannan vecka.",it:()=>raceSteps(S.map(x=>x.id))},
+ {id:"halva",bm:1,n:"Halva banan",c:"hyrox",lv:"Hårt",m:45,t:"Racesimulering",w:"Första halvan av loppet",y:"Lär dig hålla igen på de första stationerna så att du har kvar kraft till slutet.",h:"1 km löpning före var och en av de fyra första stationerna, i tävlingstempo.",it:()=>raceSteps(["ski","push","pull","bbj"])},
+ {id:"tunga",bm:1,n:"Tunga ben",c:"hyrox",lv:"Hårt",m:40,t:"Löpning och stationer",w:"Löpning efter stationer",y:"Slutet av loppet avgörs av hur du springer när benen redan är trötta.",h:"Tre rundor: 1 km löpning, 50 m sandbag lunges och 50 wall balls. Så lite vila som möjligt mellan momenten.",it:()=>roundSteps(3,r=>[runStep(r),sugItem("lunge",1,{m:50}),sugItem("wall",1,{r:50})])},
+ {id:"sandwich",bm:1,n:"Sandwich",c:"hyrox",lv:"Medel",m:40,t:"Löpning och stationer",w:"Byten mellan maskin och löpning",y:"Varje station följs av löpning i loppet. Här tränar du att komma upp i fart direkt efter maskinen.",h:"Två rundor: SkiErg 1000 m, sedan 1 km löpning, sedan rodd 1000 m. Byt direkt utan vila. Vila 3 min mellan rundorna.",it:()=>roundSteps(2,r=>[sugItem("ski",1,{m:1000}),runStep(r),sugItem("row",1,{m:1000})])},
+ {n:"Roxzone-EMOM",c:"hyrox",lv:"Hårt",m:30,t:"Löpning och stationer",w:"Jämnt tempo under trötthet",y:"Klockan styr, så du lär dig ett tempo du klarar att hålla när det blir tungt.",h:"Starta en klocka. Varje ny minut gör du ett moment och vilar resten av minuten. Minut 1: 10 m burpee broad jumps. Minut 2: 15 wall balls. Minut 3: 250 m rodd. Upprepa tio varv.",it:()=>roundSteps(10,()=>[sugItem("bbj",1,{m:10}),sugItem("wall",1,{r:15}),sugItem("row",1,{m:250})])},
  /* Kondition */
  {n:"Tusingar",c:"kondition",lv:"Hårt",m:45,t:"Intervaller",w:"Fart i tävlingstempo",y:"Loppet är åtta kilometer löpning. Det här passet gör ditt tävlingstempo bekvämare.",h:"Värm upp 10 min. Spring 6 × 1 km i ditt tävlingstempo med 90 s gång eller jogg emellan.",it:()=>[sugItem("run",6,{m:1000})]},
  {n:"4 × 4",c:"kondition",lv:"Hårt",m:40,t:"Intervaller",w:"Syreupptag (VO2max)",y:"En av de mest studerade intervallerna för att höja konditionen. Fungerar lika bra på rodd eller SkiErg.",h:"Värm upp 10 min. Fyra gånger: 4 min hårt, så att du andas tungt men kan hålla jämnt tempo, och sedan 3 min lugnt.",it:()=>[sugItem("run",4,{t:240})]},
  {n:"30/30",c:"kondition",lv:"Hårt",m:30,t:"Intervaller",w:"Puls och återhämtning",y:"Korta toppar med snabb återhämtning, precis som när du går från station till löpning.",h:"Två block med tio intervaller: 30 s max och 30 s lugnt. Vila 3 min mellan blocken. Assault Bike, BikeErg eller rodd.",it:()=>[sugItem("bike",20,{t:30})]},
  {n:"Tröskel",c:"kondition",lv:"Medel",m:45,t:"Intervaller",w:"Uthållighet i högt tempo",y:"Höjer tempot du kan hålla länge utan att stumna, vilket är hela loppet.",h:"Värm upp 10 min. Tre gånger 10 min i komfortabelt hårt tempo, där du kan säga några ord men inte prata. 2 min jogg emellan.",it:()=>[sugItem("run",3,{t:600})]},
- {n:"Motor",c:"kondition",lv:"Medel",m:40,t:"Motor (SkiErg/rodd)",w:"Kondition utan stötar",y:"SkiErg och rodd är två av stationerna, och sparar benen jämfört med löpning.",h:"Växla 500 m SkiErg och 500 m rodd, fem av varje, i jämnt hårt tempo. 1 min vila mellan sträckorna.",it:()=>[sugItem("ski",5,{m:500}),sugItem("row",5,{m:500})]},
+ {n:"Motor",c:"kondition",lv:"Medel",m:40,t:"Motor (SkiErg/rodd)",w:"Kondition utan stötar",y:"SkiErg och rodd är två av stationerna, och sparar benen jämfört med löpning.",h:"Växla 500 m SkiErg och 500 m rodd, fem av varje, i jämnt hårt tempo. 1 min vila mellan sträckorna.",it:()=>roundSteps(5,()=>[sugItem("ski",1,{m:500}),sugItem("row",1,{m:500})])},
  {n:"Lugn distans",c:"kondition",lv:"Lätt",m:45,t:"Lugn distans",w:"Grundkondition",y:"De lugna kilometrarna bygger motorn som de hårda passen står på.",h:"Spring i prattempo. Du ska kunna prata i hela meningar hela vägen.",it:()=>[sugItem("run",1,{m:7000})]},
  /* Styrka */
  {n:"Slädpass",c:"styrka",lv:"Medel",m:35,t:"Styrka och stationer",w:"Kraft i släden",y:"Sled push och pull är där flest tappar tid. Teknik och styrka här lönar sig direkt.",h:"Korta tunga sträckor med full vila, 2 min mellan seten. Teknik före vikt.",it:()=>[sugItem("push",6,{m:25}),sugItem("pull",6,{m:25}),sugItem("farm",4,{m:50})]},
- {id:"sista",bm:1,n:"Sista stationerna",c:"styrka",lv:"Hårt",m:35,t:"Styrka och stationer",w:"Styrka på trötta ben",y:"Farmers carry, lunges och wall balls kommer sist i loppet, när benen redan är slut.",h:"Tre rundor: 100 m farmers carry, 50 m sandbag lunges och 30 wall balls. Kort vila mellan momenten.",it:()=>[sugItem("farm",3,{m:100}),sugItem("lunge",3,{m:50}),sugItem("wall",3,{r:30})]},
+ {id:"sista",bm:1,n:"Sista stationerna",c:"styrka",lv:"Hårt",m:35,t:"Styrka och stationer",w:"Styrka på trötta ben",y:"Farmers carry, lunges och wall balls kommer sist i loppet, när benen redan är slut.",h:"Tre rundor: 100 m farmers carry, 50 m sandbag lunges och 30 wall balls. Kort vila mellan momenten.",it:()=>roundSteps(3,()=>[sugItem("farm",1,{m:100}),sugItem("lunge",1,{m:50}),sugItem("wall",1,{r:30})])},
  {n:"Benstyrka",c:"styrka",lv:"Medel",m:50,t:"Styrka",w:"Starka ben och säte",y:"Starkare ben gör släden lättare och gör att lunges och wall balls inte tar slut på dig.",h:"Knäböj 5 × 5 tungt med 2–3 min vila. Sedan rumänska marklyft 3 × 8, bulgarska utfall 3 × 8 per ben och höftlyft 3 × 12.",it:()=>[sugItem("squat",5,{r:5}),sugItem("rdl",3,{r:8}),sugItem("bss",3,{r:8}),sugItem("hip",3,{r:12})]},
  {n:"Grepp och rygg",c:"styrka",lv:"Medel",m:45,t:"Styrka och stationer",w:"Greppstyrka och baksida",y:"Greppet sviker ofta på sled pull och farmers carry. Det här passet bygger det.",h:"Marklyft 4 × 5 tungt. Sedan skivstångsrodd 3 × 8, chins 3 × så många du klarar och tung farmers carry 4 × 50 m.",it:()=>[sugItem("dead",4,{r:5}),sugItem("brow",3,{r:8}),sugItem("chin",3,{r:8}),sugItem("farm",4,{m:50})]},
  {n:"Helkropp",c:"styrka",lv:"Lätt",m:45,t:"Styrka",w:"Allsidig grundstyrka",y:"Ett bra första styrkepass, eller ett lättare pass en vecka med mycket löpning.",h:"Frontböj 3 × 8, militärpress 3 × 8, kettlebell swings 3 × 15, armhävningar 3 × 12 och plankan 3 × 45 s.",it:()=>[sugItem("front",3,{r:8}),sugItem("ohp",3,{r:8}),sugItem("kbs",3,{r:15}),sugItem("pushup",3,{r:12}),sugItem("plank",3,{t:45})]}];
@@ -4021,7 +4029,8 @@ function openLogger(o){o=o||{};const ed=o.edit;
     rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};
   if(ed&&!ed.items&&ed.stations)ed.stations.forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x,true))});
-  if(!ed){(o.stations||[]).forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x))});
+  if(!ed&&o.type==="Racesimulering"&&(o.stations||[]).length)LG.items=raceSteps(o.stations.map(n=>(EX.find(e=>e.n===n)||{}).id).filter(Boolean));
+  else if(!ed){(o.stations||[]).forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x))});
     if(o.type&&/Intervall|Löpning|distans|Kompromiss/.test(o.type)&&!LG.items.some(i=>i.ex==="run"))LG.items.unshift(newItem(EX.find(e=>e.id==="run")))}
   openSheet(`<div id="lg" class="lg"></div>`,lgMount);
 }
@@ -4044,9 +4053,9 @@ function renderLG(){const r=$("#lg");if(!r)return;
   const td=today(),yd=lgYest(),other=LG.date!==td&&LG.date!==yd;
   const dl=new Date(LG.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"});
   const ty=lgType(),last=sortedLogs().find(l=>l.items&&l.items.length&&l.id!==LG.edit);
-  const exHtml=LG.items.map((it,i)=>{const cols=colsOf(it),hint=!LG.edit&&lastItem(it.ex)?itemTxt(lastItem(it.ex)):"";
+  const exHtml=LG.items.map((it,i)=>{const cols=colsOf(it),li=!LG.edit&&lastItem(it.ex),hint=li&&itemTxt(li)!==li.n?itemTxt(li).slice(li.n.length+1):"";
     const gc=`28px repeat(${cols.length},minmax(0,1fr)) 36px`;
-    const grip=LG.items.length>1;return `<div class="lg-ex" data-i="${i}"><div class="lg-exh${grip?" has-grip":""}">${grip?dndGrip(it.n):""}<span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${nz(it.sec)?`<p class="small">Tid ${fmt(it.sec)}</p>`:""}${hint?`<p class="small">Förra gången: ${esc(hint.replace(it.n+" ",""))}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
+    const grip=LG.items.length>1;return `<div class="lg-ex" data-i="${i}"><div class="lg-exh${grip?" has-grip":""}">${grip?dndGrip(it.n):""}<span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><div><h4>${esc(it.n)}</h4>${nz(it.sec)?`<p class="small">Tid ${fmt(it.sec)}</p>`:""}${hint?`<p class="small">Förra gången: ${esc(hint)}</p>`:""}</div><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>
       <div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}${c[0]==="kg"&&it.ex==="farm"?" per hand":""}</span>`).join("")}<span></span></div>
       ${it.sets.map((s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];const val=nz(v)?(c[0]==="t"?fmt(v):c[0]==="kg"?fmtKg(v):v):"";
         return `<input type="text" enterkeyhint="next" data-i="${i}" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${val}" aria-label="${c[1]}, set ${j+1}">`}).join("")}
@@ -4244,31 +4253,34 @@ function startLive(){if(!LG||!LG.items.length){toast("Lägg till minst en övnin
   LIVE={ready:true,startedAt:null,pausedMs:0,pausedAt:null,cur:0,exAt:0,open:true,lg};LG.saved=true;dropDraft();saveLive();closeSheet();HAPTIC("success");liveWake();renderLive();liveTickStart();try{renderGo()}catch(e){}}
 function liveBegin(){LIVE.ready=false;LIVE.startedAt=Date.now();LIVE.pausedMs=0;LIVE.pausedAt=null;LIVE.cur=0;LIVE.exAt=0;LVIN=true;LVUNDO=null;saveLive();HAPTIC("medium");liveWake();renderLive();liveTickStart()}
 function liveTickStart(){clearInterval(LIVETICK);if(LIVE)LIVETICK=setInterval(liveTick,250);liveTick()}
-function lastSec(id){const l=sortedLogs().find(x=>(x.items||[]).some(i=>i.ex===id&&nz(i.sec)));return l?+l.items.find(i=>i.ex===id&&nz(i.sec)).sec:null}
+/* Tiden från senaste passet där samma moment fanns. Löpning 3 jämförs med löpning 3, inte med första kilometern. */
+function lastSec(id,occ){for(const l of sortedLogs()){const m=(l.items||[]).filter(i=>i.ex===id&&nz(i.sec));if(m[occ])return +m[occ].sec}return null}
+const lvIsRun=it=>it&&(it.ex==="run"||it.ex==="tread");
+const lvMixed=()=>lvItems().some(lvIsRun)&&lvItems().some(i=>!lvIsRun(i));
 /* Målet för övningen. Tiden visas bara när tiden är själva målet, annars står den redan i klockan. */
 const lvGoal=it=>{const c=it.k==="t"?it:Object.assign({},it,{sets:(it.sets||[]).map(x=>{const y=Object.assign({},x);delete y.t;return y})}),t=itemTxt(c);return t===it.n?"":t.slice(it.n.length+1)};
 const lvEx=()=>Math.max(0,liveElapsed()-(LIVE.exAt||0));
 const lvDelta=d=>{d=Math.round(d);return d?`<span class="${d<0?"lv-good":"lv-bad"}">${fmtD(d)}</span>`:`<span>±0:00</span>`};
 const lvItems=()=>LIVE.lg.items;
 const lvDone=()=>lvItems().filter((it,i)=>i<LIVE.cur&&nz(it.sec));
-function lvAvg(){const d=lvDone();return d.length?d.reduce((a,i)=>a+ +i.sec,0)/d.length:null}
+function lvAvg(kind){const d=lvDone().filter(i=>!lvMixed()||lvIsRun(i)===kind);return d.length?d.reduce((a,i)=>a+ +i.sec,0)/d.length:null}
 /* Hur man ligger till: summan av skillnaderna mot förra gången, för övningar som har en tid att jämföra med */
-function lvVsLast(){const d=lvDone().filter(i=>LVPREV[i.ex]!=null);return d.length?d.reduce((a,i)=>a+ +i.sec-LVPREV[i.ex],0):null}
+function lvVsLast(){let sum=0,n=0;lvItems().forEach((it,i)=>{if(i<LIVE.cur&&nz(it.sec)&&LVPREV[i]!=null){sum+=+it.sec-LVPREV[i];n++}});return n?sum:null}
 /* Tid kvar: förra gångens tid om den finns, annars snittet hittills */
-function lvLeft(start){const its=lvItems(),avg=lvAvg();let sum=0;
-  for(let i=start;i<its.length;i++){const e=LVPREV[its[i].ex]!=null?LVPREV[its[i].ex]:avg;if(e==null)return null;sum+=i===LIVE.cur&&!LIVE.ready?Math.max(0,e-lvEx()):e}
+function lvLeft(start){const its=lvItems();let sum=0;
+  for(let i=start;i<its.length;i++){const e=LVPREV[i]!=null?LVPREV[i]:lvAvg(lvIsRun(its[i]));if(e==null)return null;sum+=i===LIVE.cur&&!LIVE.ready?Math.max(0,e-lvEx()):e}
   return sum}
 function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
   const tot=fmt(liveElapsed()),a=$("#lv-total"),b=$("#lv-bar-time");if(a)a.textContent=tot;if(b)b.textContent=LIVE.ready?"":tot;
   if(LIVE.ready||!LIVE.open)return;
   const ex=lvEx(),t=$("#lv-time");if(t)t.textContent=fmt(ex);
-  const it=lvItems()[LIVE.cur],p=it?LVPREV[it.ex]:null,c=$("#lv-cmp");
+  const p=LVPREV[LIVE.cur]!=null?LVPREV[LIVE.cur]:null,c=$("#lv-cmp");
   if(c){const h=p==null?"":`Förra gången ${fmt(p)}${ex>p?` · ${lvDelta(ex-p)}`:""}`;if(c.dataset.h!==h){c.dataset.h=h;c.innerHTML=h}}
   const k=$("#lv-kvar");if(k){const l=lvLeft(LIVE.cur);k.textContent=l==null?"–":fmt(l)}}
 function lvRows(){const cur=LIVE.ready?-1:LIVE.cur,its=lvItems();
   return its.map((it,i)=>{const d=i<cur,now=i===cur,can=!d&&!now,g=lvGoal(it);
     return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?"✓":i+1}</span>`}<div><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</div>${d?`<b>${nz(it.sec)?fmt(it.sec):"–"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
-function renderReady(v){const L=LIVE.lg,n=L.items.length,left=(()=>{let s=0;for(const it of L.items){if(LVPREV[it.ex]==null)return null;s+=LVPREV[it.ex]}return s})();
+function renderReady(v){const L=LIVE.lg,n=L.items.length,left=(()=>{let s=0;for(let i=0;i<n;i++){if(LVPREV[i]==null)return null;s+=LVPREV[i]}return s})();
   v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-back">‹ Ändra passet</button><span></span><span></span></div>
     <div class="lv-ready" id="lv-scroll"><div><span class="small">${esc(L.tplName||L.type||"Ditt pass")}</span><h2>Redo.</h2><p class="muted" style="margin:8px 0 0">${n} ${n===1?"övning":"övningar"}${left?` · ungefär ${Math.max(1,Math.round(left/60))} min`:""}. Klockan startar när du trycker på Starta.</p></div>
       ${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}<div class="lv-rows">${lvRows()}</div></div>
@@ -4277,22 +4289,22 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
   if(!LIVE){if(v)v.hidden=true;if(bar)bar.hidden=true;document.body.classList.remove("live-on");return}
   bar.hidden=LIVE.open;v.hidden=!LIVE.open;document.body.classList.toggle("live-on",!!LIVE.open);
   $("#lv-bar-name").textContent=LIVE.ready?"Passet är redo":LIVE.pausedAt?"Passet är pausat":"Pass pågår";
-  LVPREV={};lvItems().forEach(it=>{LVPREV[it.ex]=lastSec(it.ex)});
+  {const seen={};LVPREV=lvItems().map(it=>{const o=seen[it.ex]||0;seen[it.ex]=o+1;return lastSec(it.ex,o)})}
   if(!LIVE.open){liveTick();return}
   if(LIVE.ready){renderReady(v);return}
   const its=lvItems();if(LIVE.cur>=its.length)LIVE.cur=Math.max(0,its.length-1);
-  const it=its[LIVE.cur],nx=its[LIVE.cur+1],pv=its[LIVE.cur-1],paused=!!LIVE.pausedAt,g=it?lvGoal(it):"",vs=lvVsLast(),avg=lvAvg();
-  const pd=pv&&nz(pv.sec)&&LVPREV[pv.ex]!=null?+pv.sec-LVPREV[pv.ex]:null;
-  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="lv-count">Övning ${LIVE.cur+1} av ${its.length}</span><button type="button" class="linkbtn" id="lv-all">Alla</button></div>
+  const it=its[LIVE.cur],nx=its[LIVE.cur+1],pv=its[LIVE.cur-1],paused=!!LIVE.pausedAt,g=it?lvGoal(it):"",vs=lvVsLast(),mix=lvMixed(),avg=lvAvg(true);
+  const pd=pv&&nz(pv.sec)&&LVPREV[LIVE.cur-1]!=null?+pv.sec-LVPREV[LIVE.cur-1]:null;
+  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="lv-count">${mix?"Moment":"Övning"} ${LIVE.cur+1} av ${its.length}</span><button type="button" class="linkbtn" id="lv-all">Alla</button></div>
     <div class="lv-steps" aria-hidden="true">${its.map((_,i)=>`<i class="${i<LIVE.cur?"done":i===LIVE.cur?"now":""}"></i>`).join("")}</div>
     <div class="lv-main${paused?" lv-paused":""}">
       <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2>${g?`<p class="lv-goal">${esc(g)}</p>`:""}
         <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p></div>
-      <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>Snitt per övning</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar, ungefär</small><b id="lv-kvar">–</b></div>`}</div>
+      <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar, ungefär</small><b id="lv-kvar">–</b></div>`}</div>
       ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${nz(pv.sec)?fmt(pv.sec):"–"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
       <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b><span class="chev" aria-hidden="true">›</span></button></div>
     <div class="lv-foot">${paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
-      :`<button type="button" class="pill block lv-big" id="lv-next">${nx?"Nästa övning":"Klar med passet"}</button><div class="grid2"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-stop">Avbryt passet</button></div>`}</div>`;
+      :`<button type="button" class="pill block lv-big" id="lv-next">${!nx?"Klar med passet":lvIsRun(nx)?"Spring":"Nästa övning"}</button><div class="grid2"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-stop">Avbryt passet</button></div>`}</div>`;
   LVIN=false;liveTick()}
 /* Stämplar tiden på övningen. Med ett enda set och en tidskolumn blir tiden också setets tid, så att rekord räknas som vanligt. */
 function lvStamp(it){const sec=Math.max(1,lvEx());it.sec=sec;it.sets.forEach(x=>{x.done=true});
@@ -4482,29 +4494,34 @@ function dayMsg(h,n){
 /* Uppskattad sluttid i dag. Löpningen från senaste loppet, 1 km-testet eller snittempot. Stationerna från dina rekord,
    lite långsammare än i ett eget pass eftersom man är trött i loppet. Saknas ett rekord används snittet i Open. */
 const HX_FATIGUE=1.06;
+/* Klassen ändrar stationstiden, löpningen är densamma. Doubles och Mixed: räknat från mediantiderna i omkring 700 000 resultat,
+   med löpning och Roxzone oförändrade. Pro: uppskattning av samma person med Pro-vikterna, eftersom medianen i Pro är lägre bara för att snabbare atleter väljer den. */
+const HX_TEAM={m:.68,w:.8,mixed:.76},HX_PRO={push:1.2,pull:1.25,farm:1.1,lunge:1.15,wall:1.15};
+function hxFactor(id,c){if(!c||c.f==="singel"&&c.k!=="pro")return 1;return (c.f==="mixed"?HX_TEAM.mixed:c.f==="doubles"?HX_TEAM[c.g==="w"?"w":"m"]:1)*(c.k==="pro"&&c.f!=="mixed"?HX_PRO[id]||1:1)}
+function hxClsOf(key){if(key==="mixed")return {f:"mixed",k:"open"};const a=String(key||"").split("-");return a.length===3?{k:a[0],g:a[1],f:a[2]}:null}
 function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+set.test.km)||0,rsum=RUNM.reduce((a,b)=>a+b,0);
   let runs=0,rsrc="";
   if(rl&&rl.date>=dAgo(365)){runs=[0,2,4,6,8,10,12,14].reduce((a,j)=>a+(+rl.race.sp[j]||0),0);rsrc="senaste loppet"}
   if(!runs&&km>=150&&km<=900){runs=km*1.22*rsum;rsrc="ditt 1 km-test"}
   if(!runs&&+set.pace>=150){runs=+set.pace*1.05*rsum;rsrc="ditt snittempo"}
   /* Stationstid i ett lopp räknas som den är. Rekord från egna pass får lite extra, eftersom man är trött i loppet. */
-  const own=[],st=S.map((x,i)=>{const iso=+PRS[x.id]>0?+PRS[x.id]*HX_FATIGUE:0;let race=0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1];if(t>0&&(!race||t<race))race=t});
-    const v=iso&&race?Math.min(iso,race):iso||race;if(v){own.push(i);return v}return stRef(x.id).open});
+  const own=[],st=S.map((x,i)=>{const iso=+PRS[x.id]>0?+PRS[x.id]*HX_FATIGUE:0;let race=0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1]/hxFactor(x.id,hxClsOf(l.race.cls));if(t>0&&(!race||t<race))race=t});
+    const v=iso&&race?Math.min(iso,race):iso||race;if(v){own.push(i);return v}if(set.fmt==="mixed"){const r=ST_REF[x.id];return (r[0]+r[1])/2}return stRef(x.id).open});
   if(!runs)return {none:true,own:own.length};
   /* Från ett loggat lopp ingår Roxzone redan i löpningen */
-  const inRun=rsrc==="senaste loppet",sta=st.reduce((a,b)=>a+b,0),rox=inRun?0:(runs+sta)*ROXSHARE/(1-ROXSHARE),T=runs+sta+rox;
-  return {T,runs,sta,rox,st,own:own.length,rsrc,inRun}}
+  const inRun=rsrc==="senaste loppet",base=st.reduce((a,b)=>a+b,0),rox=inRun?0:(runs+base)*ROXSHARE/(1-ROXSHARE),c={f:set.fmt,k:set.k,g:set.g},stc=st.map((v,i)=>v*hxFactor(S[i].id,c)),sta=stc.reduce((a,b)=>a+b,0),T=runs+sta+rox;
+  return {T,base:runs+base+rox,runs,sta,rox,st:stc,own:own.length,rsrc,inRun}}
 function hxWeak(){let best=null;S.forEach((x,i)=>{const pr=stPR(i);if(!pr)return;const d=pr-stRef(x.id).open;if(!best||d>best.d)best={i,s:x,pr,d}});return best}
 function hxSigned(d){const r=Math.round(Math.abs(d));return (d>0?"+":d<0?"−":"±")+fmt(r)}
 function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E||!K)return;const e=hxEstimate(),goal=set.target*60,cls=set.g==="w"?"dam":"herr";
   if(e.none){E.innerHTML=`<span class="hx-k">Racetid i dag</span><b class="hx-big hx-none">–</b><p class="hx-sub">Gör starttestet eller fyll i ditt snittempo under Profil, så räknar VARV. ut var du står i dag.</p>`;E.href="#profil"}
   else{const d=e.T-goal,dTxt=Math.abs(d)<30?"Precis på din måltid":d>0?`${fmt(Math.round(d))} från målet ${fmtHM(set.target)}`:`${fmt(Math.round(-d))} under målet ${fmtHM(set.target)}`;
     E.href="#plan";
-    E.innerHTML=`<span class="hx-k">Racetid i dag${set.fmt!=="singel"?" · som singel":""}</span>
+    E.innerHTML=`<span class="hx-k">Racetid i dag · ${esc(divText())}</span>
      <div class="hx-row"><b class="hx-big">${fmt(Math.round(e.T))}</b><span class="hx-delta ${d>30?"behind":d<-30?"ahead":""}">${esc(dTxt)}</span></div>
      <div class="hx-bar" aria-hidden="true"><i class="r" style="flex-grow:${e.runs}"></i><i class="s" style="flex-grow:${e.sta}"></i>${e.rox?`<i class="x" style="flex-grow:${e.rox}"></i>`:""}</div>
      <div class="hx-leg"><span><i class="r"></i>Löpning <b>${fmt(Math.round(e.runs))}</b></span><span><i class="s"></i>Stationer <b>${fmt(Math.round(e.sta))}</b></span>${e.rox?`<span><i class="x"></i>Roxzone <b>${fmt(Math.round(e.rox))}</b></span>`:""}</div>
-     <p class="hx-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open ${cls}.`:`Stationerna utgår från snittet i Open ${cls} tills du loggar egna tider.`}</p>`}
+     <p class="hx-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open${set.fmt==="mixed"?"":" "+cls}.`:`Stationerna utgår från snittet i Open${set.fmt==="mixed"?"":" "+cls} tills du loggar egna tider.`}${set.fmt!=="singel"?" Stationstiden är uppskattad för två som delar på arbetet.":""}${set.k==="pro"&&set.fmt!=="mixed"?" Pro räknas med tyngre vikter.":""}</p>`}
   const w=hxWeak();
   if(!w){K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><b>Var tappar du mest?</b><p>Logga tid på en station, så jämför VARV. med snittet i Open och visar vad du ska träna.</p></div></div><a class="pill ghost block" href="#stationer">Visa stationerna</a>`;return}
   const ahead=w.d<=0;

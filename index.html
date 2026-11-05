@@ -883,6 +883,14 @@ a.row{color:inherit;text-decoration:none}
 .go-now{width:100%;border:0;cursor:pointer;display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center;text-align:left;padding:18px;border-radius:var(--r);color:#fff;background:var(--hot);box-shadow:0 18px 36px -20px var(--glow);position:relative;overflow:hidden;font:inherit}
 .go-now b{display:block;font-size:var(--t-num);font-weight:700;letter-spacing:-.04em;line-height:1.1}.go-now small{display:block;font-size:var(--t-sub);opacity:.9;margin-top:2px}
 .go-now .go-ic{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.22);display:grid;place-items:center}.go-now .go-ic svg{width:28px;height:28px}
+.go-q{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
+.go-q button{display:flex;align-items:center;gap:10px;min-height:68px;padding:12px;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);font:inherit;font-weight:600;text-align:left;white-space:nowrap;cursor:pointer}
+.go-q .go-ic{flex:none;width:40px;height:40px;border-radius:13px;display:grid;place-items:center}.go-q .go-ic svg{width:22px;height:22px}
+@media (max-width:360px){.go-q button{gap:8px;padding:10px;font-size:var(--t-sub)}.go-q .go-ic{width:34px;height:34px;border-radius:11px}.go-q .go-ic svg{width:18px;height:18px}}
+.go-q.one{grid-template-columns:1fr}.go-q.one button{min-height:60px}
+.go-q .g-plain .go-ic,.go-ic-s.g-plain .go-ic{background:var(--card);color:var(--ink)}
+.go-ic-s{background:none!important;padding:0}.go-ic-s .go-ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center}.go-ic-s .go-ic svg{width:22px;height:22px}
+@media (prefers-reduced-motion:no-preference){.go-q button{transition:transform .15s ease}.go-q button:active{transform:scale(.97)}}
 .go-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:10px}
 .go{border:0;cursor:pointer;background:var(--tile);color:var(--ink);border-radius:var(--r);padding:14px;display:grid;gap:3px;text-align:left;align-content:start;font:inherit;min-height:124px;min-width:0}
 .go b{font-size:var(--t-body);font-weight:600;letter-spacing:-.02em;line-height:1.2;margin-top:8px}.go small{color:var(--muted);font-size:var(--t-cap);line-height:1.3}
@@ -1501,7 +1509,6 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .wd.pass i,.wd.rest i{color:#fff}.wd.active i{color:#06343f}
 .wd.pass.now i,.wd.rest.now i{color:#fff}.wd.active.now i{color:#06343f}
 .wd-legend{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:var(--t-cap);color:var(--muted)}
-.wd-hint{flex-basis:100%;margin-top:2px}
 .wd-today{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;background:var(--card);border-radius:14px;padding:8px 8px 8px 14px;min-height:44px}
 .wd-today[hidden]{display:none}
 .wd-q{display:inline-flex;align-items:center;gap:8px;font-size:var(--t-sub);font-weight:600}
@@ -1659,7 +1666,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <div id="h-go"></div>
 
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
-    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span><span class="wd-hint">Tryck på en dag för att logga</span></div></div>
+    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span></div></div>
     <div class="tiles" style="margin-top:10px" hidden>
       <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
       <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
@@ -1674,11 +1681,9 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     </div>
     <a class="tile tap hx-est" id="h-est" href="#plan" aria-label="Din uppskattade sluttid i dag"></a>
     <div class="tile hx-weak" id="h-weak"></div>
-    <p class="small" id="h-med" style="margin-top:10px"></p>
+    <p class="small" id="h-med" hidden></p>
 
-    <div class="sechead"><h2>Din utveckling</h2><a href="#logg" data-lg="form">Statistik</a></div>
-    <a class="tile tap formmini" href="#logg" data-lg="form" id="h-form" aria-label="Din utveckling"></a>
-
+    
     <div class="sechead"><h2>Tävlingar nära dig</h2><a href="#race" data-tv-go="kal">Alla tävlingar</a></div>
     <div class="near" id="h-next"></div>
     <p class="small near-foot" id="h-near-foot"></p>
@@ -3791,7 +3796,7 @@ function renderProgress(){try{renderLoad()}catch(e){}try{renderStats()}catch(e){
 /* ============ Genomgång ============ */
 const TOUR=[
  {v:"hem",c:1,h:()=>`Välkommen${pName()?", "+pName().split(" ")[0]:""}.`,p:"Här är en snabb tur genom VARV., i samma ordning som flikarna längst ned. Det tar under en minut, och du kan hoppa över när du vill."},
- {v:"hem",t:"#h-go",h:"Hem: kör igång",p:"Här börjar du: dagens pass, ett eget pass, ett förslag eller ett färdigt pass. Du kan också förbereda ett pass eller logga i efterhand."},
+ {v:"hem",t:"#h-go",h:"Hem: kör igång",p:"Här börjar du: dagens pass, ett förslag, ett färdigt pass eller ditt eget. Under Logga pass lägger du in det du redan har kört."},
  {v:"hem",t:"#h-race",h:"Hem: ditt lopp",p:"Nedräkningen till loppet och din måltid. Tryck för att byta lopp eller ändra måltid."},
  {v:"stationer",t:'.tab[data-v="stationer"]',h:"Stationer",p:"Nästa flik. Alla åtta stationer med vikter för just din klass, teknik och de vanligaste misstagen."},
  {v:"feed",t:'.tab[data-v="feed"]',h:"Aktivitet",p:"Ditt och dina vänners senaste pass, lopp och rekord. Ge en tumme upp eller skriv en kommentar. Topplistan hittar du under Vänner."},
@@ -3950,8 +3955,9 @@ function renderPrep(){try{renderGo()}catch(e){}const el=$("#lg-prep");if(!el)ret
 const GOI={now:'<path d="M8 5.5v13l11-6.5z" fill="currentColor" stroke="none"/>',sug:'<path d="M12 3l1.9 5.6L19.5 10.5l-5.6 1.9L12 18l-1.9-5.6L4.5 10.5l5.6-1.9zM19 16l.8 2.2L22 19l-2.2.8L19 22l-.8-2.2L16 19l2.2-.8z" fill="currentColor" stroke="none"/>',pre:'<path d="M13 2L5 13h6l-1 9 8-11h-6z" fill="currentColor" stroke="none"/>',prep:'<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>',after:'<path d="M4 12.5l5 5L20 6.5"/>'};
 const goIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${GOI[k]}</svg>`;
 function goPlan(){if(NOPLAN)return null;try{const w=PLAN[curWeekIdx()];if(!w||daysLeft()<=0)return null;const n=nextPass(w);return n.tod||n.late?{w,s:n.tod||n.late,late:!n.tod}:null}catch(e){return null}}
+function goPrimary(){const pl=goPlan();return `${pl?`<button class="go-now" data-go="plan"><span class="go-ic">${goIc("now")}</span><span><small class="go-k">${pl.late?"Att ta igen":"Dagens rekommenderade pass"}</small><b>${esc(pl.s.t)}.</b><small>${pl.s.m} min · Tryck för att se övningarna</small></span></button>`:`<button class="go-now" data-go="pre"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Hitta ett pass eller bygg ditt eget</small></span></button>`}`}
 function goHtml(){const prep=(set.tpls||[]).slice().reverse(),pl=goPlan();
-  return `${pl?`<button class="go-now" data-go="plan"><span class="go-ic">${goIc("now")}</span><span><small class="go-k">${pl.late?"Att ta igen":"Dagens rekommenderade pass"}</small><b>${esc(pl.s.t)}.</b><small>${pl.s.m} min · Tryck för att se övningarna</small></span></button>`:`<button class="go-now" data-go="now"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Välj övningar och starta klockan</small></span></button>`}
+  return `${goPrimary()}
    <div class="go-grid">${pl?`<button class="go g-own" data-go="now"><span class="go-ic">${goIc("now")}</span><b>Eget pass</b><small>Välj övningar och starta klockan</small></button>`:""}<button class="go g-sug" data-go="sug"><span class="go-ic">${goIc("sug")}</span><b>Ge mig ett pass</b><small>Kondition, styrka eller båda</small></button>
    <button class="go g-pre" data-go="pre"><span class="go-ic">${goIc("pre")}</span><b>Färdiga pass</b><small>${PRESETS.length} pass för Hyrox</small></button>
    <button class="go g-prep" data-go="prep"><span class="go-ic">${goIc("prep")}</span><b>Förbered</b><small>Klart när du når gymmet</small></button>
@@ -3972,7 +3978,9 @@ function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stat
     $("#pp-go").onclick=()=>prefill(Object.assign({start:true},o));
     $("#pp-log").onclick=()=>prefill(Object.assign({fresh:true},o))})}
 document.addEventListener("click",e=>{if(!e.target.closest("[data-prep-manage]"))return;openSheet(`<div><span class="small">Sparade pass</span><h2>Redo att köras</h2></div><div id="hb-now" class="lg-grp prep-l">${prepRows()}</div>`)});
-function renderGo(){const el=$("#h-go");if(!el)return;el.innerHTML=LIVE?"":`${goHtml()}`}
+function renderGo(){const el=$("#h-go");if(!el)return;if(LIVE){el.innerHTML="";return}const prep=(set.tpls||[]).slice().reverse(),Q=(goPlan()?[["pre","g-pre","Hitta pass"]]:[]).concat([["after","g-plain","Logga pass"]]);
+  el.innerHTML=`${goPrimary()}<div class="go-q${Q.length<2?" one":""}">${Q.map(([k,c,l])=>`<button type="button" class="${c}" data-go="${k}"><span class="go-ic">${goIc(k)}</span><span>${l}</span></button>`).join("")}</div>
+   ${prep.length?`<div class="go-prep"><div class="go-prep-h"><span class="lbl">Redo att köras</span><button type="button" class="linkbtn" data-prep-manage>Ändra</button></div><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
 function openHub(){if(LIVE){openLogger();return}openSheet(`<div><span class="small">Nytt pass</span><h2>Vad blir det i dag?</h2></div><div class="go-wrap">${goHtml()}</div>`)}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;const k=b.dataset.go;
   if(LIVE){openLogger();return}
@@ -4050,7 +4058,9 @@ function passTimeline(items){const key=i=>i.ex+"|"+(itemTxt(i).slice(i.n.length)
 function openPass(p,kicker){openSheet(`${p.fromPresets?`<button class="linkbtn" id="pv-back" style="justify-self:start">‹ Alla färdiga pass</button>`:""}<div><span class="small">${esc(p.cat?p.cat+" · "+p.lv:kicker)}</span><h2>${esc(p.name)}</h2></div>${p.why?`<p class="muted" style="margin:0">${esc(p.why)}</p>`:""}<div class="card sg-card">${p.m?`<span class="small">Omkring ${p.m} min</span>`:""}${passTimeline(p.items)}${p.hint?`<p class="small">${esc(p.hint)}</p>`:""}</div>${p.bench?benchHtml(p.bench):""}${passActions(p)}`,()=>{passBind(p);const bk=$("#pv-back");if(bk)bk.onclick=openPresets;if(p.bench)benchBoard(p.bench)})}
 function openPresets(){const cl={hyrox:"b",styrka:"s",kondition:"k"},CN={hyrox:"Hyrox",kondition:"Kondition",styrka:"Styrka"};
   const grid=()=>PRESETS.map((x,i)=>[x,i]).filter(([x])=>PRE_F==="alla"||x.c===PRE_F).map(([x,i])=>`<button class="pre ${cl[x.c]}" data-pre="${i}"><small>${CN[x.c]} · ${x.lv}</small><b>${esc(x.n)}</b><em>${esc(x.w)}</em><span>${x.m} min</span>${x.bm?`<i class="pre-pr">${benchMine(x.id)?"Rekord "+fmt(benchMine(x.id).t):"Rekordpass"}</i>`:""}</button>`).join("");
-  openSheet(`<div><span class="small">Nytt pass</span><h2>Färdiga pass</h2><p class="small">Klassiker för Hyrox, kondition och styrka.</p></div>
+  openSheet(`<div><span class="small">Nytt pass</span><h2>Hitta pass</h2></div>
+   <div class="group"><button type="button" class="row" data-go="sug"><span class="badge go-ic-s g-sug"><span class="go-ic">${goIc("sug")}</span></span><div><h3>Ge mig ett pass</h3><p>Kondition, styrka eller båda, efter din träning.</p></div><span class="chev">›</span></button><button type="button" class="row" data-go="now"><span class="badge go-ic-s g-plain"><span class="go-ic">${goIc("now")}</span></span><div><h3>Bygg eget pass</h3><p>Välj övningar. Kör direkt eller spara till senare.</p></div><span class="chev">›</span></button></div>
+   <h3 style="font-size:var(--t-head);letter-spacing:-.03em;margin:6px 0 -4px">Färdiga pass</h3>
    <div class="seg" id="pre-f" role="group" aria-label="Kategori">${PRE_CAT.map(([k,l])=>`<button type="button" data-pf="${k}" aria-pressed="${PRE_F===k}">${l}</button>`).join("")}</div>
    <div class="pre-grid" id="pre-g">${grid()}</div><p class="small">Vikterna utgår från din klass eller dina senaste pass.</p>`,()=>{
     $("#pre-f").onclick=e=>{const b=e.target.closest("[data-pf]");if(!b)return;PRE_F=b.dataset.pf;$$("#pre-f button").forEach(x=>x.setAttribute("aria-pressed",x===b));$("#pre-g").innerHTML=grid()};
@@ -4523,7 +4533,7 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
     const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
     return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
   const st=weekStats().streak;
-  $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(rests?` · ${rests} ${rests===1?"vilodag":"vilodagar"}`:"")+(P.next?` · ${P.toNext} kvar till ${P.next.n}`:"")+(st?` · ${st} ${st===1?"vecka":"veckor"} i rad`:"");
+  $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(st?` · ${st} ${st===1?"vecka":"veckor"} i rad`:"");
   renderRestPrompt()}
 /* Vila i dag: en fråga direkt i veckokortet, så att man inte behöver veta att dagarna går att trycka på */
 function restTxt(r){if(!r)return "";if(r.k!=="active")return "Vilodag";const x=[r.what||"Aktiv vila",r.km?String(r.km).replace(".",",")+" km":"",r.min?r.min+" min":""].filter(Boolean);return "Aktiv vila · "+x.join(" · ")}

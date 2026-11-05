@@ -1821,7 +1821,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <div class="card strava" id="strava" hidden></div>
 
     <div class="lgv" data-v="pass" hidden>
-    <button class="pill block" id="lg-new" style="margin-bottom:12px">Nytt pass</button><div id="lg-prep"></div>
+    <div id="lg-prep"></div>
     <div class="card">
       <div class="ringwrap">
         <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
@@ -4417,7 +4417,6 @@ async function fixPRs(oldItems){let ch=false;const keys=new Set();
   if(ch){await savePRs();try{renderPRs()}catch(e){}}}
 function prefill(o){openLogger({type:o.type,min:o.min,note:o.note,plan:o.plan,stations:o.stations,kicker:"Från din plan",fresh:o.fresh,forLive:o.forLive});if(o.start&&LG.items.length)startLive()}
 function openLogSheet(){openLogger()}
-$("#lg-new").onclick=()=>openHub();
 let filt="Alla";
 $("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;renderLog()};
 $("#hist").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.edit)openEditLog(e.target.dataset.edit)});
@@ -4454,7 +4453,7 @@ function renderLog(){
   let lastWk="";const wkSum={};list.forEach(l=>{const k=weekStart(l.date);wkSum[k]=wkSum[k]||{n:0,m:0};wkSum[k].n++;wkSum[k].m+=+l.min||0});
   $("#hist").innerHTML=list.length?list.slice(0,HN).map(l=>{const d=new Date(l.date+"T12:00:00"),wk=weekStart(l.date),cw=weekStart(today());
     let head="";if(wk!==lastWk){lastWk=wk;const w=wkSum[wk];head=`<div class="hist-wk"><b>${wk===cw?"Den här veckan":"Vecka "+getWeek(wk)}</b><span>${w.n} pass · ${w.m} min</span></div>`}
-    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(x=>itemTxt(x)+(nz(x.sec)&&!colsOf(x).some(c=>c[0]==="t")?` (${fmt(x.sec)})`:"")).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Tryck Nytt pass ovan för att komma igång.</div>`;
+    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(x=>itemTxt(x)+(nz(x.sec)&&!colsOf(x).some(c=>c[0]==="t")?` (${fmt(x.sec)})`:"")).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Dina pass visas här när du har loggat dem.</div>`;
   {let mb=$("#hist-more");if(!mb){mb=document.createElement("button");mb.id="hist-more";mb.className="pill ghost block";mb.style.marginTop="10px";$("#hist").after(mb);mb.onclick=()=>{HN+=20;renderLog()}}mb.hidden=list.length<=HN;mb.textContent=`Visa fler pass (${list.length-HN} till)`}
   renderProgress();try{renderExList()}catch(e){}
 }

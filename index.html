@@ -2988,7 +2988,7 @@ async function loadMyProfile(){
   const {data,error}=await SB.from("profiles").select("*").eq("user_id",SBUSER.id).maybeSingle();
   if(error||!data){MYPROF=null;if(location.hash==="#profil")renderProfile();return}
   MYPROF=data;MEINFO=Object.assign({},MEINFO||{},{avatarUrl:data.avatar_url||(MEINFO&&MEINFO.avatarUrl)||""});
-  await loadFriends();renderAvatar();try{renderHome()}catch(e){}if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#feed")renderFeed(true);planChanged();
+  await loadFriends();setTimeout(sugNotice,2500);renderAvatar();try{renderHome()}catch(e){}if(location.hash==="#profil")renderProfile();syncProfile();pendingFriend();frCheck();notiRefresh();if(location.hash==="#feed")renderFeed(true);planChanged();
 }
 async function loadFriends(){
   if(!SB||!SBUSER)return;
@@ -3235,7 +3235,7 @@ function openPeople(kind){const ids=kind==="followers"?FOLLOWERS:FRIENDS;
 function openBlocked(){openSheet(`<div><span class="small">Inställningar</span><h2>Blockerade</h2></div>${BLOCKED.length?`<div class="group">${BLOCKED.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3></div><button class="linkbtn" data-unb="${esc(id)}">Avblockera</button></div>`}).join("")}</div>`:`<div class="card"><p class="small">Du har inte blockerat någon.</p></div>`}`,()=>{
   document.querySelectorAll("#sheet-in [data-unb]").forEach(b=>b.onclick=()=>busy(b,async()=>{if(await socialRpc("varv_unblock",b.dataset.unb,"Blockeringen är borttagen."))closeSheet()}))})}
 function openEditProfile(){
-  if(!MYPROF)return;let exp=MYPROF.experience||"",pub=!!MYPROF.is_public;const cd=Object.assign({},set.card||{}),sh=Object.assign({},cd.share||{});
+  if(!MYPROF)return;let exp=MYPROF.experience||"",pub=!!MYPROF.is_public,sug=MYPROF.suggestable!==false;const cd=Object.assign({},set.card||{}),sh=Object.assign({},cd.share||{});
   const opts=FRIENDS.map(fid=>{const p=NAMES[fid];return p?`<option value="${esc(fid)}"${fid===MYPROF.partner_id?" selected":""}>${esc(handleTxt(p))}</option>`:""}).join("");
   openSheet(`<div class="ep-top">
      <button class="ep-av" id="ep-pic" type="button" aria-label="Byt profilbild"><span class="ep-avin">${avatarHtml()}</span><span class="pf-cam" aria-hidden="true">${CAM}</span></button>
@@ -3262,11 +3262,12 @@ function openEditProfile(){
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-cyan"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9.5" r="2.5"/><path d="M3 19a5.5 5.5 0 0 1 11 0M14.5 15.2A4.5 4.5 0 0 1 21 19"/></svg></span>Doubles</h3>
        <div class="ep-box"><div class="field"><label for="ep-partner">Din partner</label><select id="ep-partner"><option value="">Ingen</option>${opts}</select>${FRIENDS.length?"":`<span class="small">Följ din partner först, så går hen att välja här.</span>`}</div></div></section>
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-ink"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3"/></svg></span>Integritet</h3>
-       <div class="ep-box ep-sw">${swRow("ep-pub","Offentlig profil",pubTxt(pub),pub)}</div></section>
+       <div class="ep-box ep-sw">${swRow("ep-pub","Offentlig profil",pubTxt(pub),pub)}${"suggestable" in MYPROF?swRow("ep-sug","Kan föreslås för andra","Andra kan se ditt namn och din profilbild som ett förslag att följa.",sug):""}</div></section>
      <div class="ep-save"><p class="small au-msg" id="ep-msg" role="status" aria-live="polite"></p><button class="pill block" id="ep-go" type="submit">Spara</button></div>
    </form>`,()=>{
     const msg=$("#ep-msg");
     $("#ep-pub").onclick=()=>{pub=!pub;$("#ep-pub").setAttribute("aria-checked",pub);$("#ep-pub small").textContent=pubTxt(pub)};
+    {const es=$("#ep-sug");if(es)es.onclick=()=>{sug=!sug;es.setAttribute("aria-checked",sug)}}
     ["showName","showAge","showCls","showSim"].forEach(k=>{const dflt=k==="showCls"||k==="showSim",b=$("#ep-"+k);if(b)b.onclick=()=>{cd[k]=dflt?cd[k]===false:!cd[k];b.setAttribute("aria-checked",dflt?cd[k]!==false:cd[k])}});
     SHARE.forEach(([k])=>{const b=$("#ep-sh-"+k);if(b)b.onclick=()=>{sh[k]=k==="races"?sh[k]===false:!sh[k];b.setAttribute("aria-checked",k==="races"?sh[k]!==false:sh[k])}});
     $("#ep-pic").onclick=$("#ep-pic2").onclick=()=>$("#pf-av-file").click();
@@ -3279,7 +3280,7 @@ function openEditProfile(){
       const ag=Math.round(+$("#ep-age").value||0);if(ag>=14&&ag<=99)set.age=ag;
       cd.city=$("#ep-city").value.trim().slice(0,40);cd.bio=$("#ep-bio").value.trim().slice(0,200);cd.since=/^\d{4}-\d{2}$/.test($("#ep-since").value)?$("#ep-since").value:"";cd.share=sh;set.card=cd;saveSet();
       if(MYPROF)MYPROF.races_count=races;
-      const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub,card:cardPayload()};
+      const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub,card:cardPayload()};if("suggestable" in MYPROF)upd.suggestable=sug;
       const {error}=await SB.from("profiles").update(upd).eq("user_id",SBUSER.id);
       if(error){msg.textContent=profErr(error);msg.classList.add("bad");return}
       Object.assign(MYPROF,upd);await loadFriends();renderProfile();try{renderHome()}catch(e){}closeSheet();toast("Profilen är sparad");HAPTIC("success");if(location.hash==="#u/"+SBUSER.id)renderPerson(SBUSER.id)})};
@@ -5673,7 +5674,13 @@ function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p cla
     await new Promise(r=>setTimeout(r,Math.max(0,600-(Date.now()-t0))));busy=false;end()};
   document.addEventListener("touchend",()=>release(false),{passive:true});
   document.addEventListener("touchcancel",()=>release(true),{passive:true});})();
-/* VARV. är roligare tillsammans: de som följer dig och de som många du följer redan följer. Bara offentliga profiler och dina egna följare visas, och blockerade aldrig. */
+/* Informerar en gång om att även privata profiler kan föreslås, med möjlighet att stänga av direkt. */
+function sugNotice(){if(!MYPROF||!("suggestable" in MYPROF)||set.sugNotice)return;if(!$("#sheet").hidden||(typeof ONB_ON!=="undefined"&&ONB_ON)||!set.onboarded){setTimeout(sugNotice,4000);return}
+  const done=()=>{set.sugNotice=true;saveSet();closeSheet()};
+  openSheet(`<div><span class="small">En ändring</span><h2>Förslag på profiler</h2></div><p class="muted" style="margin:0">Från 19 november 2026 kan även privata profiler föreslås för personer ni har gemensamma personer med. Då visas bara ditt namn, din kod och din profilbild. Den som vill följa dig måste fortfarande få ditt godkännande.</p>
+   <button class="pill block" id="sn-ok">Okej</button><button class="pill ghost block" id="sn-off">Föreslå inte min profil</button><a class="linkbtn" href="legal/integritet.html" target="_blank" rel="noopener" style="justify-self:center;min-height:44px;display:flex;align-items:center">Läs integritetspolicyn</a>`,()=>{
+    $("#sn-ok").onclick=done;$("#sn-off").onclick=async()=>{const {error}=await SB.from("profiles").update({suggestable:false}).eq("user_id",SBUSER.id);if(error){toast("Kunde inte spara. Försök igen.");return}MYPROF.suggestable=false;done();toast("Din profil föreslås inte.")}})}
+/* VARV. är roligare tillsammans: de som följer dig och de som många du följer redan följer. Privata profiler föreslås bara vid gemensamma personer, och blockerade aldrig. */
 function knowList(){const skip=set.sugSkip||[],wait=(typeof FRQ_OUT!=="undefined"?FRQ_OUT:[]).map(r=>r.to_user),ok=id=>id&&id!==SBUSER.id&&!FRIENDS.includes(id)&&!wait.includes(id)&&!skip.includes(id)&&!BLOCKED.includes(id),seen=new Set(),out=[];
   const add=(p,why,kn)=>{if(!p||!ok(p.user_id)||seen.has(p.user_id))return;seen.add(p.user_id);out.push(Object.assign({},p,{why,kn}))};
   FOLLOWERS.forEach(id=>add(Object.assign({user_id:id},NAMES[id]||{}),"Följer dig",true));

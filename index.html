@@ -2902,7 +2902,7 @@ function openNewPassword(){
    och släpper in först när man är inloggad. I den inbäddade versionen sköts kontot separat. */
 let GATE_ON=false,GATE_RES=null,GATE_MODE="up";
 const GATE=new Promise(r=>{GATE_RES=r});
-const TERMS_VERSION="2026-10-30";
+const TERMS_VERSION="2026-11-05";
 function gateDone(){if(GATE_RES){GATE_RES();GATE_RES=null}}
 function gateInert(on){["main",".tabbar","#avatar-btn","#fr-btn","#nt-btn"].forEach(s=>{const e=document.querySelector(s);if(e)e.inert=on})}
 function showGate(){GATE_ON=true;$("#gate").hidden=false;gateInert(true);renderGate()}

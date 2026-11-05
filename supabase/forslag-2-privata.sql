@@ -1,4 +1,4 @@
--- VARV. – steg 2 av 2: privata profiler kan föreslås. Kör tidigast 19 november 2026, som integritetspolicyn anger.
+-- VARV. – steg 2 av 2: privata profiler kan föreslås. Kör efter forslag-3-eget-val.sql.
 -- Privata profiler föreslås bara om ni har gemensamma personer. Bara namn, kod och profilbild visas, och den som vill följa måste skicka en förfrågan.
 create or replace function public.varv_suggest()
 returns table (user_id uuid, username text, tag text, avatar_url text, is_public boolean, common bigint)

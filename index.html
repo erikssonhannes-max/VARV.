@@ -1441,6 +1441,21 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .lg-ex.open .lg-et small{display:none}
 .lg-exh .dnd-grip{flex:none;width:36px;margin:0 0 0 -8px}
 .lg-still .lg-ex{animation:none}
+.po-media{touch-action:manipulation;-webkit-user-select:none;user-select:none}
+.post .po-media.pc{display:grid;gap:4px;padding:16px;position:relative}
+.pc-t{font-size:var(--t-sub);font-weight:600;color:var(--muted)}
+.pc-big{font-size:var(--t-num-l);font-weight:700;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums;color:var(--ink)}
+.pc.feat .pc-big{font-size:var(--t-num-xl);letter-spacing:-.045em}
+.pc-bar{display:flex;gap:2px;height:8px;margin:8px 0 6px;border-radius:8px;overflow:hidden}.pc.feat .pc-bar{height:12px}
+.pc-bar i{display:block;min-width:3px;background:var(--muted)}.pc-bar i.r{background:var(--accent)}.pc-bar i.s{background:var(--green)}
+.pc-sum{font-size:var(--t-sub);font-weight:600;color:var(--ink)}.pc-n{font-size:var(--t-cap);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.post .po-media.big{padding:20px 18px;justify-items:center;text-align:center;gap:4px}
+.post .po-media.big .po-ic{position:static;width:48px;height:48px;border-radius:14px;margin-bottom:6px}
+.post .po-media.big .po-big{font-size:clamp(3.1rem,16vw,4rem)}
+.post .po-media.big .po-d{font-size:var(--t-body);font-weight:600;color:var(--ink);white-space:pre-line}
+.post .po-media.k-rekord.big .po-d{color:var(--good)}
+.post .po-who{display:flex;align-items:center;gap:8px}.po-ls{display:flex;flex:none}
+.po-la{width:22px;height:22px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-size:var(--t-micro);font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--tile)}.po-la+.po-la{margin-left:-6px}.po-la img{width:100%;height:100%;object-fit:cover}
 .kn{margin:12px 0;min-width:0}.kn-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}.kn-h h2{font-size:var(--t-head);letter-spacing:-.03em}.kn-h p{margin:2px 0 0;color:var(--muted);font-size:var(--t-sub)}
 .kn-s{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}.kn-s::-webkit-scrollbar{display:none}
 .kn-c{position:relative;flex:none;width:148px;display:grid;gap:10px;padding:16px 12px 12px;border-radius:var(--r);background:var(--tile);scroll-snap-align:center}
@@ -4295,7 +4310,7 @@ async function saveLG(btn){if(btn.disabled)return;
   const f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
-  const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;if(LG.ext){entry.ext=LG.ext;entry.src="health";if(LG.extCreated)entry.created=LG.extCreated}const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
+  const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;if(LG.ext){entry.ext=LG.ext;entry.src="health";if(LG.extCreated)entry.created=LG.extCreated}if(LG.fromLive&&LG.elapsed>0)entry.total=LG.elapsed;const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
   const before=weekStats().now.n;const ok=await addLog(entry);btn.disabled=false;if(!ok)return;LG.saved=true;dropDraft();if(LG.fromLive)clearLive();
   const after=weekStats().now.n;closeSheet();HAPTIC("success");
   const br=bch?benchSave(bch.id,bch.t,entry.date):null;
@@ -5905,13 +5920,19 @@ async function deletePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_
   if(okPost(a.image_url)){try{await SB.storage.from("posts").remove([a.image_url.slice(POSTIMG.length).split("?")[0]])}catch(e){}}
   D.acts=D.acts.filter(x=>x.id!==id);const el=document.querySelector(`.post[data-act="${id}"]`);if(el)el.remove();toast("Inlägget är borttaget")}
 
+/* Passkortet: tid, moment och en tidslinje. Äldre inlägg utan den formen visas som text. */
+function fdPass(a){if(a.kind!=="pass"||!a.detail)return null;const L=String(a.detail).split("\n"),head=L[0].trim();if(L.length<2||!/^(\d+:\d{2}(:\d{2})?|\d+ min)$/.test(head))return null;
+  let extra=0;const rows=[];L.slice(1).forEach(x=>{const m=x.match(/^och (\d+) övning/);if(m){extra=+m[1];return}const t=x.match(/(\d{1,2}:\d{2}(?::\d{2})?)\s*$/);rows.push({x,t:t?parseT(t[1]):0,run:/^Löp/i.test(x),st:S.find(q=>x.startsWith(q.n))})});
+  const avg=rows.filter(r=>r.t).reduce((c,r,i,A)=>c+r.t/A.length,0)||1,seg=rows.map(r=>`<i class="${r.run?"r":r.st?"s":"o"}" style="flex-grow:${r.t||avg}"></i>`).join("")+(extra?`<i class="o" style="flex-grow:${extra*avg}"></i>`:""),n=rows.length+extra,runs=rows.filter(r=>r.run).length,sts=rows.filter(r=>r.st).length;
+  const names=[...new Set(rows.filter(r=>!r.run).map(r=>r.st?r.st.n:r.x.replace(/\s*·.*$/,"").replace(/\s+\d.*$/,"")))],sum=[runs?`${runs} ${runs===1?"löpning":"löpningar"}`:"",sts?`${sts} ${sts===1?"station":"stationer"}`:"",!runs&&!sts?`${n} ${n===1?"övning":"övningar"}`:""].filter(Boolean).join(" · ");
+  return {head,seg,sum,names:names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""),feat:n>=16||a.title==="Racesimulering"}}
 function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),k=FD_KIND[a.kind]?a.kind:"pass",pic=okPost(a.image_url);
   return `<article class="post" data-act="${a.id}">
    <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small><span class="po-kt k-${pic?"pic":k}">${pic?"Bild":FD_KIND[k]}</span>${agoTxt(a.created_at)}${a.edited_at?" · ändrat":""}</small></div></div>${mine?`<button class="po-menu" data-pomenu="${a.id}" aria-label="Fler val för inlägget"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>`:""}</header>
-   ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:`<div class="po-media k-${k}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
+   ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:fdPass(a)?(c=>`<div class="po-media k-pass pc${c.feat?" feat":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}><span class="pc-t">${esc(a.title||"Pass")}</span><b class="pc-big">${esc(c.head)}</b><div class="pc-bar" aria-hidden="true">${c.seg}</div><span class="pc-sum">${esc(c.sum)}</span>${c.names?`<span class="pc-n">${esc(c.names)}</span>`:""}<span class="po-pop" aria-hidden="true">${THUMB}</span></div>`)(fdPass(a)):`<div class="po-media k-${k}${k!=="pass"?" big":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-ic" aria-hidden="true">${fdIcon(k)}</span>
      <span class="po-t">${esc(a.title||"")}</span>
-     ${big?`<b class="po-big">${esc(big)}</b>`:""}${a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():""}
+     ${big?`<b class="po-big">${esc(big)}</b>`:""}${a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":big&&dl[0].startsWith(big+" · ")?[dl[0].slice(big.length+3)].concat(dl.slice(1)).join("\n"):a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():""}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own" aria-hidden="true">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}<span>${(D.comments[a.id]||[]).length||""}</span></button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
@@ -5940,7 +5961,7 @@ function openComments(id,D){const a=D.acts.find(x=>x.id===id);if(!a)return;const
       D.comments[id]=(D.comments[id]||[]).filter(c=>c.id!==cid);upd();toast("Kommentaren är borttagen")};
     setTimeout(()=>inp.focus({preventScroll:true}),350)})}
 function fdCount(L){return L.length?String(L.length):""}
-function fdWho(L){const who=L.map(u=>u===SBUSER.id?"du":(NAMES[u]||{}).username).filter(Boolean);return who.length?`<p class="po-who">Gillas av <b>${esc(who[0])}</b>${who.length>1?` och ${who.length-1} till`:""}</p>`:""}
+function fdWho(L){const who=L.map(u=>u===SBUSER.id?"du":(NAMES[u]||{}).username).filter(Boolean);if(!who.length)return "";const av=L.slice(0,3).map(u=>{const p=u===SBUSER.id?MYPROF:(NAMES[u]||{});return avImg(p&&p.avatar_url,(p&&p.username)||"?","po-la")}).join("");return `<p class="po-who"><span class="po-ls" aria-hidden="true">${av}</span><span>Gillas av <b>${esc(who[0])}</b>${who.length>1?` och ${who.length-1} till`:""}</span></p>`}
 function fdIcon(k){const d={lopp:'<path d="M6 21V4h11l-2 4 2 4H6"/>',rekord:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4M8.5 20h7M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/>',pass:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'}[k];
   return `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`}
 async function fdLike(id,D,dbl){const art=document.querySelector(`.post[data-act="${id}"]`);if(!art)return;const a=D.acts.find(x=>x.id===id);if(!a||a.user_id===SBUSER.id)return;
@@ -6001,7 +6022,7 @@ async function postActivity(kind,title,detail,short){
   try{const {error}=await ins(detail);if(error&&short!==undefined&&String(detail||"").length>160)await ins(String(short||"").slice(0,160))}catch(e){}
 }
 /* Passet i flödet: tiden på första raden och en övning per rad. */
-function actDetail(e,max,compact){const head=`${e.min} min`,its=(e.items||[]),lines=its.map(it=>compact?`${it.n} · ${(it.sets||[]).length} set`:itemTxt(it));
+function actDetail(e,max,compact){const head=e.total?fmt(e.total):`${e.min} min`,its=(e.items||[]),tm=it=>nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t))?` · ${fmt(it.sec)}`:"",lines=its.map(it=>compact?`${it.n}${nz(it.sec)?` · ${fmt(it.sec)}`:` · ${(it.sets||[]).length} set`}`:itemTxt(it)+tm(it));
   const out=[head];let used=head.length;
   for(let i=0;i<lines.length;i++){const left=lines.length-i,tail=left>1?`och ${left-1} ${left-1===1?"övning":"övningar"} till`:"";
     if(used+1+lines[i].length+(tail?tail.length+1:0)>max){out.push(`och ${left} ${left===1?"övning":"övningar"} till`);break}
@@ -6333,9 +6354,9 @@ function prFromItems(items){const out=[];
     const o=out.find(o=>o.k===p.k);if(o){if(p.t<o.t)o.t=p.t}else out.push({k:p.k,t:p.t,n:prName(p.k)})}));
   return out}
 async function checkPRs(items){const nw=prFromItems(items);if(!nw.length)return;
-  nw.forEach(o=>{prDate(o.k);PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
+  nw.forEach(o=>{o.prev=+PRS[o.k]||0;prDate(o.k);PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
   const o=nw[0];setTimeout(()=>{toast(`Nytt rekord: ${o.n} ${fmt(o.t)}`);HAPTIC("success")},900);
-  nw.forEach(x=>postActivity("rekord",x.n,fmt(x.t)));
+  nw.forEach(x=>{const d=x.prev?Math.round(x.prev-x.t):0;postActivity("rekord",x.n,fmt(x.t)+(d>0?`\n${d<60?`${d} sekunder`:fmt(d)} snabbare`:""))});
 }
 
 

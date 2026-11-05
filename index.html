@@ -2027,7 +2027,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.9 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.10 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2072,7 +2072,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.9";
+const APPVER="1.1.10";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4409,7 +4409,7 @@ function liveRelease(){if(!(RACE&&!RACE.end))releaseWake()}
 function startLive(){if(!LG||!LG.items.length){toast("Lägg till minst en övning.");return}
   const lg=JSON.parse(JSON.stringify(Object.assign({},LG,{view:"main",pick:[],q:"",forLive:false,draft:false,live:true})));
   LIVE={ready:true,startedAt:null,pausedMs:0,pausedAt:null,cur:0,exAt:0,open:true,lg};LG.saved=true;dropDraft();saveLive();closeSheet();HAPTIC("success");liveWake();renderLive();liveTickStart();try{renderGo()}catch(e){}}
-function liveBegin(){LIVE.ready=false;LIVE.startedAt=Date.now();LIVE.pausedMs=0;LIVE.pausedAt=null;LIVE.cur=0;LIVE.exAt=0;LVIN=true;LVUNDO=null;saveLive();HAPTIC("medium");liveWake();renderLive();liveTickStart()}
+function liveBegin(){LIVE.ready=false;LIVE.startedAt=Date.now();LIVE.pausedMs=0;LIVE.pausedAt=null;LIVE.cur=0;LIVE.exAt=0;LVIN=true;LVUNDO=null;saveLive();HAPTIC("medium");liveWake();renderLive();liveTickStart();try{renderHome()}catch(e){}}
 function liveTickStart(){clearInterval(LIVETICK);if(LIVE)LIVETICK=setInterval(liveTick,250);liveTick()}
 /* Tiden från senaste passet där samma moment fanns. Löpning 3 jämförs med löpning 3, inte med första kilometern. */
 function lastSec(id,occ){for(const l of sortedLogs()){const m=(l.items||[]).filter(i=>i.ex===id&&nz(i.sec));if(m[occ])return +m[occ].sec}return null}
@@ -4533,7 +4533,7 @@ function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
   const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
   LG=Object.assign(L,{doneP:any?Math.round(doneN/(doneN+dropped)*100):null,live:false,fromLive:true,saved:false,edit:null,date:today(),elapsed:liveElapsed(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du skippade eller inte hann med är borttagna`:"Passet är klart",view:"finish",dropArm:false,forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
-function clearLive(){LIVE=null;LVUNDO=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
+function clearLive(){LIVE=null;LVUNDO=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderHome()}catch(e){}}
 function bindLive(){const v=$("#live");
   v.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;const d=b.dataset;
     if(b.id==="lv-go"){liveBegin();return}
@@ -4677,29 +4677,44 @@ function openDay(ds,pre){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.dat
 document.addEventListener("click",e=>{const b=e.target.closest("[data-wday]");if(b)openDay(b.dataset.wday)});
 /* Dagens hälsning: utgår från loppet, dagens pass, vad man har tränat och veckodagen.
    Samma text hela dagen, så den inte byter varje gång man öppnar appen. */
-function dayMsg(h,n){
-  const td=today(),N=n?", "+n:"",pick=a=>a[[...td].reduce((x,c)=>x+c.charCodeAt(0),0)%a.length];
-  const race=!set.noRace&&set.date?daysLeft():null,pl=goPlan(),doneToday=LOGS.some(l=>l.date===td);
-  const last=LOGS.map(l=>l.date).filter(Boolean).sort().pop(),idle=last?Math.round((new Date(td+"T12:00:00")-new Date(last+"T12:00:00"))/864e5):null;
-  const streak=weekStats().streak,wd=new Date().getDay(),hasPlan=PLAN.length&&race!==null&&race>0;
-  if(race===0)return "Racedag. Lycka till"+N+"!";
-  if(race===1)return "I morgon är det dags"+N+".";
-  if(race>1&&race<=7)return `${race} dagar kvar. Nu laddar vi.`;
-  if(doneToday)return pick(["Snyggt jobbat i dag"+N+".","Dagens pass är klart. Bra"+N+".","Ett varv närmare målet"+N+"."]);
-  if(idle!==null&&idle>=10)return "Välkommen tillbaka"+N+".";
-  if(pl&&pl.late)return pick(["Ett pass väntar. Du fixar det"+N+".","Perfekt läge att ta igen ett pass"+N+".","I dag tar vi igen ett pass"+N+"."]);
-  if(pl){if(h<5)return "Sov gott"+N+". Passet väntar i morgon.";
-    if(h<10)return pick(["God morgon"+N+". Dags att köra.","God morgon"+N+". Dagens pass väntar.","Morgon"+N+". Benen är redo."]);
-    if(h<17)return pick(["Dags för dagens pass"+N+".","Passet väntar på dig"+N+".","Hinner du ett pass i dag"+N+"?"]);
-    return pick(["Dagens pass väntar"+N+".","Kvällspass"+N+"? Härligt.","God kväll"+N+". Passet väntar."])}
-  if(hasPlan)return pick(["Vilodag"+N+". Benen tackar dig.","Vila i dag. Formen byggs nu.","Vilodag. Sov gott i natt"+N+"."]);
-  if(streak>=3)return `${streak} veckor i rad${N}. Fortsätt så.`;
-  if(h<5)return "God natt"+N+".";
-  if(wd===1)return pick(["Ny vecka, nya varv"+N+".","Måndag. Sätt tonen för veckan."]);
-  if(wd===5)return pick(["Fredag. Avsluta veckan starkt.","Fredag"+N+". Ett pass innan helgen?"]);
-  if(wd===0||wd===6)return pick(["Helg"+N+". Perfekt för ett långpass.","Helg. Tid för ett längre pass?"]);
-  return (h<10?"God morgon":h<18?"Redo för ett pass":"God kväll")+N+(h>=10&&h<18?"?":".");
-}
+/* Hälsningen på Hem följer det du har valt för dagen: pågående pass, loggat pass, vila eller inget ännu. Samma text hela dagen, ny text nästa dag. */
+const DAYQ={
+ doneH:["Bra jobbat","Starkt jobbat","Dagens jobb är gjort","Snyggt kört","Det där sitter","Så bygger man form","Ett varv närmare","Bockat och klart","Stabilt jobbat","Där satt det","Jobbet är gjort","Du levererade i dag","Så ska det se ut","Ännu ett pass i banken"],
+ doneM:["Nu får kroppen ta hand om resten.","Ett varv närmare målet.","Ät och sov ordentligt, så sitter det.","Passen du gör när det är vardag vinner loppet.","Det här är passet du tackar dig själv för på racedagen.","Drick, ät och njut av känslan.","Det räknas, varje gång.","Formen byggs av dagar som den här.","Lägg det till samlingen.","Nu kan du bocka av dagen med gott samvete.","Ett pass i taget, så blir det ett lopp.","Fortsätter du så här märks det på tiden.","Resten av dagen är din.","Återhämtningen börjar nu."],
+ doneLate:["Sov gott nu, du har gjort ditt.","Kvällens bästa träning är sömnen.","Lägg dig i tid, så sitter passet i morgon.","Nu är det soffan som gäller.","Benen har gjort sitt för i dag."],
+ restH:["Du förtjänar vilan","Bra val i dag","Vila är också träning","Vilodag, med gott samvete","Låt kroppen hinna ikapp","Njut av vilan","I dag laddar du","Skönt med en vilodag","I dag är vilan passet","Ta det lugnt i dag","Benen får ledigt","Smart att vila"],
+ restM:["Formen byggs när du återhämtar dig.","Benen tackar dig i morgon.","Starka atleter vet när de ska vila.","Muskler växer inte på gymmet, de växer nu.","Sov länge om du kan.","Ät bra och ta det lugnt.","Morgondagens pass börjar med dagens vila.","Ingen har vunnit ett lopp på att aldrig vila.","Du behöver inte göra något alls i dag.","Vilan är en del av planen.","Kroppen jobbar även när du inte gör det.","Passet kan vänta till i morgon."],
+ activeH:["Lugn rörelse i dag","Skönt med lite rörelse","Bra val i dag","Aktiv vila, smart val","I dag rör du dig lugnt","Rörelse utan press","Lätt och lugnt i dag","Kroppen tackar för lugnet"],
+ activeM:["Du håller kroppen igång utan att slita.","Lite rörelse gör benen pigga till nästa pass.","Ingen klocka, ingen stress.","Håll det så lätt att du kan prata hela tiden.","Rörelse är också återhämtning.","Frisk luft räknas också.","Ta det lugnt, passen kommer tillbaka.","Benen blir lätta av det här."],
+ askH:["Vad känner du i dag","Hur känns kroppen i dag","Vad blir det i dag","Vad säger benen i dag","Hur mår du i dag","Vad har du lust med i dag","Hur är läget i kroppen","Vad behöver du i dag","Redo för i dag","Hur vill du ha dagen"],
+ morningH:["God morgon","Ny dag, nytt val","Hur känns benen","Hur vaknade kroppen"],
+ lunchH:["Hur ser dagen ut","Hinner du ett lunchpass","Hur går dagen"],
+ eveningH:["God kväll","Hur blev dagen","Finns det ork kvar i kväll","Kvällspass eller soffan"],
+ askM:["Pass eller vila?","Pass eller vila? Båda är rätt om det är rätt för dig.","Lyssna på kroppen. Pass eller vila?","Kör eller ladda? Du väljer.","Pass eller vila? Säg till, så räknas det.","Träna hårt eller vila smart, du väljer.","Ett pass eller en lugn dag?","Är det en träningsdag eller en vilodag?"],
+ lateM:["Pass eller vila? Logga det innan du somnar.","Hann du träna? Eller blev det vila?","Lägg in dagen innan du somnar.","Pass eller vila? Säg till innan dagen är slut."],
+ nightH:["Sov gott","Sömn är också träning","Dags att sova","Natten bygger form"],
+ nightM:["Pass eller vila väljer du när du vaknat.","Kroppen bygger form medan du sover.","Vi ses i morgon.","Morgondagens pass börjar nu, med sömn."],
+ liveH:["Passet pågår","Kör på","Du är igång","Fortsätt så","Nu kör vi","Håll i"],
+ liveM:["Klockan finns i raden längst ned.","Tryck på raden längst ned för att fortsätta.","Ett moment i taget. Klockan finns längst ned.","Passet väntar i raden längst ned."],
+ backH:["Välkommen tillbaka","Kul att se dig igen","Där är du","Bra att du är här"],
+ backM:["Det är aldrig för sent att börja om. Pass eller vila?","Börja lugnt. Pass eller vila?","Ett pass räcker för att komma igång igen.","Ta det i din takt. Pass eller vila?"],
+ raceH:["Racedag","Nu är det dags","I dag gäller det","Dagen är här"],
+ raceM:["Lycka till.","Du har gjort jobbet. Nu får du njuta.","Spring ditt eget lopp.","Lita på träningen och börja lugnt."],
+ raceDoneM:["Du gjorde det.","Allt jobb ledde hit.","Var stolt över dagen.","Njut av den här dagen."]};
+function dayText(h,n){const td=today(),N=n?", "+n:"",dn=Math.floor(Date.parse(td+"T12:00:00Z")/864e5);
+  const pick=k=>{const a=DAYQ[k];return a[dn%a.length]},H=k=>{const t=pick(k),q=/^(Hur|Vad|Hinner|Finns|Redo|Kvällspass) /.test(t);return t+N+(q?"?":".")};
+  const race=!set.noRace&&set.date?daysLeft():null,near=race>1&&race<=7?`${race} dagar kvar. `:race===1?"I morgon är det dags. ":"",logs=LOGS.filter(l=>l&&l.date===td).length,r=(set.restDays||{})[td],pl=goPlan();
+  const last=LOGS.map(l=>l&&l.date).filter(Boolean).sort().pop(),idle=last?Math.round((new Date(td+"T12:00:00")-new Date(last+"T12:00:00"))/864e5):null;
+  if(LIVE&&!LIVE.ready)return [H("liveH"),pick("liveM")];
+  if(logs)return [H("doneH"),race===0?pick("raceDoneM"):near?near+"Nu får kroppen ladda om.":logs>1?`${logs} pass i dag. Ät och sov ordentligt.`:pick(h>=20||h<5?"doneLate":"doneM")];
+  if(race===0)return [H("raceH"),pick("raceM")];
+  if(r&&r.k==="active")return [H("activeH"),near?near+"Håll kroppen igång utan att slita.":pick("activeM")];
+  if(r)return [H("restH"),near?near+"Vilan är en del av laddningen.":pick("restM")];
+  if(h<5)return [H("nightH"),pick("nightM")];
+  if(h>=22)return [`Hur blev dagen${N}?`,pick("lateM")];
+  if(idle!==null&&idle>=10)return [H("backH"),pick("backM")];
+  const head=dn%2?"askH":h<10?"morningH":h>=11&&h<14?"lunchH":h>=17?"eveningH":"askH";
+  return [H(head),near?near+"Pass eller vila?":pl&&pl.late?"Ett pass väntar. Pass eller vila?":pl?`${pl.s.t} står på planen. Pass eller vila?`:pick("askM")]}
 
 /* ============ Hem: racetid i dag och svagaste station ============ */
 /* Uppskattad sluttid i dag. Löpningen från senaste loppet, 1 km-testet eller snittempot. Stationerna från dina rekord,
@@ -4747,7 +4762,7 @@ function renderHome(){try{renderGo()}catch(e){}try{renderHyroxHome()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];
     $("#h-date").textContent=new Date().toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-    $("#h-greet").textContent=greetLine(h,n);$("#h-msg").textContent=dayMsg(h,"")}}
+    const dt=dayText(h,n);$("#h-greet").textContent=dt[0];$("#h-msg").textContent=dt[1]}}
   try{renderWeekStrip()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";
@@ -5670,20 +5685,6 @@ async function renderFriends(force){
 function frDot(){try{fdDot()}catch(e){}const b=null;if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
 async function frCheck(){try{if(!SB||!SBUSER||!FRIENDS.length)return;await loadFriendData(true);frDot()}catch(e){}}
 
-/* Hälsning på Hem: efter tid på dygnet och om man tränat i dag */
-const GREET={
- done:["Starkt jobbat","Ett pass närmare målet","Det där sitter i kroppen nu","Dagens jobb är gjort","Så bygger man form"],
- doneLate:["Vila gott, du har förtjänat det","Bra jobbat i dag","Låt kroppen ta hand om resten"],
- early:["Morgonpasset sätter tonen","Tidigt uppe, starkt hela dagen","Världen sover, du tränar","Börja dagen med ett varv"],
- morning:["Dags att göra dagen","Bra dag att bli starkare","Ett pass i dag, en bättre tid sen"],
- lunch:["Perfekt läge för ett lunchpass","Lunchpass och klar till eftermiddagen","Ladda om med ett pass"],
- after:["Eftermiddagen är din","Ett pass före middagen","Byt skrivbordet mot banan"],
- evening:["Avsluta dagen starkt","Kvällen är gjord för ett pass","Ett pass till, sen soffan"],
- night:["Sömn är också träning","Vila nu, tävla sen","Kroppen bygger form när du sover"]};
-function greetLine(h,n){const done=LOGS.some(l=>l&&l.date===today());
-  const k=done?(h>=20||h<5?"doneLate":"done"):h>=5&&h<9?"early":h<11&&h>=9?"morning":h>=11&&h<14?"lunch":h>=14&&h<17?"after":h>=17&&h<22?"evening":"night";
-  const L=GREET[k],seed=[...today()+k].reduce((a,c)=>a+c.charCodeAt(0),0),t=L[seed%L.length];
-  return n?`${t}, ${n}.`:`${t}.`}
 /* ============ Vänner ============ */
 function setVnView(v){set.vnsub=v;$$("#v-vanner .vnv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#vn-seg [data-vn]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.vn===v))}
 $("#vn-seg").onclick=e=>{const b=e.target.closest("[data-vn]");if(!b)return;setVnView(b.dataset.vn);saveSet();renderVanner()};

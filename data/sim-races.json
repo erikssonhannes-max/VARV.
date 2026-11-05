@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-02",
+  "updated": "2026-11-05",
   "races": [
     {
       "key": "2026-11-07-actic-linkoping",
@@ -13,8 +13,37 @@
       "info": "Full simulering med 1 km löpning utomhus och åtta stationer inomhus. Singel och team. Starttiderna är ungefärliga.",
       "url": "https://www.actic.se/kurser/traningskurser/hyrox-race-simulation/?centerId=182",
       "source": "https://www.actic.se/kurs/hyrox-race-simulation-herr-single-linkoping-storgatan-2026-11-07/",
-      "checked": "2026-11-02",
+      "checked": "2026-11-05",
       "country": "Sverige"
+    },
+    {
+      "key": "2026-11-07-actic-varberg",
+      "title": "HYROX Race Simulation",
+      "organizer": "Actic",
+      "city": "Varberg",
+      "venue": "Actic Varberg Hajen",
+      "day": "2026-11-07",
+      "start_time": "09:00",
+      "price": "300 kr",
+      "info": "Singel och team, med olika starttider från 09:00 till 11:30. Flera starttider är fullbokade, så kontrollera vilka platser som finns kvar.",
+      "url": "https://www.actic.se/kurser/traningskurser/hyrox-race-simulation/",
+      "source": "https://www.actic.se/kurs/hyrox-race-simulation-dam-single-varberg-hajen-2026-11-07-5/",
+      "checked": "2026-11-05",
+      "country": "Sverige"
+    },
+    {
+      "key": "2026-11-07-traningsverkstan-huddinge",
+      "title": "HYROX Simulering",
+      "organizer": "Träningsverkstan",
+      "city": "Huddinge",
+      "venue": "Träningsverkstan, Elektronvägen 4",
+      "day": "2026-11-07",
+      "start_time": "09:00",
+      "info": "Full distans med singel, double och stafett, Open och Pro. Anmälan stängde 4 november.",
+      "url": "https://www.roxrace.com/r/hyrox-simulering-traningsverkstan-huddinge-sweden",
+      "source": "https://www.roxrace.com/r/hyrox-simulering-traningsverkstan-huddinge-sweden",
+      "country": "Sverige",
+      "checked": "2026-11-05"
     },
     {
       "key": "2026-11-14-ocr-factory-espoo",
@@ -28,8 +57,64 @@
       "info": "Simulering inomhus. Par lördag 14 november, singel, Pro och lag söndag 15 november. Vikterna avviker något från det officiella loppet. Anmälan stänger 8 november.",
       "url": "https://kauppa.ocrfactory.fi/cg/297/ninja-race-2022/",
       "source": "https://ocrfactory.fi/fi-fi/article/app/hyrox-race/22025/",
-      "checked": "2026-11-02",
+      "checked": "2026-11-05",
       "country": "Finland"
+    },
+    {
+      "key": "2026-11-15-dokken-naestved",
+      "title": "DOKKEN HYROX Simulationsløb",
+      "organizer": "Dokken",
+      "city": "Næstved",
+      "venue": "Profilbuen 1",
+      "day": "2026-11-15",
+      "info": "Uppgifterna kommer från en dansk evenemangskalender. Vi har inte hittat arrangörens egen anmälan, så kontrollera pris och start hos arrangören.",
+      "url": "https://xfitevent.dk/",
+      "source": "https://xfitevent.dk/",
+      "checked": "2026-11-05",
+      "country": "Danmark"
+    },
+    {
+      "key": "2026-11-28-beach-arena-linkoping",
+      "title": "HYROX Simulering 28 November",
+      "organizer": "Beach Arena",
+      "city": "Linköping",
+      "venue": "Beach Arena, Finnögatan 1",
+      "day": "2026-11-28",
+      "price": "Från 195 kr singel, 295 kr double",
+      "info": "Inomhus med 200 m löpning mellan stationerna, inte 1 km. Hel eller halv distans. Singel kostar 195 till 295 kr beroende på klass, double 295 till 595 kr per lag. Anmälan stänger 24 november. Exakta starttider kommer senast 26 november.",
+      "url": "https://www.roxrace.com/r/hyrox-simulering-28-november-beach-arena-linkoping",
+      "source": "https://www.roxrace.com/r/hyrox-simulering-28-november-beach-arena-linkoping",
+      "country": "Sverige",
+      "checked": "2026-11-05"
+    },
+    {
+      "key": "2026-11-28-friskis-orebro",
+      "title": "HYROX Simulation Race",
+      "organizer": "Friskis Örebro",
+      "city": "Örebro",
+      "venue": "Friskis Väster",
+      "day": "2026-11-28",
+      "start_time": "10:00",
+      "price": "Medlem 249 kr singel, 200 kr p.p. dubbel",
+      "info": "Singel från 10:00, dubbel från 13:00. Utan medlemskap 495 kr singel, 375 kr per person i dubbel. Löpning ute, stationer inne. Arrangören anger inte året, men 28 november är en lördag 2026. Kontrollera datum och platser vid anmälan.",
+      "url": "https://www.friskis.com/sv-se/orebro/event/hyrox-simulation-race",
+      "source": "https://www.friskis.com/sv-se/orebro/event/hyrox-simulation-race",
+      "checked": "2026-11-05",
+      "country": "Sverige"
+    },
+    {
+      "key": "2026-12-20-sport-health-odense",
+      "title": "HYROX Simulation",
+      "organizer": "Sport & Health",
+      "city": "Odense",
+      "venue": "Sport & Health Odense",
+      "day": "2026-12-20",
+      "price": "250 DKK singel, 500 DKK double",
+      "info": "Open, Pro eller halv distans. Medlemmar betalar halva priset. Anmälan via e-post och MobilePay. Sidan visar också ett äldre datum, så kontrollera datumet hos arrangören.",
+      "url": "https://www.sporthealth.dk/hyrox-1-1",
+      "source": "https://www.sporthealth.dk/hyrox-1-1",
+      "country": "Danmark",
+      "checked": "2026-11-05"
     },
     {
       "key": "2027-02-19-tehotapahtumat-kuopio",
@@ -43,7 +128,7 @@
       "info": "Åtta löpsträckor på 1 km och åtta stationer. Singel och lag fredag 19 februari från 17:00, par lördag 20 februari från 10:00.",
       "url": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
       "source": "https://www.tehotapahtumat.fi/kopio-hyrox-simulaatiokisa/",
-      "checked": "2026-11-02",
+      "checked": "2026-11-05",
       "country": "Finland"
     },
     {
@@ -68,12 +153,26 @@
       "city": "Göteborg",
       "venue": "Vagnhallen, Banehagsliden 5",
       "day": "2027-04-24",
-      "start_time": null,
+      "start_time": "09:00",
       "price": "425 kr singel, 750 kr doubles",
-      "info": "Doubles lördag 24 april, singel söndag 25 april. Priset höjs efter 31 december. Sista anmälningsdag 11 april.",
+      "info": "Doubles lördag 24 april från 09:00, singel söndag 25 april från 10:00. Open och Pro. Priset gäller till 31 december, sedan 475 och 850 kr. Sista anmälningsdag 11 april.",
       "url": "https://vagnhallen.wondr.se/w_application/applicants/form_view/6abe5b12-3e14-4526-92dd-00390a100517",
       "source": "https://vagnhallen.se/hyrox/",
-      "checked": "2026-11-02",
+      "checked": "2026-11-05",
+      "country": "Sverige"
+    },
+    {
+      "key": "2027-05-15-halsomagasinet-nykoping",
+      "title": "HYROX Simulering",
+      "organizer": "Hälsomagasinet Motion & Rehab",
+      "city": "Nyköping",
+      "venue": "Hälsomagasinet",
+      "day": "2027-05-15",
+      "price": "350 kr medlem, 400 kr övriga, per person",
+      "info": "8 km löpning och 8 stationer med officiella vikter. Singel och double, Open och Pro, samt mixed Open. Anmälan via receptionen, 0155-28 52 00. Starttider skickas ut en vecka före.",
+      "url": "https://halsomagasinet.se/hyrox/",
+      "source": "https://halsomagasinet.se/hyrox/",
+      "checked": "2026-11-05",
       "country": "Sverige"
     },
     {
@@ -103,8 +202,22 @@
       "info": "Nytt heat var 7:e minut. 140 platser. Anmälan stänger 27 maj.",
       "url": "https://www.roxrace.com/r/hyrox-simulering-maj-2027",
       "source": "https://www.crossfithighway.se/hyrox-sim/",
-      "checked": "2026-11-02",
+      "checked": "2026-11-05",
       "country": "Sverige"
+    },
+    {
+      "key": "2027-06-05-endorfin-alingsas",
+      "title": "Endorfin HYROX Race",
+      "organizer": "CrossFit Endorfin",
+      "city": "Alingsås",
+      "venue": "CrossFit Endorfin, Hemvägen 20C",
+      "day": "2027-06-05",
+      "price": "995 kr per lag",
+      "info": "Hyrox-inspirerat lopp för par, dam, herr och mixed, Open eller Pro. Arrangören anger både lördag 5 juni och söndag 7 juni, och 5 juni är lördagen. Kontrollera datumet vid anmälan.",
+      "url": "https://endorfin.se/endorfin-hyrox-race/",
+      "source": "https://endorfin.se/endorfin-hyrox-race/",
+      "country": "Sverige",
+      "checked": "2026-11-05"
     },
     {
       "key": "2027-08-14-saga-ft-steinkjer",

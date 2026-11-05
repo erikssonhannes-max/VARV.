@@ -757,16 +757,14 @@ details.more[open] summary{margin-bottom:6px}
 .pf-nums>div:nth-child(-n+2){border-bottom:1px solid var(--hair)}
 .pf-nums b{font-size:var(--t-num-l);font-weight:700;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
 .pf-nums b small{font-size:.55em;font-weight:600;color:var(--muted);letter-spacing:0}
-.pf-nums b.none,.pf-fgrid b.none{color:var(--muted);font-weight:500}
+.pf-nums b.none{color:var(--muted);font-weight:500}
 .pf-nums span{color:var(--muted);font-size:var(--t-cap)}
-.pf-facts{all:unset;box-sizing:border-box;display:grid;gap:14px;width:100%;background:var(--tile);border-radius:var(--r);padding:18px;cursor:pointer}
-.pf-fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px 12px}
-.pf-fgrid>span{display:grid;gap:2px;min-width:0}
-.pf-fgrid small{color:var(--muted);font-size:var(--t-cap)}
-.pf-fgrid b{font-size:var(--t-body);font-weight:600;letter-spacing:-.01em;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pf-fgrid i{font-style:normal;font-weight:400;color:var(--muted);font-size:.85em}
-.pf-fnote{color:var(--muted);font-size:var(--t-cap);line-height:1.4;border-top:1px solid var(--hair);padding-top:12px}
-.pf-more-rows{margin-top:10px}
+#v-profil .row{grid-template-columns:36px minmax(0,1fr) auto;gap:12px;padding:11px 16px;min-height:56px}
+#v-profil .row .badge{width:36px;height:36px;border-radius:10px;color:var(--ink)}
+#v-profil .row + .row::before{left:64px}
+#v-profil .row .chev{color:var(--muted)}
+#pf-more .sechead{margin:28px 0 8px}#pf-more .sechead h2{font-size:var(--t-sub);font-weight:600;letter-spacing:-.01em;color:var(--muted)}
+#pf-more .pagehead{margin-bottom:-4px}
 #pf-about{gap:14px}
 #pf-about-done{margin-top:6px}
 @media (prefers-reduced-motion:no-preference){.view.on #pf-main>*{animation:up .55s var(--ease) both}.view.on #pf-main>:nth-child(2){animation-delay:.05s}.view.on #pf-main>:nth-child(3){animation-delay:.1s}.view.on #pf-main>:nth-child(4){animation-delay:.15s}.view.on #pf-main>:nth-child(n+5){animation-delay:.2s}.pf-acts .pill:active,.pf-lvl:active,.pf-facts:active{transform:scale(.97);transition:transform .15s var(--ease)}}
@@ -1971,13 +1969,12 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <div class="sechead"><h2>Din träning</h2></div>
     <div class="pf-sum" id="pf-stats"></div>
     <div id="pf-social"></div>
-    <div class="sechead"><h2>Om mig</h2><button class="linkbtn" id="pf-about-edit">Ändra</button></div>
-    <button type="button" class="pf-facts" id="pf-facts" aria-label="Ändra dina uppgifter"></button>
-    <div class="group pf-more-rows">
-      <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
-      <button class="row" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l.9-5.4A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm till oss.</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls.</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.6"/><path d="M4 4v4.5h4.5"/></svg></span><div><h3>Gör om starttestet</h3><p>Uppdatera planen efter din form.</p></div><span class="chev">›</span></button>
+    <div class="sechead"><h2>Om mig</h2></div>
+    <div class="group">
+      <button class="row" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
+      <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.200 4 2.200 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.300-5.600"/><path d="M4 4v4.500h4.500"/></svg></span><div><h3>Gör om starttestet</h3><p>Uppdatera planen efter din form</p></div><span class="chev">›</span></button>
     </div>
     <div id="pf-about-home" hidden>
     <div class="card" id="pf-about">
@@ -1993,42 +1990,40 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
       <button type="button" class="pill block" id="pf-about-done">Klar</button>
     </div>
     </div>
-    <div class="sechead"><h2>Konto</h2></div>
+    <div class="sechead"><h2>Konto och inställningar</h2></div>
     <div class="group">
-      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser och kopplingar</p></div><span class="chev">›</span></button>
+      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, integritet och hjälp</p></div><span class="chev">›</span></button>
+      <button class="row" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.600 7.100L4 20l.9-5.400A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm</p></div><span class="chev">›</span></button>
     </div>
     <div class="group" id="pf-acc" style="margin-top:10px"></div>
     </div>
     <div id="pf-more" hidden>
     <div class="pagehead"><span class="eyebrow">Profil</span><h1>Inställningar.</h1></div>
-    <div class="sechead"><h2>Ljud och känsla</h2></div>
+    <div class="sechead"><h2>Utseende och ljud</h2></div>
     <div class="card" id="pf-set"></div>
-    <div class="sechead"><h2>Notiser</h2></div>
+    <div class="sechead"><h2>Notiser och kalender</h2></div>
     <div class="card" id="pf-push"></div>
-    <div class="sechead"><h2>Kalender</h2></div>
-    <div class="group"><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span><div><h3>Påminnelser för passen</h3><p>Lägg din plan i kalendern med en påminnelse före varje pass.</p></div><span class="chev">›</span></button></div>
+    <div class="group" style="margin-top:10px"><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2h-15z"/><path d="M10 20.500a2 2 0 0 0 4 0"/></svg></span><div><h3>Påminnelser för passen</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
     <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
     <div class="group" id="pf-con"></div></div>
+    <div class="sechead"><h2>Integritet och data</h2></div>
+    <div class="group">
+      <button class="row" id="pf-blocked"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></svg></span><div><h3>Blockerade</h3><p>De kan inte se eller följa dig</p></div><span class="chev">›</span></button>
+      <button class="row" id="pf-exp"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.500 10.500 12 15l4.500-4.500"/><path d="M5 20h14"/></svg></span><div><h3>Exportera mina data</h3><p>Pass, rekord och inställningar som en fil</p></div><span class="chev">›</span></button>
+      <label class="row" for="pf-imp-file" style="cursor:pointer"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.500 8.500 12 4l4.500 4.500"/><path d="M5 20h14"/></svg></span><div><h3>Importera data</h3><p>Läs in en tidigare export</p></div><span class="chev">›</span></label>
+    </div>
+    <div class="sechead"><h2>Hjälp och villkor</h2></div>
+    <div class="group">
+      <button class="row" id="pf-tour"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M9.700 9.500a2.400 2.400 0 1 1 3.600 2.100c-.8.500-1.300 1-1.300 1.900"/><path d="M12 17h.01"/></svg></span><div><h3>Visa genomgången</h3><p>En snabb tur genom appen</p></div><span class="chev">›</span></button>
+      <a class="row" href="legal/integritet.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.500 3v5.500c0 4.500-3 8-7.500 9.500-4.500-1.500-7.500-5-7.500-9.500V6z"/></svg></span><div><h3>Integritetspolicy</h3></div><span class="chev">↗</span></a>
+      <a class="row" href="legal/villkor.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><div><h3>Användarvillkor</h3></div><span class="chev">↗</span></a>
+    </div>
     <div class="sechead"><h2>Följ VARV.</h2></div>
     <div class="group">
-      <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge" style="color:var(--ink)"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
-      <a class="row" href="https://www.linkedin.com/company/varv" target="_blank" rel="noopener"><span class="badge" style="color:var(--ink)"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.79 2.66 4.79 6.12v5.43h-4v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span><div><h3>LinkedIn</h3><p>Nyheter om VARV.</p></div><span class="chev">↗</span></a>
+      <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
+      <a class="row" href="https://www.linkedin.com/company/varv" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.79 2.66 4.79 6.12v5.43h-4v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span><div><h3>LinkedIn</h3><p>Nyheter om VARV.</p></div><span class="chev">↗</span></a>
     </div>
-    <div class="sechead"><h2>Integritet</h2></div>
-    <div class="group"><button class="row" id="pf-blocked"><span class="badge">⊘</span><div><h3>Blockerade</h3><p>De du har blockerat kan inte se eller följa dig.</p></div><span class="chev">›</span></button></div>
-    <div class="sechead"><h2>Hjälp</h2></div>
-    <div class="group"><button class="row" id="pf-tour"><span class="badge">?</span><div><h3>Visa genomgången</h3><p>En snabb tur genom appens viktigaste delar.</p></div><span class="chev">›</span></button></div>
-    <div class="sechead"><h2>Integritet och villkor</h2></div>
-    <div class="group">
-      <a class="row" href="legal/integritet.html" target="_blank" rel="noopener"><span class="badge">§</span><div><h3>Integritetspolicy</h3><p>Vilka uppgifter vi sparar, varför och dina rättigheter.</p></div><span class="chev">↗</span></a>
-      <a class="row" href="legal/villkor.html" target="_blank" rel="noopener"><span class="badge">§</span><div><h3>Användarvillkor</h3><p>Regler för kontot och för att träna med VARV.</p></div><span class="chev">↗</span></a>
-    </div>
-    <div class="sechead"><h2>Dina data</h2></div>
-    <div class="group">
-      <button class="row" id="pf-exp"><span class="badge">↓</span><div><h3>Exportera mina data</h3><p>Pass, rekord och inställningar som en fil.</p></div><span class="chev">›</span></button>
-      <label class="row" for="pf-imp-file" style="cursor:pointer"><span class="badge">↑</span><div><h3>Importera data</h3><p>Läs in en tidigare export från VARV.</p></div><span class="chev">›</span></label>
-      <button class="row" id="pf-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar.</p></div><span></span></button>
-    </div>
+    <div class="group" style="margin-top:34px"><button class="row" id="pf-del"><span class="badge" style="color:var(--bad)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar</p></div><span></span></button></div>
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
@@ -2795,11 +2790,11 @@ function renderAccount(){
   const el=$("#pf-acc");if(!el)return;
   if(SBUSER){
     el.innerHTML=`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>${esc(SBUSER.email||"")}</p></div><span></span></div>
-      <button class="row" id="au-out"><span class="badge">↩</span><div><h3>Logga ut</h3><p>Dina data ligger kvar i kontot.</p></div><span class="chev">›</span></button>
-      <button class="row" id="au-del"><span class="badge" style="color:var(--bad)">✕</span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt i det.</p></div><span class="chev">›</span></button>`;
+      <button class="row" id="au-out"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.500h5.500v15H14"/><path d="M15 12H4M8 7.500 3.500 12 8 16.500"/></svg></span><div><h3>Logga ut</h3><p>Dina data ligger kvar i kontot</p></div><span class="chev">›</span></button>
+      <button class="row" id="au-del"><span class="badge" style="color:var(--bad)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt i det</p></div><span class="chev">›</span></button>`;
     $("#au-out").onclick=sbSignOut;$("#au-del").onclick=deleteAccount;
   }else{
-    el.innerHTML=`<button class="row" id="au-open"><span class="badge">→</span><div><h3>Logga in eller skapa konto</h3><p>Spara dina pass i ett konto och använd VARV. på flera enheter. Det du loggat hittills följer med.</p></div><span class="chev">›</span></button>`;
+    el.innerHTML=`<button class="row" id="au-open"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.500h5.500v15H14"/><path d="M3.500 12H15M10.500 7.500 15 12l-4.500 4.500"/></svg></span><div><h3>Logga in eller skapa konto</h3><p>Det du loggat hittills följer med</p></div><span class="chev">›</span></button>`;
     $("#au-open").onclick=()=>openAuth("in");
   }
 }
@@ -5467,7 +5462,7 @@ function renderProfile(){
   const db=mode==="db";
   if(SB){renderAccount();}else
   $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
-   :`<div class="row"><span class="badge">✓</span><div><h3>Sparas på den här enheten</h3><p>Allt ligger kvar i webbläsaren. Exportera dina data nedan för att flytta dem till en annan enhet. Inloggning med Google är på väg.</p></div><span></span></div>`;
+   :`<div class="row"><span class="badge">✓</span><div><h3>Sparas på den här enheten</h3><p>Allt ligger kvar i webbläsaren. Vill du flytta det kan du exportera under Inställningar.</p></div><span></span></div>`;
   const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=!fixed;$("#pf-name-fixed").textContent=set.name||"";$("#pf-name-set").hidden=fixed;
   $("#pf-name-note").textContent=fixed?"Namnet går inte att ändra.":"Skriv ditt namn. Det går inte att ändra efteråt.";
   if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";
@@ -5510,10 +5505,9 @@ function pfTrack(frac,play,el){el=el||$("#pf-track");if(!el)return;const unknown
   if(!RM()&&visible&&el._shown!=null&&Math.abs(el._shown-el._f)>.005){run(el._shown,0,900);return}
   put(el._f);dot.style.opacity=""}
 const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
-function renderFacts(){const el=$("#pf-facts");if(!el)return;
-  const f=[["Ålder",set.age,"år"],["Längd",set.height,"cm"],["Vikt",set.weight?String(set.weight).replace(".",","):null,"kg"],["1 km-test",set.test&&set.test.km?fmt(set.test.km):null],["Kön",SEXL[set.sex]],["Tempo",set.pace?fmt(set.pace):null,"/km"],["Maxpuls",set.maxhr,"bpm"],["Vilopuls",set.rhr,"bpm"],["VO2max",set.vo2]];
-  const miss=f.filter(x=>!x[1]).length;
-  el.innerHTML=`<span class="pf-fgrid">${f.map(([l,v,u])=>`<span><small>${l}</small><b${v?"":' class="none"'}>${v?esc(String(v))+(u?`<i> ${u}</i>`:""):"–"}</b></span>`).join("")}</span>${miss?`<span class="pf-fnote">${miss===1?"En uppgift saknas":`${miss} uppgifter saknas`}. Fyll i dem för en träffsäkrare plan.</span>`:""}`}
+function renderFacts(){const el=$("#pf-facts-sub");if(!el)return;
+  const have=[set.age&&set.age+" år",set.height&&set.height+" cm",set.weight&&String(set.weight).replace(".",",")+" kg"].filter(Boolean),miss=[set.age,set.height,set.weight,set.sex,set.pace,set.maxhr,set.rhr,set.vo2].filter(x=>!x).length;
+  el.textContent=have.length?have.join(" · ")+(miss?` · ${miss} saknas`:""):"Ålder, längd, puls och tempo"}
 /* Tyck till: meddelandet skrivs här och skickas från användarens egen e-post */
 const FB_MAIL="info@varvtraining.com";
 function openFeedback(){let kind="Förslag";
@@ -5528,7 +5522,7 @@ function openFeedback(){let kind="Förslag";
     $("#fb-send").onclick=()=>{const t=$("#fb-text").value.trim();if(!t){$("#fb-msg").textContent="Skriv ett meddelande först.";$("#fb-text").focus();return}
       location.href=`mailto:${FB_MAIL}?subject=${encodeURIComponent("VARV.: "+kind)}&body=${encodeURIComponent(t)}`;closeSheet();HAPTIC("success");toast("Din e-post öppnas.")}})}
 function openPfAbout(){openSheet(`<div><span class="small">Profil</span><h2>Om mig</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider. Allt utom namnet går att ändra.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
-$("#pf-about-edit").onclick=openPfAbout;$("#pf-facts").onclick=openPfAbout;
+$("#pf-facts").onclick=openPfAbout;
 $("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};
 function saveProfileFields(){set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
   {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);

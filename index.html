@@ -1530,27 +1530,37 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .so-ins p{margin:0;font-size:.9375rem;line-height:1.4}
 .so-ins p b{font-weight:600}.so-ins p span{color:var(--muted)}
 .so-ins .chev{margin-left:auto;color:var(--muted)}
-.so-week{display:grid;gap:22px}
-.so-ring{display:flex;align-items:center;gap:18px}
-.so-ring svg{width:84px;height:84px;flex:none;transform:rotate(-90deg)}
-.so-ring b{display:block;font-size:2.1875rem;line-height:1.05;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
-.so-ring b small{font-size:1.0625rem;font-weight:600;color:var(--muted);letter-spacing:-.02em}
-.so-ring p{margin:2px 0 0;color:var(--muted);font-size:.9375rem;line-height:1.4}
-.so-days{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.so-days div{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.75rem;color:var(--muted)}
-.so-days i{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;box-sizing:border-box;font-style:normal;font-size:.875rem;font-weight:700}
-.so-days i.done{background:var(--green);color:#fff}
-.so-days i.rest{background:var(--seg);color:var(--muted)}
-.so-days i.plan{border:2px dashed var(--hair)}
-.so-days i.now{border:2px solid var(--ink)}
-.so-bh{display:flex;justify-content:space-between;font-size:.8125rem;color:var(--muted)}
-.so-bars{position:relative;height:96px;display:flex;align-items:flex-end;gap:6px;margin-top:8px}
-.so-bars i{flex:1;border-radius:6px;background:var(--seg);transform-origin:bottom;min-height:3px}
-.so-bars i.hit{background:color-mix(in srgb,var(--green) 45%,var(--seg))}
-.so-bars i.now{background:var(--green)}
-.so-goal{position:absolute;left:0;right:0;border-top:1.5px dashed var(--muted);opacity:.6;pointer-events:none}
-.so-bx{display:flex;justify-content:space-between;font-size:.75rem;color:var(--muted);margin-top:6px}
-.so-bx b{color:var(--ink);font-weight:600}
+@keyframes soGrow{from{height:0!important;opacity:0}}
+@keyframes soGrowX{from{width:0}}
+.so-gap{margin-top:10px}
+.so-val{display:block;font-size:2.1875rem;line-height:1.05;font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums;margin-top:8px}
+.so-cap{display:block;min-height:1.4em;color:var(--muted);font-size:.9375rem;margin-top:4px}
+.so-plot{position:relative;height:132px;margin-top:16px}
+.so-grid{position:absolute;left:0;right:0;height:0;border-top:1px solid var(--hair);pointer-events:none}
+.so-grid span{position:absolute;right:0;bottom:2px;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;background:var(--tile);padding-left:5px}
+.so-cols{position:absolute;inset:0;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px}
+.so-col{display:flex;flex-direction:column;justify-content:flex-end;gap:2px;height:100%;padding:0;border:0;background:none;cursor:pointer;opacity:.5;transition:opacity .18s var(--ease);min-width:0}
+.so-col.on{opacity:1}.so-col:focus-visible{outline:2px solid var(--ink);outline-offset:1px;border-radius:4px}
+.so-col i{display:block;flex:none;background:var(--c);min-height:2px}
+.so-col i:first-child{border-radius:4px 4px 0 0}
+.so-col i:only-child{border-radius:4px 4px 0 0}
+.so-line .so-col{opacity:1;background:none}
+.so-line .so-col[disabled]{cursor:default}
+.so-plot svg{position:absolute;inset:0;display:block;width:100%;height:100%;overflow:visible}
+.so-xax{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:4px;margin-top:7px;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.so-xax span{text-align:center;white-space:nowrap;display:flex;justify-content:center}
+.so-xax b{color:var(--ink);font-weight:600}
+.so-lg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
+.so-lg div{min-width:0}.so-lg span{display:flex;align-items:center;gap:5px;font-size:.8125rem;color:var(--muted);white-space:nowrap}
+.so-lg span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.so-lg b{display:block;font-size:1rem;font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
+.so-hb{display:grid;gap:9px;margin-top:14px}
+.so-hb>div{display:grid;grid-template-columns:minmax(0,1fr) 22px;gap:2px 8px;align-items:center;font-size:.875rem}
+.so-hb b{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.so-hb u{grid-column:1/3;display:block;height:7px;border-radius:7px;background:var(--seg);overflow:hidden;text-decoration:none}
+.so-hb u i{display:block;height:100%;border-radius:7px;background:var(--green)}
+.so-hb .low b,.so-hb .low span{color:var(--muted)}
+.so-empty{color:var(--muted);font-size:.9375rem;line-height:1.45;margin:10px 0 0}
 .so-st{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .so-stt{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:0;border-radius:18px;background:var(--tile);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
 .so-stt>span{font-size:.8125rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1564,9 +1574,10 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .so-bul u{position:absolute;top:-4px;width:2px;height:14px;margin-left:-1px;border-radius:1px;background:var(--ink)}
 .so-note{margin:14px 0 0}
 @media (prefers-reduced-motion:no-preference){
-  .so-bars i{animation:grow 1.1s var(--spring) both}
+  .so-col i{animation:soGrow .55s var(--ease) both}
+  .so-hb u i{animation:soGrowX .7s var(--ease) both}
   .so-bul i{animation:soX 1.1s var(--ease) both}
-  .so-ring .fg{animation:soRing 1.1s var(--ease) both}
+  .so-line path.so-tr{animation:none}
   .so-line{stroke-dasharray:1;animation:soDraw 1.1s var(--ease) both}
 }
 @keyframes soX{from{transform:scaleX(0)}}
@@ -3664,6 +3675,57 @@ function soChart(pts,goal,W){const H=120,ys=pts.map(p=>p.v).concat(goal),lo=Math
    <text x="0" y="${gy>24?gy-7:gy+16}">Mål ${fmt(goal)}</text>
    <path class="so-line" pathLength="1" d="${d}" fill="none" stroke="url(#so-g)" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
    <circle cx="${x(pts.length-1)-1}" cy="${y(last.v)}" r="6" fill="var(--tile)" stroke="var(--accent2)" stroke-width="3"/></svg>`}
+/* Grafer under Översikt: tolv veckor. Tryck på en vecka så visas dess siffror ovanför grafen. */
+function soWeeks(n){const td=today(),ws=weekStart(td),out=[];for(let i=n-1;i>=0;i--){const d=new Date(ws+"T12:00:00");d.setDate(d.getDate()-i*7);const k=iso(d);out.push({k,wk:getWeek(k),now:!i,logs:[]})}
+  const m={};out.forEach(w=>m[w.k]=w);LOGS.forEach(l=>{if(l&&l.date&&l.date<=td&&m[weekStart(l.date)])m[weekStart(l.date)].logs.push(l)});return out}
+const SO_KIND=[["run","Löpning","var(--accent)"],["str","Styrka","var(--ink)"],["sta","Stationer","var(--green)"],["oth","Annat","var(--muted)"]];
+function soKind(t){return /^(Löpning|Intervaller|Lugn distans)$/.test(t)?"run":/^Styrka$/.test(t)?"str":/stationer|Racesimulering/.test(t||"")?"sta":"oth"}
+/* Sträcka och tid för löpning under en vecka. Tiden räknas bara där både sträcka och tid finns, så att tempot stämmer. */
+function soRun(w){let m=0,tm=0,tt=0;w.logs.forEach(l=>(l.items||[]).forEach(it=>{if(it.ex!=="run"&&it.ex!=="tread")return;let im=0,noT=0;(it.sets||[]).forEach(x=>{const d=+x.m||0;im+=d;if(d>=400&&+x.t>0){tm+=d;tt+=+x.t}else if(d>=400)noT+=d});
+    if(noT&&noT===im&&+it.sec>0){tm+=noT;tt+=+it.sec}m+=im}));const p=tm?tt/tm*1000:null;return {km:m/1000,pace:p&&p>=150&&p<=900?p:null}}
+const soKm=v=>(Math.round(v*10)/10).toString().replace(".",",")+" km";
+function soNice(max){const raw=max/2,e=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/e,st=(f<=1?1:f<=2?2:f<=5?5:10)*e;return st}
+const soWkName=w=>w.now?"Den här veckan":"Vecka "+w.wk;
+function soAxis(W){return `<div class="so-xax" aria-hidden="true">${W.map((w,i)=>`<span>${w.now?"<b>Nu</b>":(W.length-1-i)%4===0?"v"+w.wk:""}</span>`).join("")}</div>`}
+function soBars(W,vals,fmtV,fmtG,cap,colors,series){const tot=vals.map(v=>v.reduce((a,b)=>a+b,0)),st=soNice(Math.max(...tot,1)),top=Math.max(st*2,Math.ceil(Math.max(...tot)/st)*st);
+  let grid="";for(let g=st;g<=top;g+=st)grid+=`<div class="so-grid" style="bottom:${g/top*100}%"><span>${fmtG(g)}</span></div>`;
+  return `<div class="so-plot">${grid}<div class="so-grid" style="bottom:0"></div><div class="so-cols">${W.map((w,i)=>{const seg=vals[i].map((v,j)=>v?`<i style="--c:${colors[j]};height:${v/top*100}%;animation-delay:${i*30}ms"></i>`:"").reverse().join("");
+    return `<button type="button" class="so-col${w.now?" on":""}" data-h="${esc(fmtV(tot[i]))}" data-s="${esc(cap(i))}"${series?` data-v="${esc(vals[i].map(v=>Math.round(v)+" min").join("|"))}"`:""} aria-label="${esc(soWkName(w)+": "+fmtV(tot[i]))}">${seg}</button>`}).join("")}</div></div>${soAxis(W)}`}
+function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
+  // Träningstid per typ av pass
+  const mins=W.map(w=>SO_KIND.map(([k])=>w.logs.reduce((a,l)=>a+(soKind(l.type)===k?(+l.min||0):0),0))),tot=mins.map(v=>v.reduce((a,b)=>a+b,0)),act=tot.slice(0,L).filter(Boolean),avg=act.length?act.reduce((a,b)=>a+b,0)/act.length:0;
+  h+=`<div class="sechead"><h2>Träningstid</h2></div><section class="so-card" id="so-time" data-so><span class="so-k">Tid per vecka</span><b class="so-val">${pgMin(tot[L])}</b><span class="so-cap">${soCap(W,L,W[L].logs.length)}</span>`;
+  if(tot.some(Boolean))h+=soBars(W,mins,pgMin,g=>g>=60&&g%60===0?g/60+" h":g+" min",i=>soCap(W,i,W[i].logs.length),SO_KIND.map(x=>x[2]),true)+`<div class="so-lg">${SO_KIND.map(([k,l,c],j)=>`<div style="--c:${c}"><span>${l}</span><b data-lv="${j}">${Math.round(mins[L][j])} min</b></div>`).join("")}</div>${avg?`<p class="so-foot" style="margin-top:12px">I snitt ${pgMin(avg)} i veckan de veckor du har tränat.</p>`:""}`;
+  else h+=`<p class="so-empty">Logga ett pass, så visas din träningstid här.</p>`;
+  h+=`</section>`;
+  // Löpning: sträcka och tempo
+  const R=W.map(soRun),km=R.map(r=>r.km),pts=R.map((r,i)=>r.pace?{i,v:r.pace}:null).filter(Boolean);
+  h+=`<div class="sechead"><h2>Löpning</h2></div><section class="so-card" id="so-km" data-so><span class="so-k">Sträcka per vecka</span><b class="so-val">${soKm(km[L])}</b><span class="so-cap">${soWkName(W[L])}</span>`;
+  if(km.some(Boolean))h+=soBars(W,km.map(v=>[v]),soKm,g=>g+" km",i=>soWkName(W[i]),["var(--accent)"]);
+  else h+=`<p class="so-empty">Logga löpning med sträcka, så följer du dina kilometer här.</p>`;
+  h+=`</section>`;
+  const lastP=pts[pts.length-1];
+  h+=`<section class="so-card so-gap" id="so-pace" data-so><span class="so-k">Tempo</span><b class="so-val">${lastP?fmt(lastP.v)+" /km":"–"}</b><span class="so-cap">${lastP?soWkName(W[lastP.i]):""}</span>`;
+  if(pts.length){const H=132,vs=pts.map(p=>p.v),lo=Math.min(...vs),hi=Math.max(...vs),step=Math.max(15,Math.ceil((hi-lo||30)/2/15)*15),a=Math.floor(lo/step)*step,b=Math.max(a+step,Math.ceil(hi/step)*step),y=v=>+(8+(v-a)/(b-a)*(H-16)).toFixed(1),Wd=Math.max(240,cw-36),xx=i=>+((i+.5)/12*Wd).toFixed(1);
+    let grid="";for(let g=a;g<=b;g+=step)grid+=`<line x1="0" x2="${Wd}" y1="${y(g)}" y2="${y(g)}" stroke="var(--hair)"/><text x="${Wd}" y="${y(g)-4}" text-anchor="end">${fmt(g)}</text>`;
+    const d="M"+pts.map(p=>xx(p.i)+","+y(p.v)).join(" L");
+    h+=`<div class="so-plot so-line so-chart" style="margin-top:16px"><svg viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none" role="img" aria-label="Löptempo per vecka">${grid}${pts.length>1?`<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`:""}${pts.map(p=>`<circle cx="${xx(p.i)}" cy="${y(p.v)}" r="4" fill="var(--accent)" stroke="var(--tile)" stroke-width="2"/>`).join("")}<circle class="so-dot" cx="${xx(lastP.i)}" cy="${y(lastP.v)}" r="6" fill="var(--tile)" stroke="var(--accent)" stroke-width="3"/></svg>
+      <div class="so-cols">${W.map((w,i)=>{const p=R[i].pace;return p?`<button type="button" class="so-col${i===lastP.i?" on":""}" data-h="${fmt(p)} /km" data-s="${esc(soWkName(w))}" data-x="${xx(i)}" data-y="${y(p)}" aria-label="${esc(soWkName(w))}: ${fmt(p)} per km"></button>`:`<span></span>`}).join("")}</div></div>${soAxis(W)}<p class="so-foot" style="margin-top:10px">Högre upp i grafen är snabbare. Bygger på löpning med både sträcka och tid.</p>`}
+  else h+=`<p class="so-empty">Logga löpning med sträcka och tid, eller kör den med klockan, så följer du ditt tempo här.</p>`;
+  h+=`</section>`;
+  // Stationsträning: hur ofta varje station tränats senaste sex veckorna
+  const since=W[6].k,cnt=S.map(x=>LOGS.filter(l=>l&&l.date>=since&&l.date<=today()&&((l.items||[]).some(i=>i.ex===x.id)||(l.stations||[]).includes(x.n))).length),mx=Math.max(...cnt,1),anyC=cnt.some(Boolean),lows=S.filter((x,i)=>cnt[i]===Math.min(...cnt));
+  h+=`<div class="sechead"><h2>Stationsträning</h2></div><section class="so-card" id="so-sta"><span class="so-k">Antal pass, senaste sex veckorna</span>`;
+  h+=anyC?`<span class="so-cap" style="margin-top:8px;color:var(--ink);font-weight:500">${lows.length<=3?`Minst tränat: ${esc(lows.map(x=>x.n).join(", "))}.`:"Flera stationer behöver mer tid."}</span><div class="so-hb">${S.map((x,i)=>`<div${cnt[i]?"":' class="low"'}><span>${esc(x.n)}</span><b>${cnt[i]}</b><u aria-hidden="true"><i style="width:${cnt[i]/mx*100}%;animation-delay:${i*40}ms"></i></u></div>`).join("")}</div>`
+    :`<p class="so-empty">Logga en station, så ser du vilka du tränar mest och minst.</p>`;
+  return h+`</section>`}
+function soCap(W,i,n){return `${soWkName(W[i])}${n?` · ${n} pass`:""}`}
+function soBindSel(el){if(el._soSel)return;el._soSel=true;const pick=c=>{const card=c.closest("[data-so]");if(!card)return;card.querySelector(".so-val").textContent=c.dataset.h;card.querySelector(".so-cap").textContent=c.dataset.s;
+    card.querySelectorAll(".so-col").forEach(x=>x.classList.toggle("on",x===c));
+    if(c.dataset.v){const v=c.dataset.v.split("|");card.querySelectorAll("[data-lv]").forEach(b=>{b.textContent=v[+b.dataset.lv]})}
+    const dot=card.querySelector(".so-dot");if(dot&&c.dataset.x){dot.setAttribute("cx",c.dataset.x);dot.setAttribute("cy",c.dataset.y)}};
+  el.addEventListener("click",e=>{const c=e.target.closest(".so-col");if(c){pick(c);HAPTIC("light")}});
+  el.addEventListener("pointerover",e=>{if(e.pointerType!=="mouse")return;const c=e.target.closest(".so-col");if(c)pick(c)})}
 function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=set.g==="w"?"dam":"herr",goal=Math.round((+set.target||0)*60);
   const e=hxEstimate();try{soSnap(e)}catch(x){}
   let h="";
@@ -3693,30 +3755,15 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
   const w=hxWeak();
   if(w&&w.d>0)h+=`<button type="button" class="so-ins" data-st="${S.indexOf(w.s)}"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><p><b>${esc(w.s.n)} är där du har mest att hämta.</b> <span>Du ligger ${fmt(w.d)} efter snittet i Open ${cls}.</span></p><span class="chev" aria-hidden="true">›</span></button>`;
   else if(w)h+=`<div class="so-ins" style="cursor:default"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p><b>Du är före snittet i Open ${cls}</b> <span>på alla stationer du har loggat.</span></p></div>`;
-  // Veckan
-  const st=weekStats(),goalN=set.per||4,wk=PLAN[curWeekIdx()],mg=Math.max(30,wk?wk.ses.reduce((a,x)=>a+x.m,0):goalN*50),prog=Math.min(100,Math.round(st.now.min/mg*100));
-  const mon=new Date(weekStart(td)+"T12:00:00"),rd=set.restDays||{};
-  const days=DN.map((n,i)=>{const dd=new Date(mon);dd.setDate(dd.getDate()+i);const ds=iso(dd),dn=LOGS.some(l=>l.date===ds),pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),r=rd[ds]||(!dn&&ds<td&&(!set.since||ds>=set.since));
-    const c=dn?"done":ds===td?"now":r?"rest":pl?"plan":"",lbl=dd.toLocaleDateString("sv-SE",{weekday:"long"})+(dn?", pass loggat":ds===td?", i dag":r?", vila":pl?", pass planerat":"");
-    return `<div><span aria-hidden="true">${n[0]}</span><i class="${c}" role="img" aria-label="${lbl}">${dn?"✓":r&&!dn&&ds!==td?"–":""}</i></div>`}).join("");
-  const ws=weekStart(td),wm=Array(10).fill(0);LOGS.forEach(l=>{if(!l||!l.date||l.date>td)return;const k=Math.round((evD(ws)-evD(weekStart(l.date)))/6048e5);if(k>=0&&k<10)wm[9-k]+=(+l.min||0)});
-  const mx=Math.max(mg*1.15,...wm),gb=Math.round(mg/mx*96),w0=new Date(ws+"T12:00:00");w0.setDate(w0.getDate()-63);
-  const bars=wm.map((m,i)=>{const dd=new Date(w0);dd.setDate(dd.getDate()+i*7);return `<i class="${i===9?"now":m>=mg?"hit":""}" style="height:${Math.max(3,Math.round(m/mx*96))}px;animation-delay:${i*50}ms" title="Vecka ${getWeek(iso(dd))}: ${m} min"></i>`}).join("");
-  const left=goalN-st.now.n;
-  h+=`<div class="sechead"><h2>Den här veckan</h2><button type="button" class="linkbtn" data-solg="pass">Alla pass</button></div>
-   <section class="so-card so-week" id="so-week"><div class="so-ring"><svg viewBox="0 0 84 84" role="img" aria-label="${st.now.min} av ${mg} minuter"><circle cx="42" cy="42" r="34" fill="none" stroke="var(--seg)" stroke-width="10"/><circle class="fg" cx="42" cy="42" r="34" fill="none" stroke="var(--green)" stroke-width="10" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="${100-prog}"${prog?"":' opacity="0"'}/></svg>
-     <div><b>${st.now.min}<small> / ${mg} min</small></b><p>${st.now.n} av ${goalN} pass. ${left>0?`${left} kvar till veckomålet.`:"Veckomålet är klart."}</p></div></div>
-    <div class="so-days">${days}</div>
-    <div><div class="so-bh"><span>Minuter per vecka</span><span>Mål ${mg}</span></div>
-     <div class="so-bars" role="img" aria-label="Minuter per vecka de senaste tio veckorna: ${wm.join(", ")}"><span class="so-goal" style="bottom:${gb}px"></span>${bars}</div>
-     <div class="so-bx"><span>v. ${getWeek(iso(w0))}</span><b>Nu</b></div></div></section>`;
+  // Träningstid, löpning och stationsträning
+  h+=soTrainingHtml(el.clientWidth||$("#v-logg .wrap").clientWidth||358);
   // Stationer mot snittet i Open
   h+=`<div class="sechead"><h2>Stationer</h2><button type="button" class="linkbtn" data-solg="rekord">Rekord</button></div><div class="so-st">`+S.map((x,i)=>{const pr=stPR(i),o=stRef(x.id).open;
     if(!pr)return `<button type="button" class="so-stt" data-st="${i}"><span>${esc(x.n)}</span><b class="none">–</b><div class="so-bul" aria-hidden="true"><u style="left:66.7%"></u></div><small>Snittet ${fmt(o)}</small></button>`;
     const d=pr-o,f=Math.min(100,pr/(o*1.5)*100);
     return `<button type="button" class="so-stt" data-st="${i}" aria-label="${esc(x.n)}: ${fmt(pr)}, ${hxSigned(d)} mot snittet"><span>${esc(x.n)}</span><b>${fmt(pr)}</b><div class="so-bul" aria-hidden="true"><i class="${d>0?"slow":""}" style="width:${f}%"></i><u style="left:66.7%"></u></div><small class="${Math.abs(d)<1?"":d<0?"good":"bad"}">${hxSigned(d)} mot snittet</small></button>`}).join("")+`</div>
    <p class="small so-note">Strecket visar snittet i Open ${cls}. Dina tider är dina rekord och lopp.</p>`;
-  el.innerHTML=h;
+  el.innerHTML=h;soBindSel(el);
   el.querySelectorAll("[data-solg]").forEach(b=>b.onclick=()=>{setLgView(b.dataset.solg);window.scrollTo({top:0,behavior:"smooth"})});
   if(!el._ro&&window.ResizeObserver){let last=el.clientWidth;el._ro=new ResizeObserver(()=>{const cw=el.clientWidth;if(cw&&Math.abs(cw-last)>8){last=cw;renderOverview()}});el._ro.observe(el)}}
 function renderProgress(){try{renderLoad()}catch(e){}try{renderStats()}catch(e){}try{renderOverview()}catch(e){console.error(e)}if(typeof syncProfile==="function"&&MYPROF)syncProfile();PROG=progress();renderForm();sparkHome();renderMedals();checkNewMedals();if(DBH&&ME)renderComm()}
@@ -3731,7 +3778,7 @@ const TOUR=[
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
  {v:"logg",lg:"form",t:'.tab[data-v="logg"]',h:"Statistik",p:"Sista fliken. All din data: träningsprofil, stationsbalans, aktivitet vecka för vecka och dina lopp."},
  {v:"logg",lg:"form",t:"#so-est",h:"Statistik: din sluttid",p:"Din beräknade sluttid i dag, hur den har ändrats vecka för vecka och var tiden går: löpning, stationer och Roxzone."},
- {v:"logg",lg:"form",t:"#so-week",h:"Statistik: veckan",p:"Minuter mot veckomålet, vilka dagar du har tränat och de senaste tio veckorna. Under ser du varje station mot snittet i Open."},
+ {v:"logg",lg:"form",t:"#so-time",h:"Statistik: din träning",p:"Hur mycket du tränar vecka för vecka, ditt löptempo och vilka stationer du tränar minst. Tryck på en vecka för att se dess siffror."},
  {v:"logg",lg:"form",t:"#avatar-btn",h:"Din profil",p:"Uppe till höger på alla flikar. Konto, klass, pulszoner, kopplingar, dina data och den här genomgången igen."},
  {v:"hem",c:1,end:1,h:"Du är redo.",p:"Logga ditt första pass så börjar formkurvan stiga. Lycka till med träningen."}];
 let TI=0,TON=false;

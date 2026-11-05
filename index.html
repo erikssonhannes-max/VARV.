@@ -1511,6 +1511,9 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .wd-legend{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:var(--t-cap);color:var(--muted)}
 .wd-today{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;background:var(--card);border-radius:14px;padding:8px 8px 8px 14px;min-height:44px}
 .wd-today[hidden]{display:none}
+.wd-today.ask{display:grid;justify-content:stretch;justify-items:center;gap:10px;padding:12px}
+.wd-today.ask .wd-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
+.wd-today.ask .wd-rb{justify-content:center;min-height:44px;padding:0 8px}
 .wd-q{display:inline-flex;align-items:center;gap:8px;font-size:var(--t-sub);font-weight:600}
 .wd-q span{font-weight:400}.wd-q b{font-weight:600}
 .wd-q i,.wd-rb i,.dy-rest i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
@@ -4538,7 +4541,7 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
 /* Vila i dag: en fråga direkt i veckokortet, så att man inte behöver veta att dagarna går att trycka på */
 function restTxt(r){if(!r)return "";if(r.k!=="active")return "Vilodag";const x=[r.what||"Aktiv vila",r.km?String(r.km).replace(".",",")+" km":"",r.min?r.min+" min":""].filter(Boolean);return "Aktiv vila · "+x.join(" · ")}
 function renderRestPrompt(){const el=$("#h-rest");if(!el)return;const td=today(),r=(set.restDays||{})[td],dn=LOGS.some(l=>l.date===td);
-  if(dn){el.hidden=true;el.innerHTML="";return}el.hidden=false;
+  if(dn){el.hidden=true;el.innerHTML="";return}el.hidden=false;el.classList.toggle("ask",!r);
   el.innerHTML=r?`<span class="wd-q"><i class="${r.k==="active"?"k-active":"k-rest"}" aria-hidden="true"></i><span>I dag: <b>${esc(restTxt(r))}</b></span></span><button type="button" class="linkbtn" id="rq-edit">Ändra</button>`
    :`<span class="wd-q">Vilar du i dag?</span><span class="wd-btns"><button type="button" class="wd-rb" id="rq-rest"><i class="k-rest" aria-hidden="true"></i>Vilodag</button><button type="button" class="wd-rb" id="rq-active"><i class="k-active" aria-hidden="true"></i>Aktiv vila</button></span>`;
   const q=id=>el.querySelector(id);

@@ -311,6 +311,17 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .toast.on{opacity:1;transform:translateX(-50%)}
 .toast.act.on{pointer-events:auto;display:flex;align-items:center;gap:14px;padding-right:8px}
 .toast-btn{border:0;background:none;color:var(--accent2);font:inherit;font-weight:700;padding:6px 10px;cursor:pointer;min-height:32px}
+.hist-q{display:block;box-sizing:border-box;width:100%;min-height:44px;margin-bottom:10px;padding:10px 16px;border:0;border-radius:980px;background:var(--tile);color:var(--ink);font:400 var(--t-body)/1.3 var(--f);-webkit-appearance:none;appearance:none}.hist-q::placeholder{color:var(--muted)}
+.hist-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:22px 0 10px}.hist-h h2{font-size:var(--t-head);letter-spacing:-.03em}
+.hist-sub{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#hist .hrow>div:nth-child(2){min-width:0}
+.hc{display:grid;gap:8px;margin-bottom:10px}
+.hc-top{display:flex;align-items:center;justify-content:space-between}.hc-top b{font-weight:600;font-size:var(--t-body)}
+.hc-nav{width:44px;height:44px;margin:-6px;border:0;background:none;color:var(--link);font-size:var(--t-head);cursor:pointer}.hc-nav:disabled{color:var(--hair);cursor:default}
+.hc-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;justify-items:center}.hc-g small{color:var(--muted);font-size:var(--t-cap)}
+.hc-d{width:100%;max-width:44px;aspect-ratio:1;min-height:38px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:var(--t-sub);font-variant-numeric:tabular-nums;padding:0}
+.hc-d.has{background:var(--green);color:#fff;font-weight:600;cursor:pointer}.hc-d.now{box-shadow:inset 0 0 0 2px var(--ink);color:var(--ink)}.hc-d.has.now{color:#fff}.hc-d.sel{outline:2px solid var(--ink);outline-offset:2px}
+.go-prep-h{display:flex;justify-content:space-between;align-items:baseline}
 .hist-wk{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px 6px;font-size:var(--t-cap);color:var(--muted)}.hist-wk b{color:var(--ink);font-weight:600;font-size:var(--t-sub)}
 .hist-wk + .row::before{display:none}
 .st-nav{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
@@ -511,7 +522,6 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .small a,.note a,p a{color:var(--link);text-decoration:none}
 .today .acts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .today .acts .pill{padding-inline:14px}
-#hist-more{background:var(--tile)}
 .close:focus:not(:focus-visible){outline:none}
 /* Kontokrav */
 /* Första start, steg för steg */
@@ -1842,24 +1852,10 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     <div class="card strava" id="strava" hidden></div>
 
     <div class="lgv" data-v="pass" hidden>
-    <div id="lg-prep"></div>
-    <div class="card">
-      <div class="ringwrap">
-        <svg class="ring" viewBox="0 0 120 120" aria-hidden="true">
-          <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient>
-          <linearGradient id="rg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--green)"/><stop offset="1" stop-color="var(--green2)"/></linearGradient></defs>
-          <circle class="bgc" cx="60" cy="60" r="52"/>
-          <circle class="fg" id="ringfg" cx="60" cy="60" r="52" stroke-dasharray="326.73" stroke-dashoffset="326.73" transform="rotate(-90 60 60)"/>
-          <circle class="bgc2" cx="60" cy="60" r="37"/>
-          <circle class="fg2" id="ringfg2" cx="60" cy="60" r="37" stroke-dasharray="232.48" stroke-dashoffset="232.48" transform="rotate(-90 60 60)"/>
-        </svg>
-        <div class="ringtxt"><b id="r-count">0/4</b><span class="leg"><i style="background:var(--accent)"></i>pass denna vecka</span><span class="leg"><i style="background:var(--green)"></i><span id="r-min">0 av 200 min</span></span></div>
-      </div>
-      <div class="chart"><div class="lbl" style="margin-bottom:6px">Minuter per vecka</div><svg id="chart" viewBox="0 0 320 130"></svg></div>
-    </div>
-
-    <div class="sechead"><h2>Historik</h2><span class="small" id="hist-count"></span></div>
+    <input type="search" id="hist-q" class="hist-q" placeholder="Sök pass eller övning" autocomplete="off" aria-label="Sök bland dina pass">
+    <div id="hist-cal"></div>
     <div class="filters" id="filters"></div>
+    <div class="hist-h"><h2 id="hist-title"></h2><span class="small" id="hist-count"></span></div>
     <div class="group" id="hist"></div>
     </div>
     <div class="lgv" data-v="form">
@@ -2156,12 +2152,6 @@ function divText(){
 }
 
 /* ============ Effekter ============ */
-let RINGS={a:0,b:0};
-function drawRings(reset){
-  const a=$("#ringfg"),b=$("#ringfg2");if(!a)return;
-  if(reset&&!RM()){a.style.transition="none";b.style.transition="none";a.style.strokeDashoffset=326.73;b.style.strokeDashoffset=232.48;a.getBoundingClientRect();a.style.transition="";b.style.transition=""}
-  requestAnimationFrame(()=>{a.style.strokeDashoffset=326.73*(1-RINGS.a);b.style.strokeDashoffset=232.48*(1-RINGS.b)});
-}
 function countUp(el){
   if(RM()||!el)return;const txt=el.textContent.trim();let m;
   const dur=800,t0=performance.now();let f;
@@ -3869,7 +3859,7 @@ $("#prs").onclick=e=>{const b=e.target.closest("[data-pr]");if(b)openPR(b.datase
 $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
   openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><p class="small">Välj vad du vill lägga in en tid för. Vikterna gäller ${esc(divText())}.</p><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k])=>`<button class="row nob" data-pk="${k}"><div><h3>${esc(prLabel(k))}</h3><p>${tg[k]!=null?"Målet för din måltid är "+fmt(tg[k]):"Din bästa tid"}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
     $("#pr-pick").onclick=e=>{const b=e.target.closest("[data-pk]");if(b)openPR(b.dataset.pk)}})};
-function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));if(v==="pass")try{drawRings(true)}catch(e){}}
+function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
 function setPlanEdit(on){$("#p-edit").hidden=!on;$("#p-edit-btn").setAttribute("aria-expanded",on);$("#p-edit-btn").textContent=on?"Stäng":"Ändra plan"}
 $("#p-edit-btn").onclick=()=>setPlanEdit($("#p-edit").hidden);
@@ -3959,7 +3949,7 @@ function goHtml(){const prep=(set.tpls||[]).slice().reverse(),pl=goPlan();
    <button class="go g-pre" data-go="pre"><span class="go-ic">${goIc("pre")}</span><b>Färdiga pass</b><small>${PRESETS.length} pass för Hyrox</small></button>
    <button class="go g-prep" data-go="prep"><span class="go-ic">${goIc("prep")}</span><b>Förbered</b><small>Klart när du når gymmet</small></button>
    <button class="go g-after" data-go="after"><span class="go-ic">${goIc("after")}</span><b>Redan kört?</b><small>Logga i efterhand</small></button></div>
-   ${prep.length?`<div class="go-prep"><span class="lbl">Redo att köras</span><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
+   ${prep.length?`<div class="go-prep"><div class="go-prep-h"><span class="lbl">Redo att köras</span><button type="button" class="linkbtn" data-prep-manage>Ändra</button></div><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
 /* Dagens pass från planen: visa övningarna innan man startar */
 function planItems(x){const out=[];if(/Intervall|Löpning|distans/.test(x.t))out.push("Löpning");(x.s||[]).forEach(n=>{if(!out.includes(n))out.push(n)});return out}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-dplan]");if(!b)return;const [wi,si]=b.dataset.dplan.split(":").map(Number),w=PLAN[wi],x=w&&w.ses[si];if(!x)return;
@@ -3974,6 +3964,7 @@ function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stat
    <button class="pill ghost block" id="pp-log">Redan kört? Logga det</button>`,()=>{
     $("#pp-go").onclick=()=>prefill(Object.assign({start:true},o));
     $("#pp-log").onclick=()=>prefill(Object.assign({fresh:true},o))})}
+document.addEventListener("click",e=>{if(!e.target.closest("[data-prep-manage]"))return;openSheet(`<div><span class="small">Sparade pass</span><h2>Redo att köras</h2></div><div id="hb-now" class="lg-grp prep-l">${prepRows()}</div>`)});
 function renderGo(){const el=$("#h-go");if(!el)return;el.innerHTML=LIVE?"":`${goHtml()}`}
 function openHub(){if(LIVE){openLogger();return}openSheet(`<div><span class="small">Nytt pass</span><h2>Vad blir det i dag?</h2></div><div class="go-wrap">${goHtml()}</div>`)}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;const k=b.dataset.go;
@@ -4455,12 +4446,50 @@ async function fixPRs(oldItems){let ch=false;const keys=new Set();
   if(ch){await savePRs();try{renderPRs()}catch(e){}}}
 function prefill(o){openLogger({type:o.type,min:o.min,note:o.note,plan:o.plan,stations:o.stations,kicker:"Från din plan",fresh:o.fresh,forLive:o.forLive});if(o.start&&LG.items.length)startLive()}
 function openLogSheet(){openLogger()}
-let filt="Alla";
-$("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;renderLog()};
-$("#hist").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset&&e.target.dataset.edit)openEditLog(e.target.dataset.edit)});
-$("#hist").addEventListener("click",e=>{const b=e.target.closest(".del");if(!b){const r=e.target.closest("[data-edit]");if(r)openEditLog(r.dataset.edit);return}
-  if(b.classList.contains("confirm")){delWithUndo(b.dataset.id)}
-  else{b.classList.add("confirm");b.textContent="Ta bort?";setTimeout(()=>{if(b.isConnected){b.classList.remove("confirm");b.textContent="Ta bort"}},3000)}});
+/* Passhistoriken: en månad i taget med kalender. Sökningen letar i alla månader. */
+let filt="Alla",HM=null,HD=null,HQ="";
+const histMonth=d=>String(d||"").slice(0,7);
+function histNorm(l){return [l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
+function histRow(l){const d=new Date(l.date+"T12:00:00"),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))],sub=names.length?names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""):(l.stations||[]).join(", "),wd=d.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
+  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}</div><span class="chev">›</span></div>`}
+function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||HQ){el.innerHTML="";return}
+  const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
+  LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
+  let days="";for(let i=0;i<lead;i++)days+="<span></span>";
+  for(let i=1;i<=n;i++){const ds=`${HM}-${String(i).padStart(2,"0")}`,c=byDay[ds]||0;days+=`<button type="button" class="hc-d${c?" has":""}${ds===td?" now":""}${ds===HD?" sel":""}" data-hd="${ds}"${c?"":" disabled"} aria-label="${i} ${MONF[m-1]}${c?`, ${c} pass`:""}">${i}</button>`}
+  el.innerHTML=`<div class="hc card"><div class="hc-top"><button type="button" class="hc-nav" data-hm="-1" aria-label="Föregående månad"${HM<=histMonth(oldest)?" disabled":""}>‹</button><b>${MONF[m-1].replace(/^./,c=>c.toUpperCase())} ${y}</b><button type="button" class="hc-nav" data-hm="1" aria-label="Nästa månad"${HM>=histMonth(td)?" disabled":""}>›</button></div><div class="hc-g" aria-hidden="true">${DN.map(x=>`<small>${x[0]}</small>`).join("")}</div><div class="hc-g">${days}</div></div>`}
+function renderHist(){const q=HQ.trim().toLowerCase(),types=["Alla",...new Set(LOGS.map(l=>l.type))];if(!types.includes(filt))filt="Alla";
+  $("#filters").innerHTML=types.length>2?types.map(t=>`<button class="chip" data-f="${esc(t)}" aria-pressed="${t===filt}">${esc(t)}</button>`).join(""):"";
+  const all=sortedLogs().filter(l=>l.date&&(filt==="Alla"||l.type===filt));
+  if(!HM||histMonth(HM+"-01")>histMonth(today()))HM=histMonth(today());
+  const list=all.filter(l=>q?q.split(/\s+/).every(t=>histNorm(l).includes(t)):HD?l.date===HD:histMonth(l.date)===HM),mins=list.reduce((a,l)=>a+(+l.min||0),0);
+  renderHistCal();
+  const [y,m]=HM.split("-").map(Number);
+  $("#hist-title").textContent=q?"Sökresultat":HD?new Date(HD+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long"}):"Pass i "+MONF[m-1];
+  $("#hist-count").innerHTML=list.length?`${list.length} pass · ${pgMin(mins)}${HD?` · <button type="button" class="linkbtn" data-hclear>Hela månaden</button>`:""}`:"";
+  $("#hist").innerHTML=list.length?list.map(histRow).join(""):`<div class="empty">${!LOGS.length?"Inga pass ännu. Dina pass visas här när du har loggat dem.":q?"Inga pass matchar sökningen.":"Inga pass den här månaden."}</div>`}
+/* Ett loggat pass i läsläge */
+function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=new Date(l.date+"T12:00:00"),its=l.items||[],isRace=l.race&&raceLogs().some(x=>x.id===id);
+  const rows=its.map(i=>{const t=itemTxt(i),g=t===i.n?"":t.slice(i.n.length+1),own=nz(i.sec)&&!(i.sets||[]).some(x=>nz(x.t));return `<li class="tl-${lvIsRun(i)?"run":i.st?"st":"ot"}"><i aria-hidden="true"></i><b>${esc(i.n)}</b>${g||own?`<span>${esc([g,own?fmt(i.sec):""].filter(Boolean).join(" · "))}</span>`:""}</li>`}).join("");
+  openSheet(`<div><span class="small">${esc(d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</span><h2>${esc(l.type)}</h2></div>
+   <div class="facts3"><div><small>Tid</small><b>${pgMin(+l.min||0)}</b></div><div><small>Känsla</small><b>${l.rpe?l.rpe+" av 5":"–"}</b></div><div><small>Övningar</small><b>${its.length||(l.stations||[]).length||"–"}</b></div></div>
+   ${l.bench&&+l.bench.t>0?`<p class="muted" style="margin:0">Din tid: <b style="color:var(--ink);font-variant-numeric:tabular-nums">${fmt(l.bench.t)}</b></p>`:""}
+   ${rows?`<div class="card"><ol class="tl">${rows}</ol></div>`:(l.stations||[]).length?`<p class="muted" style="margin:0">${esc(l.stations.join(", "))}</p>`:""}
+   ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
+   ${isRace?`<button class="pill ghost block" id="ld-race">Visa loppanalys</button>`:""}
+   ${its.length?`<button class="pill block" id="ld-again">Kör passet igen</button>`:""}
+   <button class="pill ghost block" id="ld-edit">Ändra passet</button>`,()=>{
+    const ag=$("#ld-again");if(ag)ag.onclick=()=>{const c=JSON.parse(JSON.stringify(its));c.forEach(i=>{delete i.sec;if((i.sets||[]).length===1&&LGCOLS[i.k]&&i.k!=="t")delete i.sets[0].t});closeSheet();setTimeout(()=>liveFrom(c,l.type),320)};
+    const rc=$("#ld-race");if(rc)rc.onclick=()=>{closeSheet();setTimeout(()=>openRaceAn(id),320)};
+    $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)}})}
+$("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;HD=null;renderHist()};
+$("#hist").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.log){e.preventDefault();openLogDetail(e.target.dataset.log)}});
+$("#hist").addEventListener("click",e=>{const r=e.target.closest("[data-log]");if(r)openLogDetail(r.dataset.log)});
+$("#hist-q").addEventListener("input",e=>{HQ=e.target.value;HD=null;renderHist()});
+$("#hist-count").addEventListener("click",e=>{if(e.target.closest("[data-hclear]")){HD=null;renderHist()}});
+$("#hist-cal").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;
+  if(b.dataset.hm){const [y,m]=HM.split("-").map(Number),n=new Date(y,m-1+ +b.dataset.hm,1,12);HM=iso(n).slice(0,7);HD=null;HAPTIC("light");renderHist();return}
+  const ds=b.dataset.hd,day=LOGS.filter(l=>l.date===ds&&(filt==="Alla"||l.type===filt));if(day.length===1){openLogDetail(day[0].id);return}HD=HD===ds?null:ds;renderHist()});
 
 function weekStats(){
   const ws=weekStart(today());const m={};
@@ -4471,28 +4500,10 @@ function weekStats(){
   while(m[iso(cur)]){streak++;cur.setDate(cur.getDate()-7)}
   return {now:m[ws]||{n:0,min:0,types:{}},bars,streak,total:LOGS.reduce((a,l)=>a+(+l.min||0),0)};
 }
-let HN=10;
 function renderLog(){
-  noteStore();renderPrep();const st=weekStats(),goal=set.per;
-  const wk=PLAN[curWeekIdx()];const mg=wk?wk.ses.reduce((a,x)=>a+x.m,0):goal*50;
-  $("#r-count").textContent=`${st.now.n}/${goal}`;$("#r-min").textContent=`${st.now.min} av ${mg} min`;
-  RINGS={a:Math.min(1,st.now.n/goal),b:Math.min(1,st.now.min/mg)};drawRings();
-  const max=Math.max(60,...st.bars.map(b=>b.min));const bw=28,gap=12,H=92;let h=`<defs><linearGradient id="cg" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="var(--accent)"/><stop offset="1" stop-color="var(--accent2)"/></linearGradient></defs><line x1="0" x2="320" y1="${8+H}" y2="${8+H}" stroke="var(--hair)"/>`;
-  st.bars.forEach((b,i)=>{const x=4+i*(bw+gap),hh=b.min?Math.max(4,b.min/max*(H-14)):0,last=i===7;
-    if(hh)h+=`<rect class="bar" style="animation-delay:${i*50}ms" x="${x}" y="${8+H-hh}" width="${bw}" height="${hh}" rx="6" fill="${last?"url(#cg)":"var(--hair)"}"/>`;
-    h+=`<text x="${x+bw/2}" y="122" text-anchor="middle">${last?"Nu":"v"+getWeek(b.k)}</text>`;
-    if(b.min)h+=`<text x="${x+bw/2}" y="${8+H-hh-5}" text-anchor="middle">${b.min}</text>`});
-  if(!st.bars.some(b=>b.min))h+=`<text x="160" y="56" text-anchor="middle" style="font-size:var(--t-cap)">Dina veckor visas här när du loggar pass</text>`;
-  $("#chart").innerHTML=h;
-  const types=["Alla",...new Set(LOGS.map(l=>l.type))];if(!types.includes(filt))filt="Alla";
-  $("#filters").innerHTML=LOGS.length>1?types.map(t=>`<button class="chip" data-f="${esc(t)}" aria-pressed="${t===filt}">${esc(t)}</button>`).join(""):"";
-  $("#hist-count").textContent=LOGS.length?`${LOGS.length} pass`:"";
-  const list=[...LOGS].filter(l=>filt==="Alla"||l.type===filt).sort((a,b)=>(b.date||"").localeCompare(a.date||"")||(b.created||0)-(a.created||0));
-  let lastWk="";const wkSum={};list.forEach(l=>{const k=weekStart(l.date);wkSum[k]=wkSum[k]||{n:0,m:0};wkSum[k].n++;wkSum[k].m+=+l.min||0});
-  $("#hist").innerHTML=list.length?list.slice(0,HN).map(l=>{const d=new Date(l.date+"T12:00:00"),wk=weekStart(l.date),cw=weekStart(today());
-    let head="";if(wk!==lastWk){lastWk=wk;const w=wkSum[wk];head=`<div class="hist-wk"><b>${wk===cw?"Den här veckan":"Vecka "+getWeek(wk)}</b><span>${w.n} pass · ${w.m} min</span></div>`}
-    return head+`<div class="row hrow" data-edit="${esc(l.id)}" role="button" tabindex="0" aria-label="Ändra ${esc(l.type)}"><div class="badge">${d.getDate()}<br>${d.toLocaleDateString("sv-SE",{month:"short"}).replace(".","")}</div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${l.min} min${l.rpe?" · känsla "+l.rpe+"/5":""}${!(l.items&&l.items.length)&&l.stations&&l.stations.length?" · "+esc(l.stations.join(", ")):""}</p>${l.items&&l.items.length?`<p class="lg-hist">${esc(l.items.map(x=>itemTxt(x)+(nz(x.sec)&&!colsOf(x).some(c=>c[0]==="t")?` (${fmt(x.sec)})`:"")).join(" · "))}</p>`:""}${l.note?`<p>${esc(l.note)}</p>`:""}</div><span class="chev">›</span></div>`}).join(""):`<div class="empty">Inga pass ännu. Dina pass visas här när du har loggat dem.</div>`;
-  {let mb=$("#hist-more");if(!mb){mb=document.createElement("button");mb.id="hist-more";mb.className="pill ghost block";mb.style.marginTop="10px";$("#hist").after(mb);mb.onclick=()=>{HN+=20;renderLog()}}mb.hidden=list.length<=HN;mb.textContent=`Visa fler pass (${list.length-HN} till)`}
+  noteStore();renderPrep();
+  if(!HM){const t=histMonth(today());HM=LOGS.some(l=>histMonth(l.date)===t)||!LOGS.length?t:histMonth(sortedLogs()[0].date)}
+  renderHist();
   renderProgress();try{renderExList()}catch(e){}
 }
 
@@ -4542,7 +4553,7 @@ function openDay(ds,pre){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.dat
     $("#dy-seg").onclick=e=>{const b=e.target.closest("[data-rk]");if(!b)return;st.k=b.dataset.rk;
       if(st.k==="rest"){saveRestDay(ds,{k:"rest"});closeSheet();toast("Vilodagen är sparad.");HAPTIC("success");return}draw()};
     $("#dy-what").onclick=e=>{const b=e.target.closest("[data-w]");if(b){st.what=b.dataset.w;draw()}};
-    document.querySelectorAll("#sheet-in [data-dlog]").forEach(b=>b.onclick=()=>{const id=b.dataset.dlog;closeSheet();setTimeout(()=>openEditLog(id),320)});
+    document.querySelectorAll("#sheet-in [data-dlog]").forEach(b=>b.onclick=()=>{const id=b.dataset.dlog;closeSheet();setTimeout(()=>openLogDetail(id),320)});
     $("#dy-save").onclick=()=>{let v={k:st.k};if(st.k==="active"){const km=parseFloat($("#dy-km").value.replace(",",".")),min=parseInt($("#dy-min").value,10);v.what=st.what;if(km>0)v.km=Math.min(300,Math.round(km*10)/10);if(min>0)v.min=Math.min(1440,min)}
       saveRestDay(ds,v);closeSheet();toast(st.k==="active"?"Aktiv vila är sparad.":"Vilodagen är sparad.");HAPTIC("success")};
     const c=$("#dy-clear");if(c)c.onclick=()=>{saveRestDay(ds,null);closeSheet();toast("Markeringen är borttagen.")};
@@ -6354,7 +6365,7 @@ function route(){
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}
   if(v!=="profil"&&$("#pf-more")&&!$("#pf-more").hidden)setPfMore(false);$("#logo-btn").hidden=v==="hem"||v==="profil"||v==="person";$("#avatar-btn").hidden=v==="profil";$("#fr-btn").hidden=!SBUSER||v==="profil";$("#fr-btn").classList.toggle("on",v==="vanner");if(v==="vanner")renderVanner();if(v==="profil"){renderProfile();renderNotis();$$("#v-profil .cu").forEach(countUp);pfTrack(progress().frac,true)}if(v==="feed")renderFeed();if(person)renderPerson(raw.slice(2));if(v==="notiser")renderNotiser();frDot();notiBadge();
   if(v==="hem")["#h-days","#h-target","#h-pace","#h-week","#h-streak"].forEach(id=>countUp($(id)));
-  if(v==="logg"){drawRings(true);renderLog()}
+  if(v==="logg"){renderLog()}
 }
 window.addEventListener("hashchange",route);
 

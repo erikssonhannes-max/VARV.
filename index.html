@@ -1174,9 +1174,14 @@ a.row{color:inherit;text-decoration:none}
 .deck-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Pass från klockan */
 /* Dra för att uppdatera flödet */
-#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 12px);z-index:43;width:40px;height:40px;margin-left:-20px;border-radius:50%;background:var(--card);color:var(--accent);display:grid;place-items:center;box-shadow:0 8px 24px -10px rgba(0,0,0,.45);opacity:0;transform:translateY(-60px);pointer-events:none}
-#ptr.go{transition:transform .25s var(--spring),opacity .2s}#ptr.spin svg{animation:ptrSpin .8s linear infinite}
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 46px);z-index:43;width:28px;height:28px;margin-left:-14px;color:var(--muted);opacity:0;transform:scale(.7);pointer-events:none}
+#ptr svg{display:block;width:100%;height:100%}#ptr line{opacity:0;transition:opacity .12s linear}
+#ptr.ptr-anim{transition:opacity .2s var(--ease),transform .28s var(--ease)}
+#ptr.ptr-spin svg{animation:ptrSpin .9s steps(12) infinite}#ptr.ptr-spin line{opacity:var(--o)}
 @keyframes ptrSpin{to{transform:rotate(360deg)}}
+.ptr-view{will-change:transform}.ptr-back{transition:transform .32s var(--ease)}
+html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
+@media (prefers-reduced-motion:reduce){#ptr.ptr-spin svg{animation:none}.ptr-back,#ptr.ptr-anim,#ptr line{transition:none}}
 /* Statistik */
 .hy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:start}
 .hy-days{display:grid;grid-template-rows:16px repeat(7,11px);row-gap:3px;font-size:var(--t-micro);color:var(--muted);line-height:11px}
@@ -1992,7 +1997,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 </section>
 </main>
 <div id="live" role="dialog" aria-label="Pågående pass" hidden></div>
-<div id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.3-5.6"/><path d="M20 4v4.5h-4.5"/></svg></div>
+<div id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.08" transform="rotate(0 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.17" transform="rotate(30 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.25" transform="rotate(60 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.33" transform="rotate(90 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.42" transform="rotate(120 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.50" transform="rotate(150 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.58" transform="rotate(180 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.67" transform="rotate(210 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.75" transform="rotate(240 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.83" transform="rotate(270 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.92" transform="rotate(300 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:1.00" transform="rotate(330 12 12)"/></svg></div>
 <button type="button" id="lv-bar" hidden><span class="lv-dot" aria-hidden="true"></span><span id="lv-bar-name">Pass pågår</span><b id="lv-bar-time">0:00</b><span class="chev">›</span></button>
 <div id="tour" hidden><div class="tr-block"></div><div class="tr-hole none"></div>
   <div class="tr-card" role="dialog" aria-modal="true" aria-labelledby="tr-h" aria-describedby="tr-p">
@@ -5576,16 +5581,29 @@ function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FR
 function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
 function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p class="small">Logga in för att följa andra, se deras pass och ge tumme upp.</p><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
 /* Dra nedåt högst upp i flödet för att hämta nya inlägg. */
-(()=>{let y0=null,dy=0,busyR=false;const el=()=>$("#ptr"),MAX=90,TRIG=64;
-  const ok=()=>location.hash==="#feed"&&set.fdsub!=="top"&&$("#sheet").hidden&&!busyR&&(window.scrollY||document.documentElement.scrollTop)<=0;
-  const show=d=>{const p=el();if(!p)return;const k=Math.min(MAX,d*.5);p.classList.remove("go");p.style.opacity=String(Math.min(1,k/TRIG));p.style.transform=`translateY(${k-30}px) rotate(${k*4}deg)`};
-  const hide=()=>{const p=el();if(!p)return;p.classList.add("go");p.classList.remove("spin");p.style.opacity="0";p.style.transform="translateY(-60px)"};
-  document.addEventListener("touchstart",e=>{y0=ok()&&e.touches.length===1?e.touches[0].clientY:null;dy=0},{passive:true});
-  document.addEventListener("touchmove",e=>{if(y0===null)return;dy=e.touches[0].clientY-y0;if(dy<-8||(window.scrollY||0)>0){y0=null;hide();return}if(dy>0)show(dy)},{passive:true});
-  document.addEventListener("touchend",async()=>{if(y0===null)return;y0=null;
-    if(dy*.5<TRIG){hide();return}
-    const p=el();busyR=true;p.classList.add("go","spin");p.style.opacity="1";p.style.transform="translateY(34px)";HAPTIC("light");
-    try{FRC=null;await renderFeed(true)}catch(x){}finally{busyR=false;setTimeout(hide,250)}},{passive:true});})();
+(()=>{const MAX=100,TRIG=56,HOLD=56,el=()=>$("#ptr"),view=()=>$("#v-feed");let y0=null,x0=0,dy=0,armed=false,busy=false,on=false;
+  const top=()=>(window.scrollY||document.documentElement.scrollTop||0)<=0;
+  const ok=()=>location.hash==="#feed"&&set.fdsub!=="top"&&$("#sheet").hidden&&!busy&&top()&&!document.body.classList.contains("live-on")&&!document.querySelector(".viewer");
+  const rub=d=>MAX*(1-Math.exp(-d/140));
+  const place=k=>{const v=view(),p=el();if(v)v.style.transform=k?`translateY(${k}px)`:"";if(p)p.style.top=`calc(env(safe-area-inset-top,0px) + ${60+k/2-14}px)`};
+  const ticks=f=>{const p=el();if(!p)return;const n=Math.round(Math.min(1,f)*12);p.querySelectorAll("line").forEach((l,i)=>{l.style.opacity=i<n?String((i+1)/12*.75+.25):"0"})};
+  const pull=d=>{const k=rub(d),p=el(),v=view();if(!p||!v)return;if(!on){on=true;document.documentElement.classList.add("ptr-on");v.classList.add("ptr-view");v.classList.remove("ptr-back");p.classList.remove("ptr-anim")}
+    place(k);p.style.opacity=String(Math.min(1,k/28));p.style.transform=`scale(${.7+.3*Math.min(1,k/TRIG)})`;ticks(k/TRIG);
+    const a=k>=TRIG;if(a&&!armed)HAPTIC("light");armed=a};
+  const end=()=>{const p=el(),v=view();on=false;armed=false;document.documentElement.classList.remove("ptr-on");if(!p||!v)return;p.classList.add("ptr-anim");v.classList.add("ptr-back");p.classList.remove("ptr-spin");p.style.opacity="0";p.style.transform="scale(.7)";place(0);p.querySelectorAll("line").forEach(l=>{l.style.opacity=""});
+    setTimeout(()=>{if(!on){v.classList.remove("ptr-back","ptr-view");v.style.transform=""}},340)};
+  document.addEventListener("touchstart",e=>{y0=ok()&&e.touches.length===1?e.touches[0].clientY:null;x0=y0===null?0:e.touches[0].clientX;dy=0},{passive:true});
+  document.addEventListener("touchmove",e=>{if(y0===null)return;const t=e.touches[0];dy=t.clientY-y0;
+    if(!on&&(dy<0||Math.abs(t.clientX-x0)>Math.abs(dy)+4||!top())){if(Math.abs(dy)>6||Math.abs(t.clientX-x0)>6)y0=null;return}
+    if(dy<=0){if(on)end();y0=null;return}
+    if(e.cancelable)e.preventDefault();pull(dy)},{passive:false});
+  const release=async cancel=>{if(y0===null)return;y0=null;if(!on)return;
+    if(cancel||!armed){end();return}
+    const p=el();busy=true;armed=false;p.classList.add("ptr-anim");view().classList.add("ptr-back");place(HOLD);p.style.opacity="1";p.style.transform="scale(1)";p.classList.add("ptr-spin");p.querySelectorAll("line").forEach(l=>{l.style.opacity=""});HAPTIC("medium");
+    const t0=Date.now();try{FRC=null;await renderFeed(true)}catch(x){}
+    await new Promise(r=>setTimeout(r,Math.max(0,600-(Date.now()-t0))));busy=false;end()};
+  document.addEventListener("touchend",()=>release(false),{passive:true});
+  document.addEventListener("touchcancel",()=>release(true),{passive:true});})();
 async function renderFeed(force){
   setFdView("flow");
   const el=$("#fd-flow");if(!el)return;

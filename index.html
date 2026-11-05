@@ -5279,6 +5279,10 @@ function renderEvents(){
   el.innerHTML=h;
   $$("#ev-seg [data-r]").forEach(b=>b.onclick=()=>{set.evr=b.dataset.r;saveSet();renderEvents()});
 }
+/* På iPhone öppnas loppet direkt i Kalender via en länk, i stället för att en fil skapas. Svarar inte länken används filen som reserv. */
+async function evCalOpen(e){const base=(window.VARV_SUPABASE&&window.VARV_SUPABASE.url)||"";if(!isIOS()||!base)return false;
+  const u=base+"/functions/v1/varv-cal?"+new URLSearchParams({ev:"1",c:e.c||"",v:e.v||"",s:e.s,e:e.e||e.s});
+  try{const r=await fetch(u);if(!r.ok||!/text\/calendar/.test(r.headers.get("content-type")||""))return false;location.href=u;return true}catch(x){return false}}
 function evIcs(e){const st=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",nx=evD(e.e);nx.setDate(nx.getDate()+1);
   return ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//VARV//SV","BEGIN:VEVENT",`UID:ev-${e.c.replace(/\W/g,"")}-${e.s}@varv`,`DTSTAMP:${st}`,`DTSTART;VALUE=DATE:${e.s.replace(/-/g,"")}`,`DTEND;VALUE=DATE:${iso(nx).replace(/-/g,"")}`,`SUMMARY:HYROX ${e.c}`,`LOCATION:${(e.v?e.v+"\\, ":"")+e.c}`,"END:VEVENT","END:VCALENDAR"].join("\r\n")}
 function openEvent(i){const e=EVENTS[i];if(!e)return;const me=myEvent()===e,live=evLive(e),d=evIn(e);
@@ -5296,7 +5300,7 @@ function openEvent(i){const e=EVENTS[i];if(!e)return;const me=myEvent()===e,live
       renderPlan();renderHome();renderEvents();try{syncProfile()}catch(x){}closeSheet();toast(`${e.c} är inte längre ditt lopp. Planen fortsätter utan tävling.`)};
     const b=$("#ev-set");if(b)b.onclick=()=>{set.noRace=false;set.race=raceKey(e);set.date=$("#ev-day").value;set.planStart=today();saveSet();const pd=$("#p-date");if(pd)pd.value=set.date;
       renderPlan();renderHome();renderEvents();closeSheet();toast(`${e.c} är ditt lopp. Planen är uppdaterad.`);HAPTIC("success")};
-    const c=$("#ev-cal");if(c)c.onclick=async()=>{try{const nm=`varv-${e.c.toLowerCase().replace(/[^a-z]/g,"")}`;const r=await DL.save(DL.raw?{filename:nm+".ics",data:evIcs(e)}:{filename:nm+".zip",data:makeZip([{name:nm+".ics",data:evIcs(e)}])});if(r&&r.status==="saved")toast("Loppet är sparat i en kalenderfil")}catch(err){saveErr(err)}};
+    const c=$("#ev-cal");if(c)c.onclick=async()=>{if(await evCalOpen(e))return;try{const nm=`varv-${e.c.toLowerCase().replace(/[^a-z]/g,"")}`;const r=await DL.save(DL.raw?{filename:nm+".ics",data:evIcs(e)}:{filename:nm+".zip",data:makeZip([{name:nm+".ics",data:evIcs(e)}])});if(r&&r.status==="saved")toast("Loppet är sparat i en kalenderfil")}catch(err){saveErr(err)}};
   });
 }
 document.addEventListener("click",e=>{const b=e.target.closest("[data-ev]");if(b){openEvent(+b.dataset.ev);return}

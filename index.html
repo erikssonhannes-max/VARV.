@@ -5318,7 +5318,12 @@ function renderEvents(){
   $$("#ev-seg [data-r]").forEach(b=>b.onclick=()=>{set.evr=b.dataset.r;saveSet();renderEvents()});
 }
 /* På iPhone öppnas loppet direkt i Kalender via en länk, i stället för att en fil skapas. Svarar inte länken används filen som reserv. */
-async function evCalOpen(e){const base=(window.VARV_SUPABASE&&window.VARV_SUPABASE.url)||"";if(!isIOS()||!base)return false;
+/* I iPhone-appen öppnas iOS egen kalenderruta direkt. Saknas modulen i bygget används länken nedan. */
+async function evCalNative(e){if(!IS_NATIVE||!isIOS()||typeof window.Capacitor.nativePromise!=="function")return false;
+  const u=e.url||"https://hyrox.com",t=`HYROX ${e.vm?"Världsmästerskap ":""}${e.c}`;
+  const notes=[t+(e.n?`, ${e.n}`:""),e.v?`Plats: ${e.v}`:"",`Datum: ${evRange(e)}`,`Din klass: ${divText()}`,`Anmälan: ${u}`,"Tillagt från VARV."].filter(Boolean).join("\n");
+  try{const r=await window.Capacitor.nativePromise("VarvCalendar","addEvent",{title:t,start:e.s,end:e.e||e.s,location:[e.v,e.c,e.n].filter(Boolean).join(", "),notes,url:u});if(r&&r.saved){HAPTIC("success");toast("Loppet ligger i din kalender.")}return true}catch(x){return false}}
+async function evCalOpen(e){if(await evCalNative(e))return true;const base=(window.VARV_SUPABASE&&window.VARV_SUPABASE.url)||"";if(!isIOS()||!base)return false;
   const u=base+"/functions/v1/varv-cal?"+new URLSearchParams({ev:"1",c:e.c||"",n:e.n||"",v:e.v||"",s:e.s,e:e.e||e.s,r:evRange(e),k:divText(),u:e.url||"https://hyrox.com",vm:e.vm?"1":""});
   try{const r=await fetch(u);if(!r.ok||!/text\/calendar/.test(r.headers.get("content-type")||""))return false;location.href=u;return true}catch(x){return false}}
 function evIcs(e){const st=new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z",nx=evD(e.e);nx.setDate(nx.getDate()+1);

@@ -1441,9 +1441,6 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .lg-ex.open .lg-et small{display:none}
 .lg-exh .dnd-grip{flex:none;width:36px;margin:0 0 0 -8px}
 .lg-still .lg-ex{animation:none}
-.ppl{grid-template-columns:minmax(0,1fr) auto;padding:10px 12px 10px 14px}.ppl::before{left:68px!important}
-.ppl-p .fr-av{flex:none}.ppl-p{display:flex;align-items:center;gap:12px;min-width:0;min-height:44px;border:0;background:none;color:var(--ink);font:inherit;text-align:left;padding:0;cursor:pointer}.ppl-p>span:last-child{min-width:0;display:grid}.ppl-p b{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ppl-p small{font-size:var(--t-cap);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ppl-a{display:flex;align-items:center;gap:6px}.ppl .kn-f{min-width:68px}
 .po-media{touch-action:manipulation;-webkit-user-select:none;user-select:none}
 .post .po-media.pc{display:grid;gap:4px;padding:16px;position:relative}
 .pc-t{font-size:var(--t-sub);font-weight:600;color:var(--muted)}
@@ -1821,9 +1818,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 <section class="view" id="v-feed">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Gemenskap</span><h1>Aktivitet.</h1><p>Pass och händelser från dem du följer.</p></div>
-    <div class="seg" id="fd-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button type="button" data-fd="flow">Flöde</button><button type="button" data-fd="find">Hitta vänner</button></div>
     <div class="fdv" data-v="flow"><div id="fd-flow"></div></div>
-    <div class="fdv" data-v="find" hidden><div id="fd-people"></div></div>
   </div>
 </section>
 
@@ -5707,38 +5702,16 @@ function knowList(){const skip=set.sugSkip||[],wait=(typeof FRQ_OUT!=="undefined
   (FSUG||[]).filter(p=>+p.common>0).sort((a,b)=>b.common-a.common).forEach(p=>add(p,`${p.common} gemensam${+p.common===1?"":"ma"}`,true));
   if(!out.length&&!FRIENDS.length)(FSUG||[]).forEach(p=>add(p,"Tränar med VARV.",false));
   return out.filter(p=>p.username).slice(0,10)}
-function knowDraw(){const el=$("#fd-know");if(!el)return;const L=knowList();if(!L.length){el.innerHTML=`<section class="kn" aria-label="Kanske känner du"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>Kanske känner du…</p></div><button type="button" class="linkbtn" data-fd-find>Hitta vänner</button></div><div class="card"><p class="small">Inga förslag just nu. Bjud in en träningskompis, så dyker fler upp här.</p></div></section>`;const fb=el.querySelector("[data-fd-find]");fb.onclick=()=>{setFdView("find");saveSet();renderPeople()};return}
-  el.innerHTML=`<section class="kn" aria-label="Förslag på atleter att följa"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>${L[0].kn?"Kanske känner du…":"Atleter att följa"}</p></div><button type="button" class="linkbtn" data-kn-all>Se alla</button></div>
+function knowDraw(){const el=$("#fd-know");if(!el)return;const L=knowList();if(!L.length){el.innerHTML=`<section class="kn" aria-label="Kanske känner du"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>Kanske känner du…</p></div><a class="linkbtn" href="#vanner" data-vn-go="find">Hitta vänner</a></div><div class="card"><p class="small">Inga förslag just nu. Bjud in en träningskompis, så dyker fler upp här.</p></div></section>`;return}
+  el.innerHTML=`<section class="kn" aria-label="Förslag på atleter att följa"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>${L[0].kn?"Kanske känner du…":"Atleter att följa"}</p></div><a class="linkbtn" href="#vanner" data-vn-go="find">Se alla</a></div>
    <div class="kn-s">${L.map(p=>`<article class="kn-c"><button type="button" class="kn-x" data-kn-skip="${esc(p.user_id)}" aria-label="Ta bort förslaget ${esc(p.username)}">✕</button><button type="button" class="kn-p" data-kn-prof="${esc(p.user_id)}">${avImg(p.avatar_url,p.username,"kn-av")}<b>${esc(p.username)}</b><small>${esc(p.why)}</small></button><button type="button" class="pill kn-f" data-kn-follow="${esc(p.user_id)}" aria-label="Följ ${esc(p.username)}">Följ</button></article>`).join("")}</div></section>`}
 async function renderKnow(force){knowDraw();if(FSUG&&!force)return;try{const {data,error}=await SB.rpc("varv_suggest");if(!error){FSUG=data||[];FSUG.forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)});knowDraw()}}catch(x){}}
 async function knowClick(e){const b=e.target.closest("button");if(!b)return;const d=b.dataset;
-  if(d.knAll!==undefined){setFdView("find");saveSet();renderPeople();return}
   if(d.knProf){viewProfile(d.knProf);return}
-  if(d.knSkip){set.sugSkip=(set.sugSkip||[]).concat(d.knSkip).slice(-300);saveSet();HAPTIC("light");knowDraw();pplDraw();return}
-  if(d.knFollow){b.disabled=true;HAPTIC("success");await sendFriendRequest(d.knFollow);knowDraw();pplDraw()}}
-/* Hitta vänner: alltid en flik under Aktivitet. Förslag och de som är nya på VARV. */
-let FDNEW=null;
-function pplRow(p,why,skip){return `<div class="row ppl"><button type="button" class="ppl-p" data-kn-prof="${esc(p.user_id)}">${avImg(p.avatar_url,p.username)}<span><b>${esc(p.username)}</b><small>${esc(why)}</small></span></button><span class="ppl-a"><button type="button" class="pill kn-f" data-kn-follow="${esc(p.user_id)}" aria-label="Följ ${esc(p.username)}">Följ</button>${skip?`<button type="button" class="lg-x" data-kn-skip="${esc(p.user_id)}" aria-label="Ta bort förslaget ${esc(p.username)}">✕</button>`:""}</span></div>`}
-function pplDraw(){const el=$("#fd-people");if(!el)return;const K=knowList().filter(p=>p.kn),seen=new Set(K.map(p=>p.user_id)),wait=(typeof FRQ_OUT!=="undefined"?FRQ_OUT:[]).map(r=>r.to_user),skip=set.sugSkip||[];
-  const N=(FDNEW||FSUG||[]).filter(p=>!seen.has(p.user_id)&&!FRIENDS.includes(p.user_id)&&!wait.includes(p.user_id)&&!skip.includes(p.user_id)&&!BLOCKED.includes(p.user_id)&&p.user_id!==SBUSER.id);
-  const when=p=>{if(!p.created_at)return "Tränar med VARV.";const d=Math.floor((Date.now()-new Date(p.created_at))/864e5);return d<=0?"Ny i dag":d===1?"Ny i går":d<30?`Ny för ${d} dagar sedan`:"Tränar med VARV."};
-  el.innerHTML=`<button type="button" class="fd-compose" id="ppl-search"><span>Sök på namn eller kod</span></button>
-   <div class="sechead"><h2>Kanske känner du…</h2></div>${K.length?`<div class="group">${K.map(p=>pplRow(p,p.why,true)).join("")}</div>`:`<div class="card"><p class="small">Inga förslag just nu. Förslagen kommer från vilka som följer dig och vilka ni har gemensamt.</p></div>`}
-   <div class="sechead"><h2>Nya på VARV.</h2></div>${N.length?`<div class="group">${N.map(p=>pplRow(p,when(p),true)).join("")}</div>`:`<div class="card"><p class="small">Inga nya just nu. Bjud in din träningskompis, så får ni följa varandra direkt.</p></div>`}
-   <div class="sechead"><h2>Bjud in</h2></div><div class="grid2"><button type="button" class="pill ghost" id="ppl-link">Dela min profil</button><button type="button" class="pill ghost" id="ppl-qr">Visa QR-kod</button></div>
-   <p class="small" style="margin-top:12px">Du visas här bara om du har valt det under Redigera profil.</p>`;
-  $("#ppl-search").onclick=openAddFriend;$("#ppl-link").onclick=shareFriendLink;$("#ppl-qr").onclick=showFriendQR;
-  el.onclick=e=>{knowClick(e)}}
-async function renderPeople(force){const el=$("#fd-people");if(!el)return;
-  if(!SB){el.innerHTML=`<div class="card"><p class="small">Kräver ett konto.</p></div>`;return}
-  if(!SBUSER){fdLogin(el,"Hitta vänner att träna med");return}
-  if(!MYPROF){el.innerHTML=`<div class="card"><p class="small">Profiler är inte uppsatta än.</p></div>`;return}
-  pplDraw();if(FDNEW&&FSUG&&!force)return;
-  try{const [a,b]=await Promise.all([SB.rpc("varv_suggest"),SB.rpc("varv_new_users")]);if(!a.error)FSUG=a.data||[];FDNEW=b.error?null:(b.data||[]);(FSUG||[]).concat(FDNEW||[]).forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)});if(location.hash==="#feed"&&set.fdsub==="find")pplDraw()}catch(x){}}
-document.addEventListener("click",e=>{const b=e.target.closest("#fd-seg [data-fd]");if(!b)return;setFdView(b.dataset.fd);saveSet();HAPTIC("light");if(b.dataset.fd==="find")renderPeople();else renderFeed()});
+  if(d.knSkip){set.sugSkip=(set.sugSkip||[]).concat(d.knSkip).slice(-300);saveSet();HAPTIC("light");knowDraw();return}
+  if(d.knFollow){b.disabled=true;HAPTIC("success");await sendFriendRequest(d.knFollow);knowDraw()}}
 async function renderFeed(force){
-  setFdView(set.fdsub==="find"?"find":"flow");
-  if(set.fdsub==="find"){await renderPeople(force);return}
+  setFdView("flow");
   const el=$("#fd-flow");if(!el)return;
   if(!SB){el.innerHTML=`<div class="card"><p class="small">Aktiviteten kräver ett konto. Det är inte uppsatt i den här versionen av appen.</p></div>`;return}
   if(!SBUSER){fdLogin(el,"Se vad dina vänner tränar");return}

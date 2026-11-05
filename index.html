@@ -1396,7 +1396,9 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lv-now.in{animation:lvIn .42s var(--spring) both}
 @keyframes lvIn{from{opacity:0;transform:translateX(28px)}}
 .lv-now h2{font-size:var(--t-num-l);font-weight:600;letter-spacing:-.02em;line-height:1.2;text-wrap:balance;margin:0}
-.lv-goal{color:var(--muted);font-size:var(--t-body);margin:0}
+.lv-goal{color:var(--muted);font:inherit;font-size:var(--t-body);margin:0;border:0;background:none;min-height:44px;padding:0 8px;cursor:pointer}.lv-goal span{color:var(--link)}
+.lv-setc{display:grid;justify-items:center;gap:7px;min-height:44px;margin-top:8px;padding:8px 14px;border:0;border-radius:16px;background:var(--tile);color:var(--ink);font:inherit;font-size:var(--t-cap);font-weight:500;cursor:pointer}.lv-dots{display:flex;gap:6px}.lv-dots i{width:9px;height:9px;border-radius:50%;background:var(--hair)}.lv-dots i.on{background:var(--green)}
+.lv-ed{display:block;min-width:0;min-height:44px;width:100%;border:0;background:none;color:var(--ink);font:inherit;text-align:left;padding:0;cursor:pointer}
 .lv-timer{display:block;font-size:clamp(4.6rem,25vw,7.5rem);font-weight:700;letter-spacing:-.045em;line-height:1.05;font-variant-numeric:tabular-nums;margin-top:4px;transition:opacity .25s}
 .lv-paused .lv-timer{opacity:.4}
 .lv-cmp{min-height:1.3em;color:var(--muted);font-size:var(--t-sub);margin:0;font-variant-numeric:tabular-nums}
@@ -1412,8 +1414,6 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lv-big{min-height:76px;font-size:var(--t-head);font-weight:600;letter-spacing:-.01em}
 .lv-big:active{transform:scale(.97)}
 .lv-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.lv-acts .pill{padding-inline:6px}
-.lv-ready{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;display:grid;gap:14px;align-content:start;padding:18px 16px;max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
-.lv-ready h2{font-size:var(--t-title);font-weight:600;letter-spacing:-.03em;line-height:1;margin:0}
 .lv-rows{display:grid;gap:8px}
 .lv-ri{display:grid;grid-template-columns:44px minmax(0,1fr) auto;align-items:center;gap:4px;background:var(--tile);border-radius:16px;padding:6px 8px 6px 4px;min-height:60px;box-sizing:border-box}
 .lv-ri h3{font-size:var(--t-body);font-weight:600;line-height:1.3;margin:0}
@@ -4415,31 +4415,26 @@ function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
   const k=$("#lv-kvar");if(k){const l=lvLeft(LIVE.cur);k.textContent=l==null?"–":fmt(l)}}
 function lvRows(){const cur=LIVE.ready?-1:LIVE.cur,its=lvItems();
   return its.map((it,i)=>{const d=i<cur,now=i===cur,can=!d&&!now,g=lvGoal(it);
-    return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?(it.skip?"–":"✓"):i+1}</span>`}<div><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</div>${d?`<b>${it.skip?"Skippad":nz(it.sec)?fmt(it.sec):"–"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
-function renderReady(v){const L=LIVE.lg,n=L.items.length,left=(()=>{let s=0;for(let i=0;i<n;i++){if(LVPREV[i]==null)return null;s+=LVPREV[i]}return s})();
-  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-back">‹ Ändra passet</button><span></span><span></span></div>
-    <div class="lv-ready" id="lv-scroll"><div><span class="small">${esc(L.tplName||L.type||"Ditt pass")}</span><h2>Redo.</h2><p class="muted" style="margin:8px 0 0">${n} ${n===1?"övning":"övningar"}${left?` · ungefär ${Math.max(1,Math.round(left/60))} min`:""}. Klockan startar när du trycker på Starta.</p></div>
-      ${L.hint?`<p class="small">${esc(L.hint)}</p>`:""}<div class="lv-rows">${lvRows()}</div></div>
-    <div class="lv-foot"><button type="button" class="pill block lv-big" id="lv-go"${n?"":" disabled"}>Starta</button></div>`}
+    return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?(it.skip?"–":"✓"):i+1}</span>`}${d?`<div><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</div>`:`<button type="button" class="lv-ed" data-ledit="${i}" aria-label="Ändra ${esc(it.n)}"><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</button>`}${d?`<b>${it.skip?"Skippad":nz(it.sec)?fmt(it.sec):"–"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
 function renderLive(){let v=$("#live"),bar=$("#lv-bar");
   if(!LIVE){if(v)v.hidden=true;if(bar)bar.hidden=true;document.body.classList.remove("live-on");return}
   bar.hidden=LIVE.open;v.hidden=!LIVE.open;document.body.classList.toggle("live-on",!!LIVE.open);
   $("#lv-bar-name").textContent=LIVE.ready?"Passet är redo":LIVE.pausedAt?"Passet är pausat":"Pass pågår";
   {const seen={};LVPREV=lvItems().map(it=>{const o=seen[it.ex]||0;seen[it.ex]=o+1;return lastSec(it.ex,o)})}
   if(!LIVE.open){liveTick();return}
-  if(LIVE.ready){renderReady(v);return}
   const its=lvItems();if(LIVE.cur>=its.length)LIVE.cur=Math.max(0,its.length-1);
-  const it=its[LIVE.cur],nx=its[LIVE.cur+1],pv=its[LIVE.cur-1],paused=!!LIVE.pausedAt,g=it?lvGoal(it):"",vs=lvVsLast(),mix=lvMixed(),avg=lvAvg(true);
+  const ready=!!LIVE.ready,it=its[LIVE.cur],nx=its[LIVE.cur+1],pv=its[LIVE.cur-1],paused=!!LIVE.pausedAt,g=it?lvGoal(it):"",vs=lvVsLast(),mix=lvMixed(),avg=lvAvg(true),setN=it&&it.sets.length>1?it.sets.length:0,setD=it?Math.min(+it.setsDone||0,setN):0;
   const pd=pv&&nz(pv.sec)&&LVPREV[LIVE.cur-1]!=null?+pv.sec-LVPREV[LIVE.cur-1]:null;
-  v.innerHTML=`<div class="lv-top"><button type="button" class="linkbtn" id="lv-min">‹ Minimera</button><span class="lv-count">${mix?"Moment":"Övning"} ${LIVE.cur+1} av ${its.length}</span><button type="button" class="linkbtn" id="lv-all">Alla</button></div>
+  v.innerHTML=`<div class="lv-top">${ready?'<button type="button" class="linkbtn" id="lv-back">‹ Tillbaka</button>':'<button type="button" class="linkbtn" id="lv-min">‹ Minimera</button>'}<span class="lv-count">${mix?"Moment":"Övning"} ${LIVE.cur+1} av ${its.length}</span><button type="button" class="linkbtn" id="lv-all">Ändra pass</button></div>
     <div class="lv-steps" aria-hidden="true">${its.map((_,i)=>`<i class="${i<LIVE.cur?(its[i].skip?"skip":"done"):i===LIVE.cur?"now":""}"></i>`).join("")}</div>
     <div class="lv-main${paused?" lv-paused":""}">
-      <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2>${g?`<p class="lv-goal">${esc(g)}</p>`:""}
-        <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p></div>
-      <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar, ungefär</small><b id="lv-kvar">–</b></div>`}</div>
+      <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2><button type="button" class="lv-goal" data-ledit="${LIVE.cur}">${g?esc(g)+" · ":""}<span>Ändra</span></button>
+        <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p>
+        ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN} · Tryck när det är klart`}</button>`:""}</div>
+      <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>${mix?"Snitt löpning":"Snitt övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar ca</small><b id="lv-kvar">–</b></div>`}</div>
       ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"–"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
       <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b><span class="chev" aria-hidden="true">›</span></button></div>
-    <div class="lv-foot">${paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
+    <div class="lv-foot">${ready?`<button type="button" class="pill block lv-big" id="lv-go"${its.length?"":" disabled"}>Starta klockan</button>`:paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
       :`<button type="button" class="pill block lv-big" id="lv-next">${!nx?"Klar med passet":lvIsRun(nx)?"Spring":"Nästa övning"}</button><div class="lv-acts"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-skip" aria-label="Skippa ${it?esc(it.n):"övningen"}">Skippa</button><button type="button" class="pill ghost" id="lv-stop" aria-label="Avbryt passet">Avbryt</button></div>`}</div>`;
   LVIN=false;liveTick()}
 /* Stämplar tiden på övningen. Med ett enda set och en tidskolumn blir tiden också setets tid, så att rekord räknas som vanligt. */
@@ -4460,15 +4455,34 @@ function livePause(){if(LIVE.pausedAt){LIVE.pausedMs=(LIVE.pausedMs||0)+Date.now
 function lvMove(a,b){const its=lvItems();its.splice(b,0,its.splice(a,1)[0]);saveLive()}
 function lvRemove(i){lvItems().splice(i,1);saveLive();if(LIVE.ready&&!lvItems().length){liveBackToBuild();return}renderLive();lvAllDraw()}
 function liveBackToBuild(){const L=LIVE.lg;clearLive();LG=Object.assign(L,{live:false,forLive:true,saved:false,view:"main",still:false});openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
+/* Ändra en övning under passet. Värden sparas direkt. */
+function lvEdit(i){const its=lvItems(),it=its[i];if(!it)return;const cur=LIVE.ready?-1:LIVE.cur,isNow=!LIVE.ready&&i===LIVE.cur,upcoming=i>cur,cols=colsOf(it).filter(c=>c[0]!=="t"||it.k==="t"),gc=`28px repeat(${Math.max(1,cols.length)},minmax(0,1fr)) 36px`;
+  const row=(s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];return `<input type="text" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${nz(v)?(c[0]==="t"?fmt(v):c[0]==="kg"?fmtKg(v):v):""}" aria-label="${c[1]}, set ${j+1}">`}).join("")}<button type="button" class="lg-sx" data-sx="${j}" aria-label="Ta bort set ${j+1}"${it.sets.length<2?" disabled":""}>−</button></div>`;
+  const draw=()=>{$("#le-sets").innerHTML=`<div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}</span>`).join("")}<span></span></div>${it.sets.map(row).join("")}`};
+  openSheet(`<div><span class="small">${isNow?"Pågår nu":"Ändra övning"}</span><h2>${esc(it.n)}</h2></div><div class="card" style="display:grid;gap:6px"><div id="le-sets" style="display:grid;gap:6px"></div><button type="button" class="lg-add" id="le-add">+ Lägg till set</button></div>
+   <div class="grid2">${isNow?`<button type="button" class="pill ghost" id="le-later"${i>=its.length-1?" disabled":""}>Ta senare</button><button type="button" class="pill ghost" id="le-skip">Skippa</button>`:upcoming?`<button type="button" class="pill ghost" id="le-now">Kör nu</button><button type="button" class="pill ghost" id="le-rm" style="color:var(--bad)">Ta bort</button>`:""}</div>
+   <button type="button" class="pill block" id="le-ok">Klar</button>`,()=>{draw();const w=$("#le-sets");
+    w.addEventListener("input",e=>{const t=e.target;if(!t.dataset.f)return;const j=+t.dataset.j,f=t.dataset.f,raw=t.value.trim(),prev=nz(it.sets[j][f])?+it.sets[j][f]:null;let v=!raw?null:f==="t"?parseT(raw):parseFloat(raw.replace(",","."));if(!nz(v))v=null;it.sets[j][f]=v;
+      if(f!=="t")for(let k=j+1;k<it.sets.length;k++){const o=it.sets[k],ov=nz(o[f])?+o[f]:null;if(ov!==prev)break;o[f]=v;const q=w.querySelector(`input[data-j="${k}"][data-f="${f}"]`);if(q)q.value=nz(v)?(f==="kg"?fmtKg(v):v):""}saveLive()});
+    w.addEventListener("focusin",e=>{if(e.target.matches("input"))setTimeout(()=>{try{e.target.select()}catch(x){}},0)});
+    w.addEventListener("click",e=>{const b=e.target.closest("[data-sx]");if(!b||b.disabled)return;it.sets.splice(+b.dataset.sx,1);saveLive();draw()});
+    $("#le-add").onclick=()=>{const p=it.sets[it.sets.length-1]||{},n=Object.assign({},p);delete n.done;it.sets.push(n);saveLive();draw();HAPTIC("light")};
+    $("#le-ok").onclick=()=>{closeSheet();renderLive()};
+    const go=(id,fn)=>{const b=$(id);if(b)b.onclick=()=>{closeSheet();fn();HAPTIC("light")}};
+    go("#le-later",()=>{its.push(its.splice(i,1)[0]);LIVE.exAt=liveElapsed();LVUNDO=null;LVIN=true;saveLive();renderLive();toast(`${it.n} kommer sist.`)});
+    go("#le-skip",()=>liveSkip());
+    go("#le-now",()=>{const c=LIVE.ready?0:LIVE.cur;its.splice(c,0,its.splice(i,1)[0]);if(!LIVE.ready)LIVE.exAt=liveElapsed();LVUNDO=null;LVIN=true;saveLive();renderLive()});
+    go("#le-rm",()=>{lvRemove(i)})})}
 function lvAllDraw(){const r=$("#lv-allrows");if(r)r.innerHTML=lvRows()}
-function openLvAll(){const any=lvCanSave();
-  openSheet(`<div id="lv-allw" style="display:grid;gap:14px"><div><span class="small">${fmt(liveElapsed())} hittills</span><h2>Alla övningar</h2><p class="small">Dra i kommande övningar för att ändra ordningen, till exempel om en maskin är upptagen.</p></div>
+function openLvAll(){const any=!LIVE.ready&&lvCanSave();
+  openSheet(`<div id="lv-allw" style="display:grid;gap:14px"><div><span class="small">${LIVE.ready?"Klockan har inte startat":fmt(liveElapsed())+" hittills"}</span><h2>Ändra pass</h2><p class="small">Dra för att ändra ordningen, till exempel om en maskin är upptagen. Tryck på en övning för att ändra vikt och set, eller köra den nu.</p></div>
     <div class="lv-rows" id="lv-allrows">${lvRows()}</div>
     <button type="button" class="pill ghost block" id="lv-add">+ Lägg till övning</button>${any?`<button type="button" class="pill ghost block" id="lv-save">Avsluta och spara</button>`:""}</div>`,()=>{
     const w=$("#lv-allw");
     dragSort({root:w,item:".lv-ri",scroller:()=>$("#sheet"),drop:(a,b)=>{lvMove(a,b);lvAllDraw();renderLive()}});
     w.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;
       if(b.dataset.lrm!==undefined){lvRemove(+b.dataset.lrm);return}
+      if(b.dataset.ledit!==undefined){lvEdit(+b.dataset.ledit);return}
       if(b.id==="lv-add"){LG=LIVE.lg;LG.live=true;LG.view="pick";LG.pick=[];LG.q="";openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
       if(b.id==="lv-save"){closeSheet();lvSaveEarly()}})})}
 /* Avslutar i förtid. Övningen som pågår räknas om den har pågått en stund. */
@@ -4482,13 +4496,12 @@ function openLvStop(){const can=lvCanSave();let arm=false;
 function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
   const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0;
   if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
-  L.items.forEach(i=>{delete i.prevT;delete i.skip;delete i.skipEx;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
+  L.items.forEach(i=>{delete i.prevT;delete i.skip;delete i.skipEx;delete i.setsDone;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
   const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
   LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),elapsed:liveElapsed(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du skippade eller inte hann med är borttagna`:"Passet är klart",view:"finish",dropArm:false,forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
 function clearLive(){LIVE=null;LVUNDO=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
 function bindLive(){const v=$("#live");
-  dragSort({root:v,item:".lv-ri",scroller:()=>$("#lv-scroll"),drop:(a,b)=>{lvMove(a,b);renderLive()}});
   v.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;const d=b.dataset;
     if(b.id==="lv-go"){liveBegin();return}
     if(b.id==="lv-back"){liveBackToBuild();return}
@@ -4499,6 +4512,8 @@ function bindLive(){const v=$("#live");
     if(b.id==="lv-pause"){livePause();return}
     if(b.id==="lv-stop"){openLvStop();return}
     if(b.id==="lv-all"||b.id==="lv-nextcard"){openLvAll();return}
+    if(d.ledit!==undefined){lvEdit(+d.ledit);return}
+    if(b.id==="lv-setc"){const it=lvItems()[LIVE.cur];if(!it)return;const n=it.sets.length,c=+it.setsDone||0;it.setsDone=c>=n?0:c+1;saveLive();HAPTIC(it.setsDone===n?"success":"light");renderLive();return}
     if(d.lrm!==undefined){lvRemove(+d.lrm);return}
   });
   $("#lv-bar").onclick=()=>{if(LIVE){LIVE.open=true;saveLive();renderLive();liveWake()}};
@@ -4544,7 +4559,8 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
    ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
    ${isRace?`<button class="pill ghost block" id="ld-race">Visa loppanalys</button>`:""}
    ${its.length?`<button class="pill block" id="ld-again">Kör passet igen</button>`:""}
-   <button class="pill ghost block" id="ld-edit">Ändra passet</button>`,()=>{
+   <div class="grid2"><button class="pill ghost" id="ld-edit">Ändra passet</button><button class="pill ghost" id="ld-del" style="color:var(--bad)">Ta bort passet</button></div>`,()=>{
+    const del=$("#ld-del");del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen";return}closeSheet();delWithUndo(id)};
     const ag=$("#ld-again");if(ag)ag.onclick=()=>{const c=JSON.parse(JSON.stringify(its));c.forEach(i=>{delete i.sec;if((i.sets||[]).length===1&&LGCOLS[i.k]&&i.k!=="t")delete i.sets[0].t});closeSheet();setTimeout(()=>liveFrom(c,l.type),320)};
     const rc=$("#ld-race");if(rc)rc.onclick=()=>{closeSheet();setTimeout(()=>openRaceAn(id),320)};
     $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)}})}

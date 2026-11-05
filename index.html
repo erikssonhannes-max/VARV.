@@ -4422,6 +4422,8 @@ const lvMixed=()=>lvItems().some(lvIsRun)&&lvItems().some(i=>!lvIsRun(i));
 /* Målet för övningen. Tiden visas bara när tiden är själva målet, annars står den redan i klockan. */
 const lvGoal=it=>{const c=it.k==="t"?it:Object.assign({},it,{sets:(it.sets||[]).map(x=>{const y=Object.assign({},x);delete y.t;return y})}),t=itemTxt(c);return t===it.n?"":t.slice(it.n.length+1)};
 const lvEx=()=>Math.max(0,liveElapsed()-(LIVE.exAt||0));
+/* Stora klockan: tiden i det pågående setet. Övningens tid i loggen räknas fortfarande från övningens start. */
+const lvSetEx=it=>Math.max(0,liveElapsed()-Math.max(LIVE.exAt||0,it&&it.sets.length>1&&+it.setAt||0));
 const lvDelta=d=>{d=Math.round(d);return d?`<span class="${d<0?"lv-good":"lv-bad"}">${fmtD(d)}</span>`:`<span>±0:00</span>`};
 const lvItems=()=>LIVE.lg.items;
 const lvDone=()=>lvItems().filter((it,i)=>i<LIVE.cur&&nz(it.sec));
@@ -4435,9 +4437,9 @@ function lvLeft(start){const its=lvItems();let sum=0;
 function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
   const tot=fmt(liveElapsed()),a=$("#lv-total"),b=$("#lv-bar-time");if(a)a.textContent=tot;if(b)b.textContent=LIVE.ready?"":tot;
   if(LIVE.ready||!LIVE.open)return;
-  const ex=lvEx(),t=$("#lv-time");if(t)t.textContent=fmt(ex);
+  const ex=lvEx(),cur=lvItems()[LIVE.cur],many=cur&&cur.sets.length>1,t=$("#lv-time");if(t)t.textContent=fmt(lvSetEx(cur));
   const p=LVPREV[LIVE.cur]!=null?LVPREV[LIVE.cur]:null,c=$("#lv-cmp");
-  if(c){const h=p==null?"":`Förra gången ${fmt(p)}${ex>p?` · ${lvDelta(ex-p)}`:""}`;if(c.dataset.h!==h){c.dataset.h=h;c.innerHTML=h}}
+  if(c){const h=many?`Hela övningen ${fmt(ex)}${p==null?"":` · förra gången ${fmt(p)}`}`:p==null?"":`Förra gången ${fmt(p)}${ex>p?` · ${lvDelta(ex-p)}`:""}`;if(c.dataset.h!==h){c.dataset.h=h;c.innerHTML=h}}
   const k=$("#lv-kvar");if(k){const l=lvLeft(LIVE.cur);k.textContent=l==null?"–":fmt(l)}}
 function lvRows(){const cur=LIVE.ready?-1:LIVE.cur,its=lvItems();
   return its.map((it,i)=>{const d=i<cur,now=i===cur,can=!d&&!now,g=lvGoal(it);
@@ -4455,7 +4457,7 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
     <div class="lv-steps" aria-hidden="true">${its.map((_,i)=>`<i class="${i<LIVE.cur?(its[i].skip?"skip":"done"):i===LIVE.cur?"now":""}"></i>`).join("")}</div>
     <div class="lv-main${paused?" lv-paused":""}">
       <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2><button type="button" class="lv-goal" data-ledit="${LIVE.cur}">${g?esc(g)+" · ":""}<span>Ändra</span></button>
-        <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p>
+        <b class="lv-timer" id="lv-time" role="timer">${fmt(lvSetEx(it))}</b><p class="lv-cmp" id="lv-cmp"></p>
         ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN}`}</button>`:""}</div>
       <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>${mix?"Snitt löpning":"Snitt övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar ca</small><b id="lv-kvar">–</b></div>`}</div>
       ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"–"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
@@ -4471,7 +4473,7 @@ function lvUnstamp(it){const sec=+it.sec;delete it.sec;it.sets.forEach(x=>{delet
 /* Flera set i samma övning: knappen går set för set och först sista setet tar dig vidare. */
 const lvMoreSets=it=>!!it&&it.sets.length>1&&(+it.setsDone||0)<it.sets.length-1;
 function liveNext(){const its=lvItems(),it=its[LIVE.cur];if(!it)return;
-  if(lvMoreSets(it)){it.setsDone=(+it.setsDone||0)+1;saveLive();HAPTIC("light");renderLive();return}
+  if(lvMoreSets(it)){it.setsDone=(+it.setsDone||0)+1;it.setAt=liveElapsed();saveLive();HAPTIC("light");renderLive();return}
   lvStamp(it);
   if(LIVE.cur>=its.length-1){HAPTIC("success");saveLive();liveFinish();return}
   LIVE.cur++;LIVE.exAt=liveElapsed();LVIN=true;LVUNDO=LIVE.cur;saveLive();HAPTIC("success");renderLive()}
@@ -4526,7 +4528,7 @@ function openLvStop(){const can=lvCanSave();let arm=false;
 function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
   const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0,doneN=0;
   if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);doneN+=k.length;dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
-  L.items.forEach(i=>{delete i.prevT;delete i.skip;delete i.skipEx;delete i.setsDone;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
+  L.items.forEach(i=>{delete i.prevT;delete i.skip;delete i.skipEx;delete i.setsDone;delete i.setAt;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
   const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
   LG=Object.assign(L,{doneP:any?Math.round(doneN/(doneN+dropped)*100):null,live:false,fromLive:true,saved:false,edit:null,date:today(),elapsed:liveElapsed(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du skippade eller inte hann med är borttagna`:"Passet är klart",view:"finish",dropArm:false,forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
@@ -4543,7 +4545,7 @@ function bindLive(){const v=$("#live");
     if(b.id==="lv-stop"){openLvStop();return}
     if(b.id==="lv-all"||b.id==="lv-nextcard"){openLvAll();return}
     if(d.ledit!==undefined){lvEdit(+d.ledit);return}
-    if(b.id==="lv-setc"){const it=lvItems()[LIVE.cur];if(!it)return;const n=it.sets.length,c=+it.setsDone||0;it.setsDone=c>=n?0:c+1;saveLive();HAPTIC(it.setsDone===n?"success":"light");renderLive();return}
+    if(b.id==="lv-setc"){const it=lvItems()[LIVE.cur];if(!it)return;const n=it.sets.length,c=+it.setsDone||0;it.setsDone=c>=n?0:c+1;it.setAt=liveElapsed();saveLive();HAPTIC(it.setsDone===n?"success":"light");renderLive();return}
     if(d.lrm!==undefined){lvRemove(+d.lrm);return}
   });
   $("#lv-bar").onclick=()=>{if(LIVE){LIVE.open=true;saveLive();renderLive();liveWake()}};

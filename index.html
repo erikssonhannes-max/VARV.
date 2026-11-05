@@ -2805,7 +2805,7 @@ function sbErr(e){
   if(c==="invalid_credentials"||/invalid login/i.test(m))return "Fel e-post eller lösenord.";
   if(c==="email_not_confirmed"||/not confirmed/i.test(m))return "Bekräfta din e-post först. Kolla inkorgen.";
   if(c==="user_already_exists"||/already registered/i.test(m))return "Det finns redan ett konto med den e-posten. Logga in istället.";
-  if(c==="weak_password"||/password/i.test(m)&&/(weak|short|least)/i.test(m))return "Lösenordet är för svagt. Använd minst 8 tecken.";
+  if(c==="weak_password"||/password/i.test(m)&&/(weak|short|least)/i.test(m))return "Lösenordet är för svagt. Använd minst 10 tecken, med både bokstäver och siffror.";
   if(c==="same_password")return "Välj ett annat lösenord än det gamla.";
   if(c==="over_email_send_rate_limit"||/email rate limit/i.test(m))return "Vi kan inte skicka fler mejl just nu. Försök igen om en stund, eller logga in om du redan har ett konto.";
   if(c==="over_request_rate_limit"||/for security purposes/i.test(m))return "Vänta en minut innan du ber om ett nytt mejl.";
@@ -2833,7 +2833,7 @@ function openAuth(view){
    ${!reset&&SBGOOGLE?`<button class="pill ghost block au-g" id="au-g" type="button">${GSVG} Fortsätt med Google</button><div class="au-or">eller med e-post</div>`:""}
    <form id="au-f" novalidate style="display:grid;gap:14px">
      <div class="field"><label for="au-mail">E-post</label><input type="email" id="au-mail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></div>
-     ${reset?"":`<div class="field"><label for="au-pw">Lösenord</label><input type="password" id="au-pw" autocomplete="${up?"new-password":"current-password"}" minlength="8"${up?' placeholder="Minst 8 tecken"':""}></div>`}
+     ${reset?"":`<div class="field"><label for="au-pw">Lösenord</label><input type="password" id="au-pw" autocomplete="${up?"new-password":"current-password"}"></div>`}
      <p class="small au-msg" id="au-msg" role="status" aria-live="polite"></p>
      <button class="pill block" id="au-go" type="submit">${up?"Skapa konto":reset?"Skicka länk":"Logga in"}</button>
    </form>
@@ -2854,7 +2854,7 @@ function openAuth(view){
       const em=mail.value.trim();if(!okMail(em)){say("Skriv en giltig e-postadress.",true);mail.focus();return}
       if(reset){say("Skickar…");const {error}=await SB.auth.resetPasswordForEmail(em,{redirectTo:sbRedirect()});
         if(error)say(sbErr(error),true);else say(`Klart. Öppna länken i mejlet till ${em} på den här enheten.`);return}
-      const pw=$("#au-pw").value;if(pw.length<(up?8:1)){say(up?"Lösenordet behöver minst 8 tecken.":"Skriv ditt lösenord.",true);$("#au-pw").focus();return}
+      const pw=$("#au-pw").value;if(!pw.length){say("Skriv ditt lösenord.",true);$("#au-pw").focus();return}
       say(up?"Skapar konto…":"Loggar in…");
       const {error}=await SB.auth.signInWithPassword({email:em,password:pw});
       if(error){say(sbErr(error),true);return}
@@ -2884,13 +2884,13 @@ function openCode(em){
 function openNewPassword(){
   openSheet(`<div><span class="small">Konto</span><h2>Välj nytt lösenord</h2></div>
    <form id="np-f" novalidate style="display:grid;gap:14px">
-     <div class="field"><label for="np-in">Nytt lösenord</label><input type="password" id="np-in" autocomplete="new-password" minlength="8" placeholder="Minst 8 tecken"></div>
+     <div class="field"><label for="np-in">Nytt lösenord</label><input type="password" id="np-in" autocomplete="new-password" minlength="10" placeholder="Minst 10 tecken, bokstäver och siffror"></div>
      <p class="small au-msg" id="np-msg" role="status" aria-live="polite"></p>
      <button class="pill block" id="np-go" type="submit">Spara lösenord</button>
    </form>`,()=>{
     const msg=$("#np-msg");
     $("#np-f").onsubmit=e=>{e.preventDefault();busy($("#np-go"),async()=>{
-      const pw=$("#np-in").value;if(pw.length<8){msg.textContent="Lösenordet behöver minst 8 tecken.";msg.classList.add("bad");return}
+      const pw=$("#np-in").value;if(pw.length<10||!/[a-zA-Z]/.test(pw)||!/\d/.test(pw)){msg.textContent="Lösenordet behöver minst 10 tecken, med både bokstäver och siffror.";msg.classList.add("bad");return}
       const {error}=await SB.auth.updateUser({password:pw});
       if(error){msg.textContent=sbErr(error);msg.classList.add("bad");return}
       closeSheet();toast("Lösenordet är ändrat")})};
@@ -2921,7 +2921,7 @@ function renderGate(sentTo){
    <form class="card" id="gt-f" novalidate>
      <div class="field"><label for="gt-mail">E-post</label><input type="email" id="gt-mail" autocomplete="email" inputmode="email" autocapitalize="off" spellcheck="false" required></div>
      ${up?`<div class="field"><label for="gt-name">Användarnamn</label><input type="text" id="gt-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" placeholder="Till exempel Hannes"><span class="small">Du får en fast fyrsiffrig kod, till exempel Hannes#4821, som andra hittar dig med.</span></div>`:""}
-     <div class="field"><label for="gt-pw">Lösenord</label><input type="password" id="gt-pw" autocomplete="${up?"new-password":"current-password"}" ${up?'placeholder="Minst 8 tecken, bokstäver och siffror"':""} required></div>
+     <div class="field"><label for="gt-pw">Lösenord</label><input type="password" id="gt-pw" autocomplete="${up?"new-password":"current-password"}" ${up?'placeholder="Minst 10 tecken, bokstäver och siffror"':""} required></div>
      ${up?`<label class="gt-check" for="gt-terms"><input type="checkbox" id="gt-terms"><span>Jag godkänner <a href="legal/villkor.html" target="_blank" rel="noopener">användarvillkoren</a> och har läst <a href="legal/integritet.html" target="_blank" rel="noopener">integritetspolicyn</a>.</span></label>
      <label class="gt-check" for="gt-health"><input type="checkbox" id="gt-health"><span>Jag samtycker till att VARV. sparar mina träningsuppgifter, till exempel pass, känsla och puls, för att anpassa min plan. Jag kan ta tillbaka samtycket genom att radera kontot.</span></label>
      <label class="gt-check" for="gt-age"><input type="checkbox" id="gt-age"><span>Jag är 16 år eller äldre.</span></label>`:""}
@@ -2938,7 +2938,7 @@ function renderGate(sentTo){
     const em=mail.value.trim(),pw=$("#gt-pw").value;
     if(!okMail(em)){say("Skriv en giltig e-postadress.",true);mail.focus();return}
     if(up){
-      if(pw.length<8||!/[a-zA-ZåäöÅÄÖ]/.test(pw)||!/\d/.test(pw)){say("Lösenordet behöver minst 8 tecken, med både bokstäver och siffror.",true);$("#gt-pw").focus();return}
+      if(pw.length<10||!/[a-zA-Z]/.test(pw)||!/\d/.test(pw)){say("Lösenordet behöver minst 10 tecken, med både bokstäver och siffror.",true);$("#gt-pw").focus();return}
       const un=$("#gt-name").value.trim();if(!NAME_RE.test(un)){say("Välj ett användarnamn med 2–20 tecken: bokstäver, siffror, _ och punkt.",true);$("#gt-name").focus();return}
       if(!gateConsent(say))return;
       say("Skapar konto…");

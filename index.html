@@ -1468,6 +1468,15 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .fn-l li{flex-wrap:nowrap;align-items:flex-start}.fn-n{display:grid;gap:1px;min-width:0}.fn-n small{color:var(--muted);font-size:var(--t-cap)}.fn-pr{font-style:normal;color:var(--good);font-size:var(--t-cap);font-weight:600}
 .fn-t{display:grid;justify-items:end;flex:none;font-size:var(--t-cap);font-variant-numeric:tabular-nums}.fn-t b{font-size:var(--t-sub);font-weight:600;color:var(--ink)}.tl .fn-t span{font-size:var(--t-cap)}.tl .fn-t span.lv-good,.fn-vs .lv-good{color:var(--good)}.tl .fn-t span.lv-bad,.fn-vs .lv-bad{color:var(--bad)}
 .fn-l .tl-run b{color:var(--ink);font-weight:600}
+.fn-vs small{display:block;font-size:var(--t-cap)}.facts3.fn-facts{grid-template-columns:repeat(3,minmax(0,1fr))}.card ul.fn-split,.card ul.fn-goal{padding:0;margin:0}.card ul.fn-split li,.card ul.fn-goal li{padding-left:0;margin:0}.card ul.fn-split li::before,.card ul.fn-goal li::before{display:none}
+.fn-sec{display:grid;gap:12px}.fn-note{margin:10px 0 0}
+.fn-split,.fn-goal{list-style:none;margin:0;padding:0;display:grid}
+.fn-split li{display:grid;grid-template-columns:8px minmax(0,1fr) auto 44px;align-items:center;gap:10px;padding:7px 0;font-size:var(--t-sub);font-variant-numeric:tabular-nums}
+.fn-split li>i{width:8px;height:8px;border-radius:50%;display:block}.fn-split i.r{background:var(--accent)}.fn-split i.s{background:var(--green)}.fn-split i.x{background:var(--cyan)}.fn-split i.v,.hx-bar .v{background:var(--hair)}
+.fn-split b{font-weight:600}.fn-split em{font-style:normal;color:var(--muted);text-align:right}
+.fn-goal li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 0;border-top:1px solid var(--hair)}.fn-goal li:first-child{border-top:0;padding-top:0}.fn-goal li:last-child{padding-bottom:0}
+.fn-goal div{display:grid;gap:1px;min-width:0}.fn-goal b{font-size:var(--t-sub);font-weight:600}.fn-goal small{color:var(--muted);font-size:var(--t-cap);font-variant-numeric:tabular-nums}
+.fn-tag{flex:none;font-size:var(--t-sub);font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}.fn-tag.good{color:var(--good)}
 .tl-sum{margin:0;font-size:var(--t-sub);color:var(--muted);font-variant-numeric:tabular-nums}.tl-sum b{color:var(--ink);font-weight:600}
 .tl{list-style:none;margin:0;padding:0;display:grid}
 .tl li{position:relative;display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:0 12px;padding:9px 0 9px 26px;margin:0}
@@ -1627,12 +1636,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .so-lg div{min-width:0}.so-lg span{display:flex;align-items:center;gap:5px;font-size:var(--t-cap);color:var(--muted);white-space:nowrap}
 .so-lg span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
 .so-lg b{display:block;font-size:var(--t-body);font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
-.so-hb{display:grid;gap:9px;margin-top:14px}
-.so-hb>div{display:grid;grid-template-columns:minmax(0,1fr) 22px;gap:2px 8px;align-items:center;font-size:var(--t-sub)}
-.so-hb b{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
-.so-hb u{grid-column:1/3;display:block;height:7px;border-radius:7px;background:var(--seg);overflow:hidden;text-decoration:none}
-.so-hb u i{display:block;height:100%;border-radius:7px;background:var(--green)}
-.so-hb .low b,.so-hb .low span{color:var(--muted)}
+.so-rad{margin-top:10px}
 .so-empty{color:var(--muted);font-size:var(--t-sub);line-height:1.45;margin:10px 0 0}
 .so-st{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
 .so-stt{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:0;border-radius:18px;background:var(--tile);color:var(--ink);font:inherit;text-align:left;cursor:pointer;min-width:0}
@@ -1648,7 +1652,6 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .so-note{margin:14px 0 0}
 @media (prefers-reduced-motion:no-preference){
   .so-col i{animation:soGrow .55s var(--ease) both}
-  .so-hb u i{animation:soGrowX .7s var(--ease) both}
   .so-bul i{animation:soX 1.1s var(--ease) both}
   .so-line path.so-tr{animation:none}
   .so-line{stroke-dasharray:1;animation:soDraw 1.1s var(--ease) both}
@@ -3772,7 +3775,7 @@ function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   // Stationsträning: hur ofta varje station tränats senaste sex veckorna
   const since=W[6].k,cnt=S.map(x=>LOGS.filter(l=>l&&l.date>=since&&l.date<=today()&&((l.items||[]).some(i=>i.ex===x.id)||(l.stations||[]).includes(x.n))).length),mx=Math.max(...cnt,1),anyC=cnt.some(Boolean),lows=S.filter((x,i)=>cnt[i]===Math.min(...cnt));
   h+=`<div class="sechead"><h2>Stationsträning</h2></div><section class="so-card" id="so-sta"><span class="so-k">Antal pass, senaste sex veckorna</span>`;
-  h+=anyC?`<span class="so-cap" style="margin-top:8px;color:var(--ink);font-weight:500">${lows.length<=3?`Minst tränat: ${esc(lows.map(x=>x.n).join(", "))}.`:"Flera stationer behöver mer tid."}</span><div class="so-hb">${S.map((x,i)=>`<div${cnt[i]?"":' class="low"'}><span>${esc(x.n)}</span><b>${cnt[i]}</b><u aria-hidden="true"><i style="width:${cnt[i]/mx*100}%;animation-delay:${i*40}ms"></i></u></div>`).join("")}</div>`
+  h+=anyC?`<span class="so-cap" style="margin-top:8px;color:var(--ink);font-weight:500">${lows.length<=3?`Minst tränat: ${esc(lows.map(x=>x.n).join(", "))}.`:"Flera stationer behöver mer tid."}</span><div class="so-rad">${radarSvg(S.map((x,i)=>stShort(x)+"\n"+cnt[i]+" pass"),[{v:cnt.map(c=>c/mx),c:"you s"}],"Antal pass per station de senaste sex veckorna: "+S.map((x,i)=>x.n+" "+cnt[i]).join(", "))}</div><p class="so-foot" style="margin-top:6px">Yttersta ringen är ${mx} pass. Ju rundare form, desto jämnare tränar du.</p>`
     :`<p class="so-empty">Logga en station, så ser du vilka du tränar mest och minst.</p>`;
   return h+`</section>`}
 function soCap(W,i,n){return `${soWkName(W[i])}${n?` · ${n} pass`:""}`}
@@ -4197,16 +4200,39 @@ function renderLG(){const r=$("#lg");if(!r)return;
      ${LG.edit?`<button type="button" class="pill ghost block" id="lg-del"${LG.delArm?' style="color:var(--bad)"':""}>${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}</div>`;
 }
 /* Avslutet efter ett pass: tiden först, sedan varje moment mot förra gången. Spara är ett tryck, och värden går att ändra vid behov. */
-function renderFinish(r){const seen={},rows=[];let vs=0,cmp=0,prs=0,runs=[],all=[];const newPr={};
+/* Summeringen visar bara jämförelser som går att göra: mot förra gången, mot ditt rekord och mot måltiden. */
+const fnPct=(a,b)=>Math.round(Math.abs(a-b)/b*100);
+function fnDelta(t,prev){const d=Math.round(t-prev),p=fnPct(t,prev);return d?`<span class="${d<0?"lv-good":"lv-bad"}">${fmtD(d)}${p?` · ${p} %`:""}</span>`:`<span>±0:00</span>`}
+function fnVs(vs,base,n,all){const d=Math.round(vs),p=base?fnPct(base+vs,base):0,of=n<all?`<small>Jämfört på ${n} av ${all} moment</small>`:"",c=d<0?"lv-good":"lv-bad";
+  return `<p class="fn-vs">${!d?"Samma tid som förra gången":`<span class="${c}">${p?`${p} % ${d<0?"snabbare":"långsammare"}`:fmtD(d)}</span> ${p?"än":"mot"} förra gången${p?` · ${fmtD(d)}`:""}`}${of}</p>`}
+/* Andel av passet. Procenten rundas så att de alltid blir 100 tillsammans. */
+function fnSplit(sp,elapsed){const sum=sp.r+sp.s+sp.x;if(!sum)return "";const rest=elapsed>sum&&(elapsed-sum)/elapsed>=.01?elapsed-sum:0,base=sum+rest;
+  const parts=[["r","Löpning",sp.r],["s","Stationer",sp.s],["x","Styrka och övrigt",sp.x],["v","Vila och byten",rest]].filter(x=>x[2]>0);if(parts.length<2)return "";
+  const raw=parts.map(x=>x[2]/base*100),pc=raw.map(Math.floor);let left=100-pc.reduce((a,b)=>a+b,0);raw.map((v,i)=>[v-pc[i],i]).sort((a,b)=>b[0]-a[0]).forEach(([,i])=>{if(left>0){pc[i]++;left--}});
+  return `<div class="card fn-sec"><span class="lbl">Så gick tiden</span><div class="hx-bar" aria-hidden="true">${parts.map(x=>`<i class="${x[0]}" style="flex-grow:${x[2]}"></i>`).join("")}</div><ul class="fn-split">${parts.map((x,i)=>`<li><i class="${x[0]}" aria-hidden="true"></i><span>${x[1]}</span><b>${fmt(Math.round(x[2]))}</b><em>${pc[i]} %</em></li>`).join("")}</ul></div>`}
+/* Hel station eller löpning i tempo mot målet. Målet gäller singel, eftersom lag delar på stationerna i loppet. */
+function fnGoal(it,t){const P=planTimes(),goalOk=set.fmt==="singel";
+  if(lvIsRun(it)){if(/Lugn|Återhämt/.test(lgType()))return null;const m=(it.sets||[]).reduce((a,x)=>a+(+x.m||0),0);if(m<400)return null;const pace=t/m*1000;if(pace<150||pace>900)return null;return {n:it.n,run:true,m,t,pace,goal:P.pace}}
+  const i=S.findIndex(x=>x.id===it.ex);if(i<0||(it.sets||[]).length!==1)return null;const x=it.sets[0],q=prOfSet(it,Object.assign({},x,{t:nz(x.t)?x.t:t}));if(!q)return null;
+  const pr=+PRS[q.k]>0?+PRS[q.k]:null;return {n:it.n,t:q.t,goal:goalOk?P.st[i]:null,pr}}
+function fnGoals(gs){if(!gs.length)return "";const runs=gs.filter(g=>g.run),sts=gs.filter(g=>!g.run);const rows=[];
+  if(runs.length){const m=runs.reduce((a,g)=>a+g.m,0),t=runs.reduce((a,g)=>a+g.t,0),pace=t/m*1000,g=runs[0].goal,p=fnPct(pace,g);
+    rows.push(`<li><div><b>Löpning</b><small>${fmt(Math.round(pace))} /km mot måltempo ${fmt(Math.round(g))} /km</small></div>${fnGoalTag(p,pace<g)}</li>`)}
+  sts.forEach(g=>{const ref=g.goal||g.pr;if(!ref)return;const bits=[g.goal?`Mål ${fmt(Math.round(g.goal))}`:"",g.pr&&g.t>=g.pr?`Rekord ${fmt(g.pr)}`:""].filter(Boolean).join(" · ");
+    rows.push(`<li><div><b>${esc(g.n)}</b><small>${fmt(Math.round(g.t))}${bits?" · "+bits:""}</small></div>${g.goal?fnGoalTag(fnPct(g.t,g.goal),g.t<g.goal):g.t>=g.pr?`<span class="fn-tag">${fnPct(g.t,g.pr)} % från rekord</span>`:`<span class="fn-tag good">Nytt rekord</span>`}</li>`)});
+  if(!rows.length)return "";
+  return `<div class="card fn-sec"><span class="lbl">${set.fmt==="singel"?`Mot ditt mål ${fmtHM(set.target)}`:"Mot dina tider"}</span><ul class="fn-goal">${rows.join("")}</ul></div>`}
+function fnGoalTag(p,fast){return !p?'<span class="fn-tag">På målet</span>':`<span class="fn-tag${fast?" good":""}">${p} % ${fast?"före":"efter"}</span>`}
+function renderFinish(r){const seen={},rows=[],goals=[],split={r:0,s:0,x:0};let vs=0,cmp=0,prevSum=0,prs=0,runs=[],all=[];const newPr={};
   LG.items.forEach(it=>{const o=seen[it.ex]||0;seen[it.ex]=o+1;const prev=lastSec(it.ex,o),t=nz(it.sec)?+it.sec:null,txt=itemTxt(it),own=(it.sets||[]).filter(x=>nz(x.t)).length===1&&(it.sets||[]).length===1;
     const goalIt=own?Object.assign({},it,{sets:it.sets.map(x=>{const y=Object.assign({},x);delete y.t;return y})}):it,gt=itemTxt(goalIt),goal=gt===it.n?"":gt.slice(it.n.length+1);
     let pr=false;(it.sets||[]).forEach(x=>{const q=prOfSet(it,x);if(q&&(!PRS[q.k]||q.t<PRS[q.k])&&(!newPr[q.k]||q.t<newPr[q.k])){newPr[q.k]=q.t;pr=true}});
-    if(t!=null){all.push(t);if(lvIsRun(it))runs.push(t);if(prev!=null){vs+=t-prev;cmp++}}
-    rows.push(`<li class="tl-${lvIsRun(it)?"run":it.st?"st":"ot"}"><i aria-hidden="true"></i><div class="fn-n"><b>${esc(it.n)}</b>${goal?`<small>${esc(goal)}</small>`:""}${pr?'<em class="fn-pr">Nytt rekord</em>':""}</div><div class="fn-t">${t!=null?`<b>${fmt(t)}</b>`:""}${t!=null&&prev!=null?lvDelta(t-prev):""}</div></li>`)});
+    if(t!=null){all.push(t);split[lvIsRun(it)?"r":it.st?"s":"x"]+=t;if(lvIsRun(it))runs.push(t);if(prev!=null){vs+=t-prev;prevSum+=prev;cmp++}const g=fnGoal(it,t);if(g)goals.push(g)}
+    rows.push(`<li class="tl-${lvIsRun(it)?"run":it.st?"st":"ot"}"><i aria-hidden="true"></i><div class="fn-n"><b>${esc(it.n)}</b>${goal?`<small>${esc(goal)}</small>`:""}${pr?'<em class="fn-pr">Nytt rekord</em>':""}</div><div class="fn-t">${t!=null?`<b>${fmt(t)}</b>`:""}${t!=null&&prev!=null?fnDelta(t,prev):""}</div></li>`)});
   prs=Object.keys(newPr).length;const mix=LG.items.some(lvIsRun)&&LG.items.some(i=>!lvIsRun(i)),snitt=mix?runs:all,avg=snitt.length?snitt.reduce((a,b)=>a+b,0)/snitt.length:null,total=LG.elapsed||((+LG.min||0)*60),bad=/inte|borttagna/.test(LG.kicker||"");
-  r.innerHTML=`<div class="fn-top"><span class="small">${esc(LG.tplName||lgType())}</span><h2>Passet är klart.</h2><b class="fn-big">${fmt(total)}</b>${cmp?`<p class="fn-vs">${lvDelta(vs)} mot förra gången</p>`:""}${bad?`<p class="small">${esc(LG.kicker)}</p>`:""}</div>
-   <div class="facts3"><div><small>${mix?"Moment":"Övningar"}</small><b>${LG.items.length}</b></div><div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div><div><small>Nya rekord</small><b>${prs}</b></div></div>
-   <div class="card"><ol class="tl fn-l">${rows.join("")}</ol></div>
+  r.innerHTML=`<div class="fn-top"><span class="small">${esc(LG.tplName||lgType())}</span><h2>Passet är klart.</h2><b class="fn-big">${fmt(total)}</b>${cmp?fnVs(vs,prevSum,cmp,all.length):""}${bad?`<p class="small">${esc(LG.kicker)}</p>`:""}</div>
+   <div class="facts3 fn-facts">${LG.doneP!=null?`<div><small>Genomfört</small><b>${LG.doneP} %</b></div>`:`<div><small>${mix?"Moment":"Övningar"}</small><b>${LG.items.length}</b></div>`}<div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div><div><small>Nya rekord</small><b>${prs}</b></div></div>
+   ${fnSplit(split,LG.elapsed||0)}${fnGoals(goals)}<div class="card"><span class="lbl">Moment för moment</span><ol class="tl fn-l">${rows.join("")}</ol>${cmp?'<p class="small fn-note">Skillnaden är mot förra gången du gjorde momentet.</p>':""}</div>
    <section class="lg-sec"><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div>
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><button type="button" class="pill block" id="lg-save">Spara passet</button><div class="grid2"><button type="button" class="pill ghost" id="fn-edit">Ändra värden</button><button type="button" class="pill ghost" id="fn-drop"${LG.dropArm?' style="color:var(--bad)"':""}>${LG.dropArm?"Tryck igen":"Släng passet"}</button></div></div>`}
@@ -4430,19 +4456,23 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
     <div class="lv-main${paused?" lv-paused":""}">
       <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2><button type="button" class="lv-goal" data-ledit="${LIVE.cur}">${g?esc(g)+" · ":""}<span>Ändra</span></button>
         <b class="lv-timer" id="lv-time" role="timer">${fmt(lvEx())}</b><p class="lv-cmp" id="lv-cmp"></p>
-        ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN} · Tryck när det är klart`}</button>`:""}</div>
+        ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN}`}</button>`:""}</div>
       <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div><div><small>${mix?"Snitt löpning":"Snitt övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:`<div><small>Kvar ca</small><b id="lv-kvar">–</b></div>`}</div>
       ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"–"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
       <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b><span class="chev" aria-hidden="true">›</span></button></div>
     <div class="lv-foot">${ready?`<button type="button" class="pill block lv-big" id="lv-go"${its.length?"":" disabled"}>Starta klockan</button>`:paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
-      :`<button type="button" class="pill block lv-big" id="lv-next">${!nx?"Klar med passet":lvIsRun(nx)?"Spring":"Nästa övning"}</button><div class="lv-acts"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-skip" aria-label="Skippa ${it?esc(it.n):"övningen"}">Skippa</button><button type="button" class="pill ghost" id="lv-stop" aria-label="Avbryt passet">Avbryt</button></div>`}</div>`;
+      :`<button type="button" class="pill block lv-big" id="lv-next">${lvMoreSets(it)||(nx&&nx.ex===it.ex)?"Nästa set":!nx?"Klar med passet":lvIsRun(nx)?"Spring":"Nästa övning"}</button><div class="lv-acts"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-skip" aria-label="Skippa ${it?esc(it.n):"övningen"}">Skippa</button><button type="button" class="pill ghost" id="lv-stop" aria-label="Avbryt passet">Avbryt</button></div>`}</div>`;
   LVIN=false;liveTick()}
 /* Stämplar tiden på övningen. Med ett enda set och en tidskolumn blir tiden också setets tid, så att rekord räknas som vanligt. */
 function lvStamp(it){const sec=Math.max(1,lvEx());it.sec=sec;it.sets.forEach(x=>{x.done=true});
   if(it.sets.length===1&&colsOf(it).some(c=>c[0]==="t")){it.prevT=nz(it.sets[0].t)?it.sets[0].t:null;it.sets[0].t=sec}}
 function lvUnstamp(it){const sec=+it.sec;delete it.sec;it.sets.forEach(x=>{delete x.done});
   if("prevT" in it){it.sets[0].t=it.prevT;delete it.prevT}return sec}
-function liveNext(){const its=lvItems(),it=its[LIVE.cur];if(!it)return;lvStamp(it);
+/* Flera set i samma övning: knappen går set för set och först sista setet tar dig vidare. */
+const lvMoreSets=it=>!!it&&it.sets.length>1&&(+it.setsDone||0)<it.sets.length-1;
+function liveNext(){const its=lvItems(),it=its[LIVE.cur];if(!it)return;
+  if(lvMoreSets(it)){it.setsDone=(+it.setsDone||0)+1;saveLive();HAPTIC("light");renderLive();return}
+  lvStamp(it);
   if(LIVE.cur>=its.length-1){HAPTIC("success");saveLive();liveFinish();return}
   LIVE.cur++;LIVE.exAt=liveElapsed();LVIN=true;LVUNDO=LIVE.cur;saveLive();HAPTIC("success");renderLive()}
 /* En skippad övning får ingen tid och sparas inte med passet. Tiden räknas på passets klocka men inte på någon övning. */
@@ -4494,11 +4524,11 @@ function openLvStop(){const can=lvCanSave();let arm=false;
     $("#st-back").onclick=closeSheet;
     $("#st-drop").onclick=e=>{if(!arm){arm=true;e.target.textContent="Tryck igen för att slänga passet";return}closeSheet();clearLive();toast("Passet är slängt.")}})}
 function liveFinish(){const L=JSON.parse(JSON.stringify(LIVE.lg));
-  const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0;
-  if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
+  const any=L.items.some(i=>i.sets.some(x=>x.done));let dropped=0,doneN=0;
+  if(any){L.items=L.items.map(i=>{const k=i.sets.filter(x=>x.done);doneN+=k.length;dropped+=i.sets.length-k.length;return Object.assign(i,{sets:k})}).filter(i=>i.sets.length)}
   L.items.forEach(i=>{delete i.prevT;delete i.skip;delete i.skipEx;delete i.setsDone;i.sets.forEach(x=>{delete x.done;delete x.runAt})});
   const bt=L.bench&&any&&!dropped?liveElapsed():null;L.benchT=bt&&bt>=300&&bt<=4*3600?bt:null;
-  LG=Object.assign(L,{live:false,fromLive:true,saved:false,edit:null,date:today(),elapsed:liveElapsed(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du skippade eller inte hann med är borttagna`:"Passet är klart",view:"finish",dropArm:false,forLive:false,draft:false});
+  LG=Object.assign(L,{doneP:any?Math.round(doneN/(doneN+dropped)*100):null,live:false,fromLive:true,saved:false,edit:null,date:today(),elapsed:liveElapsed(),min:Math.max(1,Math.min(600,Math.round(liveElapsed()/60))),kicker:L.bench?(L.benchT?`Din tid: ${fmt(L.benchT)}`:"Tiden räknas inte som rekord, eftersom du inte körde alla övningar"):dropped?`${dropped} set du skippade eller inte hann med är borttagna`:"Passet är klart",view:"finish",dropArm:false,forLive:false,draft:false});
   LIVE.open=false;saveLive();renderLive();openSheet(`<div id="lg" class="lg"></div>`,lgMount)}
 function clearLive(){LIVE=null;LVUNDO=null;saveLive();clearInterval(LIVETICK);liveRelease();renderLive();try{renderGo()}catch(e){}}
 function bindLive(){const v=$("#live");

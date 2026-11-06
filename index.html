@@ -964,6 +964,7 @@ a.row{color:inherit;text-decoration:none}
 /* Beskärning */
 .crop{position:fixed;inset:0;z-index:200;background:#000;color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto;padding:env(safe-area-inset-top,0px) 0 env(safe-area-inset-bottom,0px)}
 .cr-top{display:flex;align-items:center;justify-content:space-between;padding:8px 8px}.cr-top b{font-size:var(--t-body);font-weight:600}
+.cr-rot{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.14)}
 .cr-btn{min-height:44px;padding:0 14px;border:0;background:none;color:#fff;font:inherit;font-size:var(--t-body);cursor:pointer;border-radius:980px}.cr-ok{font-weight:600;color:#fff;background:var(--hot)}
 .cr-stage{position:relative;overflow:hidden;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
 .cr-img{position:absolute;left:50%;top:50%;max-width:none;pointer-events:none;-webkit-user-drag:none}
@@ -1510,6 +1511,12 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .logo-btn[hidden]{display:none}
 .logo-btn svg{height:24px;width:auto;display:block}
 .view:not(#v-hem) .pagehead{padding-top:66px}
+/* Täcker innehållet bakom klocka och batteri när man skrollar */
+body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--bg);z-index:39;pointer-events:none}
+/* Samma läge och storlek på logotypen på Hem som på övriga sidor */
+#v-hem.back .brandbar{position:absolute;top:calc(env(safe-area-inset-top,0px) + 14px);left:max(16px,env(safe-area-inset-left,0px));z-index:30;height:38px;min-height:0;margin:0;align-items:center}
+#v-hem.back .brandmark{height:24px}
+#v-hem.back .hero{padding-top:66px}
 #v-hem .pagehead{padding-top:28px}
 .row.nob{grid-template-columns:minmax(0,1fr) auto}
 .fw-counts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -2027,7 +2034,7 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.12 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.13 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2072,7 +2079,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.12";
+const APPVER="1.1.13";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3307,7 +3314,7 @@ function cropImage(file,o){o=o||{};const ratios=o.ratios||[[1,"1:1"]];let ar=o.r
     const iw=img.naturalWidth,ih=img.naturalHeight,ov=document.createElement("div");ov.className="crop";ov.setAttribute("role","dialog");ov.setAttribute("aria-modal","true");ov.setAttribute("aria-label","Beskär bilden");
     ov.innerHTML=`<div class="cr-top"><button class="cr-btn" data-cr="no">Avbryt</button><b>Beskär</b><button class="cr-btn cr-ok" data-cr="ok">Klar</button></div>
      <div class="cr-stage"><img class="cr-img" alt="" draggable="false"><div class="cr-frame${o.round?" round":""}"></div></div>
-     <div class="cr-bot">${ratios.length>1?`<div class="seg cr-ar" role="group" aria-label="Format">${ratios.map(([r,l])=>`<button data-ar="${r}" aria-pressed="${r===ar}">${l}</button>`).join("")}</div>`:""}
+     <div class="cr-bot"><button type="button" class="cr-btn cr-rot" data-cr="rot"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.300 6.700"/><path d="M20 4v7h-7"/></svg>Rotera</button>${ratios.length>1?`<div class="seg cr-ar" role="group" aria-label="Format">${ratios.map(([r,l])=>`<button data-ar="${r}" aria-pressed="${r===ar}">${l}</button>`).join("")}</div>`:""}
       <label class="cr-zl"><span class="sr">Zoom</span><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5"/></svg><input type="range" class="cr-z" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M8.5 11h5M11 8.5v5"/></svg></label>
       <p class="cr-hint">Dra för att flytta. Nyp eller dra i reglaget för att zooma.</p></div>`;
     document.body.appendChild(ov);document.body.style.overflow="hidden";
@@ -3330,10 +3337,14 @@ function cropImage(file,o){o=o||{};const ratios=o.ratios||[[1,"1:1"]];let ar=o.r
     const close=r=>{removeEventListener("resize",layout);ov.remove();document.body.style.overflow="";URL.revokeObjectURL(url);done(r)};
     const key=e=>{if(e.key==="Escape"){ov.removeEventListener("keydown",key);close(null)}};ov.addEventListener("keydown",key);
     ov.querySelector('[data-cr="no"]').onclick=()=>close(null);
+    ov.querySelector('[data-cr="rot"]').onclick=async()=>{const k=Math.min(1,3000/Math.max(iw,ih)),w=Math.round(iw*k),h=Math.round(ih*k),c=document.createElement("canvas");c.width=h;c.height=w;
+      const x=c.getContext("2d");x.imageSmoothingQuality="high";x.translate(h,0);x.rotate(Math.PI/2);x.drawImage(img,0,0,w,h);
+      const rot=await new Promise(r=>c.toBlob(r,"image/jpeg",.95));if(!rot){toast("Kunde inte rotera bilden. Prova en annan.");return}
+      removeEventListener("resize",layout);ov.remove();URL.revokeObjectURL(url);cropImage(rot,Object.assign({},o,{ratio:ar})).then(done)};
     ov.querySelector('[data-cr="ok"]').onclick=async()=>{const s=base*z,ix=fw/2+tx-iw*s/2,iy=fh/2+ty-ih*s/2,sx=-ix/s,sy=-iy/s,sw=fw/s,sh=fh/s;
       const maxW=o.maxW||1280,k=Math.min(1,maxW/sw),W=Math.round(sw*k),H=Math.round(sh*k),c=document.createElement("canvas");c.width=W;c.height=H;
       const x=c.getContext("2d");x.imageSmoothingQuality="high";x.drawImage(img,sx,sy,sw,sh,0,0,W,H);
-      const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",o.q||.85));HAPTIC("light");close(blob?{blob,ratio:ar}:null)};
+      const blob=await new Promise(r=>c.toBlob(r,"image/jpeg",o.q||.85));HAPTIC("light");close(blob?{blob,ratio:ar,src:file}:null)};
     addEventListener("resize",layout);requestAnimationFrame(layout);setTimeout(()=>ov.querySelector('[data-cr="ok"]').focus(),50)})}
 
 /* Profilbild: beskärs till en kvadrat och krymps innan den laddas upp */
@@ -3805,11 +3816,11 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
        <div style="--c:var(--green)"><b>${fmt(e.sta)}</b><span>Stationer</span><span>${e.own===8?"Dina rekord":e.own?`${e.own} av 8 egna`:"Snitt i Open"}</span></div>
        <div style="--c:var(--cyan)"><b>${e.rox?fmt(e.rox):"Ingår"}</b><span>Roxzone</span><span>${e.rox?"Uppskattad":"I löpningen"}</span></div>
       </div>
-      <p class="so-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord, lite långsammare eftersom du är trött i loppet.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open ${cls}.`:`Stationerna utgår från snittet i Open ${cls} tills du loggar egna tider.`}</p></div></section>`}
+      <p class="so-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord, lite långsammare eftersom du är trött i loppet.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open${set.fmt==="mixed"?"":" "+cls}.`:`Stationerna utgår från snittet i Open${set.fmt==="mixed"?"":" "+cls} tills du loggar egna tider.`}${set.fmt!=="singel"?" Stationstiden är uppskattad för två som delar på arbetet.":""}</p></div></section>`}
   // Insikt: stationen där mest tid finns att hämta
   const w=hxWeak();
-  if(w&&w.d>0)h+=`<button type="button" class="so-ins" data-st="${S.indexOf(w.s)}"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><p><b>${esc(w.s.n)} är där du har mest att hämta.</b> <span>Du ligger ${fmt(w.d)} efter snittet i Open ${cls}.</span></p><span class="chev" aria-hidden="true">›</span></button>`;
-  else if(w)h+=`<div class="so-ins" style="cursor:default"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p><b>Du är före snittet i Open ${cls}</b> <span>på alla stationer du har loggat.</span></p></div>`;
+  if(w&&w.d>0)h+=`<button type="button" class="so-ins" data-st="${S.indexOf(w.s)}"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg></span><p><b>${esc(w.s.n)} är där du har mest att hämta.</b> <span>Du ligger ${fmt(w.d)} efter snittet i Open${set.fmt==="mixed"?"":" "+cls}.</span></p><span class="chev" aria-hidden="true">›</span></button>`;
+  else if(w)h+=`<div class="so-ins" style="cursor:default"><span class="ic" aria-hidden="true"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><p><b>Du är före snittet i Open${set.fmt==="mixed"?"":" "+cls}</b> <span>på alla stationer du har loggat.</span></p></div>`;
   // Träningstid, löpning och stationsträning
   h+=soTrainingHtml(el.clientWidth||$("#v-logg .wrap").clientWidth||358);
   // Stationer mot snittet i Open
@@ -3817,7 +3828,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
     if(!pr)return `<button type="button" class="so-stt" data-st="${i}"><span>${esc(x.n)}</span><b class="none">–</b><div class="so-bul" aria-hidden="true"><u style="left:66.7%"></u></div><small>Snittet ${fmt(o)}</small></button>`;
     const d=pr-o,f=Math.min(100,pr/(o*1.5)*100);
     return `<button type="button" class="so-stt" data-st="${i}" aria-label="${esc(x.n)}: ${fmt(pr)}, ${hxSigned(d)} mot snittet"><span>${esc(x.n)}</span><b>${fmt(pr)}</b><div class="so-bul" aria-hidden="true"><i class="${d>0?"slow":""}" style="width:${f}%"></i><u style="left:66.7%"></u></div><small class="${Math.abs(d)<1?"":d<0?"good":"bad"}">${hxSigned(d)} mot snittet</small></button>`}).join("")+`</div>
-   <p class="small so-note">Strecket visar snittet i Open ${cls}. Snittet är ungefärligt och varierar mellan lopp. Dina tider är dina rekord och lopp.</p>`;
+   <p class="small so-note">Strecket visar snittet i Open${set.fmt==="mixed"?"":" "+cls}. Snittet är ungefärligt och varierar mellan lopp. Dina tider är dina rekord och lopp.</p>`;
   el.innerHTML=h;soBindSel(el);
   el.querySelectorAll("[data-solg]").forEach(b=>b.onclick=()=>{setLgView(b.dataset.solg);window.scrollTo({top:0,behavior:"smooth"})});
   if(!el._ro&&window.ResizeObserver){let last=el.clientWidth;el._ro=new ResizeObserver(()=>{const cw=el.clientWidth;if(cw&&Math.abs(cw-last)>8){last=cw;renderOverview()}});el._ro.observe(el)}}
@@ -4751,7 +4762,7 @@ function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E||!K)return;c
   const w=hxWeak();
   if(!w){K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><b>Var tappar du mest?</b><p>Logga tid på en station, så jämför VARV. med snittet i Open och visar vad du ska träna.</p></div></div><a class="pill ghost block" href="#stationer">Visa stationerna</a>`;return}
   const ahead=w.d<=0;
-  K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><span class="hx-k">${ahead?"Närmast snittet":"Kostar dig mest"}</span><b>${esc(w.s.n)}</b><p><span class="hx-delta ${ahead?"ahead":"behind"}">${hxSigned(w.d)}</span> mot snittet i Open ${cls} · ditt rekord ${fmt(Math.round(w.pr))}</p></div></div>
+  K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><span class="hx-k">${ahead?"Närmast snittet":"Kostar dig mest"}</span><b>${esc(w.s.n)}</b><p><span class="hx-delta ${ahead?"ahead":"behind"}">${hxSigned(w.d)}</span> mot snittet i Open${set.fmt==="mixed"?"":" "+cls} · ditt rekord ${fmt(Math.round(w.pr))}</p></div></div>
    <button class="pill ghost block" id="h-weak-go" type="button">Träna ${esc(w.s.n)}</button>`;
   $("#h-weak-go").onclick=()=>openFocus(w.i)}
 /* Fokuspass: stationen trött, som i loppet. Fyra varv med 1 km löpning och en halv station. */
@@ -5912,9 +5923,9 @@ function openComposer(){if(!SB||!SBUSER){openAuth();return}
     const f=$("#cp-file"),pk=$("#cp-pick");attachMentions($("#cp-txt"));
     let orig=null,ratio=.8;
     const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
-      ratio=cr.ratio;blob=cr.blob;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);pk.classList.add("has");pk.style.aspectRatio=String(ratio);pk.innerHTML=`<img src="${prev}" alt="Vald bild">`;$("#cp-tools").hidden=false;return true};
+      orig=cr.src||x;ratio=cr.ratio;blob=cr.blob;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);pk.classList.add("has");pk.style.aspectRatio=String(ratio);pk.innerHTML=`<img src="${prev}" alt="Vald bild">`;$("#cp-tools").hidden=false;return true};
     f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}
-      if(await crop(x))orig=x};
+      await crop(x)};
     $("#cp-crop").onclick=()=>{if(orig)crop(orig)};$("#cp-new").onclick=()=>f.click();
     $("#cp-go").onclick=()=>busy($("#cp-go"),async()=>{const txt=$("#cp-txt").value.trim();
       if(!blob&&!txt){toast("Lägg till en bild eller skriv något.");return}
@@ -5945,8 +5956,8 @@ function openEditPost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!=
       pk.innerHTML=blob?`<img src="${prev}" alt="Vald bild">`:hadPic&&!removePic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`;
       pk.style.aspectRatio=blob?String(ratio):"";$("#ep2-tools").hidden=!(blob||(hadPic&&!removePic))};
     const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
-      ratio=cr.ratio;blob=cr.blob;removePic=false;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);show();return true};
-    f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}if(await crop(x))orig=x};
+      orig=cr.src||x;ratio=cr.ratio;blob=cr.blob;removePic=false;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);show();return true};
+    f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}await crop(x)};
     $("#ep2-new").onclick=()=>f.click();
     $("#ep2-rm").onclick=()=>{blob=null;if(prev){URL.revokeObjectURL(prev);prev=null}removePic=true;show()};
     $("#ep2-go").onclick=()=>busy($("#ep2-go"),async()=>{const ta=$("#ep2-txt"),txt=ta.value.replace(/\s+/g," ").trim().slice(0,max)||null;

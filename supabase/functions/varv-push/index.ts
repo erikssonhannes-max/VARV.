@@ -148,23 +148,30 @@ function when(s: string, e?: string) {
   return `${a.getUTCDate()} ${MON[a.getUTCMonth()]}–${b.getUTCDate()} ${MON[b.getUTCMonth()]}`;
 }
 const andList = (a: string[]) => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " och " + a[a.length - 1];
-type Race = { key: string; kind: "tavling" | "sim"; name: string; day: string; label: string };
+type Race = { key: string; kind: "tavling" | "sim"; src: string; name: string; day: string; label: string };
+const slug = (s: string) => String(s).normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const site = (path: string) => fetch("https://varvtraining.com/" + path, { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null);
 
+// Källor: tabellen events och data/events.json (tävlingar), tabellen sim_races och data/sim-races.json (simuleringar).
+// Samma tävling på båda ställena får samma nyckel och ger bara en notis.
 async function upcomingRaces(): Promise<Race[] | null> {
   const today = new Date().toISOString().slice(0, 10), out: Race[] = [];
-  const [ev, sim, file] = await Promise.all([
+  const [ev, sim, evFile, simFile] = await Promise.all([
     SB.from("events").select("city,country,starts,ends").eq("hidden", false).gte("ends", today),
     SB.from("sim_races").select("id,title,city,day").eq("hidden", false).gte("day", today),
-    fetch("https://varvtraining.com/data/sim-races.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+    site("data/events.json"),
+    site("data/sim-races.json"),
   ]);
   // Saknas någon källa just nu hoppar vi över körningen, annars kan lopp se nya ut nästa gång.
-  if (ev.error || sim.error || !file || !Array.isArray(file.races)) return null;
-  for (const e of ev.data || [])
-    out.push({ key: `ev-${e.starts}-${String(e.city).toLowerCase()}`, kind: "tavling", name: e.city, day: e.starts, label: `${e.city}${e.country ? ", " + e.country : ""} · ${when(e.starts, e.ends)}` });
+  if (ev.error || sim.error || !evFile || !Array.isArray(evFile.events) || !simFile || !Array.isArray(simFile.races)) return null;
+  const tavling = (e: { city: string; country?: string; starts: string; ends: string }, src: string) =>
+    out.push({ key: `ev-${e.starts}-${slug(e.city)}`, kind: "tavling", src, name: e.city, day: e.starts, label: `${e.city}${e.country ? ", " + e.country : ""} · ${when(e.starts, e.ends)}` });
+  for (const e of ev.data || []) tavling(e, "events");
+  for (const e of evFile.events) if (e && e.city && e.starts && e.ends >= today) tavling(e, "events-file");
   for (const r of sim.data || [])
-    out.push({ key: `sim-${r.day}-db-${r.id}`, kind: "sim", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
-  for (const r of file.races)
-    if (r && r.key && r.day >= today) out.push({ key: `sim-${r.key}`, kind: "sim", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
+    out.push({ key: `sim-${r.day}-db-${r.id}`, kind: "sim", src: "sim-db", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
+  for (const r of simFile.races)
+    if (r && r.key && r.day >= today) out.push({ key: `sim-${r.key}`, kind: "sim", src: "sim-file", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
   return out;
 }
 

@@ -83,7 +83,8 @@ Säkerhet och stabil statistik
 Notis om nya tävlingar
 
     Kör supabase/nya-tavlingar.sql i Supabase och uppdatera sedan funktionen varv-push med supabase/functions/varv-push/index.ts. Kräver notiser.sql och notiscenter.sql.
-    Varje timme jämförs tävlingarna i events och simuleringarna i sim_races och data/sim-races.json med de lopp som redan är kända. Nya lopp ger alla en notis. Första körningen lär sig bara listan och skickar inget.
+    Varje timme jämförs tävlingarna i events och data/events.json och simuleringarna i sim_races och data/sim-races.json med de lopp som redan är kända. Nya lopp ger alla en notis. En ny källa lärs bara in och ger ingen notis.
+    data/events.json och data/sim-races.json fylls på av två schemalagda uppgifter i Claude varje måndag. Kontrollera dem med node scripts/check-events.mjs och node scripts/check-sim-races.mjs. Lopp som läggs in för hand i tabellerna gäller före filen.
 
 Kopplingar att ansöka om
 

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob: https://*.supabase.co https://*.googleusercontent.com; connect-src 'self' https://varvtraining.com https://*.supabase.co wss://*.supabase.co; font-src 'self' data:; media-src 'self' data: blob:; object-src 'none'; base-uri 'self'; form-action 'self'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="description" content="Träna smartare för Hyrox. Stationsguider, plan efter måltid, tidtagning och logg.">
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
@@ -2161,7 +2161,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.35 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.36 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2197,6 +2197,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 /* ============ Appläget ============ */
 /* I appen för iPhone och Android (Capacitor) körs samma kod som på webben. IS_NATIVE styr de få saker som skiljer. */
 const IS_NATIVE=!!(window.Capacitor&&typeof window.Capacitor.isNativePlatform==="function"&&window.Capacitor.isNativePlatform());
+/* Listor som uppdateras automatiskt hämtas från webbplatsen även i appen, eftersom appens egen kopia bara uppdateras vid nya butiksbyggen. */
+async function fetchData(path){const o={cache:"no-cache"};if(IS_NATIVE){try{const r=await fetch("https://varvtraining.com/"+path,o);if(r.ok)return r}catch(e){}}try{return await fetch(path,o)}catch(e){return null}}
 const SITE="https://varvtraining.com/";
 if(IS_NATIVE){document.documentElement.classList.add("native");
   // Länkar som öppnas i ny flik, till exempel villkoren, öppnas från webbsidan i telefonens webbläsare.
@@ -2206,7 +2208,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.35";
+const APPVER="1.1.36";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5691,9 +5693,14 @@ function applyEvents(rows){if(!rows||!rows.length)return false;
   const m=rows.filter(x=>x&&x.city&&x.starts&&x.ends).map((x,i)=>({i,c:x.city,n:x.country||"",r:x.region||"varlden",s:x.starts,e:x.ends,v:x.venue||"",pre:x.kind==="pre",vm:x.kind==="vm",url:x.url||null}));
   if(!m.length)return false;EVENTS.length=0;m.forEach(e=>EVENTS.push(e));return true}
 try{applyEvents(JSON.parse(localStorage.getItem("varv-events2")||"null"))}catch(e){}
-async function loadEvents(){const C=window.VARV_SUPABASE||{};if(!C.url||!C.anonKey||window.claude)return;
-  try{const r=await fetch(C.url+"/rest/v1/events?select=city,country,region,starts,ends,venue,kind,url&order=starts",{headers:{apikey:C.anonKey}});if(!r.ok)return;
-    const rows=await r.json();if(applyEvents(rows)){try{localStorage.setItem("varv-events2",JSON.stringify(rows))}catch(e){}try{renderEvents();renderHome()}catch(e){}}}catch(e){}}
+/* Tävlingar hämtas automatiskt till data/events.json, och teamet kan lägga in egna eller rätta i tabellen events. Finns samma lopp på båda ställena gäller tabellen. */
+async function loadEvents(){const C=window.VARV_SUPABASE||{};if(window.claude)return;
+  const get=async(u,o)=>{try{const r=await fetch(u,o);return r.ok?await r.json():null}catch(e){return null}};
+  const [f,db]=await Promise.all([fetchData("data/events.json").then(r=>r&&r.ok?r.json():null).catch(()=>null),C.url&&C.anonKey?get(C.url+"/rest/v1/events?select=city,country,region,starts,ends,venue,kind,url&order=starts",{headers:{apikey:C.anonKey}}):null]);
+  const k=x=>String(x.city||"").toLowerCase()+"|"+x.starts,m=new Map();
+  ((f&&Array.isArray(f.events))?f.events:[]).forEach(x=>m.set(k(x),x));(Array.isArray(db)?db:[]).forEach(x=>m.set(k(x),x));
+  const rows=[...m.values()].sort((a,b)=>String(a.starts).localeCompare(String(b.starts)));
+  try{if(applyEvents(rows)){try{localStorage.setItem("varv-events2",JSON.stringify(rows))}catch(e){}try{renderEvents();renderHome()}catch(e){}}}catch(e){}}
 setTimeout(loadEvents,1200);
 const evUpcoming=()=>EVENTS.filter(e=>e.e>=today()).sort((a,b)=>a.s.localeCompare(b.s));
 /* Mitt lopp sparas som stad och startdatum, aldrig bara som datum: flera lopp kan pågå samma dagar. */
@@ -5828,7 +5835,7 @@ async function loadSims(force){
   if(!force&&Date.now()-SIMAT<60000)return;SIMAT=Date.now();
   const H={apikey:C.anonKey};
   try{
-    const [f,r]=await Promise.all([fetch("data/sim-races.json").catch(()=>null),fetch(C.url+"/rest/v1/sim_races?select=id,title,organizer,city,venue,day,start_time,price,info,url&order=day,start_time",{headers:H}).catch(()=>null)]);
+    const [f,r]=await Promise.all([fetchData("data/sim-races.json"),fetch(C.url+"/rest/v1/sim_races?select=id,title,organizer,city,venue,day,start_time,price,info,url&order=day,start_time",{headers:H}).catch(()=>null)]);
     if(!(f&&f.ok)&&!(r&&r.ok))return;
     const auto=f&&f.ok?((await f.json()).races||[]).map(x=>Object.assign({},x,{id:x.key,auto:true})):[];
     const own=r&&r.ok?(await r.json()).map(x=>Object.assign({},x,{id:x.day+"-db-"+x.id})):[];

@@ -650,6 +650,7 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .tog-face+.tog-face{margin-left:-6px}.tog-face img{width:100%;height:100%;object-fit:cover}
 .tog-line.big .tog-face{width:28px;height:28px;font-size:11px}
 .tog-wait{color:var(--muted);font-weight:500}
+.tog-sub{margin-top:-4px}.tog-msg{color:var(--green);font-weight:600;min-height:1.4em}.tog-msg:empty{display:none}
 .tog-card{display:grid;gap:10px;justify-items:start}
 .qrbox{background:#fff;border-radius:22px;padding:14px;width:min(240px,70vw);box-shadow:0 18px 36px -24px rgba(0,0,0,.4)}
 .qrbox svg{display:block;width:100%;height:auto}
@@ -2129,7 +2130,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.25 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.26 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2174,7 +2175,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.25";
+const APPVER="1.1.26";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4455,7 +4456,8 @@ function lgAllApply(){if(!lgAllOk())return;const A=LG.all,v=A.s[A.f];
   lgSyncSums()}
 function lgSyncSums(){$$("#lg .lg-ex").forEach(e=>{const it=LG.items[+e.dataset.i],sm=e.querySelector(".lg-et small");if(it&&sm)sm.textContent=lgItemSum(it)});const su=$("#lg-sum");if(su)su.textContent=lgSum()}
 function lgTogSec(){if(!SBUSER||!TOG.ok||mode!=="db"||LG.edit||!togMates().length)return "";if(!Array.isArray(LG.with))LG.with=[];
-  return `<section class="lg-sec"><span class="lbl">Tränade du med någon?</span>${togPicker(LG.with)}<p class="small">De får frågan och kan lägga till passet i sin egen logg och statistik.</p></section>`}
+  return `<section class="lg-sec tog-sec"><div class="lg-h"><h3>Tränade du med någon?</h3></div><p class="small tog-sub">Välj vem du körde med. Passet hamnar i deras logg och statistik när de säger ja.</p>${togPicker(LG.with)}<p class="small tog-msg" id="lg-togmsg" aria-live="polite">${lgTogMsg()}</p></section>`}
+const lgTogMsg=()=>LG&&Array.isArray(LG.with)&&LG.with.length?`${esc(togList(LG.with))} får frågan när du sparar passet.`:"";
 function renderLG(){const r=$("#lg");if(!r)return;
   r.classList.toggle("lg-still",!!LG.still);LG.still=false;
   if(LG.view==="pick"){renderPick(r);return}
@@ -4561,7 +4563,7 @@ function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new S
    <div class="lg-foot"><button type="button" class="pill block" id="lg-addsel"${n?"":" disabled"}>${n?`Lägg till ${n} ${n===1?"övning":"övningar"}`:"Välj övningar"}</button></div>`;
 }
 function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disabled)return;const d=t.dataset;
-  if(d.togu){if(!Array.isArray(LG.with))LG.with=[];if(togToggle(LG.with,d.togu))t.setAttribute("aria-pressed",LG.with.includes(d.togu));return}
+  if(d.togu){if(!Array.isArray(LG.with))LG.with=[];if(togToggle(LG.with,d.togu)){t.setAttribute("aria-pressed",LG.with.includes(d.togu));const m=$("#lg-togmsg");if(m)m.innerHTML=lgTogMsg()}return}
   if(d.fresh!==undefined){dropDraft();LG=null;openLogger();return}
   if(t.id==="lg-open"){LG.view="pick";LG.pick=[];LG.q="";renderLG();$("#sheet").scrollTop=0;return}
   if(t.id==="lg-back"){if(LG.live){closeSheet();renderLive();return}LG.view="main";renderLG();return}

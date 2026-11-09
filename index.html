@@ -443,6 +443,15 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 @media (prefers-reduced-motion:no-preference){.med.shine::after{animation:mShine 1.4s ease .7s both}}
 @keyframes mShine{to{background-position:-40% 0}}
 .medals{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px 6px}
+.medal{width:56px;height:56px;flex:none;position:relative;display:block}
+.medal svg{display:block;width:100%;height:100%;overflow:visible}
+.medal.sm{width:40px;height:40px}.medal.xs{width:28px;height:28px}
+.medal.lg{width:136px;height:136px;filter:drop-shadow(0 18px 22px rgba(0,0,0,.16))}
+@media (prefers-reduced-motion:no-preference){.medal.shine .gl{animation:mGlint 1.5s var(--ease) .7s both}}
+@keyframes mGlint{from{transform:translateX(-150px)}}
+.medgrp{display:grid;gap:14px;margin-top:22px}
+.medgrp h3{display:flex;justify-content:space-between;align-items:baseline;font-size:var(--t-sub);font-weight:600}
+.medgrp h3 span{font-size:var(--t-cap);font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums}
 .mcell{display:grid;justify-items:center;align-content:start;gap:7px;text-align:center;background:none;border:0;padding:0;cursor:pointer;min-width:0;color:inherit}
 .mcell b{font-size:var(--t-cap);font-weight:600;line-height:1.2;letter-spacing:-.01em;overflow-wrap:anywhere}
 .mcell b small{display:block;font-size:var(--t-micro);color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums;margin-top:1px}
@@ -451,7 +460,7 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .medpop h2{font-size:var(--t-sheet);letter-spacing:-.03em}
 .medpop p{color:var(--muted);max-width:32ch}
 .medrow{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
-@media (prefers-reduced-motion:no-preference){.medpop .med.lg,.medrow .med{animation:medIn .9s var(--spring) .15s both}}
+@media (prefers-reduced-motion:no-preference){.medpop .med.lg,.medrow .med,.medpop .medal.lg,.medrow .medal{animation:medIn .9s var(--spring) .15s both}}
 @keyframes medIn{0%{transform:scale(.3) rotate(-30deg);opacity:0}100%{transform:none;opacity:1}}
 .tierlist{display:grid;gap:8px}
 .tierlist div{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:12px;align-items:center;font-size:var(--t-sub)}
@@ -2152,7 +2161,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.32 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.33 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2197,7 +2206,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.32";
+const APPVER="1.1.33";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3650,35 +3659,83 @@ const varvOf=l=>Math.min(12,Math.max(1,Math.round((+l.min||0)/10)))+(l.plan?2:0)
 /* Personlig rank: man stiger en nivå efter ett visst antal loggade pass. */
 const RANK_MIN=10;
 const TIERS=[{n:"Start",v:0,m:["#d5d5da","#8e8e93"]},{n:"Brons",v:10,m:["#efb68a","#9c5a2c"]},{n:"Silver",v:25,m:["#f4f6f9","#9fa8b3"],i:"#3d434b"},{n:"Guld",v:50,m:["#ffe08a","#d48f0b"]},{n:"Platina",v:100,m:["#eef8ff","#7eaed2"],i:"#24435c"},{n:"Elit",v:200,m:["#ff3b5c","#ff7a3d"]}];
-const FAM={hot:["#ff4767","#ff7a3d"],cyan:["#62dfee","#0a8fb0"],green:["#8ee05a","#1a9a45"],gold:["#ffd977","#d48f0b"]};
-const IC={flag:'<path d="M6 21V4M6 4h11l-2.2 4 2.2 4H6"/>',check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',list:'<path d="M10 6h10M10 12h10M10 18h10M4 6l1.2 1.2L7.5 5M4 12l1.2 1.2L7.5 11M4 18l1.2 1.2L7.5 17"/>',
-  watch:'<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18 6.5l1.3-1.3"/>',star:'<path d="M12 3.8l2.5 5.1 5.6.8-4 4 1 5.6-5.1-2.7-5 2.7 1-5.6-4.1-4 5.6-.8z"/>',
-  cup:'<path d="M8 4h8v5.5a4 4 0 0 1-8 0zM8 6.5H5.5a2.8 2.8 0 0 0 2.7 3.8M16 6.5h2.5a2.8 2.8 0 0 1-2.7 3.8M12 13.5V17M8.5 20h7"/>',target:'<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/>',
-  varv:'<path d="M12 7h3.5a5 5 0 0 1 0 10h-7a5 5 0 0 1-4.7-6.6"/><circle cx="6.2" cy="7.6" r="1.7" fill="currentColor" stroke="none"/>'};
+/* Medaljerna: formen visar familjen, färgen följer stilguiden och kanten byter metall i en serie (r 1–5). */
+const MSH={circle:{o:"M60 7a53 53 0 1 1 0 106a53 53 0 1 1 0-106z",i:"M60 16a44 44 0 1 1 0 88a44 44 0 1 1 0-88z"},
+  hex:{o:"M60 9L104.2 34.5V85.5L60 111L15.8 85.5V34.5Z",i:"M60 20L94.6 40V80L60 100L25.4 80V40Z"},
+  shield:{o:"M60 9L104 22V57C104 86 84 104 60 112C36 104 16 86 16 57V22Z",i:"M60 19L95 29.5V57C95 80 79 95 60 102C41 95 25 80 25 57V29.5Z"},
+  square:{o:"M40 9h40c21 0 31 10 31 31v40c0 21-10 31-31 31H40C19 111 9 101 9 80V40C9 19 19 9 40 9z",i:"M42 18h36c16 0 24 8 24 24v36c0 16-8 24-24 24H42c-16 0-24-8-24-24V42c0-16 8-24 24-24z"},
+  rosette:{o:"M60 8L71.6 16.5L86 15L91.8 28.2L105 34L103.5 48.4L112 60L103.5 71.6L105 86L91.8 91.8L86 105L71.6 103.5L60 112L48.4 103.5L34 105L28.2 91.8L15 86L16.5 71.6L8 60L16.5 48.4L15 34L28.2 28.2L34 15L48.4 16.5Z",i:"M60 18a42 42 0 1 1 0 84a42 42 0 1 1 0-84z"}};
+const MFAM={flit:{s:"circle",face:"vm-fhot",rim:"vm-rhot",ink:"#fff"},tid:{s:"hex",face:"vm-fcyan",rim:"vm-rcyan",ink:"#fff"},
+  svit:{s:"shield",face:"vm-fgreen",rim:"vm-rgreen",ink:"#fff"},station:{s:"square",face:"vm-fgreen",rim:"vm-rgreen",ink:"#fff"},
+  rekord:{s:"rosette",face:"vm-fgold",rim:"vm-guld",ink:"#5a3800",dark:1},lopp:{s:"rosette",face:"vm-fgold",rim:"vm-guld",ink:"#5a3800",dark:1},
+  hemlig:{s:"circle",face:"vm-fpearl",rim:"vm-plat",ink:"#2a2a33",dark:1}};
+const MRIM=["","vm-brons","vm-silver","vm-guld","vm-plat","vm-hot"];
+const mRing=(x,y,r)=>`M${x} ${y-r}a${r} ${r} 0 1 0 .01 0z`;
+const MIC={
+  start:{f:"M5 33c0-3 2-5 5-5h7l5-9 6 2 3 6 9 3c3 1 4 3 4 5v3H5z",s:"M5 33c0-3 2-5 5-5h7l5-9 6 2 3 6 9 3c3 1 4 3 4 5v3H5zM4 41h40M21 24l4 1.5M19 27.5l4 1.5"},
+  vecka:{f:"M8 12h32v8H8z",s:"M8 12h32v28H8zM8 20h32M16 7v8M32 7v8M17 30l5 5 9-9"},
+  lang:{f:"M17 42c1-7 13-7 14 0z",s:"M13 6h22M13 42h22M16 6c0 11 16 12 16 18s-16 7-16 18M32 6c0 11-16 12-16 18s16 7 16 18"},
+  ski:{f:"M21 6h6a2 2 0 0 1 2 2v28H19V8a2 2 0 0 1 2-2z",s:"M21 6h6a2 2 0 0 1 2 2v28H19V8a2 2 0 0 1 2-2zM15 42h18M24 36v6M20 11L11 22M28 11l9 11M8 22h6M34 22h6"},
+  push:{f:"M12 29h22v7H12z",s:"M6 40h30a6 6 0 0 0 6-6M12 29h22v7H12zM16 29V9M30 29V9M12 9h7M27 9h7"},
+  pull:{f:"M6 29h17v7H6z",s:"M3 40h21a5 5 0 0 0 5-5M6 29h17v7H6zM23 32c7 0 9-7 13-11s6-8 8-10M39 6l6 6"},
+  bbj:{f:mRing(24.5,11,3.6),s:mRing(24.5,11,3.6)+"M7 38c2-10 7-16 13-19M29 19c6 3 11 9 13 19M37 34l5 4 3-6M3 43h9M36 43h9"},
+  row:{f:mRing(35,29,8),s:mRing(35,29,8)+"M4 41h38M9 41v-5M10 34h10M20 25l8 3M35 37v4"},
+  farm:{f:mRing(16,33,7)+mRing(32,33,7),s:mRing(16,33,7)+mRing(32,33,7)+"M12 28v-8a4 4 0 0 1 8 0v8M28 28v-8a4 4 0 0 1 8 0v8"},
+  lunge:{f:"M9 17h30a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V22a5 5 0 0 1 5-5z",s:"M9 17h30a5 5 0 0 1 5 5v12a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V22a5 5 0 0 1 5-5zM15 17a4 4 0 0 1 8 0M25 17a4 4 0 0 1 8 0M14 28h20"},
+  wall:{f:mRing(17,32,10),s:mRing(17,32,10)+"M9 27c5 3 11 3 16 0M9 37c5-3 11-3 16 0M31 6h12M37 6v7M27 21c3-5 5-8 8-10"},
+  watch:{f:mRing(24,27,14),s:mRing(24,27,14)+"M24 5v8M19 5h10M36 12l3-3M24 27l6-6",d:mRing(24,27,2.6)},
+  star:{f:"M24 5l5.6 12.2 13.4 1.5-10 9 2.8 13.1L24 34.1l-11.8 6.7 2.8-13.1-10-9 13.4-1.5z",s:"M24 5l5.6 12.2 13.4 1.5-10 9 2.8 13.1L24 34.1l-11.8 6.7 2.8-13.1-10-9 13.4-1.5z"},
+  sim:{s:"M4 26h8l4-12 8 24 5-12h15",d:mRing(44,26,2.6)},
+  flag:{f:"M12 8h26l-6 8 6 8H12z",s:"M12 44V6M12 8h26l-6 8 6 8H12zM20 8v16M28 8v16M12 16h21"},
+  target:{f:mRing(24,24,9),s:mRing(24,24,18)+mRing(24,24,9)+"M24 24l13-13M32 9h6v6",d:mRing(24,24,2.8)},
+  dbl:{f:mRing(16,24,10)+mRing(32,24,10),s:mRing(16,24,10)+mRing(32,24,10)},
+  back:{s:"M14 17a14 14 0 1 1-3 15M13 7v10h10"},
+  ny:{s:"M24 6v9M24 33v9M6 24h9M33 24h9M11 11l6 6M31 31l6 6M37 11l-6 6M17 31l-6 6",d:mRing(24,24,3.4)}};
 const MEDALS=[
- {id:"first",n:"Första passet",d:"Logga ditt första pass.",f:"hot",i:"flag",k:"n",v:1},
- {id:"n10",n:"Tio pass",d:"Logga tio pass.",f:"hot",t:"10",k:"n",v:10},
- {id:"n25",n:"25 pass",d:"Logga 25 pass.",f:"hot",t:"25",k:"n",v:25},
- {id:"n50",n:"50 pass",d:"Logga 50 pass.",f:"hot",t:"50",k:"n",v:50},
- {id:"n100",n:"100 pass",d:"Logga 100 pass.",f:"hot",t:"100",k:"n",v:100},
- {id:"h10",n:"Tio timmar",d:"Träna tio timmar totalt.",f:"cyan",t:"10",u:"h",k:"min",v:600},
- {id:"h50",n:"50 timmar",d:"Träna 50 timmar totalt.",f:"cyan",t:"50",u:"h",k:"min",v:3000},
- {id:"wk1",n:"Veckan klar",d:"Nå ditt veckomål en hel vecka.",f:"green",i:"check",k:"wg",v:1},
- {id:"s4",n:"Fyra i rad",d:"Träna fyra veckor i rad.",f:"green",t:"4",u:"v",k:"streak",v:4},
- {id:"s12",n:"Tolv i rad",d:"Träna tolv veckor i rad.",f:"green",t:"12",u:"v",k:"streak",v:12},
- {id:"all8",n:"Alla åtta",d:"Träna alla åtta stationer minst en gång.",f:"green",t:"8",k:"st",v:8},
- {id:"pr1",n:"Första rekordet",d:"Spara ett personligt rekord.",f:"gold",i:"watch",k:"pr",v:1},
- {id:"pr5",n:"Rekordjägare",d:"Ha rekord på fem olika moment.",f:"gold",i:"star",k:"pr",v:5},
- {id:"race",n:"I mål",d:"Spara din tid från en hel Hyrox.",f:"gold",i:"cup",k:"race",v:1},
- {id:"goal",n:"Under måltid",d:"Gå i mål på eller under din måltid.",f:"gold",i:"target",k:"goal",v:1}];
+ {id:"first",n:"Första passet",d:"Logga ditt första pass.",f:"flit",i:"start",k:"n",v:1},
+ {id:"n10",n:"Tio pass",d:"Logga tio pass.",f:"flit",t:"10",u:"PASS",r:1,k:"n",v:10},
+ {id:"n25",n:"25 pass",d:"Logga 25 pass.",f:"flit",t:"25",u:"PASS",r:2,k:"n",v:25},
+ {id:"n50",n:"50 pass",d:"Logga 50 pass.",f:"flit",t:"50",u:"PASS",r:3,k:"n",v:50},
+ {id:"n100",n:"100 pass",d:"Logga 100 pass.",f:"flit",t:"100",u:"PASS",r:4,k:"n",v:100},
+ {id:"n250",n:"250 pass",d:"Logga 250 pass.",f:"flit",t:"250",u:"PASS",r:5,k:"n",v:250},
+ {id:"plan10",n:"10 från planen",d:"Gör tio pass från planen.",f:"flit",t:"10",u:"FRÅN PLAN",r:1,k:"plan",v:10},
+ {id:"plan25",n:"25 från planen",d:"Gör 25 pass från planen.",f:"flit",t:"25",u:"FRÅN PLAN",r:2,k:"plan",v:25},
+ {id:"plan50",n:"50 från planen",d:"Gör 50 pass från planen.",f:"flit",t:"50",u:"FRÅN PLAN",r:3,k:"plan",v:50},
+ {id:"h10",n:"Tio timmar",d:"Träna tio timmar totalt.",f:"tid",t:"10",u:"TIMMAR",r:1,k:"min",v:600},
+ {id:"h25",n:"25 timmar",d:"Träna 25 timmar totalt.",f:"tid",t:"25",u:"TIMMAR",r:2,k:"min",v:1500},
+ {id:"h50",n:"50 timmar",d:"Träna 50 timmar totalt.",f:"tid",t:"50",u:"TIMMAR",r:3,k:"min",v:3000},
+ {id:"h100",n:"100 timmar",d:"Träna 100 timmar totalt.",f:"tid",t:"100",u:"TIMMAR",r:4,k:"min",v:6000},
+ {id:"h250",n:"250 timmar",d:"Träna 250 timmar totalt.",f:"tid",t:"250",u:"TIMMAR",r:5,k:"min",v:15000},
+ {id:"long",n:"Långpass",d:"Gör ett pass på minst 90 minuter.",f:"tid",i:"lang",k:"long",v:1},
+ {id:"wk1",n:"Veckan klar",d:"Nå ditt veckomål en hel vecka.",f:"svit",i:"vecka",k:"wg",v:1},
+ {id:"s4",n:"Fyra i rad",d:"Träna fyra veckor i rad.",f:"svit",t:"4",u:"VECKOR",r:1,k:"streak",v:4},
+ {id:"s8",n:"Åtta i rad",d:"Träna åtta veckor i rad.",f:"svit",t:"8",u:"VECKOR",r:2,k:"streak",v:8},
+ {id:"s12",n:"Tolv i rad",d:"Träna tolv veckor i rad.",f:"svit",t:"12",u:"VECKOR",r:3,k:"streak",v:12},
+ {id:"s26",n:"Ett halvår",d:"Träna 26 veckor i rad.",f:"svit",t:"26",u:"VECKOR",r:4,k:"streak",v:26},
+ {id:"s52",n:"Ett helt år",d:"Träna 52 veckor i rad.",f:"svit",t:"52",u:"VECKOR",r:5,k:"streak",v:52},
+ ...S.map(x=>({id:"st-"+x.id,n:x.n,d:`Logga ${x.n} för första gången.`,f:"station",i:x.id,k:"st_"+x.id,v:1})),
+ {id:"all8",n:"Alla åtta",d:"Träna alla åtta stationer minst en gång.",f:"station",t:"8",u:"STATIONER",k:"st",v:8},
+ {id:"pr1",n:"Första rekordet",d:"Spara ett personligt rekord.",f:"rekord",i:"watch",k:"pr",v:1},
+ {id:"pr5",n:"Rekordjägare",d:"Ha rekord på fem olika moment.",f:"rekord",i:"star",k:"pr",v:5},
+ {id:"sim",n:"Simulering",d:"Logga en racesimulering.",f:"lopp",i:"sim",k:"sim",v:1},
+ {id:"race",n:"I mål",d:"Spara din tid från en hel Hyrox.",f:"lopp",i:"flag",k:"race",v:1},
+ {id:"goal",n:"Under måltid",d:"Gå i mål på eller under din måltid.",f:"lopp",i:"target",k:"goal",v:1},
+ {id:"dbl",n:"Dubbelpass",d:"Logga två pass samma dag.",f:"hemlig",i:"dbl",k:"dbl",v:1,h:1},
+ {id:"back",n:"Comeback",d:"Kom tillbaka efter minst tre veckors uppehåll.",f:"hemlig",i:"back",k:"back",v:1,h:1},
+ {id:"ny",n:"Nyårspass",d:"Träna på nyårsdagen.",f:"hemlig",i:"ny",k:"ny",v:1,h:1}];
+const MGROUPS=[["Flit och plan",["flit"]],["Tid",["tid"]],["Svit",["svit"]],["Stationer",["station"]],["Rekord och lopp",["rekord","lopp"]],["Hemliga",["hemlig"]]];
+const MTXT={long:"Ett pass på 90 min",sim:"Logga en simulering",race:"Logga ett lopp",goal:"Slå din måltid"};
 const MUNIT={n:["pass","pass"],min:["timme","timmar"],wg:["vecka","veckor"],streak:["vecka i rad","veckor i rad"],st:["station","stationer"],plan:["pass från planen","pass från planen"],pr:["rekord","rekord"]};
 let PROG=null;
 function progress(){
   const L=[...LOGS].filter(l=>l.date).sort((a,b)=>a.date.localeCompare(b.date)||(a.created||0)-(b.created||0));
-  const st={n:0,min:0,wg:0,streak:0,st:0,plan:0,pr:0,race:0,goal:0};const stn=new Set(),wk={},earned={};let varv=0;
+  const st={n:0,min:0,wg:0,streak:0,st:0,plan:0,pr:0,race:0,goal:0,long:0,sim:0,dbl:0,back:0,ny:0};S.forEach(x=>st["st_"+x.id]=0);const SNID={};S.forEach(x=>SNID[x.n]=x.id);
+  const stn=new Set(),wk={},earned={},dayN={};let varv=0,prevD=null;
   for(const l of L){
     /* Bara pass på minst 10 minuter räknas mot ranken */
-    if((+l.min||0)>=RANK_MIN)st.n++;st.min+=+l.min||0;(l.stations||[]).forEach(s=>stn.add(s));st.st=stn.size;if(l.plan)st.plan++;
+    if((+l.min||0)>=RANK_MIN)st.n++;st.min+=+l.min||0;(l.stations||[]).forEach(s=>{stn.add(s);if(SNID[s])st["st_"+SNID[s]]=1});st.st=stn.size;if(l.plan)st.plan++;
+    if((+l.min||0)>=90)st.long=1;if(l.type==="Racesimulering"||l.race)st.sim=1;dayN[l.date]=(dayN[l.date]||0)+1;if(dayN[l.date]>=2)st.dbl=1;if(l.date.slice(5)==="01-01")st.ny=1;
+    if(prevD&&(evD(l.date)-evD(prevD))/864e5>=21)st.back=1;prevD=l.date;
     const k=weekStart(l.date);wk[k]=wk[k]||{n:0,v:0};wk[k].n++;const v=varvOf(l);wk[k].v+=v;varv+=v;
     if(wk[k].n===set.per){st.wg++;wk[k].v+=5;varv+=5}
     let s=0;const c=new Date(k+"T12:00:00");while(wk[iso(c)]){s++;c.setDate(c.getDate()-7)}if(s>st.streak)st.streak=s;
@@ -3696,11 +3753,37 @@ function progress(){
   return {st,earned,recent,varv,weekVarv:(wk[weekStart(today())]||{v:0}).v,ti,tier:TIERS[ti],next:nx,toNext:nx?Math.max(1,nx.v-st.n):0,frac:nx?Math.max(0,Math.min(1,(st.n-TIERS[ti].v)/(nx.v-TIERS[ti].v))):1};
 }
 function medFrac(m,P){P=P||PROG;return Math.min(1,(P.st[m.k]||0)/m.v)}
-function medProgTxt(m,P){P=P||PROG;const have=P.st[m.k]||0,u=MUNIT[m.k];if(!u)return "Inte klar än";
+function medProgTxt(m,P){P=P||PROG;const have=P.st[m.k]||0,u=MUNIT[m.k];if(m.h)return "Fortsätt träna";if(/^st_/.test(m.k))return "Logga en gång";if(MTXT[m.k])return MTXT[m.k];if(!u)return "Inte klar än";
   if(m.k==="min")return `${String(Math.round(have/6)/10).replace(".",",")} av ${m.v/60} ${u[1]}`;return `${Math.min(have,m.v)} av ${m.v} ${m.v===1?u[0]:u[1]}`}
-function medHTML(m,o){o=o||{};const on=o.on,sz=o.sz?" "+o.sz:"";const c=FAM[m.f];
-  const inner=m.t?`<span class="mt">${m.t}${m.u?`<small>${m.u}</small>`:""}</span>`:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">${IC[m.i]}</svg>`;
-  return on?`<div class="med${sz}${o.shine?" shine":""}" style="--m1:${c[0]};--m2:${c[1]}" aria-hidden="true">${inner}</div>`:`<div class="med off${sz}" style="--p:${Math.round((o.p||0)*100)}" aria-hidden="true">${inner}</div>`}
+function medDefs(){if(document.getElementById("vm-defs"))return;
+  const g=(id,st,r)=>`<linearGradient id="${id}" x1="0" y1="0" x2="${r?0:1}" y2="1">${st.map(([o,c,a])=>`<stop offset="${o}" stop-color="${c}"${a!=null?` stop-opacity="${a}"`:""}/>`).join("")}</linearGradient>`;
+  const d=document.createElement("div");d.innerHTML=`<svg id="vm-defs" width="0" height="0" style="position:absolute;width:0;height:0" aria-hidden="true" focusable="false"><defs>
+  ${g("vm-hot",[[0,"#ff2d55"],[1,"#ff7a45"]])}${g("vm-fhot",[[0,"#ff3a5f"],[.6,"#ff5148"],[1,"#ff8a4c"]])}${g("vm-rhot",[[0,"#ffd9e1"],[.5,"#ff9fb2"],[1,"#ffd2bd"]])}
+  ${g("vm-fcyan",[[0,"#5fdcf3"],[1,"#0a8aad"]])}${g("vm-rcyan",[[0,"#e0f9fe"],[.5,"#84d3e6"],[1,"#d4f4fb"]])}
+  ${g("vm-fgreen",[[0,"#58e27d"],[1,"#13883b"]])}${g("vm-rgreen",[[0,"#e0fae6"],[.5,"#86d39c"],[1,"#d5f6de"]])}
+  ${g("vm-fgold",[[0,"#ffe896"],[.55,"#f2b02a"],[1,"#d48712"]])}${g("vm-fpearl",[[0,"#ffeef4"],[.5,"#e3f5fb"],[1,"#ebe5ff"]])}
+  ${g("vm-brons",[[0,"#f8d0ae"],[.5,"#97552b"],[1,"#e8ab7c"]])}${g("vm-silver",[[0,"#fff"],[.5,"#9e9eac"],[1,"#eeeef3"]])}
+  ${g("vm-guld",[[0,"#fff6c6"],[.5,"#c08512"],[1,"#ffe596"]])}${g("vm-plat",[[0,"#fff"],[.45,"#a9b9cf"],[1,"#f3f6fb"]])}
+  <radialGradient id="vm-glow" cx=".32" cy=".22" r=".85"><stop offset="0" stop-color="#fff" stop-opacity=".42"/><stop offset=".55" stop-color="#fff" stop-opacity=".06"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
+  <radialGradient id="vm-shade" cx=".7" cy=".9" r=".7"><stop offset="0" stop-color="#000" stop-opacity=".16"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>
+  ${Object.keys(MSH).map(k=>`<clipPath id="vm-c-${k}"><path d="${MSH[k].i}"/></clipPath>`).join("")}</defs></svg>`;
+  document.body.prepend(d.firstChild)}
+function medHTML(m,o){o=o||{};medDefs();const on=!!o.on,sz=o.sz?" "+o.sz:"",fam=MFAM[m.f]||MFAM.flit,sh=MSH[fam.s],hid=m.h&&!on,p=on?0:Math.max(0,Math.min(1,o.p||0));
+  const u=x=>`url(#${x})`,rim=on?u(m.r?MRIM[m.r]:fam.rim):"var(--hair)",face=on?u(fam.face):"var(--card)",ink=on?fam.ink:"var(--muted)";
+  const num=hid?"?":(m.t||""),ic=num?null:MIC[m.i],sc=fam.dark?"#fff":"#000",so=fam.dark?.55:.22,fo=on?(fam.dark?.2:.28):.3;
+  const icG=(c,dy,op)=>ic?`<g transform="translate(32.4 ${32.4+dy}) scale(1.15)" opacity="${op}">${ic.f?`<path d="${ic.f}" style="fill:${c};fill-opacity:${fo}"/>`:""}<path d="${ic.s}" style="fill:none;stroke:${c};stroke-width:3.2;stroke-linecap:round;stroke-linejoin:round"/>${ic.d?`<path d="${ic.d}" style="fill:${c}"/>`:""}</g>`:"";
+  const L=String(num).length,fs=L>=3?32:L===2?42:50,unit=hid?"":(m.u||""),ty=unit?64:Math.round(60+fs*.36);
+  const tx=(c,dy,op)=>num?`<text x="60" y="${ty+dy}" text-anchor="middle" opacity="${op}" style="fill:${c};font-family:var(--f);font-weight:800;font-size:${fs}px;letter-spacing:-1.5px;font-variant-numeric:tabular-nums">${num}</text>`:"";
+  const ln=(d,st)=>`<path d="${d}" style="${st};stroke-linejoin:round"/>`;
+  return `<div class="medal${sz}${o.shine&&on?" shine":""}" aria-hidden="true"><svg viewBox="0 0 120 120">
+   ${p>0?`<circle cx="60" cy="60" r="57" style="fill:none;stroke:var(--hair);stroke-width:4"/><circle cx="60" cy="60" r="57" transform="rotate(-90 60 60)" style="fill:none;stroke:var(--accent);stroke-width:4;stroke-linecap:round;stroke-dasharray:${(p*358.1).toFixed(1)} 400"/>`:""}
+   ${ln(sh.o,`fill:${rim};stroke:${rim};stroke-width:9`)}
+   ${on?ln(sh.o,"fill:none;stroke:#fff;stroke-opacity:.55;stroke-width:1")+ln(sh.i,"fill:none;stroke:#000;stroke-opacity:.16;stroke-width:7"):""}
+   ${ln(sh.i,`fill:${face};stroke:${face};stroke-width:3`)}
+   ${on?`<g style="clip-path:url(#vm-c-${fam.s})"><path d="${sh.i}" style="fill:url(#vm-shade)"/><path d="${sh.i}" style="fill:url(#vm-glow)"/><g class="gl"><path d="M20-10h24L-10 130h-24z" style="fill:#fff;fill-opacity:.16"/><path d="M50-10h6L2 130h-6z" style="fill:#fff;fill-opacity:.12"/></g></g>`+ln(sh.i,"fill:none;stroke:#fff;stroke-opacity:.4;stroke-width:1.2"):""}
+   ${on?icG(sc,1.4,so)+tx(sc,1.4,so):""}${icG(ink,0,1)}${tx(ink,0,1)}
+   ${unit?`<text x="60" y="81" text-anchor="middle" opacity=".85" style="fill:${ink};font-family:var(--f);font-weight:700;font-size:9px;letter-spacing:.9px">${unit}</text>`:""}
+  </svg></div>`}
 function tierHTML(t,sz,shine){return `<div class="med ${sz||"sm"}${shine?" shine":""}" style="--m1:${t.m[0]};--m2:${t.m[1]}${t.i?";--mi:"+t.i:""}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${IC.varv}</svg></div>`}
 function dshort(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(".","")}
 function pathOf(pts){return pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}
@@ -3833,14 +3916,14 @@ function sparkHome(){
 }
 function medalOrder(){const P=PROG;const on=P.recent.map(id=>MEDALS.find(m=>m.id===id));
   const off=MEDALS.filter(m=>!P.earned[m.id]).sort((a,b)=>medFrac(b)-medFrac(a));return on.concat(off)}
-function cellHTML(m){const on=!!PROG.earned[m.id];return `<button class="mcell" data-med="${m.id}">${medHTML(m,{on,p:medFrac(m)})}<b>${esc(m.n)}<small>${on?dshort(PROG.earned[m.id]):medProgTxt(m).replace(/ (pass från planen|veckor i rad|vecka i rad)$/,"")}</small></b></button>`}
+function cellHTML(m){const on=!!PROG.earned[m.id];return `<button class="mcell" data-med="${m.id}">${medHTML(m,{on,p:medFrac(m)})}<b>${esc(m.h&&!on?"Hemlig":m.n)}<small>${on?dshort(PROG.earned[m.id]):medProgTxt(m).replace(/ (pass från planen|veckor i rad|vecka i rad)$/,"")}</small></b></button>`}
 function renderMedals(){const el=$("#medals");if(!el)return;
   el.innerHTML=medalOrder().slice(0,8).map(cellHTML).join("");
   $("#med-all").textContent=`Alla ${PROG.recent.length} av ${MEDALS.length}`}
-function openMedal(id){const m=MEDALS.find(x=>x.id===id);if(!m)return;const on=!!PROG.earned[m.id];
-  openSheet(`<div class="medpop">${medHTML(m,{on,sz:"lg",shine:on,p:medFrac(m)})}<h2>${esc(m.n)}</h2><p>${esc(m.d)}</p><span class="${on?"delta up":"delta"}">${on?"Tagen "+dshort(PROG.earned[m.id]):medProgTxt(m)}</span></div>`);if(on)HAPTIC("light")}
+function openMedal(id){const m=MEDALS.find(x=>x.id===id);if(!m)return;const on=!!PROG.earned[m.id],hid=m.h&&!on;
+  openSheet(`<div class="medpop">${medHTML(m,{on,sz:"lg",shine:on,p:medFrac(m)})}<h2>${esc(hid?"Hemlig":m.n)}</h2><p>${esc(hid?"Den här syns när du har tagit den.":m.d)}</p><span class="${on?"delta up":"delta"}">${on?"Tagen "+dshort(PROG.earned[m.id]):medProgTxt(m)}</span></div>`);if(on)HAPTIC("light")}
 function openAllMedals(){
-  openSheet(`<div><span class="small">${PROG.recent.length} av ${MEDALS.length} tagna</span><h2>Utmärkelser</h2></div><div class="medals" id="med-sheet">${MEDALS.map(cellHTML).join("")}</div>`,()=>{$("#med-sheet").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)}})}
+  openSheet(`<div><span class="small">${PROG.recent.length} av ${MEDALS.length} tagna</span><h2>Utmärkelser</h2></div><div id="med-sheet">${MGROUPS.map(([t,fs])=>{const ms=MEDALS.filter(m=>fs.includes(m.f));return `<div class="medgrp"><h3>${t}<span>${ms.filter(m=>PROG.earned[m.id]).length} av ${ms.length}</span></h3><div class="medals">${ms.map(cellHTML).join("")}</div></div>`}).join("")}</div>`,()=>{$("#med-sheet").onclick=e=>{const b=e.target.closest("[data-med]");if(b)openMedal(b.dataset.med)}})}
 function openLevels(){const P=PROG=progress();
   openSheet(`<div class="medpop">${tierHTML(P.tier,"lg",true)}<h2>${P.tier.n}</h2><p>${P.st.n} pass på minst 10 minuter${P.next?`. ${P.toNext} pass kvar till ${P.next.n}.`:". Du har nått högsta nivån."}</p></div>
    <div class="card"><div class="tierlist">${TIERS.map((t,i)=>`<div class="${i===P.ti?"now":""}">${tierHTML(t,"xs")}<b>${t.n}</b><span>${t.v?t.v+" pass":"Från start"}</span></div>`).join("")}</div></div>

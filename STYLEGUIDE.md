@@ -167,7 +167,7 @@ Belöningar ska kännas som Apple Fitness, inte som ett spel. Inga ord som XP, l
 | **Form** | Ett tal och en kurva för de senaste tio veckorna, plus en streckad linje till loppet om du följer planen | Viktat snitt av träningen de senaste sex veckorna. Hårda pass räknas lite mer. En nedgång visas i grått, aldrig i rött. |
 | **Varv** | Hur mycket du har tränat | Ett varv per tio minuter, högst tolv per pass. Två extra för ett pass från planen och fem extra för ett klarat veckomål. |
 | **Nivåer** | Start, Brons, Silver, Guld, Platina, Elit | 0, 50, 150, 350, 700 och 1 200 varv. Nivån sjunker aldrig. |
-| **Utmärkelser** | 16 milstolpar: antal pass, timmar, veckor i rad, alla åtta stationer, pass från planen, rekord, första loppet, under måltid | Rund medalj. Tagen är i färg, inte tagen är grå med en ring som visar hur långt du har kommit. |
+| **Utmärkelser** | 38 medaljer i sex familjer: flit och plan, tid, svit, stationer, rekord och lopp, hemliga | Formen visar familjen: cirkel, hexagon, sköld, rundad kvadrat, rosett. Serier byter kant från brons via silver, guld och platina till rosa. Tagen är i färg med glans, inte tagen är grå med en ring som visar hur långt du har kommit. Hemliga visas som ? tills de är tagna. |
 | **Topplista** | Varv denna vecka, flikarna Vänner och Alla | Jämför flit, inte fart. Börjar om på måndag. Du syns bara om du har slagit på reglaget. |
 
 Medaljfärger efter typ: hot för antal och plan, turkos för tid, grönt för veckor och stationer, guld för rekord och lopp.

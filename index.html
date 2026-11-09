@@ -2161,7 +2161,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.34 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.35 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2206,7 +2206,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.34";
+const APPVER="1.1.35";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -6582,7 +6582,7 @@ function pushSchedule(){
   if(set.date)PLAN.forEach(w=>w.ses.forEach(s=>{if(s.date>=td&&s.date<=L&&!sesDone(w,s))out.sessions.push({d:s.date,t:s.t,m:s.m})}));
   const last=sortedLogs()[0];if(last)out.last=last.date;return out;
 }
-function pushPrefs(){return Object.assign({plan:true,race:true,friends:true},(set.push&&set.push.prefs)||{})}
+function pushPrefs(){return Object.assign({plan:true,race:true,friends:true,newraces:true},(set.push&&set.push.prefs)||{})}
 async function pushSave(sub){
   const row={user_id:SBUSER.id,tz:Intl.DateTimeFormat().resolvedOptions().timeZone||"Europe/Stockholm",hour:+set.hour||8,prefs:pushPrefs(),schedule:pushSchedule(),updated_at:new Date().toISOString()};
   if(sub){row.endpoint=sub.endpoint;row.sub=sub.toJSON();}else row.endpoint=set.push&&set.push.ep;
@@ -6613,12 +6613,12 @@ async function pushOff(){
 }
 function renderNotis(){
   const el=$("#pf-push");if(!el)return;if(IS_NATIVE){el.innerHTML=`<p class="small" style="padding:4px 2px">Notiser i appen kommer snart. Tills vidare kan du slå på dem i webbversionen på varvtraining.com.</p>`;return}const on=!!(set.push&&set.push.on),p=pushPrefs();
-  el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet och när de du följer tränar.",on)
-   +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
+  el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet, nya tävlingar och när de du följer tränar.",on)
+   +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-new","Nya tävlingar","När en ny tävling eller simulering finns i appen.",p.newraces)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
      <div class="field"><label for="pu-h">Tid för påminnelser</label><select id="pu-h">${Array.from({length:17},(_,i)=>i+5).map(h=>`<option value="${h}"${h===(+set.hour||8)?" selected":""}>${String(h).padStart(2,"0")}:00</option>`).join("")}</select></div></div>`:"");
   $("#pu-on").onclick=async()=>{const b=$("#pu-on");b.disabled=true;if(on)await pushOff();else await pushOn();b.disabled=false;renderNotis()};
   const tg=(id,k)=>{const b=$(id);if(b)b.onclick=()=>{const pr=pushPrefs();pr[k]=!pr[k];set.push.prefs=pr;saveSet();renderNotis();pushSave(null)}};
-  tg("#pu-plan","plan");tg("#pu-race","race");tg("#pu-fr","friends");
+  tg("#pu-plan","plan");tg("#pu-race","race");tg("#pu-new","newraces");tg("#pu-fr","friends");
   const h=$("#pu-h");if(h)h.onchange=e=>{set.hour=+e.target.value;saveSet();pushSave(null)};
 }
 
@@ -7032,7 +7032,7 @@ async function loadNotis(){if(!SB||!SBUSER)return;
 function notiBadge(){{const f=$("#fr-btn");if(f){f.hidden=!SBUSER||location.hash==="#profil";f.classList.toggle("new",FRQ_IN.length>0&&location.hash!=="#vanner")}}const b=$("#nt-btn");if(!b)return;b.hidden=!SBUSER||location.hash==="#profil";
   const n=Math.max(NOTIS.filter(x=>!x.read_at).length,FRQ_IN.length+TOG.inv.length);const c=b.querySelector(".nt-count");
   c.textContent=n>9?"9+":n;c.hidden=!n||location.hash==="#notiser";appBadge(n);b.setAttribute("aria-label",n?`Notiser, ${n} nya`:"Notiser");b.classList.toggle("on",location.hash==="#notiser")}
-const NT_ICON={follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0",together:"M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a5 5 0 0 0-3.5-4.8"};
+const NT_ICON={newrace:"M5 21V4M5 4h12l-2.5 4.5L17 13H5",follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0",together:"M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a5 5 0 0 0-3.5-4.8"};
 function ntRow(n){const p=n.actor?NAMES[n.actor]:null,unread=!n.read_at;
   const ic=p?avImg(p.avatar_url,p.username):`<span class="nt-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${NT_ICON[n.kind]||NT_ICON.test}"/></svg></span>`;
   return `<button class="row nt-row${unread?" unread":""}" data-nt="${n.id}" data-url="${esc(n.url||"")}"${n.actor?` data-actor="${esc(n.actor)}"`:""}>${ic}<div><h3>${esc(n.title)}</h3>${n.body?`<p>${esc(n.body)}</p>`:""}<p class="nt-ago">${agoTxt(n.created_at)}</p></div>${unread?'<span class="nt-dot" aria-label="Ny"></span>':"<span></span>"}</button>`}
@@ -7084,7 +7084,7 @@ function appBadge(n){try{if("setAppBadge" in navigator){n?navigator.setAppBadge(
 /* ============ Routing ============ */
 const VIEWS=["hem","stationer","feed","race","logg","vanner","notiser","profil"];
 function route(){
-  {const h=location.hash.slice(1);if(h==="plan"){history.replaceState(null,"","#feed")}}
+  {const h=location.hash.slice(1);if(h==="plan"){history.replaceState(null,"","#feed")}if(h==="race-kal"||h==="race-sim"){set.tsub=h.slice(5);saveSet();history.replaceState(null,"","#race")}}
   const raw=location.hash.slice(1),person=/^u\/[\w-]{1,64}$/.test(raw);
   const v=person?"person":VIEWS.includes(raw)?raw:"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));

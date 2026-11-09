@@ -1,5 +1,5 @@
 // VARV. – skickar notiser.
-// Anropas av databasen: varje timme ({"kind":"daily"}) och när en vän loggar
+// Anropas av databasen: varje timme ({"kind":"daily"} och {"kind":"newraces"}) och när en vän loggar
 // eller tävlar ({"kind":"activity","id":…}). Se supabase/notiser.sql.
 //
 // Hemligheter som behövs (Edge Functions → Secrets):
@@ -139,6 +139,72 @@ async function runFollow(from: string, to: string) {
   return await notify([to], { title: `${await nameOf(from)} började följa dig`, body: "Tryck för att se profilen.", url: "/#notiser", tag: "fol-" + from }, "follow", from, "friends");
 }
 
+// ---------- Nya tävlingar och simuleringar (se supabase/nya-tavlingar.sql) ----------
+const MON = ["jan", "feb", "mars", "apr", "maj", "juni", "juli", "aug", "sep", "okt", "nov", "dec"];
+function when(s: string, e?: string) {
+  const a = new Date(s + "T12:00:00Z"), b = new Date((e || s) + "T12:00:00Z");
+  if (!e || s === e) return `${a.getUTCDate()} ${MON[a.getUTCMonth()]}`;
+  if (a.getUTCMonth() === b.getUTCMonth()) return `${a.getUTCDate()}–${b.getUTCDate()} ${MON[b.getUTCMonth()]}`;
+  return `${a.getUTCDate()} ${MON[a.getUTCMonth()]}–${b.getUTCDate()} ${MON[b.getUTCMonth()]}`;
+}
+const andList = (a: string[]) => a.length < 2 ? a.join("") : a.slice(0, -1).join(", ") + " och " + a[a.length - 1];
+type Race = { key: string; kind: "tavling" | "sim"; name: string; day: string; label: string };
+
+async function upcomingRaces(): Promise<Race[] | null> {
+  const today = new Date().toISOString().slice(0, 10), out: Race[] = [];
+  const [ev, sim, file] = await Promise.all([
+    SB.from("events").select("city,country,starts,ends").eq("hidden", false).gte("ends", today),
+    SB.from("sim_races").select("id,title,city,day").eq("hidden", false).gte("day", today),
+    fetch("https://varvtraining.com/data/sim-races.json", { cache: "no-store" }).then((r) => r.ok ? r.json() : null).catch(() => null),
+  ]);
+  // Saknas någon källa just nu hoppar vi över körningen, annars kan lopp se nya ut nästa gång.
+  if (ev.error || sim.error || !file || !Array.isArray(file.races)) return null;
+  for (const e of ev.data || [])
+    out.push({ key: `ev-${e.starts}-${String(e.city).toLowerCase()}`, kind: "tavling", name: e.city, day: e.starts, label: `${e.city}${e.country ? ", " + e.country : ""} · ${when(e.starts, e.ends)}` });
+  for (const r of sim.data || [])
+    out.push({ key: `sim-${r.day}-db-${r.id}`, kind: "sim", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
+  for (const r of file.races)
+    if (r && r.key && r.day >= today) out.push({ key: `sim-${r.key}`, kind: "sim", name: r.city, day: r.day, label: `${r.title} · ${r.city}, ${when(r.day)}` });
+  return out;
+}
+
+function raceMsg(list: Race[], kind: "tavling" | "sim"): Msg {
+  const one = list.length === 1, sim = kind === "sim";
+  const title = one ? (sim ? "Ny simulering finns nu i appen" : "Ny tävling finns nu i appen")
+    : `${list.length} nya ${sim ? "simuleringar" : "tävlingar"} finns nu i appen`;
+  const names = [...new Set(list.map((r) => r.name))];
+  const body = one ? list[0].label : andList(names.length > 4 ? [...names.slice(0, 3), `${names.length - 3} till`] : names) + ".";
+  return { title, body: body.slice(0, 240), url: sim ? "/#race-sim" : "/#race-kal", tag: "new-" + kind };
+}
+
+async function runNewRaces() {
+  const all = await upcomingRaces();
+  if (!all) return 0;
+  const { data: fresh, error } = await SB.rpc("varv_new_races", { p_items: all });
+  if (error || !Array.isArray(fresh) || !fresh.length) return 0;
+  const msgs = (["tavling", "sim"] as const)
+    .map((k) => (fresh as Race[]).filter((r) => r.kind === k).sort((a, b) => a.day.localeCompare(b.day)))
+    .filter((l) => l.length).map((l) => raceMsg(l, l[0].kind));
+
+  // Notiscentret: alla som har ett konto.
+  for (let page = 1; ; page++) {
+    const { data, error } = await SB.auth.admin.listUsers({ page, perPage: 1000 });
+    if (error || !data?.users?.length) break;
+    const rows = data.users.flatMap((u) => msgs.map((m) => ({ user_id: u.id, kind: "newrace", title: m.title, body: m.body, url: m.url })));
+    for (let i = 0; i < rows.length; i += 500) await SB.from("notifications").insert(rows.slice(i, i + 500));
+    if (data.users.length < 1000) break;
+  }
+  // Push: alla med notiser påslagna som inte har stängt av Nya tävlingar.
+  let n = 0;
+  for (let from = 0; ; from += 1000) {
+    const { data: page, error } = await SB.from("push_subs").select("*").order("endpoint").range(from, from + 999);
+    if (error || !page?.length) break;
+    for (const s of page as Sub[]) if (s.prefs?.newraces !== false) for (const m of msgs) { await send(s, m); n++; }
+    if (page.length < 1000) break;
+  }
+  return n;
+}
+
 async function runTest(user: string) {
   return await notify([user], { title: "Notiserna fungerar", body: "Så här ser det ut när VARV. påminner dig om dagens pass.", url: "/#hem", tag: "test" }, "test", null, null);
 }
@@ -146,7 +212,7 @@ async function runTest(user: string) {
 Deno.serve(async (req) => {
   if (req.headers.get("x-varv-secret") !== Deno.env.get("CRON_SECRET")) return new Response("Nej", { status: 401 });
   const b = await req.json().catch(() => ({}));
-  const n = b.kind === "daily" ? await runDaily() : b.kind === "activity" ? await runActivity(+b.id) : b.kind === "like" ? await runLike(+b.activity, String(b.user)) : b.kind === "test" ? await runTest(String(b.user))
+  const n = b.kind === "daily" ? await runDaily() : b.kind === "newraces" ? await runNewRaces() : b.kind === "activity" ? await runActivity(+b.id) : b.kind === "like" ? await runLike(+b.activity, String(b.user)) : b.kind === "test" ? await runTest(String(b.user))
     : b.kind === "request" ? await runRequest(String(b.from), String(b.to)) : b.kind === "accept" ? await runAccept(String(b.from), String(b.to)) : b.kind === "follow" ? await runFollow(String(b.from), String(b.to)) : 0;
   return Response.json({ sent: n });
 });

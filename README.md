@@ -80,6 +80,11 @@ Säkerhet och stabil statistik
     varv-3.sql städar profildata från användarna och begränsar felrapporter till 300 i timmen.
     Kör sist supabase/sakerhet.sql. Den låser titel, typ och datum på inlägg, begränsar kommentarer till 30 i timmen och döljer kommentarer mellan personer som har blockerat varandra.
 
+Notis om nya tävlingar
+
+    Kör supabase/nya-tavlingar.sql i Supabase och uppdatera sedan funktionen varv-push med supabase/functions/varv-push/index.ts. Kräver notiser.sql och notiscenter.sql.
+    Varje timme jämförs tävlingarna i events och simuleringarna i sim_races och data/sim-races.json med de lopp som redan är kända. Nya lopp ger alla en notis. Första körningen lär sig bara listan och skickar inget.
+
 Kopplingar att ansöka om
 
     Strava: skapa en app på strava.com/settings/api. Callback-domän varvtraining.com. Ge client id och secret till den som bygger kopplingen.

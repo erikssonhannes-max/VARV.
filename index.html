@@ -2161,7 +2161,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.33 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.34 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2206,7 +2206,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.33";
+const APPVER="1.1.34";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -6989,7 +6989,7 @@ function togPicker(sel,done){const m=togMates().filter(id=>!(done||[]).includes(
     return `<button type="button" class="tog-p" data-togu="${esc(id)}" aria-pressed="${on}">${avImg(p.avatar_url,p.username,"tog-av")}<span class="tog-ck" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span class="tog-n">${esc(p.username)}</span></button>`}).join("")}</div>`}
 function togToggle(sel,id){const i=sel.indexOf(id);if(i<0){if(sel.length>=4){toast("Högst fyra åt gången.");return false}sel.push(id)}else sel.splice(i,1);HAPTIC("light");return true}
 /* Passet som skickas: samma fält som sparas i loggen, utan det som bara gäller den som loggade. */
-function togPayload(l){const c=JSON.parse(JSON.stringify(l));["id","plan","bench","ext","src","with","shared","hidden","edited"].forEach(k=>delete c[k]);return c}
+function togPayload(l){const c=JSON.parse(JSON.stringify(l));["id","plan","bench","ext","src","with","shared","hidden","edited","note"].forEach(k=>delete c[k]);return c}
 async function sendTogether(logId,entry,ids){if(!SB||!SBUSER||!ids.length)return;let sent=[],fail=0,first="";
   for(const id of ids){const {data,error}=await SB.rpc("varv_share_session",{p_to:id,p_log_id:String(logId),p_log:togPayload(entry)});
     if(error){fail++;first=first||sbErr(error)}else if(data==="sent"||data==="pending")sent.push(id);else{fail++;first=first||(data==="notfriends"?`Ni måste följa varandra för att dela pass.`:data==="limit"?"Du har bjudit in många i dag. Försök igen i morgon.":"Kunde inte skicka. Försök igen.")}}

@@ -824,7 +824,35 @@ details.more[open] summary{margin-bottom:6px}
 .pf-av{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;overflow:hidden;color:#fff;font-size:var(--t-num-xl);font-weight:700;letter-spacing:-.02em;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 18px 36px -18px var(--glow)}
 .pf-head h1{font-size:var(--t-title);letter-spacing:-.04em}
 .pf-mini{overflow:hidden;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
-#pf-set{gap:18px}
+/* Inställningar: färgade ikonplattor per sektion, väljare för utseende */
+#pf-more .tn-accent{--tn:var(--accent)}#pf-more .tn-green{--tn:var(--green)}#pf-more .tn-cyan{--tn:var(--cyan)}
+#pf-more [class*="tn-"] .row .badge{color:var(--tn);background:color-mix(in srgb,var(--tn) 15%,var(--card))}
+#pf-more .pf-more-lede{color:var(--muted);font-size:var(--t-sub);margin:6px 0 0}
+#pf-more .row h3{font-size:var(--t-body);font-weight:600}
+#pf-more .row p{line-height:1.35}
+.row.setsw{cursor:pointer;width:100%}
+.row.setsw .sw{justify-self:end}
+#pf-look{padding:14px}
+.th-pick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.th-pick button{all:unset;cursor:pointer;display:grid;gap:8px;justify-items:center;text-align:center;font-size:var(--t-cap);font-weight:500;color:var(--muted);-webkit-tap-highlight-color:transparent}
+.th-pick button:focus-visible .th-prev{outline:2px solid var(--link);outline-offset:2px}
+.th-prev{position:relative;width:100%;aspect-ratio:4/5;max-width:120px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--hair);transition:box-shadow .2s var(--ease),transform .15s var(--ease)}
+.th-pick button:active .th-prev{transform:scale(.97)}
+.th-prev i{position:absolute;inset:0;display:block;padding:12% 12%}
+.th-prev i::before{content:"";display:block;height:9%;width:55%;border-radius:4px;background:currentColor;opacity:.9}
+.th-prev i::after{content:"";display:block;margin-top:14%;height:34%;border-radius:8px;background:var(--pt)}
+.th-prev b{position:absolute;left:12%;right:12%;bottom:12%;height:12%;border-radius:980px;background:var(--accent)}
+.th-l{background:#fff;color:#111114;--pt:#f4f4f6}.th-d{background:#000;color:#f5f5f7;--pt:#232327}
+.th-a .th-d{clip-path:polygon(100% 0,100% 100%,0 100%)}
+.th-pick button[aria-pressed="true"]{color:var(--ink);font-weight:600}
+.th-pick button[aria-pressed="true"] .th-prev{box-shadow:0 0 0 2px var(--accent),0 0 0 5px color-mix(in srgb,var(--accent) 22%,transparent)}
+.th-pick .th-ok{display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;margin-right:4px;vertical-align:-4px;background:var(--accent);color:#fff;opacity:0;transform:scale(.6);transition:opacity .2s,transform .3s var(--spring)}
+.th-pick button[aria-pressed="true"] .th-ok{opacity:1;transform:none}
+#pf-push .pu-sub{margin:0;padding:4px 16px 14px 64px;border-top:0;gap:12px}
+#pf-push .pu-sub .switchrow{padding:8px 0;border-top:1px solid var(--hair)}
+#pf-push .pu-sub .switchrow:first-child{border-top:0}
+#pf-push .pu-sub .field{margin-top:4px}
+#pf-push>p.small{padding:14px 16px;margin:0}
 label.row{display:grid}
 a.row{color:inherit;text-decoration:none}
 /* Animationer */
@@ -2184,21 +2212,25 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <div id="pf-more" hidden>
     <div class="pagehead"><span class="eyebrow">Profil</span><h1>Inställningar.</h1></div>
-    <div class="sechead"><h2>Utseende och ljud</h2></div>
-    <div class="card" id="pf-set"></div>
+    <p class="lede pf-more-lede">Välj hur VARV. ser ut, låter och påminner dig.</p>
+    <div class="sechead"><h2>Utseende</h2></div>
+    <div class="card" id="pf-look"></div>
+    <div class="sechead"><h2>Ljud och vibration</h2></div>
+    <div class="group tn-accent" id="pf-set"></div>
+    <div class="sechead"><h2>Under passet</h2></div>
+    <div class="group tn-green" id="pf-run"></div>
     <div class="sechead"><h2>Notiser och kalender</h2></div>
-    <div class="card" id="pf-push"></div>
-    <div class="group" style="margin-top:10px"><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2h-15z"/><path d="M10 20.500a2 2 0 0 0 4 0"/></svg></span><div><h3>Påminnelser för passen</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
+    <div class="group tn-cyan"><div id="pf-push"></div><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M9 14.5l2 2 4-4"/></svg></span><div><h3>Påminnelser i kalendern</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
     <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
-    <div class="group" id="pf-con"></div></div>
+    <div class="group tn-accent" id="pf-con"></div></div>
     <div class="sechead"><h2>Integritet och data</h2></div>
-    <div class="group">
+    <div class="group tn-green">
       <button class="row" id="pf-blocked"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></svg></span><div><h3>Blockerade</h3><p>De kan inte se eller följa dig</p></div><span class="chev">›</span></button>
       <button class="row" id="pf-exp"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.500 10.500 12 15l4.500-4.500"/><path d="M5 20h14"/></svg></span><div><h3>Exportera mina data</h3><p>Pass, rekord och inställningar som en fil</p></div><span class="chev">›</span></button>
       <label class="row" for="pf-imp-file" style="cursor:pointer"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.500 8.500 12 4l4.500 4.500"/><path d="M5 20h14"/></svg></span><div><h3>Importera data</h3><p>Läs in en tidigare export</p></div><span class="chev">›</span></label>
     </div>
     <div class="sechead"><h2>Hjälp och villkor</h2></div>
-    <div class="group">
+    <div class="group tn-cyan">
       <button class="row" id="pf-tour"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M9.700 9.500a2.400 2.400 0 1 1 3.600 2.100c-.8.500-1.300 1-1.300 1.900"/><path d="M12 17h.01"/></svg></span><div><h3>Visa genomgången</h3><p>En snabb tur genom appen</p></div><span class="chev">›</span></button>
       <a class="row" href="legal/integritet.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.500 3v5.500c0 4.500-3 8-7.500 9.500-4.500-1.500-7.500-5-7.500-9.500V6z"/></svg></span><div><h3>Integritetspolicy</h3></div><span class="chev">↗</span></a>
       <a class="row" href="legal/villkor.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><div><h3>Användarvillkor</h3></div><span class="chev">↗</span></a>
@@ -2208,11 +2240,11 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
       <a class="row" href="https://www.linkedin.com/company/varv" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.79 2.66 4.79 6.12v5.43h-4v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span><div><h3>LinkedIn</h3><p>Nyheter om VARV.</p></div><span class="chev">↗</span></a>
     </div>
-    <div class="group" style="margin-top:34px"><button class="row" id="pf-del"><span class="badge" style="color:var(--bad)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar</p></div><span></span></button></div>
+    <div class="group" style="margin-top:34px"><button class="row" id="pf-del"><span class="badge" style="color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar</p></div><span></span></button></div>
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.38 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.39 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2259,7 +2291,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.38";
+const APPVER="1.1.39";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3838,7 +3870,7 @@ function medHTML(m,o){o=o||{};medDefs();const on=!!o.on,sz=o.sz?" "+o.sz:"",fam=
    ${on?icG(sc,1.4,so)+tx(sc,1.4,so):""}${icG(ink,0,1)}${tx(ink,0,1)}
    ${unit?`<text x="60" y="81" text-anchor="middle" opacity=".85" style="fill:${ink};font-family:var(--f);font-weight:700;font-size:9px;letter-spacing:.9px">${unit}</text>`:""}
   </svg></div>`}
-function tierHTML(t,sz,shine){return `<div class="med ${sz||"sm"}${shine?" shine":""}" style="--m1:${t.m[0]};--m2:${t.m[1]}${t.i?";--mi:"+t.i:""}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">${IC.varv}</svg></div>`}
+function tierHTML(t,sz,shine){return `<div class="med ${sz||"sm"}${shine?" shine":""}" style="--m1:${t.m[0]};--m2:${t.m[1]}${t.i?";--mi:"+t.i:""}" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7h3.5a5 5 0 0 1 0 10h-7a5 5 0 0 1-4.7-6.6"/><circle cx="6.2" cy="7.6" r="1.7" fill="currentColor" stroke="none"/></svg></div>`}
 function dshort(ds){const d=new Date(ds+"T12:00:00");return d.toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(".","")}
 function pathOf(pts){return pts.map((p,i)=>(i?"L":"M")+p[0].toFixed(1)+" "+p[1].toFixed(1)).join(" ")}
 function lenOf(pts){let s=0;for(let i=1;i<pts.length;i++)s+=Math.hypot(pts[i][0]-pts[i-1][0],pts[i][1]-pts[i-1][1]);return Math.ceil(s)+2}
@@ -5991,6 +6023,9 @@ function avatarHtml(){return MEINFO&&MEINFO.avatarUrl&&okImg(MEINFO.avatarUrl)&&
 function renderAvatar(){const a=$("#avatar-btn");if(a)a.innerHTML=avatarHtml()}
 /* Förklaringen visar bara det som gäller just nu och ändras när man slår om. */
 const pubTxt=on=>on?"Alla som är inloggade kan hitta dig, se din profil och följa dig direkt.":"Bara de du godkänner kan följa dig. Den som söker på ditt namn eller din kod hittar dig ändå.";
+/* Rad med ikonplatta och reglage, för grupperade listor i Inställningar */
+const SET_IC={sound:'<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/>',voice:'<rect x="9" y="3.5" width="6" height="11" rx="3"/><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v2.5"/>',hap:'<rect x="8" y="3.5" width="8" height="17" rx="2.2"/><path d="M4.5 9v6M19.5 9v6M11 17.5h2"/>',clock:'<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18 6.5l1.3-1.3"/>',bell:'<path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0"/>'};
+function setSw(id,ic,title,sub,on){return `<button type="button" class="row setsw" id="${id}" role="switch" aria-checked="${!!on}"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${SET_IC[ic]}</svg></span><div><h3>${title}</h3><p>${sub}</p></div><span class="sw"></span></button>`}
 function swRow(id,title,sub,on){return `<button type="button" class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
 function renderProfile(){
   if(!set.since){set.since=today();saveSet()}
@@ -6019,7 +6054,9 @@ function renderProfile(){
   $("#pf-name-note").textContent=fixed?"Namnet går inte att ändra.":"Skriv ditt namn. Det går inte att ändra efteråt.";
   if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";
   $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||"";{const pe=$("#pf-in-pace");if(document.activeElement!==pe)pe.value=set.pace?fmt(set.pace):""}
-  $("#pf-set").innerHTML=themeSeg()+swRow("pf-sw-sound","Ljud","Pip i tidtagningen",set.cues.sound)+swRow("pf-sw-voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+swRow("pf-sw-hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false)+swRow("pf-sw-man","Starta klockan själv","Under ett pass startar klockan för nästa set eller övning först när du trycker Starta klockan",!!set.lvManual);
+  $("#pf-look").innerHTML=themeSeg();
+  $("#pf-set").innerHTML=setSw("pf-sw-sound","sound","Ljud","Pip i tidtagningen",set.cues.sound)+setSw("pf-sw-voice","voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+setSw("pf-sw-hap","hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false);
+  $("#pf-run").innerHTML=setSw("pf-sw-man","clock","Starta klockan själv","Klockan för nästa set eller övning startar först när du trycker Starta klockan",!!set.lvManual);
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-man").onclick=()=>{set.lvManual=!set.lvManual;saveSet();renderProfile()};
@@ -6689,7 +6726,7 @@ async function pushOff(){
 }
 function renderNotis(){
   const el=$("#pf-push");if(!el)return;if(IS_NATIVE){el.innerHTML=`<p class="small" style="padding:4px 2px">Notiser i appen kommer snart. Tills vidare kan du slå på dem i webbversionen på varvtraining.com.</p>`;return}const on=!!(set.push&&set.push.on),p=pushPrefs();
-  el.innerHTML=swRow("pu-on","Notiser","Dagens pass, nedräkning till loppet, nya tävlingar och när de du följer tränar.",on)
+  el.innerHTML=setSw("pu-on","bell","Notiser",on?"Välj vad du vill få nedan.":"Dagens pass, nedräkning till loppet, nya tävlingar och när de du följer tränar.",on)
    +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-new","Nya tävlingar","När en ny tävling eller simulering finns i appen.",p.newraces)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
      <div class="field"><label for="pu-h">Tid för påminnelser</label><select id="pu-h">${Array.from({length:17},(_,i)=>i+5).map(h=>`<option value="${h}"${h===(+set.hour||8)?" selected":""}>${String(h).padStart(2,"0")}:00</option>`).join("")}</select></div></div>`:"");
   $("#pu-on").onclick=async()=>{const b=$("#pu-on");b.disabled=true;if(on)await pushOff();else await pushOn();b.disabled=false;renderNotis()};
@@ -7176,7 +7213,7 @@ window.addEventListener("hashchange",route);
 function applyTheme(){const t=set.theme;if(t==="light"||t==="dark")document.documentElement.dataset.theme=t;else delete document.documentElement.dataset.theme;statusBar()}
 function statusBar(){if(!IS_NATIVE)return;try{const SBar=window.Capacitor.Plugins.StatusBar;if(!SBar)return;const t=set.theme,dark=t==="dark"||(t!=="light"&&matchMedia("(prefers-color-scheme: dark)").matches);SBar.setStyle({style:dark?"DARK":"LIGHT"})}catch(e){}}
 try{matchMedia("(prefers-color-scheme: dark)").addEventListener("change",statusBar)}catch(e){}
-function themeSeg(){const t=set.theme||"auto";return `<div class="field"><label>Utseende</label><div class="seg" id="pf-theme" role="group" aria-label="Utseende">${[["auto","Automatiskt"],["light","Ljust"],["dark","Mörkt"]].map(([k,l])=>`<button type="button" data-th="${k}" aria-pressed="${k===t}">${l}</button>`).join("")}</div></div>`}
+function themeSeg(){const t=set.theme||"auto";return `<div class="th-pick" id="pf-theme" role="group" aria-label="Utseende">${[["auto","Automatiskt","th-a"],["light","Ljust",""],["dark","Mörkt",""]].map(([k,l,c])=>`<button type="button" data-th="${k}" aria-pressed="${k===t}"><span class="th-prev ${c}">${k==="dark"?'<i class="th-d"></i>':'<i class="th-l"></i>'}${k==="auto"?'<i class="th-d"></i>':""}<b></b></span><span><span class="th-ok" aria-hidden="true"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>${l}</span></button>`).join("")}</div>`}
 document.addEventListener("click",e=>{const b=e.target.closest("#pf-theme [data-th]");if(!b)return;set.theme=b.dataset.th==="auto"?null:b.dataset.th;saveSet();applyTheme();
   document.querySelectorAll("#pf-theme button").forEach(x=>x.setAttribute("aria-pressed",x===b))});
 applyTheme();

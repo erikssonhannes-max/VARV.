@@ -142,6 +142,16 @@ button.row{cursor:pointer}
 .chev{color:var(--muted);opacity:.6;font-size:var(--t-head);line-height:1}
 .ico{width:44px;height:44px;border-radius:12px;background:var(--card);display:grid;place-items:center;color:var(--ink)}
 .ico svg{width:30px;height:30px}
+.figs{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:10px}
+@media (min-width:600px){.figs{grid-template-columns:repeat(4,1fr)}}
+.figc{all:unset;box-sizing:border-box;cursor:pointer;background:var(--tile);border-radius:var(--r);padding:12px;display:flex;flex-direction:column;gap:2px;transition:transform .15s var(--ease)}
+.figc:active{transform:scale(.97)}
+.figc:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.figc .fa{background:var(--card);border-radius:12px;aspect-ratio:1;display:grid;place-items:center;color:var(--ink);margin-bottom:10px}
+.figc .fa svg{width:86%;height:86%}
+.figc h3{font-size:var(--t-body);font-weight:600;letter-spacing:-.01em;color:var(--ink)}
+.figc b{font-size:var(--t-sub);font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums}
+.figc p{font-size:var(--t-cap);color:var(--muted);line-height:1.4;margin-top:4px}
 .row.run{padding:5px 16px}
 .row.run .dot{width:44px;text-align:center;color:var(--accent);font-size:var(--t-cap);font-weight:600}
 .row.run h3{font-weight:400;color:var(--muted);font-size:var(--t-cap)}
@@ -821,7 +831,7 @@ a.row{color:inherit;text-decoration:none}
 .grab{width:38px;height:5px;border-radius:3px;background:var(--hair)}
 .close{justify-self:end;border:0;background:var(--tile);width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:var(--t-sub);color:var(--muted)}
 .sheet .art{background:var(--tile);border-radius:var(--r);display:grid;place-items:center;padding:20px;color:var(--ink)}
-.sheet .art svg{width:130px;height:130px}
+.sheet .art svg{width:170px;height:170px}
 .sheet h2{font-size:var(--t-sheet);letter-spacing:-.04em}
 .facts3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
 .facts3 div{background:var(--tile);border-radius:14px;padding:11px 12px;display:grid;gap:2px;min-width:0}
@@ -1741,6 +1751,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <div class="tile"><b>1:36</b><span>mediantid, Open dam</span></div>
     </div>
     <p class="small" style="margin-bottom:16px">Mediantider från en analys av omkring 700 000 resultat. Klockan går hela tiden, även i Roxzone där du byter mellan löpning och station.</p>
+    <div class="sechead"><h2>Vad är Hyrox</h2></div>
+    <p class="small" style="margin-bottom:12px">Ett lopp på 8 × 1 km löpning med en station efter varje kilometer. Så här ser de åtta stationerna ut.</p>
+    <div class="figs" id="figs"></div>
     <button class="divchip" data-open="division" style="margin-bottom:14px"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
     <div class="group" id="course"></div>
     <p class="small" style="margin-top:10px">Vikter enligt HYROX:s regelböcker för singel och doubles, säsong 26/27. Slädens egen vikt ingår.</p>
@@ -2034,7 +2047,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.14 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.15 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2079,7 +2092,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.14";
+const APPVER="1.1.15";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2099,6 +2112,32 @@ const ART={
  lunge:`<svg viewBox="0 0 64 64" ${SW}><rect x="14" y="12" width="36" height="12" rx="6"/><path d="M22 12v-2M42 12v-2"/><path d="M32 24v12"/><path d="M32 36l-10 8v10M32 36l12 4-2 14"/><path d="M8 56h48"/></svg>`,
  wall:`<svg viewBox="0 0 64 64" ${SW}><path d="M54 4v56"/><path d="M42 12h12"/><circle cx="24" cy="38" r="12"/><path d="M14 32c6 3 14 3 20 0"/><path d="M33 26l6-10" stroke-dasharray="3 4"/><path d="M4 58h50"/></svg>`
 };
+/* Figurer som utför stationerna, för "Vad är Hyrox" och stationsarket. Personen i ink, utrustningen i green.
+   Tillfälliga tills riktiga bilder finns. Små ytor (listan, banan) använder fortfarande ART. */
+const FW='fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
+const fig=(eq,body)=>`<svg viewBox="0 0 120 120" ${FW} aria-hidden="true"><g stroke="var(--green)">${eq}</g><g stroke="currentColor">${body}</g></svg>`;
+const FIG={
+ ski:fig(`<path d="M88 10V111M76 111h24M84 14 72 62"/>`,`<circle cx="52" cy="30" r="7"/><path d="M51 38 42 68M49 44l13 12 10 6M42 68l5 22-2 21M42 68l-7 22 2 21M14 112h56"/>`),
+ push:fig(`<path d="M70 111h42M76 111l-2-49M86 111V96h22v15"/>`,`<circle cx="50" cy="50" r="7"/><path d="M54 58 30 80M53 62l21 2M30 80l-8 16-12 15M30 80l13 13-2 18M6 112h62"/>`),
+ pull:fig(`<path d="M80 111h32M84 111V98h22v13M58 64 88 98"/>`,`<circle cx="30" cy="44" r="7"/><path d="M46 82 34 52M35 58l23 6M36 62l16 10M46 82l14 14 4 15M46 82l-6 16-2 13M14 112h58"/>`),
+ bbj:fig(`<path d="M10 104c10-30 26-44 40-44" stroke-dasharray="3 6"/><path d="M84 111h18"/>`,`<circle cx="68" cy="32" r="7"/><path d="M65 40 52 64M63 46l-15 6M63 46l11 12M52 64l14 10-6 16M52 64l8 16-8 10M8 112h104"/>`),
+ row:fig(`<path d="M10 106h102M44 98h16M86 92l4 12M52 76l36 12"/><circle cx="98" cy="92" r="12"/>`,`<circle cx="40" cy="56" r="7"/><path d="M50 95 43 64M44 68l-8 10 16-2M50 95l20-13 16 10"/>`),
+ farm:fig(`<circle cx="46" cy="74" r="8"/><circle cx="74" cy="74" r="8"/><path d="M46 66v-4M74 66v-4"/>`,`<circle cx="60" cy="22" r="7"/><path d="M60 30v36M60 36 46 62M60 36l14 26M60 66l-8 22-4 23M60 66l8 22 6 23M20 112h80"/>`),
+ lunge:fig(`<rect x="42" y="38" width="36" height="10" rx="5"/>`,`<circle cx="60" cy="27" r="7"/><path d="M60 48v30M60 50 46 43M60 50l14-7M60 78l22 2v31M60 78l-14 30H28M14 112h90"/>`),
+ wall:fig(`<path d="M104 8v104M96 22h16M70 44c10-18 20-22 28-22" stroke-dasharray="3 6"/><circle cx="62" cy="52" r="8"/>`,`<circle cx="50" cy="40" r="7"/><path d="M50 48l-2 30M50 54l8 4M48 78l20 4-2 29M48 78l12 10-2 23M14 112h82"/>`)
+};
+const FIGTXT={
+ ski:"Dra handtagen nedåt med hela kroppen, som stavtag på skidor.",
+ push:"Skjut en tung släde framåt, lågt och framåtlutad.",
+ pull:"Dra en tung släde mot dig med ett rep, hand över hand.",
+ bbj:"Bröstet i golvet, upp igen och hoppa framåt med samlade fötter.",
+ row:"Ro på roddmaskin: benen först, sedan rygg och armar.",
+ farm:"Bär två kettlebells med raka armar, en i varje hand.",
+ lunge:"Utfallssteg med en sandsäck över axlarna. Bakre knät i golvet.",
+ wall:"Knäböj och kasta bollen upp mot ett mål på väggen."
+};
+function renderFigs(){const el=$("#figs");if(!el)return;
+  el.innerHTML=S.map((s,i)=>`<button type="button" class="figc" data-st="${i}" aria-label="${s.n}, ${s.q}"><span class="fa">${FIG[s.id]}</span><h3>${s.n}</h3><b>${s.q}</b><p>${FIGTXT[s.id]}</p></button>`).join("")}
 
 /* ============ Data ============ */
 const W={ // [open dam, open herr, pro dam, pro herr]
@@ -2428,10 +2467,11 @@ function renderCourse(){
     h+=`<button class="row" data-st="${i}"><span class="ico">${ART[s.id]}</span><div><h3>${i+1}. ${s.n}</h3><p>${s.q} · ${wval(s)}${wtarget(s)?" · "+wtarget(s):""}</p></div><span class="chev">›</span></button>`;
   });
   $("#course").innerHTML=h;
+  renderFigs();
 }
 function openStation(i){
   const s=S[i],t=planTimes();
-  openSheet(`<div class="art">${ART[s.id]}</div>
+  openSheet(`<div class="art">${FIG[s.id]}</div>
    <div class="st-nav"><div><span class="small">Station ${i+1} av 8</span><h2>${s.n}</h2></div><div class="st-arrows"><button type="button" id="st-prev" aria-label="Föregående station"${i?"":" disabled"}>‹</button><button type="button" id="st-next" aria-label="Nästa station"${i<7?"":" disabled"}>›</button></div></div>
    <div class="facts3"><div><small>Mängd</small><b>${s.q}</b></div><div><small>${set.fmt==="mixed"?"Mixed":set.k==="pro"?"Pro":"Open"}</small><b>${wval(s)}</b></div><div><small>Mål vid ${fmtHM(set.target)}</small><b>${fmt(t.st[i])}</b></div></div>
    <div><h4>Teknik</h4><ul>${s.tech.map(x=>`<li>${x}</li>`).join("")}</ul></div>

@@ -1678,6 +1678,23 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .so-lg div{min-width:0}.so-lg span{display:flex;align-items:center;gap:5px;font-size:var(--t-cap);color:var(--muted);white-space:nowrap}
 .so-lg span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
 .so-lg b{display:block;font-size:var(--t-body);font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
+.so-tp{height:150px}
+.so-tp .so-in{position:absolute;inset:0 44px 0 0}
+.so-tp .so-cols{gap:0}
+.so-tp .so-grid{bottom:auto;right:44px}
+.so-tp .so-grid span{right:-44px;bottom:auto;top:-.72em;background:none;padding:0;line-height:1.4}
+.so-tp .so-goal{border-top:1.5px dashed var(--muted)}
+.so-tp .so-goal span{color:var(--ink);font-weight:600}
+.so-tp .so-goal em{position:absolute;left:0;bottom:3px;font-style:normal;font-size:var(--t-cap);font-weight:600;color:var(--muted)}
+.so-tsvg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.so-pt{position:absolute;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--tile);pointer-events:none}
+.so-tp .so-dot{position:absolute;bottom:0;width:0;border-left:1px dashed color-mix(in srgb,var(--accent) 45%,transparent);pointer-events:none;transition:left .3s var(--ease),top .3s var(--ease)}
+.so-tp .so-dot::before{content:"";position:absolute;top:-8px;left:-8.5px;width:10px;height:10px;border-radius:50%;background:var(--tile);border:3px solid var(--accent)}
+.so-txax{gap:0;margin-right:44px}
+.so-trend{margin:14px 0 0;font-size:var(--t-sub);line-height:1.45;color:var(--ink)}
+.so-trend .so-d{font-size:inherit}
+@keyframes soWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
+@keyframes soPop{from{opacity:0;transform:scale(.4)}}
 .so-rad{margin-top:10px}
 .so-empty{color:var(--muted);font-size:var(--t-sub);line-height:1.45;margin:10px 0 0}
 .so-st{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -1696,7 +1713,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
   .so-col i{animation:soGrow .55s var(--ease) both}
   .so-bul i{animation:soX 1.1s var(--ease) both}
   .so-line path.so-tr{animation:none}
-  .so-line{stroke-dasharray:1;animation:soDraw 1.1s var(--ease) both}
+  path.so-line{stroke-dasharray:1;animation:soDraw 1.1s var(--ease) both}
+  .so-tsvg{animation:soWipe 1.1s var(--ease) both}
+  .so-pt{animation:soPop .4s var(--spring) both}
 }
 @keyframes soX{from{transform:scaleX(0)}}
 @keyframes soRing{from{stroke-dashoffset:100}}
@@ -2073,7 +2092,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.19 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.20 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2118,7 +2137,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.19";
+const APPVER="1.1.20";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3838,11 +3857,7 @@ function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   h+=`</section>`;
   const lastP=pts[pts.length-1];
   h+=`<section class="so-card so-gap" id="so-pace" data-so><span class="so-k">Tempo</span><b class="so-val">${lastP?fmt(lastP.v)+" /km":"–"}</b><span class="so-cap">${lastP?soWkName(W[lastP.i]):""}</span>`;
-  if(pts.length){const H=132,vs=pts.map(p=>p.v),lo=Math.min(...vs),hi=Math.max(...vs),step=Math.max(15,Math.ceil((hi-lo||30)/2/15)*15),a=Math.floor(lo/step)*step,b=Math.max(a+step,Math.ceil(hi/step)*step),y=v=>+(8+(v-a)/(b-a)*(H-16)).toFixed(1),Wd=Math.max(240,cw-36),xx=i=>+((i+.5)/12*Wd).toFixed(1);
-    let grid="";for(let g=a;g<=b;g+=step)grid+=`<line x1="0" x2="${Wd}" y1="${y(g)}" y2="${y(g)}" stroke="var(--hair)"/><text x="${Wd}" y="${y(g)-4}" text-anchor="end">${fmt(g)}</text>`;
-    const segs=[];pts.forEach((p,k)=>{if(k&&pts[k-1].i===p.i-1)segs[segs.length-1].push(p);else segs.push([p])});const d=segs.filter(g=>g.length>1).map(g=>"M"+g.map(p=>xx(p.i)+","+y(p.v)).join(" L")).join(" "),holes=segs.length>1;
-    h+=`<div class="so-plot so-line so-chart" style="margin-top:16px"><svg viewBox="0 0 ${Wd} ${H}" preserveAspectRatio="none" role="img" aria-label="Löptempo per vecka">${grid}${d?`<path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>`:""}${pts.map(p=>`<circle cx="${xx(p.i)}" cy="${y(p.v)}" r="4" fill="var(--accent)" stroke="var(--tile)" stroke-width="2"/>`).join("")}<circle class="so-dot" cx="${xx(lastP.i)}" cy="${y(lastP.v)}" r="6" fill="var(--tile)" stroke="var(--accent)" stroke-width="3"/></svg>
-      <div class="so-cols">${W.map((w,i)=>{const p=R[i].pace;return p?`<button type="button" class="so-col${i===lastP.i?" on":""}" data-h="${fmt(p)} /km" data-s="${esc(soWkName(w))}" data-x="${xx(i)}" data-y="${y(p)}" aria-label="${esc(soWkName(w))}: ${fmt(p)} per km"></button>`:`<span></span>`}).join("")}</div></div>${soAxis(W)}<p class="so-foot" style="margin-top:10px">Högre upp i grafen är snabbare.${holes?" Ett hål i linjen är en vecka utan löptid.":""} Bygger på löpning med både sträcka och tid.</p>`}
+  if(pts.length){h+=soPaceChart(W,R,pts,lastP)}
   else h+=`<p class="so-empty">Logga löpning med sträcka och tid, eller kör den med klockan, så följer du ditt tempo här.</p>`;
   h+=`</section>`;
   // Stationsträning: hur ofta varje station tränats senaste sex veckorna
@@ -3851,11 +3866,29 @@ function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   h+=anyC?`<span class="so-cap" style="margin-top:8px;color:var(--ink);font-weight:500">${lows.length<=3?`Minst tränat: ${esc(lows.map(x=>x.n).join(", "))}.`:"Flera stationer behöver mer tid."}</span><div class="so-rad">${radarSvg(S.map((x,i)=>stShort(x)+"\n"+cnt[i]+" pass"),[{v:cnt.map(c=>c/mx),c:"you s"}],"Antal pass per station de senaste sex veckorna: "+S.map((x,i)=>x.n+" "+cnt[i]).join(", "))}</div><p class="so-foot" style="margin-top:6px">Yttersta ringen är ${mx} pass. Ju rundare form, desto jämnare tränar du.</p>`
     :`<p class="so-empty">Logga en station, så ser du vilka du tränar mest och minst.</p>`;
   return h+`</section>`}
+/* Tempografen: snabbare högre upp. Linjen och ytan ritas i SVG, punkter, rutnät och etiketter i HTML så att de blir skarpa i alla bredder. */
+function soPaceChart(W,R,pts,lastP){const vs=pts.map(p=>p.v),P=+set.target>0?planTimes():null,gp=P&&isFinite(P.pace)?Math.round(P.pace):null;
+  let lo=Math.min(...vs),hi=Math.max(...vs);const goal=gp&&gp>=lo-120&&gp<=hi+120?gp:null;if(goal){lo=Math.min(lo,goal);hi=Math.max(hi,goal)}
+  const span=Math.max(hi-lo,20),step=span<=30?15:span<=90?30:60;let a=Math.floor(lo/step)*step,b=Math.ceil(hi/step)*step;
+  if(lo-a<step*.25)a-=step;if(b-hi<step*.25)b+=step;while((b-a)/step<2){if(lo-a<b-hi)a-=step;else b+=step}
+  const Y=v=>+(6+(v-a)/(b-a)*88).toFixed(2),X=i=>+((i+.5)/12*100).toFixed(2);
+  let grid="";for(let g=a;g<=b;g+=step)if(!goal||Math.abs(g-goal)>=step*.45)grid+=`<div class="so-grid" style="top:${Y(g)}%"><span>${fmt(g)}</span></div>`;
+  if(goal)grid+=`<div class="so-grid so-goal" style="top:${Y(goal)}%"><em>Mål</em><span>${fmt(goal)}</span></div>`;
+  const segs=[];pts.forEach((p,k)=>{if(k&&pts[k-1].i===p.i-1)segs[segs.length-1].push(p);else segs.push([p])});
+  const line=g=>"M"+g.map(p=>X(p.i)+","+Y(p.v)).join(" L"),many=segs.filter(g=>g.length>1);
+  const d=many.map(line).join(" "),area=many.map(g=>line(g)+` L${X(g[g.length-1].i)},100 L${X(g[0].i)},100 Z`).join(" ");
+  const svg=d?`<svg class="so-tsvg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><defs><linearGradient id="so-pa" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--accent)" stop-opacity=".14"/><stop offset="1" stop-color="var(--accent)" stop-opacity="0"/></linearGradient></defs><path d="${area}" fill="url(#so-pa)"/><path d="${d}" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/></svg>`:"";
+  const dots=pts.map((p,k)=>`<i class="so-pt" style="left:${X(p.i)}%;top:${Y(p.v)}%;animation-delay:${200+k*40}ms"></i>`).join("");
+  const cols=W.map((w,i)=>{const p=R[i].pace;return p?`<button type="button" class="so-col${i===lastP.i?" on":""}" data-h="${fmt(p)} /km" data-s="${esc(soWkName(w))}" data-x="${X(i)}" data-y="${Y(p)}" aria-label="${esc(soWkName(w))}: ${fmt(p)} per km"></button>`:`<span></span>`}).join("");
+  const first=pts[0],dlt=Math.round(lastP.v-first.v),holes=segs.length>1;
+  const trend=pts.length<2?"Logga löpning fler veckor, så ritas en kurva.":dlt?`<span class="so-d ${dlt<0?"good":"bad"}">${fmtD(dlt)}</span> per km sedan ${esc(soWkName(W[first.i]).toLowerCase())}.`:`Samma tempo som ${esc(soWkName(W[first.i]).toLowerCase())}.`;
+  return `<div class="so-plot so-line so-tp" role="img" aria-label="Löptempo per vecka. Senast ${fmt(lastP.v)} per km.${goal?" Måltempo "+fmt(goal)+" per km.":""}">${grid}<div class="so-in">${svg}${dots}<span class="so-dot" style="left:${X(lastP.i)}%;top:${Y(lastP.v)}%"></span><div class="so-cols">${cols}</div></div></div>${soAxis(W).replace('class="so-xax"','class="so-xax so-txax"')}
+   <p class="so-trend">${trend}</p><p class="so-foot" style="margin-top:6px">Högre upp är snabbare.${goal?" Streckad linje är ditt måltempo.":""}${holes?" Ett hål i linjen är en vecka utan löptid.":""}</p>`}
 function soCap(W,i,n){return `${soWkName(W[i])}${n?` · ${n} pass`:""}`}
 function soBindSel(el){if(el._soSel)return;el._soSel=true;const pick=c=>{const card=c.closest("[data-so]");if(!card)return;card.querySelector(".so-val").textContent=c.dataset.h;card.querySelector(".so-cap").textContent=c.dataset.s;
     card.querySelectorAll(".so-col").forEach(x=>x.classList.toggle("on",x===c));
     if(c.dataset.v){const v=c.dataset.v.split("|");card.querySelectorAll("[data-lv]").forEach(b=>{b.textContent=v[+b.dataset.lv]})}
-    const dot=card.querySelector(".so-dot");if(dot&&c.dataset.x){dot.setAttribute("cx",c.dataset.x);dot.setAttribute("cy",c.dataset.y)}};
+    const dot=card.querySelector(".so-dot");if(dot&&c.dataset.x){if(dot instanceof SVGElement){dot.setAttribute("cx",c.dataset.x);dot.setAttribute("cy",c.dataset.y)}else{dot.style.left=c.dataset.x+"%";dot.style.top=c.dataset.y+"%"}}};
   el.addEventListener("click",e=>{const c=e.target.closest(".so-col");if(c){pick(c);HAPTIC("light")}});
   el.addEventListener("pointerover",e=>{if(e.pointerType!=="mouse")return;const c=e.target.closest(".so-col");if(c)pick(c)})}
 function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=set.g==="w"?"dam":"herr",goal=Math.round((+set.target||0)*60);

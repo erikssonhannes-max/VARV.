@@ -1544,6 +1544,55 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .post .po-media.k-rekord.big .po-d{color:var(--good)}
 .post .po-who{display:flex;align-items:center;gap:8px}.po-ls{display:flex;flex:none}
 .po-la{width:22px;height:22px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-size:var(--t-micro);font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--tile)}.po-la+.po-la{margin-left:-6px}.po-la img{width:100%;height:100%;object-fit:cover}
+/* Flödet, version 2: luftigare kort, tydligare siffror och kommentarer direkt i kortet */
+.post{border-radius:22px;margin-bottom:12px}
+.post .po-h{padding:14px 16px 12px}
+.post .po-h .fr-av{width:44px;height:44px}
+.post .po-h b{font-size:var(--t-body);letter-spacing:-.02em}
+.post .po-h small{gap:8px;margin-top:3px}
+.po-kt{padding:3px 9px;border-radius:980px;background:var(--card);color:var(--muted);letter-spacing:.05em}
+.post .po-media:not(.po-img){margin:0 12px;border-radius:18px;background:var(--card)}
+.post .po-media.pc{gap:2px;padding:16px 18px 18px}
+.pc-t{display:flex;align-items:center;gap:8px;font-size:var(--t-sub);font-weight:600;color:var(--muted)}
+.pc-big{font-size:var(--t-num-xl);letter-spacing:-.045em;line-height:1.05;margin-top:4px}
+.pc-bar{gap:3px;height:10px;margin:12px 0 10px;border-radius:0;overflow:visible}
+.pc.feat .pc-bar{height:12px}
+.pc-bar i{border-radius:5px;background:color-mix(in srgb,var(--ink) 18%,transparent)}
+.pc-bar i.r{background:var(--accent)}.pc-bar i.s{background:var(--green)}
+@media (prefers-reduced-motion:no-preference){.post .pc-bar i{transform-origin:left;animation:lvGrow .9s var(--ease) both}}
+.pc-sum{font-size:var(--t-body);font-weight:600}
+.pc-n{font-size:var(--t-sub);margin-top:1px}
+.post .po-a{padding:8px 8px 2px;grid-template-columns:auto auto 1fr auto auto}
+.post .po-like,.post .po-com,.post .po-sh,.post .po-own{height:44px;border-radius:980px;transition:background .15s ease}
+.post .po-like:hover,.post .po-com:hover,.post .po-sh:hover{background:var(--card)}
+.post .po-like svg,.post .po-own svg,.post .po-com svg,.post .po-sh svg{width:24px;height:24px}
+.post .po-like[aria-pressed="true"]{color:var(--accent)}
+.post .po-like[aria-pressed="true"] svg{fill:var(--accent)}
+.post .po-n{font-size:var(--t-sub);font-weight:600;margin-left:-6px;padding-right:8px}
+.post .po-com span{font-size:var(--t-sub)}
+.post .po-who{padding:2px 16px 6px;font-size:var(--t-sub);color:var(--muted)}
+.post .po-who b{color:var(--ink)}
+.post .po-cm{padding:2px 16px 14px;gap:6px}
+.post .po-c{font-size:var(--t-sub);line-height:1.4;cursor:pointer;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.post .po-c.new{animation:cmIn .4s var(--ease) both}
+@keyframes cmIn{from{opacity:0;transform:translateY(6px)}}
+.post .po-more{font-size:var(--t-sub);color:var(--muted);min-height:32px}
+.po-qf{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:10px;width:100%;margin-top:6px}
+.po-qf input{width:100%;min-height:44px;border:1px solid transparent;border-radius:980px;background:var(--card);color:var(--ink);font:inherit;font-size:var(--t-sub);padding:10px 16px;outline:none;transition:border-color .15s ease}
+.po-qf input::placeholder{color:var(--muted)}
+.po-qf input:focus{border-color:var(--hair)}
+.po-qs{width:36px;height:36px;border:0;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;cursor:pointer;padding:0;margin-left:-2px;transition:transform .2s var(--spring),opacity .15s ease}
+.po-qf input:placeholder-shown~.po-qs{opacity:0;transform:scale(.6);pointer-events:none;width:0;margin-left:-10px}
+.po-qc{grid-column:1/-1;display:none;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 0}
+.po-qc::-webkit-scrollbar{display:none}
+.po-qf:focus-within .po-qc{display:flex}
+.po-qc button{flex:none;min-height:36px;padding:0 14px;border:0;border-radius:980px;background:var(--card);color:var(--ink);font:inherit;font-size:var(--t-sub);font-weight:600;cursor:pointer;transition:transform .15s ease,background .15s ease}
+.po-qc button:active{transform:scale(.96)}
+.po-qc button.on{background:color-mix(in srgb,var(--accent) 14%,var(--card));color:var(--accent)}
+.post .po-cav{width:32px;height:32px}
+.cm-send{width:40px;height:40px;background:var(--accent);box-shadow:none;transition:transform .2s var(--spring),opacity .15s ease}
+.cm-send:not(.on){opacity:.35}
+.cm-bub{border-radius:6px 18px 18px 18px}
 .kn{margin:12px 0;min-width:0}.kn-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:10px}.kn-h h2{font-size:var(--t-head);letter-spacing:-.03em}.kn-h p{margin:2px 0 0;color:var(--muted);font-size:var(--t-sub)}
 .kn-s{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding-inline:max(16px,env(safe-area-inset-left,0px))}.kn-s::-webkit-scrollbar{display:none}
 .kn-c{position:relative;flex:none;width:148px;display:grid;gap:10px;padding:16px 12px 12px;border-radius:var(--r);background:var(--tile);scroll-snap-align:center}
@@ -2163,7 +2212,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.37 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.38 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2210,7 +2259,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.37";
+const APPVER="1.1.38";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3372,7 +3421,8 @@ function postClick(e,D){
   const ep=e.target.closest("[data-editpost]");if(ep){openEditPost(+ep.dataset.editpost,D);return true}
   const dp=e.target.closest("[data-delpost]");if(dp){if(!dp.dataset.c){dp.dataset.c=1;dp.textContent="Tryck igen";dp.style.color="var(--bad)";return true}deletePost(+dp.dataset.delpost,D);return true}
   const sh=e.target.closest("[data-share]");if(sh){sharePost(+sh.dataset.share,D);return true}
-  const cb=e.target.closest("[data-com]");if(cb){openComments(+cb.dataset.com,D);return true}
+  if(e.target.closest(".po-qf"))return true;
+  const cb=e.target.closest("[data-com]");if(cb){const qi=cb.classList.contains("po-com")&&$("#po-qi"+cb.dataset.com);if(qi){qi.focus();qi.scrollIntoView({block:"center",behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"});return true}openComments(+cb.dataset.com,D);return true}
   const lk=e.target.closest("[data-like]");if(lk){fdLike(+lk.dataset.like,D,false);return true}
   const md=e.target.closest(".po-media");if(md){const now=Date.now();
     if(md._t&&now-md._t<320){md._t=0;clearTimeout(md._o);fdLike(+md.dataset.id,D,true)}
@@ -6062,7 +6112,7 @@ $("#pf-del").onclick=async()=>{const b=$("#pf-del");
 
 /* ============ Vänner ============ */
 let FRC=null;
-const THUMB=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 10v11H4a1 1 0 0 1-1-1v-9a1 1 0 0 1 1-1z"/><path d="M7 10l4-7a2.3 2.3 0 0 1 2.6 2.7L13 9h5.6a2 2 0 0 1 2 2.4l-1.5 7.6a2 2 0 0 1-2 1.6H7"/></svg>`;
+const THUMB=`<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7.5 10.5v9H5.2a1.7 1.7 0 0 1-1.7-1.7v-5.6a1.7 1.7 0 0 1 1.7-1.7z"/><path d="M7.5 10.5l3.7-6.3a2.1 2.1 0 0 1 3.8 1.6L14.2 9.5h4.7a2.2 2.2 0 0 1 2.2 2.6l-1.2 5.8a2.2 2.2 0 0 1-2.2 1.6H7.5"/></svg>`;
 const agoTxt=t=>{const s=(Date.now()-new Date(t))/1e3;if(s<3600)return Math.max(1,Math.round(s/60))+" min sedan";if(s<86400)return Math.round(s/3600)+" tim sedan";const d=Math.round(s/86400);return d===1?"igår":d+" dagar sedan"};
 async function loadFriendData(force){
   if(!SB||!SBUSER||!MYPROF)return null;
@@ -6267,7 +6317,8 @@ async function renderFeed(force){
   const top=D.acts.find(a=>a.user_id!==SBUSER.id);if(top){set.frSeen=top.created_at;saveSet()}fdDot();frDot();
 }
 /* Dela ett inlägg utanför appen: bilden eller ett delningskort, via telefonens delningsmeny */
-const SHAREI=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 3L10 14"/><path d="M21 3l-7 18-4-7-7-4z"/></svg>`;
+const SHAREI=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5v11M7.8 7.7 12 3.5l4.2 4.2"/><path d="M8 11H6.5A1.5 1.5 0 0 0 5 12.5v6A1.5 1.5 0 0 0 6.5 20h11a1.5 1.5 0 0 0 1.5-1.5v-6a1.5 1.5 0 0 0-1.5-1.5H16"/></svg>`;
+const SENDI=`<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5.5M6.5 11 12 5.5l5.5 5.5"/></svg>`;
 function shareText(a){const mine=a.user_id===SBUSER.id,who=mine?(MYPROF&&MYPROF.username)||"Jag":((NAMES[a.user_id]||{}).username||"Någon");
   const verb=okPost(a.image_url)?"delade":a.kind==="lopp"?"tävlade":a.kind==="rekord"?"satte rekord":"tränade";
   const what=[a.title&&!/^Delade (en bild|ett inlägg)$/.test(a.title)?a.title:"",a.detail].filter(Boolean).join(" · ");
@@ -6483,34 +6534,50 @@ function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.use
      ${fdPrCmp(a,big)||(big?`<b class="po-big">${esc(big)}</b>`:"")+(a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":big&&dl[0].startsWith(big+" · ")?[dl[0].slice(big.length+3)].concat(dl.slice(1)).join("\n"):a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():"")}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
-   <div class="po-a">${mine?`<span class="po-own" aria-hidden="true">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}<span>${(D.comments[a.id]||[]).length||""}</span></button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
+   <div class="po-a">${mine?`<span class="po-own" aria-hidden="true">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera, ${(D.comments[a.id]||[]).length} kommentarer">${BUBBLE}<span>${(D.comments[a.id]||[]).length||""}</span></button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
    ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText((()=>{const dl=String(a.detail||"").split("\n");return [[a.title==="Delade en bild"?"":a.title,dl[0]].filter(Boolean).join(" · ")].concat(dl.slice(1)).join("\n")})(),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
-const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-11.2 6.5L4 19.5l1.5-4.3A7.5 7.5 0 1 1 20 11.5z"/></svg>`;
+const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4c4.7 0 8.5 3.2 8.5 7.2s-3.8 7.3-8.5 7.3c-1 0-2-.1-2.9-.4L5 20l1-3.6c-1.6-1.3-2.5-3.1-2.5-5.2C3.5 7.2 7.3 4 12 4z"/></svg>`;
 const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");
-function fdComPrev(id,D){const C=D.comments[id]||[],last=C.slice(-2);
+const FDQ={};const FD_QUICK=["Starkt","Snyggt pass","Grymt jobbat","Kör hårt"];
+function fdComPrev(id,D){const C=D.comments[id]||[],last=C.slice(-2),a=D.acts.find(x=>x.id===id),mine=a&&a.user_id===SBUSER.id;FDQ[id]=D;
   return `<div class="po-cm" id="po-cm${id}">${C.length>2?`<button class="po-more" data-com="${id}">Visa alla ${C.length} kommentarer</button>`:""}
-   ${last.map(c=>`<p class="po-c"><b>${esc(cName(c.user_id))}</b> ${richText(c.body,c.mentions)}</p>`).join("")}
-   <button class="po-add" data-com="${id}">${avImg(MYPROF.avatar_url,MYPROF.username,"po-cav")}<span>${C.length?"Skriv en kommentar…":"Bli först att kommentera…"}</span></button></div>`}
+   ${last.map(c=>`<p class="po-c" data-com="${id}"><b>${esc(cName(c.user_id))}</b> ${richText(c.body,c.mentions)}</p>`).join("")}
+   <form class="po-qf" data-qf="${id}" novalidate>${avImg(MYPROF.avatar_url,MYPROF.username,"po-cav")}<label class="sr" for="po-qi${id}">Kommentar</label><input id="po-qi${id}" type="text" maxlength="300" autocomplete="off" enterkeyhint="send" placeholder="${C.length?"Skriv en kommentar…":mine?"Skriv något om passet…":"Bli först att kommentera…"}"><button class="po-qs" type="submit" aria-label="Skicka">${SENDI}</button>
+    ${mine?"":`<div class="po-qc" role="group" aria-label="Snabbsvar">${FD_QUICK.map(q=>`<button type="button" data-q="${esc(q)}">${esc(q)}</button>`).join("")}</div>`}</form></div>`}
+async function fdSendCom(id,D,text,mentions){const t=String(text||"").trim();if(!t)return false;
+  const {data,error}=await SB.from("activity_comments").insert({activity_id:id,body:t.slice(0,300),mentions:mentions&&mentions.length?mentions:null}).select("id,activity_id,user_id,body,created_at,mentions").maybeSingle();
+  if(error||!data){toast("Kunde inte skicka. Försök igen.");return false}
+  (D.comments[id]=D.comments[id]||[]).push(data);HAPTIC("light");
+  const art=document.querySelector(`.post[data-act="${id}"]`),pv=$("#po-cm"+id),n=art&&art.querySelector(".po-com span");
+  if(pv)pv.outerHTML=fdComPrev(id,D);if(n)n.textContent=D.comments[id].length;
+  const np=document.querySelector(`#po-cm${id} .po-c:last-of-type`);if(np)np.classList.add("new");return true}
+/* Kommentera direkt i kortet: skriv och tryck på pilen, eller välj ett snabbsvar. */
+document.addEventListener("submit",async e=>{const f=e.target.closest(".po-qf");if(!f)return;e.preventDefault();const id=+f.dataset.qf,D=FDQ[id],inp=f.querySelector("input");if(!D||!inp||f.dataset.busy)return;
+  const t=inp.value.trim();if(!t)return;f.dataset.busy=1;const ok=await fdSendCom(id,D,t,inp._mentions?inp._mentions():null);delete f.dataset.busy;if(!ok)return;
+  const ni=$("#po-qi"+id);if(ni)ni.focus({preventScroll:true})});
+document.addEventListener("focusin",e=>{const i=e.target.closest&&e.target.closest(".po-qf input");if(i)attachMentions(i)});
+document.addEventListener("pointerdown",e=>{if(e.target.closest(".po-qc button,.po-qs"))e.preventDefault()});
+document.addEventListener("click",async e=>{const q=e.target.closest(".po-qc [data-q]");if(!q)return;e.stopPropagation();const f=q.closest(".po-qf"),id=+f.dataset.qf,D=FDQ[id];if(!D||f.dataset.busy)return;
+  f.dataset.busy=1;q.classList.add("on");await fdSendCom(id,D,q.dataset.q);delete f.dataset.busy},true);
 function openComments(id,D){const a=D.acts.find(x=>x.id===id);if(!a)return;const ownPost=a.user_id===SBUSER.id,p=ownPost?MYPROF:(NAMES[a.user_id]||{username:"Någon"});
   const list=()=>{const C=D.comments[id]||[];return C.length?C.map(c=>{const pp=c.user_id===SBUSER.id?MYPROF:(NAMES[c.user_id]||{username:"Någon"}),can=c.user_id===SBUSER.id||ownPost;
      return `<div class="cm-row">${avImg(pp.avatar_url,pp.username)}<div><div class="cm-bub"><b>${esc(cName(c.user_id))}</b><p>${richText(c.body,c.mentions)}</p></div><small>${agoTxt(c.created_at)}${can?`<button class="linkbtn cm-del" data-del="${c.id}">Ta bort</button>`:""}</small></div></div>`}).join(""):`<div class="cm-empty"><span>${BUBBLE}</span><p>Inga kommentarer än. Skriv något peppande.</p></div>`};
   openSheet(`<div class="cm-head">${avImg(p.avatar_url,p.username)}<div><span class="small">${ownPost?"Ditt inlägg":esc(p.username)}</span><h2>${esc(a.title||FD_KIND[a.kind]||"Kommentarer")}</h2></div></div>
    <div class="cm-list" id="cm-list">${list()}</div>
-   <form id="cm-f" class="cm-f" novalidate>${avImg(MYPROF.avatar_url,MYPROF.username,"cm-me")}<label class="sr" for="cm-in">Kommentar</label><textarea id="cm-in" rows="1" maxlength="300" placeholder="Skriv en kommentar…" enterkeyhint="send"></textarea><button class="cm-send" id="cm-go" type="submit" aria-label="Skicka">${SHAREI}</button></form>`,()=>{
-    const upd=()=>{$("#cm-list").innerHTML=list();const pv=$("#po-cm"+id);if(pv)pv.outerHTML=fdComPrev(id,D)};
-    const inp=$("#cm-in");attachMentions(inp);inp.addEventListener("input",()=>{inp.style.height="auto";inp.style.height=Math.min(120,inp.scrollHeight+2)+"px"});inp.onkeydown=e=>{if(inp._mnOpen&&inp._mnOpen())return;if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#cm-f").requestSubmit()}};
+   <form id="cm-f" class="cm-f" novalidate>${avImg(MYPROF.avatar_url,MYPROF.username,"cm-me")}<label class="sr" for="cm-in">Kommentar</label><textarea id="cm-in" rows="1" maxlength="300" placeholder="Skriv en kommentar…" enterkeyhint="send"></textarea><button class="cm-send" id="cm-go" type="submit" aria-label="Skicka">${SENDI}</button></form>`,()=>{
+    const upd=()=>{$("#cm-list").innerHTML=list();const pv=$("#po-cm"+id);if(pv)pv.outerHTML=fdComPrev(id,D);const n=document.querySelector(`.post[data-act="${id}"] .po-com span`);if(n)n.textContent=(D.comments[id]||[]).length||""};
+    const inp=$("#cm-in");attachMentions(inp);inp.addEventListener("input",()=>{inp.style.height="auto";inp.style.height=Math.min(120,inp.scrollHeight+2)+"px";$("#cm-go").classList.toggle("on",!!inp.value.trim())});inp.onkeydown=e=>{if(inp._mnOpen&&inp._mnOpen())return;if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();$("#cm-f").requestSubmit()}};
     $("#cm-f").onsubmit=async e=>{e.preventDefault();const t=inp.value.trim();if(!t)return;const b=$("#cm-go");if(b.disabled)return;b.disabled=true;
-      const {data,error}=await SB.from("activity_comments").insert({activity_id:id,body:t.slice(0,300),mentions:(inp._mentions&&inp._mentions().length)?inp._mentions():null}).select("id,activity_id,user_id,body,created_at,mentions").maybeSingle();
-      b.disabled=false;if(error||!data){toast("Kunde inte skicka. Försök igen.");return}
-      (D.comments[id]=D.comments[id]||[]).push(data);inp.value="";HAPTIC("light");upd();const l=$("#cm-list");l.scrollTop=l.scrollHeight};
+      const ok=await fdSendCom(id,D,t,inp._mentions?inp._mentions():null);b.disabled=false;if(!ok)return;
+      inp.value="";inp.style.height="";$("#cm-go").classList.remove("on");upd();const l=$("#cm-list");l.scrollTop=l.scrollHeight};
     $("#cm-list").onclick=async e=>{const mn=e.target.closest(".mention");if(mn){viewProfile(mn.dataset.prof);return}const d=e.target.closest("[data-del]");if(!d)return;if(!d.dataset.c){d.dataset.c=1;d.textContent="Tryck igen för att ta bort";d.style.color="var(--bad)";return}
       const cid=+d.dataset.del;const {error}=await SB.from("activity_comments").delete().eq("id",cid);if(error){toast("Kunde inte ta bort. Försök igen.");return}
       D.comments[id]=(D.comments[id]||[]).filter(c=>c.id!==cid);upd();toast("Kommentaren är borttagen")};
     setTimeout(()=>inp.focus({preventScroll:true}),350)})}
 function fdCount(L){return L.length?String(L.length):""}
 function fdWho(L){const who=L.map(u=>u===SBUSER.id?"du":(NAMES[u]||{}).username).filter(Boolean);if(!who.length)return "";const av=L.slice(0,3).map(u=>{const p=u===SBUSER.id?MYPROF:(NAMES[u]||{});return avImg(p&&p.avatar_url,(p&&p.username)||"?","po-la")}).join("");return `<p class="po-who"><span class="po-ls" aria-hidden="true">${av}</span><span>Gillas av <b>${esc(who[0])}</b>${who.length>1?` och ${who.length-1} till`:""}</span></p>`}
-function fdIcon(k){const d={lopp:'<path d="M6 21V4h11l-2 4 2 4H6"/>',rekord:'<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M12 13v4M8.5 20h7M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4"/>',pass:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>'}[k];
+function fdIcon(k){const d={lopp:'<path d="M5.5 21V4"/><path d="M5.5 4.5h12l-2.4 4 2.4 4h-12"/><path d="M9.5 4.5v8M13.5 4.5v8"/>',rekord:'<path d="M8 4h8v5.5a4 4 0 0 1-8 0z"/><path d="M12 13.5V17M8.5 20h7M8 6H5.2a3 3 0 0 0 3 4M16 6h2.8a3 3 0 0 1-3 4"/>',pass:'<path d="M13.5 3 5.5 13.5h6l-1 7.5 8-10.5h-6z"/>'}[k];
   return `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`}
 async function fdLike(id,D,dbl){const art=document.querySelector(`.post[data-act="${id}"]`);if(!art)return;const a=D.acts.find(x=>x.id===id);if(!a||a.user_id===SBUSER.id)return;
   const L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);if(dbl&&on){fdPop(art);return}

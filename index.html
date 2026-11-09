@@ -332,7 +332,14 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .hc-nav{width:44px;height:44px;margin:-6px;border:0;background:none;color:var(--link);font-size:var(--t-head);cursor:pointer}.hc-nav:disabled{color:var(--hair);cursor:default}
 .hc-g{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;justify-items:center}.hc-g small{color:var(--muted);font-size:var(--t-cap)}
 .hc-d{width:100%;max-width:44px;aspect-ratio:1;min-height:38px;border:0;border-radius:50%;background:none;color:var(--muted);font-size:var(--t-sub);font-variant-numeric:tabular-nums;padding:0}
-.hc-d.has{background:var(--green);color:#fff;font-weight:600;cursor:pointer}.hc-d.now{box-shadow:inset 0 0 0 2px var(--ink);color:var(--ink)}.hc-d.has.now{color:#fff}.hc-d.sel{outline:2px solid var(--ink);outline-offset:2px}
+.hc-d.has{background:var(--green);color:#fff;font-weight:600;cursor:pointer}
+.hc-d{cursor:pointer}.hc-d:disabled{cursor:default;opacity:.45}
+.hc-d.rst{background:color-mix(in srgb,var(--cyan) 22%,transparent);color:var(--ink)}
+.hc-d.act{background:var(--cyan2);color:#06323a;font-weight:600}
+.hc-d.act.now,.hc-d.rst.now{box-shadow:inset 0 0 0 2px var(--ink)}
+.hc-lg{justify-content:center;margin-top:12px}.wd-legend.hc-lg i{width:10px;height:10px}
+.hc-lg .k-rest{background:color-mix(in srgb,var(--cyan) 45%,transparent)!important}
+.hc-help{text-align:center;margin-top:4px}.hc-d.now{box-shadow:inset 0 0 0 2px var(--ink);color:var(--ink)}.hc-d.has.now{color:#fff}.hc-d.sel{outline:2px solid var(--ink);outline-offset:2px}
 .go-prep-h{display:flex;justify-content:space-between;align-items:baseline}
 .hist-wk{display:flex;justify-content:space-between;align-items:baseline;padding:14px 16px 6px;font-size:var(--t-cap);color:var(--muted)}.hist-wk b{color:var(--ink);font-weight:600;font-size:var(--t-sub)}
 .hist-wk + .row::before{display:none}
@@ -2145,7 +2152,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.31 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.32 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2190,7 +2197,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.31";
+const APPVER="1.1.32";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4954,8 +4961,10 @@ function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||
   const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
   LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
   let days="";for(let i=0;i<lead;i++)days+="<span></span>";
-  for(let i=1;i<=n;i++){const ds=`${HM}-${String(i).padStart(2,"0")}`,c=byDay[ds]||0;days+=`<button type="button" class="hc-d${c?" has":""}${ds===td?" now":""}${ds===HD?" sel":""}" data-hd="${ds}"${c?"":" disabled"} aria-label="${i} ${MONF[m-1]}${c?`, ${c} pass`:""}">${i}</button>`}
-  el.innerHTML=`<div class="hc card"><div class="hc-top"><button type="button" class="hc-nav" data-hm="-1" aria-label="Föregående månad"${HM<=histMonth(oldest)?" disabled":""}>‹</button><b>${MONF[m-1].replace(/^./,c=>c.toUpperCase())} ${y}</b><button type="button" class="hc-nav" data-hm="1" aria-label="Nästa månad"${HM>=histMonth(td)?" disabled":""}>›</button></div><div class="hc-g" aria-hidden="true">${DN.map(x=>`<small>${x[0]}</small>`).join("")}</div><div class="hc-g">${days}</div></div>`}
+  /* Samma färger som veckan på Hem: grönt pass, turkos vila, ljusare turkos aktiv vila. Vila visas bara när alla pass visas. */
+  for(let i=1;i<=n;i++){const ds=`${HM}-${String(i).padStart(2,"0")}`,c=byDay[ds]||0,k=c?"pass":filt==="Alla"&&ds<=td?soDayKind(ds,td):null,fut=ds>td;
+    days+=`<button type="button" class="hc-d${c?" has":k==="active"?" act":k==="rest"?" rst":""}${ds===td?" now":""}${ds===HD?" sel":""}" data-hd="${ds}"${fut?" disabled":""} aria-label="${i} ${MONF[m-1]}${c?`, ${c} pass`:k==="active"?", aktiv vila":k==="rest"?", vila":""}">${i}</button>`}
+  el.innerHTML=`<div class="hc card"><div class="hc-top"><button type="button" class="hc-nav" data-hm="-1" aria-label="Föregående månad"${HM<=histMonth(oldest)?" disabled":""}>‹</button><b>${MONF[m-1].replace(/^./,c=>c.toUpperCase())} ${y}</b><button type="button" class="hc-nav" data-hm="1" aria-label="Nästa månad"${HM>=histMonth(td)?" disabled":""}>›</button></div><div class="hc-g" aria-hidden="true">${DN.map(x=>`<small>${x[0]}</small>`).join("")}</div><div class="hc-g">${days}</div><div class="wd-legend hc-lg"><span><i class="k-pass"></i>Pass</span><span><i class="k-rest"></i>Vila</span><span><i class="k-active"></i>Aktiv vila</span></div><p class="small hc-help">Tryck på en dag för att se passet eller markera vila.</p></div>`}
 function renderHist(){const q=HQ.trim().toLowerCase(),types=["Alla",...new Set(LOGS.map(l=>l.type))];if(!types.includes(filt))filt="Alla";
   $("#filters").innerHTML=types.length>2?types.map(t=>`<button class="chip" data-f="${esc(t)}" aria-pressed="${t===filt}">${esc(t)}</button>`).join(""):"";
   const all=sortedLogs().filter(l=>l.date&&(filt==="Alla"||l.type===filt));
@@ -4991,7 +5000,7 @@ $("#hist-q").addEventListener("input",e=>{HQ=e.target.value;HD=null;renderHist()
 $("#hist-count").addEventListener("click",e=>{if(e.target.closest("[data-hclear]")){HD=null;renderHist()}});
 $("#hist-cal").addEventListener("click",e=>{const b=e.target.closest("button");if(!b||b.disabled)return;
   if(b.dataset.hm){const [y,m]=HM.split("-").map(Number),n=new Date(y,m-1+ +b.dataset.hm,1,12);HM=iso(n).slice(0,7);HD=null;HAPTIC("light");renderHist();return}
-  const ds=b.dataset.hd,day=LOGS.filter(l=>l.date===ds&&(filt==="Alla"||l.type===filt));if(day.length===1){openLogDetail(day[0].id);return}HD=HD===ds?null:ds;renderHist()});
+  const ds=b.dataset.hd,day=LOGS.filter(l=>l.date===ds&&(filt==="Alla"||l.type===filt));if(!day.length){openDay(ds);return}if(day.length===1){openLogDetail(day[0].id);return}HD=HD===ds?null:ds;renderHist()});
 
 function weekStats(){
   const ws=weekStart(today());const m={};

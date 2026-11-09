@@ -1310,6 +1310,7 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lg-pk + .lg-pk::before{content:"";position:absolute;top:0;left:38px;right:0;height:1px;background:var(--hair)}
 .lg-pk .lg-dot{margin-top:0}.lg-pk:disabled{cursor:default}.lg-pk:disabled span:nth-child(2){color:var(--muted)}
 .lg-ck{font-weight:600;color:var(--accent);font-size:var(--t-sub)}.lg-pk:disabled .lg-ck{color:var(--muted);font-weight:400;font-size:var(--t-cap)}
+.lg-nm{min-width:0}.lg-nm b{font-weight:600}.lg-nm small{display:block;color:var(--muted);font-size:var(--t-cap);margin-top:1px}
 .lg-pk[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 9%,var(--tile))}
 .lg-hist{color:var(--ink)!important;font-size:var(--t-sub)}
 @media (prefers-reduced-motion:reduce){.lg-ex{animation:none}}
@@ -2049,7 +2050,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.16 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.17 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2094,7 +2095,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.16";
+const APPVER="1.1.17";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4004,6 +4005,42 @@ const EXMUSC=[["brost","Bröst"],["rygg","Rygg"],["axlar","Axlar"],["biceps","Bi
 function loadExLib(){if(!EXLIBP)EXLIBP=fetch("data/exercises.json").then(r=>r.ok?r.json():[]).then(a=>{EXLIB=a.map(([id,n,m,w,k])=>({id,n,m,w,k,g:2,_n:exNorm(n)}));if(LG&&LG.view==="pick")renderLG()}).catch(()=>{EXLIBP=null});return EXLIBP}
 const EXSYN=[["flyes","fly"],["flies","fly"],["flye","fly"],["en arm","one arm"],["enarms","one arm"],["ett ben","one leg"],["single","one"],["unilateral","one"],["triceps","tricep"],["biceps","bicep"],["push down","pushdown"],["pull down","pulldown"],["push up","pushup"],["pull up","pullup"],["sit up","situp"],["step up","stepup"],["chin up","chinup"],["db ","dumbbell "],["bb ","barbell "],["hantlar","dumbbell"],["hantel","dumbbell"],["skivstång","barbell"],["kabelmaskin","cable"],["kabel","cable"],["maskin","machine"],["knäböj","squat"],["marklyft","deadlift"],["bänkpress","bench press"],["utfall","lunge"],["skivstångsrodd","barbell row"],["rodd","row"],["axelpress","shoulder press"],["militärpress","shoulder press"],["latsdrag","lat pulldown"],["vadpress","calf"],["vadlyft","calf raise"],["benpress","leg press"],["bencurl","leg curl"],["lårcurl","leg curl"],["benspark","leg extension"],["armhävning","pushup"],["höftlyft","hip thrust"],["sidolyft","lateral raise"],["plankan","plank"],["magrulle","ab wheel"],["situps","situp"],["crunches","crunch"],["rygglyft","back extension"]];
 function exNorm(s){s=" "+String(s).toLowerCase().replace(/[-–()'’,]/g," ").replace(/\s+/g," ").trim()+" ";EXSYN.forEach(([a,b])=>{s=s.split(a).join(b)});return s.replace(/\s+/g," ").trim()}
+/* ============ Övningssök ============
+   Varje övning får tre sökbara former: namnet som det står, en engelsk normalform (exNorm) och en svensk översättning ord för ord.
+   Biblioteket är på engelska, så "mark" hittar Barbell Deadlift via "skivstång marklyft". Å, ä och ö behövs inte: "knabo" hittar Knäböj.
+   Rankning per sökord: början av namnet > början av ett ord > inne i ett ord (bänk*press*) > ett stavfel. Alla sökord måste träffa.
+   Vid lika vinner övningar du har loggat, appens egna och korta namn. */
+const exFold=s=>String(s).toLowerCase().replace(/[åäáà]/g,"a").replace(/[öó]/g,"o").replace(/[éè]/g,"e").replace(/[^a-z0-9]/g," ");
+const exFoldW=s=>exFold(s).replace(/\s+/g," ").trim();
+const EXSV=[["bulgarian split squat","bulgarska utfall"],["split squat","utfallsknäböj"],["romanian deadlift","rumänska marklyft"],["stiff legged","raka ben"],["bench press","bänkpress"],["shoulder press","axelpress"],["military press","militärpress"],["overhead press","militärpress"],["leg press","benpress"],["leg curl","lårcurl"],["leg extension","benspark"],["lat pulldown","latsdrag"],["hip thrust","höftlyft"],["glute bridge","höftlyft"],["lateral raise","sidolyft"],["front raise","framlyft"],["calf raise","vadpress"],["ab wheel","magrulle"],["ab roller","magrulle"],["back extension","rygglyft"],["hyperextension","rygglyft"],["farmers walk","farmers carry"],["farmer s walk","farmers carry"],["box jump","boxhopp"],["jump rope","hopprep"],["mountain climber","bergsklättrare"],["good morning","good morning"],["face pull","facepull"],["close grip","smalt grepp"],["wide grip","brett grepp"],["bent over","framåtböjd"],["smith machine","smithmaskin"],["one arm","enarms"],["one leg","enbens"],["stability ball","pilatesboll"],["medicine ball","medicinboll"],["pullup","pullups"],["chinup","chins"],["pushup","armhävningar"],["situp","situps"],["stepup","uppsteg"],
+ ["deadlift","marklyft"],["deadlifts","marklyft"],["squat","knäböj"],["squats","knäböj"],["lunge","utfall"],["lunges","utfall"],["row","rodd"],["rows","rodd"],["rowing","rodd"],["dumbbell","hantel"],["dumbbells","hantlar"],["barbell","skivstång"],["cable","kabel"],["machine","maskin"],["incline","lutande"],["decline","negativ"],["bench","bänk"],["shoulder","axel"],["shoulders","axlar"],["chest","bröst"],["back","rygg"],["leg","ben"],["legs","ben"],["calf","vad"],["calves","vader"],["raise","lyft"],["raises","lyft"],["extension","sträckning"],["tricep","triceps"],["bicep","biceps"],["hip","höft"],["glute","säte"],["glutes","säte"],["hammer","hammar"],["front","främre"],["side","sido"],["reverse","omvänd"],["seated","sittande"],["standing","stående"],["lying","liggande"],["jump","hopp"],["jumps","hopp"],["walk","gång"],["walking","gående"],["carry","bära"],["twist","rotation"],["wrist","handled"],["grip","grepp"],["band","gummiband"],["bands","gummiband"],["ball","boll"],["rope","rep"],["neck","nacke"],["ab","mage"],["abs","mage"],["crunch","crunch"],["plank","plankan"],["press","press"],["pulldown","drag"],["pull","drag"],["push","tryck"],["sprint","sprint"],["run","löpning"],["running","löpning"],["bike","cykel"],["one","en"],["kneeling","knästående"],["floor","golv"]]
+ .map(([a,b])=>[" "+exFoldW(a)+" "," "+exFoldW(b)+" "]).sort((x,y)=>y[0].length-x[0].length);
+function exSv(en){let s=" "+en+" ";EXSV.forEach(([a,b])=>{s=s.split(a).join(b)});return s.trim()}
+function exKeys(x){if(x._k&&x._k.n===x.n)return x._k;const nm=exFoldW(x.n),en=exFoldW(exNorm(x.n)),sv=exFoldW(exSv(en));
+  return x._k={n:x.n,f:[[nm,1],[sv,.92],[en,.86]].filter((f,i,a)=>f[0]&&a.findIndex(g=>g[0]===f[0])===i).map(([s,w])=>({s,w,ws:s.split(" "),j:s.replace(/ /g,"")}))}}
+/* Högst ett fel: en bokstav för mycket, för lite, fel eller två som bytt plats. */
+function ex1(a,b){if(a===b)return true;const la=a.length,lb=b.length;if(Math.abs(la-lb)>1)return false;let i=0;while(i<la&&i<lb&&a[i]===b[i])i++;
+  if(la===lb)return a.slice(i+1)===b.slice(i+1)||(a[i]===b[i+1]&&a[i+1]===b[i]&&a.slice(i+2)===b.slice(i+2));return la>lb?a.slice(i+1)===b.slice(i):a.slice(i)===b.slice(i+1)}
+function exTok(t,k){let best=0;
+  for(const f of k.f){let s=0;
+    if(f.ws[0].startsWith(t))s=100;else if(f.ws.some(w=>w.startsWith(t)))s=72;else if(t.length>=3&&f.j.includes(t))s=46;
+    else if(t.length>=4&&f.ws.some(w=>ex1(t,w.slice(0,t.length))||ex1(t,w.slice(0,t.length+1))||ex1(t,w.slice(0,t.length-1))))s=26;
+    if(s*f.w>best)best=s*f.w}
+  return best}
+function exScore(x,toks,qj,use){const k=exKeys(x);let sum=0;
+  for(const t of toks){const s=exTok(t,k);if(!s)return 0;sum+=s}
+  let sc=sum/toks.length;const nm=k.f[0];
+  if(nm.j===qj)sc+=80;else if(k.f.some(f=>f.j===qj))sc+=60;else if(nm.j.startsWith(qj))sc+=30;
+  sc+=Math.min(24,(use[x.id]||0)*6)+(x.mine?14:0)+(x.g<9&&!x.id.startsWith("x-")?22:0)-Math.min(12,x.n.length*.15)-(/\b(with|bands?|chains?)\b/i.test(x.n)?8:0);
+  return sc}
+function exSearch(q,pool){const a=exFoldW(q),b=exFoldW(exNorm(q));if(!a)return [];const use={};LOGS.forEach(l=>(l.items||[]).forEach(i=>{use[i.ex]=(use[i.ex]||0)+1}));
+  const runs=[a,b].filter((v,i,s)=>v&&s.indexOf(v)===i).map(v=>({toks:v.split(" "),qj:v.replace(/ /g,"")})),seen=new Set(),out=[];
+  pool.forEach(x=>{if(!x||!x.id||!x.n)return;const nk=exFoldW(x.n);if(seen.has(x.id)||seen.has(nk))return;seen.add(x.id);seen.add(nk);let sc=0;runs.forEach(r=>{sc=Math.max(sc,exScore(x,r.toks,r.qj,use))});if(sc>0)out.push([sc,x])});
+  return out.sort((p,q)=>q[0]-p[0]||p[1].n.length-q[1].n.length).map(p=>p[1])}
+/* Fetmarkera de delar av namnet som matchar början av ett ord. */
+function exHl(name,q){const f=exFold(name),toks=exFoldW(q).split(" ").filter(Boolean),on=new Array(name.length).fill(false);
+  toks.forEach(t=>{for(let i=0;i<f.length;i++)if((i===0||f[i-1]===" ")&&f.startsWith(t,i)){for(let j=i;j<i+t.length;j++)on[j]=true;break}});
+  let h="",open=false;for(let i=0;i<name.length;i++){if(on[i]!==open){h+=on[i]?"<b>":"</b>";open=on[i]}h+=esc(name[i])}return h+(open?"</b>":"")}
 /* Egna övningar sparas i kontot: namn, muskelgrupp och typ. */
 const EXMINE=()=>(Array.isArray(set.customEx)?set.customEx:[]).filter(x=>x&&x.id&&x.n).map(x=>Object.assign({g:9,mine:1},x));
 const CUSTOM_KINDS=[["rw","Vikt och reps"],["r","Bara reps"],["t","Tid"],["d","Distans"]];
@@ -4206,6 +4243,10 @@ function lgMount(){const r=$("#lg");
     r.addEventListener("keydown",e=>{if(e.key!=="Enter"||!e.target.matches(".lg-set input"))return;e.preventDefault();
       const all=[...r.querySelectorAll(".lg-set input")],i=all.indexOf(e.target);if(all[i+1])all[i+1].focus();else e.target.blur()});
     r.addEventListener("click",lgClick);r.addEventListener("input",lgInput);r.addEventListener("change",lgChange);
+    /* Enter i sökfältet väljer översta träffen och tömmer fältet, så att nästa övning kan sökas direkt. */
+    r.addEventListener("keydown",e=>{if(e.key!=="Enter"||e.target.id!=="lg-q")return;e.preventDefault();
+      const b=r.querySelector("#lg-hits .lg-pk[data-pk]:not(:disabled)");if(!b)return;const id=b.dataset.pk;
+      if(!LG.pick.includes(id))LG.pick.push(id);HAPTIC("light");LG.q="";renderLG();const q=$("#lg-q");if(q)q.focus()});
     r.addEventListener("focusin",e=>{const t=e.target;if(t.matches&&t.matches(".lg-set input,#lg-minv"))setTimeout(()=>{try{t.select()}catch(x){}},0)});
     r.addEventListener("focusout",e=>{const t=e.target;if(t.dataset&&t.dataset.f==="t"&&t.value){const v=parseT(t.value);if(v)t.value=fmt(v)}});
     dragSort({root:r,item:".lg-ex",scroller:()=>$("#sheet"),collapse:"lg-sorting",still:"lg-still",unfold:".lg-cols,.lg-set,.lg-add,.lg-ehint",
@@ -4294,14 +4335,14 @@ function renderCustom(r){const c=LG.cx||(LG.cx={n:"",m:null,k:"rw"});
    <div class="lg-foot"><button type="button" class="pill block" id="lg-csave">Spara och lägg till</button></div>`}
 function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new Set(LG.items.map(i=>i.ex));
   const recent=[];sortedLogs().forEach(l=>(l.items||[]).forEach(i=>{if(!recent.includes(i.ex))recent.push(i.ex)}));
-  const row=x=>{const on=LG.pick.includes(x.id),has=added.has(x.id);
-    return `<button type="button" class="lg-pk" data-pk="${esc(x.id)}" aria-pressed="${on}"${has?" disabled":""}><span class="lg-dot${x.st?" st":""}" aria-hidden="true"></span><span>${esc(x.n)}</span><span class="lg-ck">${has?"Tillagd":on?"✓":""}</span></button>`};
+  const MUSC=Object.fromEntries(EXMUSC);
+  const row=(x,hq)=>{if(typeof hq!=="string")hq="";const on=LG.pick.includes(x.id),has=added.has(x.id),sub=x.m&&MUSC[x.m]?`<small>${MUSC[x.m]}</small>`:"";
+    return `<button type="button" class="lg-pk" data-pk="${esc(x.id)}" aria-pressed="${on}"${has?" disabled":""}><span class="lg-dot${x.st?" st":""}" aria-hidden="true"></span><span class="lg-nm">${hq?exHl(x.n,hq):esc(x.n)}${hq?sub:""}</span><span class="lg-ck">${has?"Tillagd":on?"✓":""}</span></button>`};
   let body="";
-  if(q){const all=[...EX];recent.forEach(id=>{if(!all.find(e=>e.id===id)){const d=exDesc(id);if(d)all.push(d)}});
-    const toks=exNorm(q).split(" ").filter(Boolean),hit=x=>{const n=x._n||(x._n=exNorm(x.n));return toks.every(t=>n.includes(t))};
-    EXMINE().forEach(c=>{if(!all.find(e=>e.id===c.id))all.unshift(c)});
-    const m=all.filter(hit).concat(EXLIB.filter(hit));const cap=m.slice(0,60);
-    body=(m.length?`<div class="lg-grp">${cap.map(row).join("")}</div>${m.length>60?`<p class="small">Visar 60 av ${m.length}. Skriv mer för att hitta rätt.</p>`:""}`:"")+(all.concat(EXLIB).some(x=>x.n.toLowerCase()===q)?"":`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Skapa ”${esc(LG.q.trim())}” som egen övning</span><span class="lg-ck">+</span></button></div>`)}
+  if(q){const pool=EXMINE().concat(EX,recent.map(exDesc),EXLIB);
+    const m=exSearch(LG.q,pool),cap=m.slice(0,40),exact=m.some(x=>exFoldW(x.n)===exFoldW(q));
+    body=(m.length?`<div class="lg-grp" id="lg-hits">${cap.map(x=>row(x,LG.q)).join("")}</div>${m.length>40?`<p class="small">Visar de 40 bästa av ${m.length}. Skriv mer för att hitta rätt.</p>`:""}`:`<p class="small">Ingen övning heter något med ”${esc(LG.q.trim())}”${EXLIB.length?"":" än. Biblioteket laddas"}.</p>`)
+      +(exact?"":`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Skapa ”${esc(LG.q.trim())}” som egen övning</span><span class="lg-ck">+</span></button></div>`)}
   else{const rc=recent.slice(0,6).map(exDesc).filter(Boolean),mine=EXMINE();
     if(rc.length)body+=`<span class="lbl">Senast</span><div class="lg-grp">${rc.map(row).join("")}</div>`;
     if(mine.length)body+=`<span class="lbl">Egna övningar</span><div class="lg-grp">${mine.map(row).join("")}</div>`;
@@ -4311,7 +4352,7 @@ function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new S
     body+=`<div class="lg-grp"><button type="button" class="lg-pk" data-custom><span class="lg-dot" aria-hidden="true"></span><span>Hittar du inte övningen? Skapa en egen</span><span class="lg-ck">+</span></button></div>`}
   const n=LG.pick.length;
   r.innerHTML=`<div><button type="button" class="linkbtn" id="lg-back">‹ Tillbaka</button><h2>Välj övningar</h2></div>
-   <input type="search" id="lg-q" placeholder="Sök, till exempel single arm tricep pushdown" value="${esc(LG.q)}" autocomplete="off" aria-label="Sök övning">
+   <input type="search" id="lg-q" placeholder="Sök övning, till exempel marklyft" value="${esc(LG.q)}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" aria-label="Sök övning">
    <div class="lg-list">${body}</div>
    <div class="lg-foot"><button type="button" class="pill block" id="lg-addsel"${n?"":" disabled"}>${n?`Lägg till ${n} ${n===1?"övning":"övningar"}`:"Välj övningar"}</button></div>`;
 }

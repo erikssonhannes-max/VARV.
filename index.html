@@ -630,6 +630,27 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .pvlist b.none{color:var(--muted);font-weight:400}
 .fr-av{width:44px;height:44px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-weight:700;font-size:var(--t-sub);background:linear-gradient(135deg,var(--accent),var(--accent2))}
 .fr-av img{width:100%;height:100%;object-fit:cover}
+/* Pass ni körde tillsammans */
+.tog-pick{display:flex;gap:14px;overflow-x:auto;padding:4px 2px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}.tog-pick::-webkit-scrollbar{display:none}
+.tog-p{all:unset;box-sizing:border-box;position:relative;display:grid;justify-items:center;gap:6px;width:64px;flex:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tog-av{width:56px;height:56px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-weight:700;font-size:var(--t-body);background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--bg),0 0 0 2px transparent;transition:box-shadow .2s var(--ease),transform .35s var(--spring)}
+.tog-av img{width:100%;height:100%;object-fit:cover}
+.tog-p[aria-pressed="true"] .tog-av{box-shadow:0 0 0 2px var(--bg),0 0 0 4.5px var(--green)}
+.tog-p:active .tog-av{transform:scale(.94)}
+.tog-ck{position:absolute;top:38px;right:2px;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;box-shadow:0 0 0 2.5px var(--bg);opacity:0;transform:scale(.4);transition:opacity .15s,transform .35s var(--spring)}
+.tog-ck svg{width:12px;height:12px}
+.tog-p[aria-pressed="true"] .tog-ck{opacity:1;transform:none}
+.tog-n{font-size:var(--t-cap);color:var(--muted);max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tog-p[aria-pressed="true"] .tog-n{color:var(--ink);font-weight:600}
+.tog-p:focus-visible .tog-av{outline:2px solid var(--accent);outline-offset:3px}
+.tog-line{display:flex;align-items:center;gap:8px;color:var(--green);font-size:var(--t-cap);font-weight:600;margin-top:4px}
+.tog-line.big{font-size:var(--t-sub);margin:0}
+.tog-faces{display:inline-flex;flex:none}
+.tog-face{width:20px;height:20px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--tile)}
+.tog-face+.tog-face{margin-left:-6px}.tog-face img{width:100%;height:100%;object-fit:cover}
+.tog-line.big .tog-face{width:28px;height:28px;font-size:11px}
+.tog-wait{color:var(--muted);font-weight:500}
+.tog-card{display:grid;gap:10px;justify-items:start}
 .qrbox{background:#fff;border-radius:22px;padding:14px;width:min(240px,70vw);box-shadow:0 18px 36px -24px rgba(0,0,0,.4)}
 .qrbox svg{display:block;width:100%;height:auto}
 .qrbox svg path,.qrbox svg rect{shape-rendering:crispEdges}
@@ -2092,7 +2113,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.21 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.22 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2137,7 +2158,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.21";
+const APPVER="1.1.22";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2748,8 +2769,8 @@ async function initDb(){
   }catch(e){}
 }
 async function addLog(e){
-  if(mode==="db"&&col){try{await col.doc("log"+Date.now().toString(36)).set(e);return true}catch(err){toast(err&&err.code==="quota_exceeded"?"Loggen är full. Ta bort gamla pass.":"Kunde inte spara. Försök igen.");return false}}
-  e.id="l"+Date.now();LOGS.unshift(e);saveLocal();renderAllData();return true;
+  if(mode==="db"&&col){try{const id="log"+Date.now().toString(36);await col.doc(id).set(e);return id}catch(err){toast(err&&err.code==="quota_exceeded"?"Loggen är full. Ta bort gamla pass.":"Kunde inte spara. Försök igen.");return false}}
+  e.id="l"+Date.now();LOGS.unshift(e);saveLocal();renderAllData();return e.id;
 }
 let HIDDEN=new Set();try{HIDDEN=new Set(JSON.parse(localStorage.getItem("hyrox-hidden")||"[]"))}catch(e){}
 async function updLog(id,f){const l=LOGS.find(x=>x.id===id);if(!l)return false;const n=Object.assign({},l,f,{edited:true});
@@ -4340,6 +4361,8 @@ function lgAllApply(){if(!lgAllOk())return;const A=LG.all,v=A.s[A.f];
   lgOthers(A.i,A.j,A.f).forEach(([a,b])=>{LG.items[a].sets[b][A.f]=v;const inp=document.querySelector(`#lg input[data-i="${a}"][data-j="${b}"][data-f="${A.f}"]`);if(inp)inp.value=nz(v)?(A.f==="t"?fmt(v):A.f==="kg"?fmtKg(v):v):""});
   lgSyncSums()}
 function lgSyncSums(){$$("#lg .lg-ex").forEach(e=>{const it=LG.items[+e.dataset.i],sm=e.querySelector(".lg-et small");if(it&&sm)sm.textContent=lgItemSum(it)});const su=$("#lg-sum");if(su)su.textContent=lgSum()}
+function lgTogSec(){if(!SBUSER||!TOG.ok||mode!=="db"||LG.edit||!togMates().length)return "";if(!Array.isArray(LG.with))LG.with=[];
+  return `<section class="lg-sec"><span class="lbl">Tränade du med någon?</span>${togPicker(LG.with)}<p class="small">De får frågan och kan lägga till passet i sin egen logg och statistik.</p></section>`}
 function renderLG(){const r=$("#lg");if(!r)return;
   r.classList.toggle("lg-still",!!LG.still);LG.still=false;
   if(LG.view==="pick"){renderPick(r);return}
@@ -4369,6 +4392,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
      <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
      <div class="lg-step"><button type="button" data-min="-5" aria-label="5 minuter kortare">−</button><label><input type="text" id="lg-minv" inputmode="numeric" value="${LG.min}" aria-label="Minuter"><span>min</span></label><button type="button" data-min="5" aria-label="5 minuter längre">+</button></div></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div></section>
+   ${LG.forLive?"":lgTogSec()}
    <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
@@ -4411,6 +4435,7 @@ function renderFinish(r){const seen={},rows=[],goals=[],split={r:0,s:0,x:0};let 
    ${fnSplit(split,LG.elapsed||0)}${fnGoals(goals)}<div class="card"><span class="lbl">Moment för moment</span><ol class="tl fn-l">${rows.join("")}</ol>${cmp?'<p class="small fn-note">Skillnaden är mot förra gången du gjorde momentet.</p>':""}</div>
    <section class="lg-sec"><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div>
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
+   ${lgTogSec()}
    <div class="lg-foot"><button type="button" class="pill block" id="lg-save">Spara passet</button><div class="grid2"><button type="button" class="pill ghost" id="fn-edit">Ändra värden</button><button type="button" class="pill ghost" id="fn-drop"${LG.dropArm?' style="color:var(--bad)"':""}>${LG.dropArm?"Tryck igen":"Släng passet"}</button></div></div>`}
 function renderCustom(r){const c=LG.cx||(LG.cx={n:"",m:null,k:"rw"});
   r.innerHTML=`<div><button type="button" class="linkbtn" id="lg-cback">‹ Tillbaka</button><h2>Egen övning</h2><p class="small">Övningen sparas i ditt konto och finns sedan i sökningen.</p></div>
@@ -4443,6 +4468,7 @@ function renderPick(r){loadExLib();const q=LG.q.trim().toLowerCase(),added=new S
    <div class="lg-foot"><button type="button" class="pill block" id="lg-addsel"${n?"":" disabled"}>${n?`Lägg till ${n} ${n===1?"övning":"övningar"}`:"Välj övningar"}</button></div>`;
 }
 function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disabled)return;const d=t.dataset;
+  if(d.togu){if(!Array.isArray(LG.with))LG.with=[];if(togToggle(LG.with,d.togu))t.setAttribute("aria-pressed",LG.with.includes(d.togu));return}
   if(d.fresh!==undefined){dropDraft();LG=null;openLogger();return}
   if(t.id==="lg-open"){LG.view="pick";LG.pick=[];LG.q="";renderLG();$("#sheet").scrollTop=0;return}
   if(t.id==="lg-back"){if(LG.live){closeSheet();renderLive();return}LG.view="main";renderLG();return}
@@ -4518,7 +4544,8 @@ async function saveLG(btn){if(btn.disabled)return;LG.items.forEach(i=>{delete i.
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
   const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;if(LG.ext){entry.ext=LG.ext;entry.src="health";if(LG.extCreated)entry.created=LG.extCreated}if(LG.fromLive&&LG.elapsed>0)entry.total=LG.elapsed;const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
-  const before=weekStats().now.n;const ok=await addLog(entry);btn.disabled=false;if(!ok)return;LG.saved=true;dropDraft();if(LG.fromLive)clearLive();
+  const before=weekStats().now.n,tw=Array.isArray(LG.with)?LG.with.slice():[];const ok=await addLog(entry);btn.disabled=false;if(!ok)return;
+  if(tw.length&&mode==="db"&&typeof ok==="string")setTimeout(()=>sendTogether(ok,entry,tw),1600);LG.saved=true;dropDraft();if(LG.fromLive)clearLive();
   const after=weekStats().now.n;closeSheet();HAPTIC("success");
   const br=bch?benchSave(bch.id,bch.t,entry.date):null;
   if(br&&br.pr){toast(br.prev?`Nytt rekord på ${br.n}: ${fmt(bch.t)}, ${fmt(br.prev-bch.t)} snabbare`:`Första tiden på ${br.n}: ${fmt(bch.t)}`);setTimeout(confetti,250)}
@@ -4739,7 +4766,7 @@ function bindLive(){const v=$("#live");
   document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&LIVE&&LIVE.open){wake=null;liveWake();liveTick()}})}
 /* Rekord räknas om när ett pass ändras eller tas bort */
 function bestFromLogs(k){let best=null;
-  LOGS.forEach(l=>(l.items||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&p.k===k&&(best==null||p.t<best))best=p.t})));return best}
+  LOGS.forEach(l=>{if(l.shared&&!l.edited)return;(l.items||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&p.k===k&&(best==null||p.t<best))best=p.t}))});return best}
 async function fixPRs(oldItems){let ch=false;const keys=new Set();
   (oldItems||[]).forEach(it=>(it.sets||[]).forEach(x=>{const p=prOfSet(it,x);if(p&&Math.round(p.t)===PRS[p.k])keys.add(p.k)}));
   keys.forEach(k=>{const b=bestFromLogs(k);if(b==null)delete PRS[k];else{const nb=Math.round(b);if(!PRS[k]||nb<PRS[k])prDate(k);PRS[k]=nb}ch=true});
@@ -4751,7 +4778,7 @@ let filt="Alla",HM=null,HD=null,HQ="";
 const histMonth=d=>String(d||"").slice(0,7);
 function histNorm(l){return [l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
 function histRow(l){const d=new Date(l.date+"T12:00:00"),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))],sub=names.length?names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""):(l.stations||[]).join(", "),wd=d.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
-  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}</div><span class="chev">›</span></div>`}
+  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
 function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||HQ){el.innerHTML="";return}
   const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
   LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
@@ -4776,12 +4803,15 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
    ${l.bench&&+l.bench.t>0?`<p class="muted" style="margin:0">Din tid: <b style="color:var(--ink);font-variant-numeric:tabular-nums">${fmt(l.bench.t)}</b></p>`:""}
    ${rows?`<div class="card"><ol class="tl">${rows}</ol></div>`:(l.stations||[]).length?`<p class="muted" style="margin:0">${esc(l.stations.join(", "))}</p>`:""}
    ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
+   ${(()=>{const t=togLine(l),can=SBUSER&&TOG.ok&&!l.shared&&!String(id).startsWith("strava-")&&mode==="db"&&togMates().length;if(!t&&!can)return "";
+     return `<div class="card tog-card">${t?`<p class="tog-line big">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:""}${can?`<button class="linkbtn" id="ld-tog">${t?"+ Lägg till fler":"Tränade du med någon?"}</button>`:""}</div>`})()}
    ${isRace?`<button class="pill ghost block" id="ld-race">Visa loppanalys</button>`:""}
    ${its.length?`<button class="pill block" id="ld-again">Kör passet igen</button>`:""}
    <div class="grid2"><button class="pill ghost" id="ld-edit">Ändra passet</button><button class="pill ghost" id="ld-del" style="color:var(--bad)">Ta bort passet</button></div>`,()=>{
     const del=$("#ld-del");del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen";return}closeSheet();delWithUndo(id)};
     const ag=$("#ld-again");if(ag)ag.onclick=()=>{const c=JSON.parse(JSON.stringify(its));c.forEach(i=>{delete i.sec;if((i.sets||[]).length===1&&LGCOLS[i.k]&&i.k!=="t")delete i.sets[0].t});closeSheet();setTimeout(()=>liveFrom(c,l.type),320)};
     const rc=$("#ld-race");if(rc)rc.onclick=()=>{closeSheet();setTimeout(()=>openRaceAn(id),320)};
+    const tg=$("#ld-tog");if(tg)tg.onclick=()=>{closeSheet();setTimeout(()=>openTogether(id),320)};
     $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)}})}
 $("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;HD=null;renderHist()};
 $("#hist").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.log){e.preventDefault();openLogDetail(e.target.dataset.log)}});
@@ -6653,6 +6683,7 @@ async function loadRequests(){if(!SB||!SBUSER)return;
   FRQ_IN=(data||[]).filter(r=>r.to_user===SBUSER.id);FRQ_OUT=(data||[]).filter(r=>r.from_user===SBUSER.id);
   const need=[...new Set(FRQ_IN.map(r=>r.from_user).concat(FRQ_OUT.map(r=>r.to_user)))].filter(id=>!NAMES[id]);
   if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}
+  try{await loadTogether()}catch(e){}
 }
 async function sendFriendRequest(uid){
   const {data,error}=await SB.rpc("varv_request_friend",{p_to:uid});if(error){toast(sbErr(error));return null}
@@ -6675,6 +6706,56 @@ async function removeFriend(uid){let {error}=await SB.rpc("varv_unfollow",{p_oth
 async function cancelRequest(uid){await SB.from("friend_requests").delete().eq("from_user",SBUSER.id).eq("to_user",uid);await loadRequests();refreshSocialViews();toast("Förfrågan är återkallad.")}
 function refreshSocialViews(){try{renderSocial()}catch(e){}const h=location.hash;if(h==="#vanner")renderVanner();if(h==="#feed")renderFeed(true);if(h==="#notiser")renderNotiser();notiBadge()}
 
+/* ============ Pass ni körde tillsammans ============
+   Den som loggade bjuder in vänner (se supabase/kollab.sql). Säger vännen ja läggs en kopia i vännens logg,
+   och båda passen får "with" med den andras id. TOG.inv är inbjudningar till mig, TOG.out de jag har skickat. */
+let TOG={inv:[],out:[],ok:false}; /* ok blir sant först när tabellen har gått att läsa */
+const togMates=()=>{const p=MYPROF&&MYPROF.partner_id,m=FRIENDS.filter(id=>FOLLOWERS.includes(id)&&!BLOCKED.includes(id));return m.sort((a,b)=>(b===p)-(a===p)||String((NAMES[a]||{}).username||"").localeCompare((NAMES[b]||{}).username||"","sv"))};
+const togName=id=>(NAMES[id]||{}).username||"en vän";
+const togList=ids=>{const n=ids.map(togName);return n.length<2?n.join(""):n.slice(0,-1).join(", ")+" och "+n[n.length-1]};
+async function loadTogether(){if(!SB||!SBUSER)return;
+  const {data,error}=await SB.from("shared_sessions").select("id,from_user,to_user,log_id,log,status,created_at").order("created_at",{ascending:false}).limit(100);
+  if(error){TOG={inv:[],out:[],ok:false};return}
+  TOG={ok:true,inv:(data||[]).filter(r=>r.to_user===SBUSER.id&&r.status==="pending"),out:(data||[]).filter(r=>r.from_user===SBUSER.id)};
+  const need=[...new Set(TOG.inv.map(r=>r.from_user).concat(TOG.out.map(r=>r.to_user),...LOGS.map(l=>Array.isArray(l.with)?l.with:[])))].filter(id=>id&&!NAMES[id]);
+  if(need.length){const {data:n}=await SB.rpc("varv_names",{p_ids:need});(n||[]).forEach(x=>{NAMES[x.user_id]=x})}}
+/* Väljaren: vännernas profilbilder som knappar. sel är listan med valda id. */
+function togPicker(sel,done){const m=togMates().filter(id=>!(done||[]).includes(id));if(!m.length)return "";
+  return `<div class="tog-pick" role="group" aria-label="Välj vänner">${m.slice(0,12).map(id=>{const p=NAMES[id]||{username:"Vän"},on=sel.includes(id);
+    return `<button type="button" class="tog-p" data-togu="${esc(id)}" aria-pressed="${on}">${avImg(p.avatar_url,p.username,"tog-av")}<span class="tog-ck" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span class="tog-n">${esc(p.username)}</span></button>`}).join("")}</div>`}
+function togToggle(sel,id){const i=sel.indexOf(id);if(i<0){if(sel.length>=4){toast("Högst fyra åt gången.");return false}sel.push(id)}else sel.splice(i,1);HAPTIC("light");return true}
+/* Passet som skickas: samma fält som sparas i loggen, utan det som bara gäller den som loggade. */
+function togPayload(l){const c=JSON.parse(JSON.stringify(l));["id","plan","bench","ext","src","with","shared","hidden","edited"].forEach(k=>delete c[k]);return c}
+async function sendTogether(logId,entry,ids){if(!SB||!SBUSER||!ids.length)return;let sent=[],fail=0,first="";
+  for(const id of ids){const {data,error}=await SB.rpc("varv_share_session",{p_to:id,p_log_id:String(logId),p_log:togPayload(entry)});
+    if(error){fail++;first=first||sbErr(error)}else if(data==="sent"||data==="pending")sent.push(id);else{fail++;first=first||(data==="notfriends"?`Ni måste följa varandra för att dela pass.`:data==="limit"?"Du har bjudit in många i dag. Försök igen i morgon.":"Kunde inte skicka. Försök igen.")}}
+  await loadTogether();if(location.hash==="#logg")renderHist();
+  if(sent.length)toast(`${togList(sent)} får frågan om ni tränade tillsammans`);else if(fail)toast(first)}
+async function answerTogether(id,yes,btn){const r=TOG.inv.find(x=>x.id===id);if(btn)btn.disabled=true;
+  const {data,error}=await SB.rpc("varv_answer_session",{p_id:id,p_accept:yes});if(error){if(btn)btn.disabled=false;toast(sbErr(error));return}
+  TOG.inv=TOG.inv.filter(x=>x.id!==id);
+  if(data==="accepted"){HAPTIC("success");try{await SBCOL.refresh()}catch(e){}toast(`Passet med ${r?togName(r.from_user):"din vän"} finns nu i din logg`)}
+  else if(data==="declined")toast("Inbjudan är borttagen");
+  await loadNotis();refreshSocialViews()}
+/* Raden "Med Elin" eller "Väntar på Elin" på ett pass. */
+function togLine(l){if(!l||!SBUSER)return "";const w=Array.isArray(l.with)?l.with.filter(Boolean):[],wait=TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending"&&!w.includes(r.to_user)).map(r=>r.to_user);
+  if(!w.length&&!wait.length)return "";
+  return [w.length?`<span>Med ${esc(togList(w))}</span>`:"",wait.length?`<span class="tog-wait">Väntar på ${esc(togList(wait))}</span>`:""].filter(Boolean).join('<span class="tog-wait"> · </span>')}
+function togFaces(ids){return `<span class="tog-faces" aria-hidden="true">${ids.slice(0,3).map(id=>{const p=NAMES[id]||{username:"V"};return avImg(p.avatar_url,p.username,"tog-face")}).join("")}</span>`}
+/* Ark för att bjuda in i efterhand, från passet i loggen. */
+function openTogether(logId){const l=LOGS.find(x=>x.id===logId);if(!l)return;
+  if(!TOG.ok){toast("Gemensamma pass är inte uppsatta än.");return}
+  const done=(Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===logId&&r.status!=="declined").map(r=>r.to_user)),sel=[];
+  const m=togMates().filter(id=>!done.includes(id));
+  openSheet(`<div><span class="small">${esc(l.type)} · ${esc(new Date(l.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}</span><h2>Tränade du med någon?</h2></div>
+    <p class="muted" style="margin:0">Välj vem du körde med. Säger de ja hamnar passet i deras logg och statistik också.</p>
+    ${m.length?`<div id="tg-pk">${togPicker(sel,done)}</div><button class="pill block" id="tg-send" disabled>Välj en vän</button>`
+      :`<div class="card"><p class="small" style="margin:0">${togMates().length?"Alla dina vänner är redan tillagda på passet.":"Du kan bara lägga till vänner som följer dig och som du följer. Hitta dem under Vänner."}</p></div>`}`,()=>{
+    const pk=$("#tg-pk"),go=$("#tg-send");if(!pk)return;
+    pk.onclick=e=>{const b=e.target.closest("[data-togu]");if(!b||!togToggle(sel,b.dataset.togu))return;b.setAttribute("aria-pressed",sel.includes(b.dataset.togu));
+      go.disabled=!sel.length;go.textContent=sel.length?`Fråga ${togList(sel)}`:"Välj en vän"};
+    go.onclick=async()=>{go.disabled=true;go.textContent="Skickar …";await sendTogether(logId,l,sel.slice());closeSheet()}})}
+
 /* ============ Notiscenter ============ */
 let NOTIS=[],NOTIS_OK=true;
 async function loadNotis(){if(!SB||!SBUSER)return;
@@ -6685,25 +6766,30 @@ async function loadNotis(){if(!SB||!SBUSER)return;
   notiBadge();if(location.hash==="#notiser")renderNotiser();
 }
 function notiBadge(){{const f=$("#fr-btn");if(f){f.hidden=!SBUSER||location.hash==="#profil";f.classList.toggle("new",FRQ_IN.length>0&&location.hash!=="#vanner")}}const b=$("#nt-btn");if(!b)return;b.hidden=!SBUSER||location.hash==="#profil";
-  const n=Math.max(NOTIS.filter(x=>!x.read_at).length,FRQ_IN.length);const c=b.querySelector(".nt-count");
+  const n=Math.max(NOTIS.filter(x=>!x.read_at).length,FRQ_IN.length+TOG.inv.length);const c=b.querySelector(".nt-count");
   c.textContent=n>9?"9+":n;c.hidden=!n||location.hash==="#notiser";appBadge(n);b.setAttribute("aria-label",n?`Notiser, ${n} nya`:"Notiser");b.classList.toggle("on",location.hash==="#notiser")}
-const NT_ICON={follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"};
+const NT_ICON={follow:"M16 19v-1.5a4 4 0 0 0-4-4H7a4 4 0 0 0-4 4V19M9.5 9.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM19 7v6M22 10h-6",plan:"M3.5 5h17v15.5h-17zM3.5 10h17M8 3v4M16 3v4",race:"M7.5 2.5l4.5 8 4.5-8M12 10a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11z",test:"M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0",together:"M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a5 5 0 0 1 5-5h4a5 5 0 0 1 5 5v1M16 3.1a4 4 0 0 1 0 7.8M22 21v-1a5 5 0 0 0-3.5-4.8"};
 function ntRow(n){const p=n.actor?NAMES[n.actor]:null,unread=!n.read_at;
   const ic=p?avImg(p.avatar_url,p.username):`<span class="nt-ic"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${NT_ICON[n.kind]||NT_ICON.test}"/></svg></span>`;
   return `<button class="row nt-row${unread?" unread":""}" data-nt="${n.id}" data-url="${esc(n.url||"")}"${n.actor?` data-actor="${esc(n.actor)}"`:""}>${ic}<div><h3>${esc(n.title)}</h3>${n.body?`<p>${esc(n.body)}</p>`:""}<p class="nt-ago">${agoTxt(n.created_at)}</p></div>${unread?'<span class="nt-dot" aria-label="Ny"></span>':"<span></span>"}</button>`}
 function renderNotiser(){const el=$("#nt-body");if(!el)return;
   if(!SBUSER){el.innerHTML=`<div class="card"><h3>Logga in för notiser</h3><p class="small">Här samlas förfrågningar, påminnelser och vad de du följer gör.</p><button class="pill block" id="nt-login">Logga in</button></div>`;$("#nt-login").onclick=()=>openAuth();return}
-  const td=today(),isToday=n=>iso(new Date(n.created_at))===td,list=NOTIS.filter(n=>!(n.kind==="request"&&FRQ_IN.some(r=>r.from_user===n.actor)));
+  const td=today(),isToday=n=>iso(new Date(n.created_at))===td,list=NOTIS.filter(n=>!(n.kind==="request"&&FRQ_IN.some(r=>r.from_user===n.actor))&&!(n.kind==="together"&&TOG.inv.some(r=>r.from_user===n.actor)));
   const nyt=list.filter(isToday),old=list.filter(n=>!isToday(n));
-  el.innerHTML=`${FRQ_IN.length?`<div class="sechead"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div>
+  el.innerHTML=`${TOG.inv.length?`<div class="sechead"><h2>Tränade ni tillsammans?</h2><span class="small">${TOG.inv.length}</span></div>
+     <div class="group">${TOG.inv.map(r=>{const p=NAMES[r.from_user]||{username:"Någon"},l=r.log||{},d=l.date?new Date(l.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"}).replace(".",""):"",sub=[l.type,l.min?pgMin(+l.min):"",d].filter(Boolean).join(" · "),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))];
+       return `<div class="row nt-req tog-req" data-req="${esc(r.from_user)}">${avImg(p.avatar_url,p.username)}<div><h3>${esc(p.username)} säger att ni körde det här passet</h3><p>${esc(sub)}</p>${names.length?`<p class="hist-sub">${esc(names.slice(0,4).join(", ")+(names.length>4?` +${names.length-4}`:""))}</p>`:""}</div>
+       <div class="nt-acts"><button class="pill nt-yes" data-togyes="${r.id}">Lägg till</button><button class="pill ghost nt-no" data-togno="${r.id}" aria-label="Nej, vi tränade inte ihop">Nej</button></div></div>`}).join("")}</div>`:""}${FRQ_IN.length?`<div class="sechead"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div>
      <div class="group">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req" data-req="${esc(r.from_user)}">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Förfrågan · ${agoTxt(r.created_at)}</p></div>
        <div class="nt-acts"><button class="pill nt-yes" data-yes="${esc(r.from_user)}">Godkänn</button><button class="pill ghost nt-no" data-no="${esc(r.from_user)}" aria-label="Avböj ${esc(p.username)}">Avböj</button></div></div>`}).join("")}</div>`:""}
    ${!NOTIS_OK?`<div class="card"><p class="small">Notiscentret är inte uppsatt än.</p></div>`
      :list.length?`${nyt.length?`<div class="sechead"><h2>I dag</h2></div><div class="group">${nyt.map(ntRow).join("")}</div>`:""}${old.length?`<div class="sechead"><h2>Tidigare</h2></div><div class="group">${old.map(ntRow).join("")}</div>`:""}`
-     :FRQ_IN.length?"":`<div class="card nt-empty"><h3>Inga notiser än</h3><p class="small">Här samlas förfrågningar, påminnelser om dagens pass, nedräkningen till loppet och vad de du följer gör.</p></div>`}
+     :FRQ_IN.length||TOG.inv.length?"":`<div class="card nt-empty"><h3>Inga notiser än</h3><p class="small">Här samlas förfrågningar, påminnelser om dagens pass, nedräkningen till loppet och vad de du följer gör.</p></div>`}
    ${FRQ_OUT.length?`<div class="sechead"><h2>Skickade förfrågningar</h2></div><div class="group">${FRQ_OUT.map(r=>{const p=NAMES[r.to_user]||{username:"Okänd",tag:"0000"};return `<div class="row nt-out" data-req="${esc(r.to_user)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på svar</p></div><button class="linkbtn" data-undo="${esc(r.to_user)}">Ångra</button></div>`}).join("")}</div>`:""}`;
   el.onclick=async e=>{const b=e.target.closest("button");
     if(!b){const r=e.target.closest("[data-req]");if(r)viewProfile(r.dataset.req);return}if(b.disabled)return;
+    if(b.dataset.togyes){await answerTogether(+b.dataset.togyes,true,b);return}
+    if(b.dataset.togno){await answerTogether(+b.dataset.togno,false,b);return}
     if(b.dataset.yes){b.disabled=true;await answerFriend(b.dataset.yes,true);return}
     if(b.dataset.no){b.disabled=true;await answerFriend(b.dataset.no,false);return}
     if(b.dataset.undo){b.disabled=true;await cancelRequest(b.dataset.undo);return}

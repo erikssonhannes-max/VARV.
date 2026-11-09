@@ -53,6 +53,13 @@ Vänförfrågningar och notiscenter
 
     Kör supabase/notiscenter.sql i Supabase. Kräver profiler.sql, notiser.sql och varv-2.sql.
 
+Pass ni körde tillsammans
+
+    Kör supabase/kollab.sql i Supabase. Kräver schema.sql, profiler.sql, foljare.sql och notiscenter.sql.
+    Den som loggar ett pass kan fråga vänner som följer en tillbaka om de tränade ihop, när passet sparas eller i efterhand från passet i loggen.
+    Svarar vännen ja i notiscentret läggs en kopia av passet i vännens logg (id logc + inbjudans nummer) och räknas i vännens statistik. Kopian räknas inte som rekord förrän vännen har ändrat passet.
+    Innan filen är körd syns inget av detta i appen.
+
 Simulations-race under Tävlingar
 
     Kör supabase/simrace.sql i Supabase. Kräver profiler.sql och notiser.sql.

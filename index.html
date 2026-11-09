@@ -1718,6 +1718,19 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .so-trend .so-d{font-size:inherit}
 @keyframes soWipe{from{clip-path:inset(0 100% 0 0)}to{clip-path:inset(0 0 0 0)}}
 @keyframes soPop{from{opacity:0;transform:scale(.4)}}
+.tp-card{background:var(--tile);border-radius:var(--r);padding:18px;margin-bottom:10px}
+.tp-card .so-val{margin-top:6px}
+.tp-row .tp-txt{min-width:0;flex:1}
+.tp-row .so-bul{margin:8px 0 4px}
+.tp-row .so-bul i{background:var(--accent)}
+.tp-row .so-bul i.done{background:var(--green)}
+.tp-st{font-size:var(--t-cap);color:var(--muted)}
+.tp-st.ok{color:var(--good);font-weight:600}
+.tp-st.hold{color:var(--ink)}
+.tp-lad .row.on{background:var(--card)}
+.tp-lad .row.on .badge{background:var(--hot);color:#fff}
+.tp-lad .row.past .badge{color:var(--green)}
+.tp-acts{display:grid;gap:10px}
 .so-rad{margin-top:10px}
 .so-empty{color:var(--muted);font-size:var(--t-sub);line-height:1.45;margin:10px 0 0}
 .so-st{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
@@ -1825,6 +1838,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <button class="divchip" data-open="division" style="margin-bottom:14px"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
     <div class="group" id="course"></div>
     <p class="small" style="margin-top:10px">Vikter enligt HYROX:s regelböcker för singel och doubles, säsong 26/27. Slädens egen vikt ingår.</p>
+    <div id="topro"></div>
 
     <div class="sechead"><h2>Klasser</h2></div>
     <div class="group">
@@ -2115,7 +2129,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.24 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.25 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2160,7 +2174,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.24";
+const APPVER="1.1.25";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2535,7 +2549,7 @@ function renderCourse(){
     h+=`<button class="row" data-st="${i}"><span class="ico">${ART[s.id]}</span><div><h3>${i+1}. ${s.n}</h3><p>${s.q} · ${wval(s)}${wtarget(s)?" · "+wtarget(s):""}</p></div><span class="chev">›</span></button>`;
   });
   $("#course").innerHTML=h;
-  renderFigs();
+  renderFigs();renderToPro();
 }
 function openStation(i){
   const s=S[i],t=planTimes();
@@ -2792,7 +2806,7 @@ async function savePRs(){
   saveLocal();renderAllData();
 }
 function renderAllData(){LOGS.forEach(l=>{if(!l)return;if(l.type==="Kompromiss"+"löpning")l.type="Löpning och stationer";
-  if(l.type==="Styrka och stationer"&&Array.isArray(l.items)&&l.items.length&&!l.items.some(i=>i&&i.st)&&!(l.stations||[]).length)l.type="Styrka"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
+  if(l.type==="Styrka och stationer"&&Array.isArray(l.items)&&l.items.length&&!l.items.some(i=>i&&i.st)&&!(l.stations||[]).length)l.type="Styrka"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();renderToPro();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
 
 /* ============ Konto: inloggning med Supabase ============ */
 /* Används när appen körs som vanlig webbapp. Pass, rekord och inställningar sparas
@@ -4195,6 +4209,83 @@ function staleStations(){const seen={};sortedLogs().slice().reverse().forEach(l=
   return EX.filter(x=>x.st).sort((a,b)=>(seen[a.id]||"").localeCompare(seen[b.id]||""))}
 function sugItem(id,count,val){const x=EX.find(e=>e.id===id),ny=(set.level||"mellan")==="ny",l=lastItem(id),o=l&&l.sets.filter(y=>nz(y.kg)).pop(),std=exStd(id);
   const k=o?o.kg:std&&std.kg?(ny?Math.round(std.kg*.7/5)*5||std.kg:std.kg):null,one=Object.assign({},val);if(x.w&&k)one.kg=k;return {ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:Array.from({length:Math.max(1,count)},()=>Object.assign({},one))}}
+/* ============ Mot Pro ============
+   Ett viktmål skilt från klassen: du tävlar i Open men tränar dig stegvis upp mot Pro-vikterna.
+   Slädar och farmers carry går upp i kilo. Lunges och wall balls har för stora hopp för det, så där ökar
+   andelen av mängden som görs med Pro-vikten: ett av fyra set, sedan två och så vidare.
+   Nästa steg föreslås när du har klarat steget två pass och de har känts som högst 3 av 5. */
+var TP_IDS=["push","pull","farm","lunge","wall"];
+var TP={push:{t:"kg",n:4,q:5},pull:{t:"kg",n:5,q:5},farm:{t:"kg",n:4,q:2},lunge:{t:"share",n:4},wall:{t:"share",n:4}};
+function tpBase(id){const w=set.g==="w";return {push:w?[102,152]:[152,202],pull:w?[78,103]:[103,153],farm:w?[16,24]:[24,32],lunge:w?[10,20]:[20,30],wall:w?[4,6]:[6,9]}[id]}
+function tpOn(){return !!(set.toPro&&set.toPro.st)}
+function tpShow(){return tpOn()||(set.k!=="pro"&&set.fmt!=="mixed")}
+function tpName(id){return S.find(x=>x.id===id).n}
+function tpKg(id,k){const [o,p]=tpBase(id),c=TP[id];if(c.t==="share")return k>0?p:o;if(k<=0)return o;if(k>=c.n)return p;return Math.round((o+(p-o)*k/c.n)/c.q)*c.q}
+function tpLabel(id,k){const c=TP[id],[o,p]=tpBase(id),u=id==="farm"?"2 × ":"";
+  if(c.t==="kg")return k<=0?`${u}${o} kg, Open`:k>=c.n?`${u}${p} kg, Pro`:`${u}${tpKg(id,k)} kg`;
+  const what=id==="wall"?"set":"sträckor";return k<=0?`${o} kg, Open`:k>=c.n?`${p} kg i alla ${what}, Pro`:`${k} av ${c.n} ${what} med ${p} kg`}
+/* Vilket steg dina senaste pass redan motsvarar, så att du inte börjar för lätt. */
+function tpGuess(id){const c=TP[id],it=lastItem(id);if(!it)return 0;const sets=(it.sets||[]).filter(x=>nz(x.kg));if(!sets.length)return 0;
+  if(c.t==="kg"){const mx=Math.max(...sets.map(x=>+x.kg));let k=0;for(let i=1;i<=c.n;i++)if(mx>=tpKg(id,i)-.1)k=i;return k}
+  const p=tpBase(id)[1],v=x=>+(id==="wall"?x.r:x.m)||0,tot=(it.sets||[]).reduce((a,x)=>a+v(x),0),hv=sets.filter(x=>+x.kg>=p-.1).reduce((a,x)=>a+v(x),0);
+  return tot?Math.min(c.n,Math.floor(hv/tot*c.n+.05)):0}
+/* Räknar pass sedan steget sattes: klarade (minst stegets vikt och känsla högst 3) och tunga (känsla 4,5 eller mer). */
+function tpStatus(id){const c=TP[id],st=set.toPro.st[id],k=st.k,since=st.d||"";let ok=0,hard=0;
+  if(k>=c.n)return {k,done:true,ok:0,hard:0,ready:false};
+  LOGS.forEach(l=>{if(!l||!l.date||l.date<since||l.date>today())return;const it=(l.items||[]).find(i=>i&&i.ex===id);if(!it)return;
+    const sets=(it.sets||[]).filter(Boolean),v=x=>+(id==="wall"?x.r:x.m)||0,tot=sets.reduce((a,x)=>a+v(x),0);let pass;
+    if(c.t==="kg"){const need=tpKg(id,k)-.1,hv=sets.filter(x=>+x.kg>=need).reduce((a,x)=>a+v(x),0);pass=hv>=(id==="farm"?100:25)||(!tot&&sets.some(x=>+x.kg>=need))}
+    else{const p=tpBase(id)[1],hv=sets.filter(x=>+x.kg>=(k?p:tpBase(id)[0])-.1).reduce((a,x)=>a+v(x),0);pass=tot>=(id==="wall"?40:50)&&(k?hv/tot>=k/c.n-.05:hv>0)}
+    if(!pass)return;const r=+l.rpe||3;if(r<=3)ok++;else if(r>=4.5)hard++});
+  return {k,done:false,ok,hard,ready:ok>=2}}
+function tpStatusTxt(s){if(s.done)return ["ok","Pro-vikt"];if(s.ready)return ["ok","Redo för nästa steg"];
+  if(s.hard>=2&&s.ok<2)return ["hold","Två tunga pass. Stanna kvar på steget"];return ["",`${Math.min(s.ok,2)} av 2 pass klara på steget`]}
+function renderToPro(){try{renderToPro0()}catch(e){console.warn(e)}}
+function renderToPro0(){const el=$("#topro");if(!el)return;if(!tpShow()){el.innerHTML="";return}
+  if(!tpOn()){el.innerHTML=`<div class="sechead"><h2>Mot Pro</h2></div><div class="group"><button class="row" data-tp="start"><span class="badge">Pro</span><div><h3>Träna mot Pro-vikter</h3><p>Tävla kvar i Open och höj vikterna steg för steg. Du går upp när passen har känts hanterbara.</p></div><span class="chev">›</span></button></div>`;return}
+  const S5=TP_IDS.map(id=>({id,s:tpStatus(id)})),sum=S5.reduce((a,x)=>a+x.s.k,0),tot=TP_IDS.reduce((a,id)=>a+TP[id].n,0),all=sum>=tot,rdy=S5.filter(x=>x.s.ready).length;
+  const nxt=set.toPro.last==="A"?"B":"A";
+  el.innerHTML=`<div class="sechead"><h2>Mot Pro</h2><button class="linkbtn" data-tp="about">Så fungerar det</button></div>
+   <div class="tp-card"><span class="so-k">Väg till Pro</span><b class="so-val">${Math.round(sum/tot*100)} %</b><span class="so-cap">${all?"Alla stationer är på Pro-vikt.":`${sum} av ${tot} steg${rdy?` · ${rdy} ${rdy===1?"station är redo":"stationer är redo"} för nästa steg`:""}`}</span></div>
+   <div class="group">${S5.map(({id,s})=>{const c=TP[id],[cls,txt]=tpStatusTxt(s);return `<button class="row tp-row" data-tp-st="${id}"><span class="ico">${ART[id]}</span><div class="tp-txt"><h3>${tpName(id)}</h3><p>${esc(tpLabel(id,s.k))}${s.done?"":` · steg ${s.k} av ${c.n}`}</p><div class="so-bul"><i class="${s.done?"done":""}" style="width:${Math.max(4,s.k/c.n*100)}%"></i></div><span class="tp-st ${cls}">${txt}</span></div><span class="chev">›</span></button>`}).join("")}</div>
+   ${all?`<div class="banner" style="margin-top:10px"><span class="bicon progress">✓</span><div><b>Du är redo för Pro</b><p>Alla fem stationer klarar Pro-vikterna. Byt klass när du anmäler dig till nästa lopp.</p><button class="linkbtn" data-open="division">Byt klass</button></div></div>`:`<div class="sechead" style="margin-top:22px"><h2>Pass mot Pro</h2></div>
+   <div class="group">${[["A","Tungt och kort","Nästa stegs vikt på korta sträckor, full vila."],["B","Tävlingsvolym","Loppets mängd på ditt nuvarande steg."]].map(([k,t,d])=>`<button class="row" data-tp-pass="${k}"><span class="badge">${k}</span><div><h3>${t}</h3><p>${nxt===k?"Föreslås nu · ":""}${d}</p></div><span class="chev">›</span></button>`).join("")}</div>
+   <p class="small" style="margin-top:10px">Växla mellan A och B. Logga hur passet kändes, det avgör när du går upp.</p>`}`}
+function tpItem(id,sets){const x=EX.find(e=>e.id===id);return {ex:x.id,n:x.n,k:x.k,w:1,st:1,sets}}
+function tpPass(type){const st=set.toPro.st,items=[];
+  TP_IDS.forEach(id=>{const c=TP[id],k=st[id].k,[o,p]=tpBase(id),nx=Math.min(c.n,k+1),done=k>=c.n;
+    if(type==="A"){
+      if(c.t==="kg"){const kg=tpKg(id,done?c.n:nx);items.push(tpItem(id,Array.from({length:id==="farm"?4:6},()=>id==="farm"?{m:50,kg}:{m:12.5,kg})))}
+      else items.push(tpItem(id,id==="wall"?Array.from({length:5},()=>({r:10,kg:p})):Array.from({length:4},()=>({m:12.5,kg:p}))))}
+    else{
+      if(c.t==="kg"){const kg=tpKg(id,k);items.push(tpItem(id,Array.from({length:4},()=>id==="farm"?{m:50,kg}:{m:12.5,kg})))}
+      else items.push(tpItem(id,Array.from({length:4},(_,i)=>id==="wall"?{r:25,kg:i<k?p:o}:{m:25,kg:i<k?p:o})))}});
+  return type==="A"?{name:"Mot Pro: tungt och kort",type:"Styrka och stationer",m:50,why:"Nästa stegs vikt på korta sträckor. Kroppen vänjer sig vid tyngden utan att tröttas ut.",hint:"Vila 90 s mellan seten och 3 min mellan stationerna. Tekniken går före farten.",items}
+   :{name:"Mot Pro: tävlingsvolym",type:"Styrka och stationer",m:50,why:"Loppets mängd på ditt nuvarande steg. Klarar du det två gånger och det känns hanterbart är du redo att gå upp.",hint:"Kort vila, jämnt tempo. På lunges och wall balls görs de första seten med Pro-vikt.",items}}
+function tpSet(id,k){const c=TP[id];k=Math.max(0,Math.min(c.n,k));set.toPro.st[id]={k,d:today()};saveSet();renderToPro();HAPTIC(k>=c.n?"success":"medium");
+  toast(k>=c.n?`${tpName(id)} är på Pro-vikt`:`${tpName(id)}: ${tpLabel(id,k)}`)}
+function tpStart(){const st={};TP_IDS.forEach(id=>st[id]={k:tpGuess(id),d:today()});set.toPro={start:today(),st,last:""};saveSet();renderToPro();HAPTIC("success");toast("Mot Pro är startat")}
+function tpOpenStation(id){const c=TP[id],s=tpStatus(id),k=s.k,[cls,txt]=tpStatusTxt(s);
+  openSheet(`<div><span class="small">Mot Pro</span><h2>${tpName(id)}</h2></div>
+   <p class="muted" style="margin:0">${s.done?"Du har nått Pro-vikten. Fortsätt köra den i dina pass.":s.ready?"Du har klarat steget två pass och de har känts hanterbara. Dags att gå upp.":c.t==="kg"?"Du går upp när du har kört stegets vikt i två pass som känts som högst 3 av 5.":"Du går upp när du har gjort stegets andel med Pro-vikt i två pass som känts som högst 3 av 5."}</p>
+   <div class="group tp-lad">${Array.from({length:c.n+1},(_,i)=>`<div class="row${i===k?" on":i<k?" past":""}"><span class="badge">${i===0?"Open":i===c.n?"Pro":i}</span><div><h3>${esc(tpLabel(id,i))}</h3>${i===k?`<p>${txt}</p>`:""}</div><span></span></div>`).join("")}</div>
+   <div class="tp-acts">${s.done?"":`<button class="pill block${s.ready?"":" ghost"}" id="tp-up">${s.ready?"Gå upp ett steg":"Gå upp ändå"}</button>`}${k>0?`<button class="linkbtn" id="tp-down" style="justify-self:center;min-height:44px">Ta ett steg ned</button>`:""}</div>`,()=>{
+    const up=$("#tp-up"),dn=$("#tp-down");if(up)up.onclick=()=>{closeSheet();tpSet(id,k+1)};if(dn)dn.onclick=()=>{closeSheet();tpSet(id,k-1)}})}
+function tpAbout(){openSheet(`<div><span class="small">Mot Pro</span><h2>Så fungerar det</h2></div>
+   <div class="card"><div class="howto"><h3>Steg för steg</h3><p>Sled Push, Sled Pull och Farmers Carry går upp i kilo, fyra till fem steg från Open till Pro. På Sandbag Lunges och Wall Balls är hoppet för stort för det, så där görs en allt större del av mängden med Pro-vikten.</p></div>
+   <div class="howto"><h3>När du går upp</h3><p>Du är redo när du har kört stegets vikt i två pass som har känts som högst 3 av 5. Två pass som känts som 5 av 5 betyder att du stannar kvar. Du bestämmer själv när du går upp.</p></div>
+   <div class="howto"><h3>Två sorters pass</h3><p>A: nästa stegs vikt på korta sträckor med full vila. B: loppets mängd på ditt nuvarande steg. Växla mellan dem. Inför ett Open-lopp tränar du på Open-vikt de sista veckorna.</p></div>
+   <div class="howto"><h3>Slädar skiljer sig</h3><p>Samma vikt kan kännas olika tung beroende på släde och golv. Ta ett steg ned om ett nytt gym känns klart tyngre.</p></div></div>
+   <button class="linkbtn" id="tp-stop" style="justify-self:center;min-height:44px">Avsluta Mot Pro</button>`,()=>{$("#tp-stop").onclick=()=>{const old=set.toPro;delete set.toPro;saveSet();renderToPro();closeSheet();toast("Mot Pro är avslutat",{action:()=>{set.toPro=old;saveSet();renderToPro()}})}})}
+function tpStartSheet(){openSheet(`<div><span class="small">Nytt mål</span><h2>Träna mot Pro-vikter.</h2></div>
+   <p class="muted" style="margin:0">Du tävlar kvar i ${esc(divText())}. VARV. lägger upp en stege per station från Open till Pro och föreslår nästa steg när du är redo.</p>
+   <div class="group">${TP_IDS.map(id=>{const [o,p]=tpBase(id),g=tpGuess(id),u=id==="farm"?"2 × ":"";return `<div class="row"><span class="ico">${ART[id]}</span><div><h3>${tpName(id)}</h3><p>${u}${o} kg till ${u}${p} kg${g?` · du börjar på steg ${g}`:""}</p></div><span></span></div>`}).join("")}</div>
+   <p class="small">Startsteget utgår från vad du har lyft senast. Du kan ändra det per station.</p>
+   <button class="pill block" id="tp-go">Starta Mot Pro</button>`,()=>{$("#tp-go").onclick=()=>{closeSheet();tpStart()}})}
+document.addEventListener("click",e=>{const t=e.target.closest("#topro [data-tp],#topro [data-tp-st],#topro [data-tp-pass]");if(!t)return;
+  if(t.dataset.tp==="start")tpStartSheet();else if(t.dataset.tp==="about")tpAbout();
+  else if(t.dataset.tpSt)tpOpenStation(t.dataset.tpSt);
+  else if(t.dataset.tpPass){const k=t.dataset.tpPass;set.toPro.last=k;saveSet();renderToPro();openPass(tpPass(k),"Mot Pro")}});
 /* Ett moment per rad, i den ordning de körs, så att passet går att följa steg för steg med tidtagning på varje moment.
    Loppets mängder och vikter följer klassen, oavsett vad du lyfte senast. */
 function raceItem(id){const x=EX.find(e=>e.id===id);return {ex:x.id,n:x.n,k:x.k,w:x.w?1:0,st:x.st?1:0,sets:[Object.assign({},exStd(id))]}}

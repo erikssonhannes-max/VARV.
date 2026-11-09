@@ -1711,6 +1711,11 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .so-lg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:14px}
 .so-lg div{min-width:0}.so-lg span{display:flex;align-items:center;gap:5px;font-size:var(--t-cap);color:var(--muted);white-space:nowrap}
 .so-lg span::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--c)}
+.so-lg3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.so-key{display:grid;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--hair)}
+.so-key p{display:grid;grid-template-columns:10px minmax(0,1fr);gap:10px;align-items:baseline;margin:0;font-size:var(--t-cap);color:var(--muted);line-height:1.4}
+.so-key i{width:10px;height:10px;border-radius:50%;background:var(--c);transform:translateY(1px)}
+.so-key b{color:var(--ink);font-weight:600;margin-right:4px}
 .so-lg b{display:block;font-size:var(--t-body);font-weight:600;font-variant-numeric:tabular-nums;margin-top:1px}
 .so-tp{height:150px}
 .so-tp .so-in{position:absolute;inset:0 44px 0 0}
@@ -2140,7 +2145,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.29 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.30 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2185,7 +2190,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.29";
+const APPVER="1.1.30";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3886,10 +3891,10 @@ const soKm=v=>(Math.round(v*10)/10).toString().replace(".",",")+" km";
 function soNice(max){const raw=max/2,e=Math.pow(10,Math.floor(Math.log10(raw||1))),f=raw/e,st=(f<=1?1:f<=2?2:f<=5?5:10)*e;return st}
 const soWkName=w=>w.now?"Den här veckan":"Vecka "+w.wk;
 function soAxis(W){return `<div class="so-xax" aria-hidden="true">${W.map((w,i)=>`<span>${w.now?"<b>Nu</b>":(W.length-1-i)%4===0?"v"+w.wk:""}</span>`).join("")}</div>`}
-function soBars(W,vals,fmtV,fmtG,cap,colors,series){const tot=vals.map(v=>v.reduce((a,b)=>a+b,0)),st=soNice(Math.max(...tot,1)),top=Math.max(st*2,Math.ceil(Math.max(...tot)/st)*st);
+function soBars(W,vals,fmtV,fmtG,cap,colors,series,unit,opt){opt=opt||{};const tot=vals.map(v=>v.reduce((a,b)=>a+b,0)),st=opt.step||soNice(Math.max(...tot,1)),top=opt.top||Math.max(st*2,Math.ceil(Math.max(...tot)/st)*st),sel=opt.sel!=null?opt.sel:W.length-1;
   let grid="";for(let g=st;g<=top;g+=st)grid+=`<div class="so-grid" style="bottom:${g/top*100}%"><span>${fmtG(g)}</span></div>`;
   return `<div class="so-plot">${grid}<div class="so-grid" style="bottom:0"></div><div class="so-cols">${W.map((w,i)=>{const seg=vals[i].map((v,j)=>v?`<i style="--c:${colors[j]};height:${v/top*100}%;animation-delay:${i*30}ms"></i>`:"").reverse().join("");
-    return `<button type="button" class="so-col${w.now?" on":""}" data-h="${esc(fmtV(tot[i]))}" data-s="${esc(cap(i))}"${series?` data-v="${esc(vals[i].map(v=>Math.round(v)+" min").join("|"))}"`:""} aria-label="${esc(soWkName(w)+": "+fmtV(tot[i]))}">${seg}</button>`}).join("")}</div></div>${soAxis(W)}`}
+    return `<button type="button" class="so-col${i===sel?" on":""}" data-h="${esc(fmtV(tot[i]))}" data-s="${esc(cap(i))}"${series?` data-v="${esc(vals[i].map(v=>typeof unit==="function"?unit(v):Math.round(v)+" min").join("|"))}"`:""} aria-label="${esc(soWkName(w)+": "+fmtV(tot[i]))}">${seg}</button>`}).join("")}</div></div>${soAxis(W)}`}
 function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   // Träningstid per typ av pass
   const mins=W.map(w=>SO_KIND.map(([k])=>w.logs.reduce((a,l)=>a+(soKind(l.type)===k?(+l.min||0):0),0))),tot=mins.map(v=>v.reduce((a,b)=>a+b,0)),act=tot.slice(0,L).filter(Boolean),avg=act.length?act.reduce((a,b)=>a+b,0)/act.length:0;
@@ -3897,6 +3902,7 @@ function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   if(tot.some(Boolean))h+=soBars(W,mins,pgMin,g=>g>=60&&g%60===0?g/60+" h":g+" min",i=>soCap(W,i,W[i].logs.length),SO_KIND.map(x=>x[2]),true)+`<div class="so-lg">${SO_KIND.map(([k,l,c],j)=>`<div style="--c:${c}"><span>${l}</span><b data-lv="${j}">${Math.round(mins[L][j])} min</b></div>`).join("")}</div>${avg?`<p class="so-foot" style="margin-top:12px">I snitt ${pgMin(avg)} i veckan de veckor du har tränat.</p>`:""}`;
   else h+=`<p class="so-empty">Logga ett pass, så visas din träningstid här.</p>`;
   h+=`</section>`;
+  h+=soRestHtml(W);
   // Löpning: sträcka och tempo
   const R=W.map(soRun),km=R.map(r=>r.km),pts=R.map((r,i)=>r.pace?{i,v:r.pace}:null).filter(Boolean);
   h+=`<div class="sechead"><h2>Löpning</h2></div><section class="so-card" id="so-km" data-so><span class="so-k">Sträcka per vecka</span><b class="so-val">${soKm(km[L])}</b><span class="so-cap">${soWkName(W[L])}</span>`;
@@ -3913,6 +3919,24 @@ function soTrainingHtml(cw){const W=soWeeks(12),L=W.length-1;let h="";
   h+=`<div class="sechead"><h2>Stationsträning</h2></div><section class="so-card" id="so-sta"><span class="so-k">Antal pass, senaste sex veckorna</span>`;
   h+=anyC?`<span class="so-cap" style="margin-top:8px;color:var(--ink);font-weight:500">${lows.length<=3?`Minst tränat: ${esc(lows.map(x=>x.n).join(", "))}.`:"Flera stationer behöver mer tid."}</span><div class="so-rad">${radarSvg(S.map((x,i)=>stShort(x)+"\n"+cnt[i]+" pass"),[{v:cnt.map(c=>c/mx),c:"you s"}],"Antal pass per station de senaste sex veckorna: "+S.map((x,i)=>x.n+" "+cnt[i]).join(", "))}</div><p class="so-foot" style="margin-top:6px">Yttersta ringen är ${mx} pass. Ju rundare form, desto jämnare tränar du.</p>`
     :`<p class="so-empty">Logga en station, så ser du vilka du tränar mest och minst.</p>`;
+  return h+`</section>`}
+/* Träning och vila: dagar per vecka med pass, vila och aktiv vila, i samma färger som veckan på Hem.
+   En dag som har passerat utan pass räknas som vila, precis som på Hem. Aktiv vila markerar man själv. Dagens datum räknas bara om något är loggat eller markerat. */
+const SO_REST=[["pass","Pass","var(--green)"],["rest","Vila","var(--cyan)"],["active","Aktiv vila","var(--cyan2)"]];
+function soDayKind(ds,td){const dn=LOGS.some(l=>l&&l.date===ds);if(dn)return "pass";const r=(set.restDays||{})[ds];if(r)return r.k==="active"?"active":"rest";
+  return ds<td&&(!set.since||ds>=set.since)?"rest":null}
+function soRestHtml(W){const td=today(),L=W.length-1,rd=set.restDays||{};
+  const days=W.map(w=>{const c=[0,0,0];let am=0;for(let i=0;i<7;i++){const d=new Date(w.k+"T12:00:00");d.setDate(d.getDate()+i);const ds=iso(d);if(ds>td)break;const k=soDayKind(ds,td);if(!k)continue;c[SO_REST.findIndex(x=>x[0]===k)]++;if(k==="active")am+=+(rd[ds]||{}).min||0}w.am=am;return c});
+  const any=days.some(c=>c[1]||c[2])||days.some(c=>c[0]),S0=days[L].some(Boolean)||!L?L:L-1,cur=days[S0],dTxt=n=>n===1?"1 dag":n+" dagar";
+  const cap=i=>{const c=days[i],a=W[i].am;return soWkName(W[i])+(a?` · aktiv vila ${pgMin(a)}`:"")};
+  let h=`<div class="sechead"><h2>Träning och vila</h2></div><section class="so-card" id="so-rest" data-so><span class="so-k">Dagar per vecka</span><b class="so-val">${cur[0]} pass · ${cur[1]+cur[2]} vila</b><span class="so-cap">${esc(cap(S0))}</span>`;
+  if(any){h+=soBars(W,days,v=>v===1?"1 dag":v+" dagar",g=>g+" d",i=>cap(i),SO_REST.map(x=>x[2]),true,dTxt,{top:7,step:7,sel:S0})
+      .replace(/data-h="[^"]*"/g,(()=>{let n=0;return ()=>{const c=days[n++]||[0,0,0];return `data-h="${c[0]} pass · ${c[1]+c[2]} vila"`}})())
+    +`<div class="so-lg so-lg3">${SO_REST.map(([k,l,c],j)=>`<div style="--c:${c}"><span>${l}</span><b data-lv="${j}">${dTxt(cur[j])}</b></div>`).join("")}</div>
+    <div class="so-key"><p><i style="--c:var(--green)"></i><span><b>Pass</b> En dag med minst ett loggat pass.</span></p><p><i style="--c:var(--cyan)"></i><span><b>Vila</b> En dag utan pass. Den räknas av sig själv när dagen har passerat.</span></p><p><i style="--c:var(--cyan2)"></i><span><b>Aktiv vila</b> Promenad, cykel, yoga eller rörlighet. Markera den genom att trycka på dagen på Hem.</span></p></div>`;
+    const wk=W.slice(0,L).filter((w,i)=>days[i][0]),ar=wk.length?Math.round(wk.reduce((a,w)=>a+days[W.indexOf(w)][1]+days[W.indexOf(w)][2],0)/wk.length*10)/10:null;
+    if(ar!=null)h+=`<p class="so-foot" style="margin-top:12px">I snitt ${String(ar).replace(".",",")} vilodagar i veckan de veckor du har tränat. ${ar<1?"Minst en vilodag i veckan hjälper kroppen att bli starkare.":ar>4?"Många vilodagar. Det är helt rätt i en lugn vecka eller nära loppet.":"Bra balans mellan träning och vila."}</p>`}
+  else h+=`<p class="so-empty">Logga ett pass eller markera en vilodag på Hem, så ser du balansen mellan träning och vila här.</p>`;
   return h+`</section>`}
 /* Tempografen: snabbare högre upp. Linjen och ytan ritas i SVG, punkter, rutnät och etiketter i HTML så att de blir skarpa i alla bredder. */
 function soPaceChart(W,R,pts,lastP){const vs=pts.map(p=>p.v),P=+set.target>0?planTimes():null,gp=P&&isFinite(P.pace)?Math.round(P.pace):null;

@@ -1459,7 +1459,17 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lv-next{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:2px 10px;width:100%;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);font:inherit;text-align:left;padding:12px 16px;min-height:60px;cursor:pointer}
 .lv-next small{color:var(--muted);font-size:var(--t-cap);font-weight:600;grid-column:1}
 .lv-next b{font-weight:600;font-size:var(--t-body);grid-column:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.lv-next .chev{grid-column:2;grid-row:1/3}
+.lv-next .chev{grid-column:2;grid-row:1/4}
+.lv-ng{grid-column:1;color:var(--muted);font-size:var(--t-sub);font-variant-numeric:tabular-nums;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-prevrow{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:12px;width:100%;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);font:inherit;text-align:left;padding:10px 16px;min-height:52px;cursor:pointer;margin-bottom:8px}
+.lv-prevrow small{display:block;color:var(--muted);font-size:var(--t-cap);font-weight:600}
+.lv-prevrow b{display:block;font-weight:600;font-size:var(--t-sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.lv-pt{font-weight:600;font-variant-numeric:tabular-nums;font-size:var(--t-body)}
+.lv-pe{color:var(--link);font-size:var(--t-sub);font-weight:600}
+.lv-prevrow:active{transform:scale(.98)}
+.lv-pacts{display:inline-flex;gap:14px}
+.lv-dt input{font:inherit;font-size:var(--t-num-l);font-weight:700;font-variant-numeric:tabular-nums;letter-spacing:-.03em;width:100%;border:0;background:none;color:var(--ink);padding:2px 0;-webkit-appearance:none}
+.lv-dt input:focus{outline:none}.lv-dt{display:grid;gap:2px}
 .lv-foot{display:grid;gap:8px;padding:6px 16px calc(env(safe-area-inset-bottom,0px) + 12px);background:var(--bg);max-width:720px;width:100%;margin:0 auto;box-sizing:border-box}
 .lv-big{min-height:76px;font-size:var(--t-head);font-weight:600;letter-spacing:-.01em}
 .lv-big:active{transform:scale(.97)}
@@ -2130,7 +2140,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.27 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.28 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2175,7 +2185,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.27";
+const APPVER="1.1.28";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4760,7 +4770,7 @@ function liveTick(){if(!LIVE){clearInterval(LIVETICK);return}
   const k=$("#lv-kvar");if(k){const l=lvLeft(LIVE.cur);k.textContent=l==null?"–":fmt(l)}}
 function lvRows(){const cur=LIVE.ready?-1:LIVE.cur,its=lvItems();
   return its.map((it,i)=>{const d=i<cur,now=i===cur,can=!d&&!now,g=lvGoal(it);
-    return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?(it.skip?"–":"✓"):i+1}</span>`}${d?`<div><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</div>`:`<button type="button" class="lv-ed" data-ledit="${i}" aria-label="Ändra ${esc(it.n)}"><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</button>`}${d?`<b>${it.skip?"Skippad":nz(it.sec)?fmt(it.sec):"Klar"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
+    return `<div class="lv-ri${d?" is-done":""}${now?" is-now":""}" data-i="${i}">${can&&its.length-(cur+1)>1?dndGrip(it.n):`<span class="lv-n" aria-hidden="true">${d?(it.skip?"–":"✓"):i+1}</span>`}${d?`<button type="button" class="lv-ed" data-ldone="${i}" aria-label="Ändra tid och värden för ${esc(it.n)}"><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</button>`:`<button type="button" class="lv-ed" data-ledit="${i}" aria-label="Ändra ${esc(it.n)}"><h3>${esc(it.n)}</h3>${g?`<p>${esc(g)}</p>`:""}</button>`}${d?`<b>${it.skip?"Skippad":nz(it.sec)?fmt(it.sec):"Klar"}</b>`:now?`<b>Nu</b>`:`<button type="button" class="lv-x" data-lrm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button>`}</div>`}).join("")}
 function renderLive(){let v=$("#live"),bar=$("#lv-bar");
   if(!LIVE){if(v)v.hidden=true;if(bar)bar.hidden=true;document.body.classList.remove("live-on");return}
   bar.hidden=LIVE.open;v.hidden=!LIVE.open;document.body.classList.toggle("live-on",!!LIVE.open);
@@ -4778,8 +4788,9 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
         ${timed?`<b class="lv-timer${LIVE.wait?" lv-wait":""}" id="lv-time" role="timer">${fmt(lvSetEx(it))}</b>${LIVE.wait?`<p class="lv-cmp">Klockan startar när du trycker Starta klockan</p>`:`<p class="lv-cmp" id="lv-cmp"></p>`}`:cs?`<b class="lv-load">${esc(cs)}</b>`:""}
         ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN}`}</button>`:""}${it&&!lvNeedsClock(it)?`<button type="button" class="linkbtn lv-clockbtn" id="lv-clock">${timed?"Ta bort klockan":"Ta tid"}</button>`:""}${anyT?`<button type="button" class="lv-mode" id="lv-mode" role="switch" aria-checked="${lvManual()}"><span>Starta klockan själv</span><span class="sw" aria-hidden="true"></span></button>`:""}</div>
       <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div>${anyT?`<div><small>${mix?"Snitt löpning":"Snitt övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>`:`<div><small>Set klara</small><b>${setsDone} av ${setsAll}</b></div>`}${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:anyT?`<div><small>Kvar ca</small><b id="lv-kvar">–</b></div>`:`<div><small>Övningar kvar</small><b>${Math.max(0,its.length-LIVE.cur)}</b></div>`}</div>
-      ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"klar"}${pd!=null?` ${lvDelta(pd)}`:""}</span><button type="button" class="linkbtn" id="lv-undo">Ångra</button></div>`:""}
-      <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b><span class="chev" aria-hidden="true">›</span></button></div>
+      ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"klar"}${pd!=null?` ${lvDelta(pd)}`:""}</span><span class="lv-pacts"><button type="button" class="linkbtn" data-ldone="${LIVE.cur-1}">Ändra</button><button type="button" class="linkbtn" id="lv-undo">Ångra</button></span></div>`:""}
+      ${(()=>{const dn=lvLastDone();if(ready||dn<0||(pv&&LVUNDO===LIVE.cur&&dn===LIVE.cur-1))return "";const x=its[dn];return `<button type="button" class="lv-prevrow" data-ldone="${dn}"><span><small>Förra</small><b>${esc(x.n)}</b></span><span class="lv-pt">${x.skip?"Skippad":nz(x.sec)?fmt(x.sec):"Klar"}</span><span class="lv-pe">Ändra</span></button>`})()}
+      <button type="button" class="lv-next" id="lv-nextcard"><small>Härnäst</small><b>${nx?esc(nx.n):"Sista övningen"}</b>${nx&&lvGoal(nx)?`<span class="lv-ng">${esc(lvGoal(nx))}</span>`:""}<span class="chev" aria-hidden="true">›</span></button></div>
     <div class="lv-foot">${ready?`<button type="button" class="pill block lv-big" id="lv-go"${its.length?"":" disabled"}>Starta klockan</button>`:paused?`<button type="button" class="pill block lv-big" id="lv-pause">Fortsätt</button><button type="button" class="pill ghost block" id="lv-stop">Avbryt passet</button>`
       :LIVE.wait?`<button type="button" class="pill block lv-big" id="lv-start">Starta klockan</button><div class="lv-acts"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-skip" aria-label="Skippa ${it?esc(it.n):"övningen"}">Skippa</button><button type="button" class="pill ghost" id="lv-stop" aria-label="Avbryt passet">Avbryt</button></div>`
       :`<button type="button" class="pill block lv-big" id="lv-next">${lvMoreSets(it)||(nx&&nx.ex===it.ex)?"Nästa set":!nx?"Klar med passet":lvIsRun(nx)?"Spring":"Nästa övning"}</button><div class="lv-acts"><button type="button" class="pill ghost" id="lv-pause">Pausa</button><button type="button" class="pill ghost" id="lv-skip" aria-label="Skippa ${it?esc(it.n):"övningen"}">Skippa</button><button type="button" class="pill ghost" id="lv-stop" aria-label="Avbryt passet">Avbryt</button></div>`}</div>`;
@@ -4824,6 +4835,28 @@ function lvEdit(i){const its=lvItems(),it=its[i];if(!it)return;const cur=LIVE.re
     go("#le-skip",()=>liveSkip());
     go("#le-now",()=>{const c=LIVE.ready?0:LIVE.cur;its.splice(c,0,its.splice(i,1)[0]);if(!LIVE.ready){LIVE.exAt=liveElapsed();lvArm()}LVUNDO=null;LVIN=true;saveLive();renderLive()});
     go("#le-rm",()=>{lvRemove(i)})})}
+/* Senast klara eller skippade övningen före den som pågår. */
+function lvLastDone(){for(let i=LIVE.cur-1;i>=0;i--){const x=lvItems()[i];if(x&&(x.skip||nz(x.sec)||nz(x.spent)||x.sets.some(s=>s.done)))return i}return -1}
+/* Ändra en övning du redan har gjort: tiden och värdena. Passets klocka och övningen som pågår påverkas inte.
+   En skippad övning blir klar om du skriver in en tid. */
+function lvDoneEdit(i,back){const its=lvItems(),it=its[i];if(!it||i>=(LIVE.ready?0:LIVE.cur))return;
+  const cols=colsOf(it).filter(c=>c[0]!=="t"),gc=`28px repeat(${Math.max(1,cols.length)},minmax(0,1fr)) 36px`,timed=lvTimed(it)||nz(it.sec);
+  const row=(s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];return `<input type="text" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}" autocomplete="off" placeholder="–" value="${nz(v)?(c[0]==="kg"?fmtKg(v):v):""}" aria-label="${c[1]}, set ${j+1}">`}).join("")}<span></span></div>`;
+  const pv=LVPREV[i]!=null?LVPREV[i]:null;
+  openSheet(`<div><span class="small">${lvMixed()?"Moment":"Övning"} ${i+1} av ${its.length} · ${it.skip?"skippad":"klar"}</span><h2>${esc(it.n)}</h2></div>
+    ${timed||it.skip?`<div class="card lv-dt"><label class="lbl" for="ld-t">Tid</label><input type="text" id="ld-t" data-tm="5" inputmode="numeric" autocomplete="off" placeholder="0:00" value="${nz(it.sec)?fmt(it.sec):""}" aria-label="Tid för ${esc(it.n)}"><p class="small" id="ld-tc">${pv!=null?`Förra gången ${fmt(pv)}`:""}</p></div>`:""}
+    ${cols.length?`<div class="card" style="display:grid;gap:6px"><div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}</span>`).join("")}<span></span></div><div id="ld-sets" style="display:grid;gap:6px">${it.sets.map(row).join("")}</div></div>`:""}
+    <button type="button" class="pill block" id="ld-ok">Klar</button>`,()=>{
+    const ti=$("#ld-t"),w=$("#ld-sets");
+    if(ti){ti.addEventListener("focus",()=>setTimeout(()=>{try{ti.select()}catch(x){}},0));
+      ti.addEventListener("input",()=>{const v=parseT(ti.value.trim());if(!nz(v))return;it.sec=Math.round(v);delete it.spent;
+        if(it.skip){delete it.skip;delete it.skipEx;it.sets.forEach(x=>{x.done=true})}
+        if(it.sets.length===1&&colsOf(it).some(c=>c[0]==="t"))it.sets[0].t=it.sec;
+        const c=$("#ld-tc");if(c&&pv!=null)c.innerHTML=`Förra gången ${fmt(pv)} · ${lvDelta(it.sec-pv)}`;saveLive()});
+      ti.addEventListener("blur",()=>{if(nz(it.sec))ti.value=fmt(it.sec)})}
+    if(w){w.addEventListener("focusin",e=>{if(e.target.matches("input"))setTimeout(()=>{try{e.target.select()}catch(x){}},0)});
+      w.addEventListener("input",e=>{const t=e.target;if(!t.dataset.f)return;let v=parseFloat(t.value.trim().replace(",","."));if(!nz(v))v=null;it.sets[+t.dataset.j][t.dataset.f]=v;saveLive()})}
+    $("#ld-ok").onclick=()=>{closeSheet();renderLive();HAPTIC("light");if(back)setTimeout(openLvAll,320)}})}
 function lvAllDraw(){const r=$("#lv-allrows");if(r)r.innerHTML=lvRows()}
 function openLvAll(){const any=!LIVE.ready&&lvCanSave();
   openSheet(`<div id="lv-allw" style="display:grid;gap:14px"><div><span class="small">${LIVE.ready?"Klockan har inte startat":fmt(liveElapsed())+" hittills"}</span><h2>Ändra pass</h2><p class="small">Dra för att ändra ordningen, till exempel om en maskin är upptagen. Tryck på en övning för att ändra vikt och set, eller köra den nu.</p></div>
@@ -4835,6 +4868,7 @@ function openLvAll(){const any=!LIVE.ready&&lvCanSave();
     w.addEventListener("click",e=>{const b=e.target.closest("button");if(!b||!LIVE)return;
       if(b.dataset.lrm!==undefined){lvRemove(+b.dataset.lrm);return}
       if(b.dataset.ledit!==undefined){lvEdit(+b.dataset.ledit);return}
+      if(b.dataset.ldone!==undefined){lvDoneEdit(+b.dataset.ldone,true);return}
       if(b.id==="lv-add"){LG=LIVE.lg;LG.live=true;LG.view="pick";LG.pick=[];LG.q="";openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
       if(b.id==="lv-save"){closeSheet();lvSaveEarly()}
       if(b.id==="lv-man"){set.lvManual=!set.lvManual;saveSet();b.setAttribute("aria-checked",String(!!set.lvManual));if(!set.lvManual&&LIVE.wait)lvGoNow();HAPTIC("light")}})})}
@@ -4868,6 +4902,7 @@ function bindLive(){const v=$("#live");
     if(b.id==="lv-stop"){openLvStop();return}
     if(b.id==="lv-all"||b.id==="lv-nextcard"){openLvAll();return}
     if(d.ledit!==undefined){lvEdit(+d.ledit);return}
+    if(d.ldone!==undefined){lvDoneEdit(+d.ldone);return}
     if(b.id==="lv-clock"){const it=lvItems()[LIVE.cur];if(!it)return;const m=Object.assign({},set.clockEx);if(m[it.ex])delete m[it.ex];else{m[it.ex]=1;LIVE.exAt=liveElapsed();delete it.setAt}set.clockEx=m;saveSet();saveLive();HAPTIC("light");renderLive();return}
     if(b.id==="lv-setc"){const it=lvItems()[LIVE.cur];if(!it)return;const n=it.sets.length,c=+it.setsDone||0;it.setsDone=c>=n?0:c+1;it.setAt=liveElapsed();saveLive();HAPTIC(it.setsDone===n?"success":"light");renderLive();return}
     if(d.lrm!==undefined){lvRemove(+d.lrm);return}

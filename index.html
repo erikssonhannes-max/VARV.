@@ -337,7 +337,6 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .st-nav{display:flex;justify-content:space-between;align-items:flex-end;gap:12px}
 .st-arrows{display:flex;gap:8px}.st-arrows button{width:40px;height:40px;border-radius:50%;border:0;background:var(--tile);color:var(--ink);font-size:var(--t-head);line-height:1;cursor:pointer}.st-arrows button:disabled{opacity:.3;cursor:default}
 .lg-draft{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--tile);border-radius:12px;padding:10px 14px;font-size:var(--t-sub);color:var(--muted)}
-.coach-out{white-space:pre-wrap;font-size:var(--t-sub);line-height:1.45;background:var(--card);border-radius:14px;padding:14px}
 
 .brandbar{display:flex;justify-content:center;margin-bottom:6px;color:var(--ink)}
 .brandmark{height:34px;width:auto;display:block}
@@ -672,13 +671,6 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .ses .daylbl{font-weight:600;color:var(--ink)}
 .today .zone{margin-top:-2px}
 
-.strava{grid-template-columns:44px minmax(0,1fr);align-items:center;gap:14px;margin-bottom:12px}
-.strava .sic{width:44px;height:44px;border-radius:12px;background:var(--hot);display:grid;place-items:center;color:#fff}
-.strava .sic svg{width:24px;height:24px}
-.strava.sync .sic svg{animation:spin 1s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-.strava b{display:block}
-.strava .acts{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .src{font-size:var(--t-cap);font-weight:600;color:var(--accent);margin-left:6px}
 
 /* Konto och inloggning */
@@ -791,7 +783,7 @@ a.row{color:inherit;text-decoration:none}
 @keyframes wipe{from{clip-path:inset(0 100% 0 0 round 12px)}to{clip-path:inset(0 0 0 0 round 12px)}}
 @media (prefers-reduced-motion:no-preference){
   .view.on{animation:none}
-  .view.on .pagehead>*, .view.on .hero .wrap>*, .view.on .wrap>.today, .view.on .wrap>.sechead, .view.on .wrap>.tiles>*, .view.on .wrap>.group, .view.on .wrap>.card, .view.on .wrap>.prs>*, .view.on .wrap>.weeks>*, .view.on .wrap>.clock, .view.on .wrap>.divchip, .view.on .wrap>#dbl-wrap, .view.on .wrap>#coach-wrap, .view.on .wrap>#adapt, .view.on .wrap>#comm, .view.on .wrap>#strava, .view.on .wrap>#tv-kal, .view.on .wrap>#tv-seg, .view.on .wrap>.pf-head, .view.on .wrap>#log-new, .view.on .wrap>#h-next, .view.on .wrap>#h-med{animation:up .55s var(--ease) both}
+  .view.on .pagehead>*, .view.on .hero .wrap>*, .view.on .wrap>.today, .view.on .wrap>.sechead, .view.on .wrap>.tiles>*, .view.on .wrap>.group, .view.on .wrap>.card, .view.on .wrap>.prs>*, .view.on .wrap>.weeks>*, .view.on .wrap>.clock, .view.on .wrap>.divchip, .view.on .wrap>#dbl-wrap, .view.on .wrap>#adapt, .view.on .wrap>#comm, .view.on .wrap>#tv-kal, .view.on .wrap>#tv-seg, .view.on .wrap>.pf-head, .view.on .wrap>#log-new, .view.on .wrap>#h-next, .view.on .wrap>#h-med{animation:up .55s var(--ease) both}
   .view.on .tiles>*:nth-child(2),.view.on .prs>*:nth-child(2),.view.on .weeks>*:nth-child(2),.view.on .hero .wrap>*:nth-child(2),.view.on .pagehead>*:nth-child(2){animation-delay:.05s}
   .view.on .tiles>*:nth-child(3),.view.on .prs>*:nth-child(3),.view.on .weeks>*:nth-child(3),.view.on .hero .wrap>*:nth-child(3),.view.on .pagehead>*:nth-child(3){animation-delay:.1s}
   .view.on .tiles>*:nth-child(4),.view.on .prs>*:nth-child(4),.view.on .hero .wrap>*:nth-child(4){animation-delay:.15s}
@@ -1824,15 +1816,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 
     </div>
 
-    <div id="coach-wrap" hidden>
-      <div class="sechead"><h2>Fråga coachen</h2></div>
-      <div class="card">
-        <div class="chips" id="c-sugg"></div>
-        <div class="field"><label for="c-q">Din fråga</label><textarea id="c-q" placeholder="Till exempel: Hur lägger jag upp veckan om jag missar ett pass?"></textarea></div>
-        <button class="pill" id="c-go" style="justify-self:start">Fråga</button>
-        <div class="coach-out" id="c-out" hidden></div>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -1911,7 +1894,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Din data</span><h1>Statistik.</h1><p class="small" id="store-note">Laddar…</p></div>
     <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
-    <div class="card strava" id="strava" hidden></div>
 
     <div class="lgv" data-v="pass" hidden>
     <input type="search" id="hist-q" class="hist-q" placeholder="Sök pass eller övning" autocomplete="off" aria-label="Sök bland dina pass">
@@ -2024,8 +2006,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div class="sechead"><h2>Notiser och kalender</h2></div>
     <div class="card" id="pf-push"></div>
     <div class="group" style="margin-top:10px"><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.500 2h-15z"/><path d="M10 20.500a2 2 0 0 0 4 0"/></svg></span><div><h3>Påminnelser för passen</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
-    <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
-    <div class="group" id="pf-con"></div></div>
     <div class="sechead"><h2>Integritet och data</h2></div>
     <div class="group">
       <button class="row" id="pf-blocked"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></svg></span><div><h3>Blockerade</h3><p>De kan inte se eller följa dig</p></div><span class="chev">›</span></button>
@@ -2047,7 +2027,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.15 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.16 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2092,7 +2072,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.15";
+const APPVER="1.1.16";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3427,62 +3407,6 @@ async function showFriendQR(){
   const svg=q.createSvgTag({cellSize:6,margin:2,scalable:true});
   openSheet(`<div class="medpop"><span class="small">Följ mig</span><div class="qrbox">${svg}</div><h2>${handleHtml(MYPROF)}</h2><p>Låt en kompis skanna koden med kameran. Hen kommer till VARV. och lägger till dig direkt.</p></div>
     <button class="pill block" id="qr-share" type="button">Dela länken</button>`,()=>{$("#qr-share").onclick=shareFriendLink});
-}
-/* ============ Strava ============ */
-let MCP=null,STRAVA={state:"idle",msg:"",last:null};
-const RUNT=["Run","TrailRun","VirtualRun"];
-async function mcpCall(tool,input){const r=await MCP.callTool("Strava",tool,input);let p=r&&r.payload;if(typeof p==="string"){try{p=JSON.parse(p)}catch(e){}}return p}
-function groupActs(acts){
-  const a=acts.filter(x=>x&&x.start_local&&x.summary).sort((x,y)=>x.start_local.localeCompare(y.start_local));const g=[];
-  a.forEach(x=>{const st=Date.parse(x.start_local),el=x.summary.elapsed_time||x.summary.moving_time||0,last=g[g.length-1];
-    if(last&&x.start_local.slice(0,10)===last.date&&st-last.end<=20*60000){last.items.push(x);last.end=Math.max(last.end,st+el*1000)}
-    else g.push({date:x.start_local.slice(0,10),start:st,end:st+el*1000,items:[x]})});
-  return g;
-}
-function groupToLog(g){
-  const runs=g.items.filter(x=>RUNT.includes(x.sport_type)),other=g.items.filter(x=>!RUNT.includes(x.sport_type));
-  const km=runs.reduce((a,x)=>a+(x.summary.distance||0),0)/1000,rt=runs.reduce((a,x)=>a+(x.summary.moving_time||0),0);
-  const ty=other.map(x=>x.sport_type).join(" ");
-  const type=runs.length&&other.length?"Löpning och stationer":runs.length?"Löpning":/Row/.test(ty)?"Motor (SkiErg/rodd)":/Weight|Crossfit|HighIntensity|Workout/.test(ty)?"Styrka och stationer":"Annat";
-  const one=g.items[0].summary;
-  const min=Math.max(1,Math.round(g.items.length>1?(g.end-g.start)/60000:(one.moving_time||one.elapsed_time||60)/60));
-  const re=g.items.reduce((a,x)=>a+(x.summary.relative_effort||0),0);
-  const note=[g.items.length>1?`${g.items.length} delar`:String(g.items[0].name||"").slice(0,60),km>0?`${km.toFixed(2).replace(".",",")} km`:"",km>0&&rt?`${fmt(rt/km)} /km`:"",re?`relativ ansträngning ${re}`:""].filter(Boolean).join(" · ");
-  return {id:"strava-"+g.items[0].id,date:g.date,type,min,rpe:null,stations:[],note,src:"strava",created:g.start};
-}
-function renderStrava(){
-  const el=$("#strava");if(!MCP){el.hidden=true;return}el.hidden=false;
-  const sync=STRAVA.state==="sync";el.classList.toggle("sync",sync);
-  const ago=STRAVA.last?new Date(STRAVA.last).toLocaleTimeString("sv-SE",{hour:"2-digit",minute:"2-digit"}):"";
-  const status=sync?"Hämtar dina pass…":STRAVA.state==="err"?STRAVA.msg:STRAVA.state==="ok"?`${STRAVA.msg}. Synkat ${ago}.`:set.strava?"Synkar automatiskt när du öppnar appen.":"Hämta pass från klockan via Strava, plus dina pulszoner och snabbaste 1 km.";
-  el.innerHTML=`<span class="sic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 0 1-14.3 4.9M4 12a8 8 0 0 1 14.3-4.9"/><path d="M18.5 3v4.2h-4.2M5.5 21v-4.2h4.2"/></svg></span>
-   <div><b>Strava</b><span class="small" style="${STRAVA.state==="err"?"color:var(--bad)":""}">${esc(status)}</span></div>
-   <div class="acts"><button class="pill" id="st-sync"${sync?" disabled":""}>${sync?"Synkar…":set.strava?"Synka nu":"Koppla och synka"}</button><span class="small">Senaste 8 veckorna. Delar av samma pass slås ihop.</span></div>`;
-  $("#st-sync").onclick=()=>syncStrava(true);
-}
-async function syncStrava(manual){
-  if(!MCP||STRAVA.state==="sync")return;
-  STRAVA.state="sync";renderStrava();
-  try{
-    const since=new Date();since.setDate(since.getDate()-56);
-    const p=await mcpCall("list_activities",{first:100,range_start:iso(since)+"T00:00:00",ordering:"StartDateLocalDesc"});
-    const logs=groupActs((p&&p.activities)||[]).map(groupToLog);let n=0;
-    for(const l of logs){if(HIDDEN.has(l.id))continue;const ex=LOGS.find(x=>x.id===l.id);if(ex&&(ex.edited||(ex.min===l.min&&ex.note===l.note&&ex.type===l.type)))continue;
-      if(mode==="db"&&col){const b=Object.assign({},l);delete b.id;try{await col.doc(l.id).set(b);n++}catch(e){}}
-      else{LOGS=LOGS.filter(x=>x.id!==l.id);LOGS.push(l);n++}}
-    if(mode!=="db")saveLocal();
-    try{const z=await mcpCall("get_athlete_zones",{});const h=z&&z.heart_rate_zones;if(Array.isArray(h)&&h.length===5){set.hrz=h.map(x=>[x.min||0,x.max||null]);set.hrzSrc=z.heart_rate_zone_source||""}}catch(e){}
-    try{const b=await mcpCall("get_athlete_best_efforts",{best_effort_types:["Fastest1k"],sports:["Run"]});const e=b&&b.efforts&&b.efforts.find(x=>x.best_effort_type==="Fastest1k");
-      if(e&&e.unit==="seconds"&&e.value>0&&(!PRS.km||e.value<PRS.km)){PRS.km=Math.round(e.value);await savePRs()}}catch(e){}
-    set.strava=true;saveSet();
-    STRAVA={state:"ok",last:Date.now(),msg:n?`${n} ${n===1?"pass":"pass"} hämtade`:"Allt är redan synkat"};
-    renderAllData();if(manual)toast(STRAVA.msg);
-  }catch(err){
-    const c=err&&err.code;STRAVA.state="err";
-    STRAVA.msg=c==="needs_reauth"?"Strava behöver kopplas om. Koppla Strava igen och försök på nytt.":c==="server_not_connected"||c==="selection_required"?"Strava är inte kopplat än.":c==="not_in_manifest"||c==="approval_required"||c==="consent_required"?"Appen har inte fått tillgång till Strava. Tryck på knappen och godkänn.":c==="tool_error"?"Strava nekade hämtningen. Kopplingen kräver ett aktivt Strava-abonnemang.":"Strava svarade inte. Försök igen om en stund.";
-    if(c==="not_in_manifest"||c==="approval_required"){set.strava=false;saveSet()}
-  }
-  renderStrava();
 }
 
 /* ============ Gemenskap ============ */
@@ -5138,30 +5062,6 @@ $("#pack").addEventListener("change",e=>{const id=e.target.dataset&&e.target.dat
 $("#pk-edit").onclick=()=>{PKEDIT=!PKEDIT;renderPack()};
 $("#pk-clear").onclick=()=>{PK={};savePK();renderPack()};
 
-/* ============ Coach ============ */
-let sample=null;
-const SUGG=["Analysera min senaste vecka","Hur delar jag upp wall balls?","Hur tränar jag sled push utan släde?","Vad ska jag äta före loppet?","Hur fördelar vi arbetet i mixed doubles?"];
-(async()=>{try{if(window.claude&&window.claude.use){sample=await window.claude.use("sample");if(sample){$("#coach-wrap").hidden=false;$("#c-sugg").innerHTML=SUGG.map(q=>`<button class="chip" data-q="${q}">${q}</button>`).join("")}}}catch(e){}})();
-$("#c-sugg").onclick=e=>{const c=e.target.closest("[data-q]");if(c){$("#c-q").value=c.dataset.q;$("#c-go").click()}};
-$("#c-go").onclick=async()=>{
-  const q=$("#c-q").value.trim();if(!q||!sample)return;
-  const out=$("#c-out");out.hidden=false;out.textContent="Tänker…";$("#c-go").disabled=true;
-  const t=planTimes(),st=weekStats();
-  const ctx=`Du är en erfaren Hyrox-coach. Svara på svenska, kort och konkret (högst 180 ord), med punktlista om det passar. Ge inga medicinska diagnoser; vid smärta som inte går över, råd personen att kontakta vårdpersonal.
-Fakta: Hyrox = 8 × 1 km löpning, varje följd av en station: SkiErg 1000 m, Sled Push 50 m, Sled Pull 50 m, Burpee Broad Jumps 80 m, Rodd 1000 m, Farmers Carry 200 m, Sandbag Lunges 100 m, Wall Balls 100 st. I doubles springer partnerna ihop (högst 10 s isär) och jobbar en i taget på stationerna. Mixed doubles använder herrarnas Open-vikter, wall ball 6 kg för båda, mål 2,7 m för kvinnan och 3 m för mannen.
-Användaren: ${divText()}, måltid ${fmtHM(set.target)}, snittempo ${fmt(t.pace)}/km, ${daysLeft()} dagar till loppet, ${set.per} pass/vecka, ${st.now.n} pass loggade denna vecka.
-Max puls: ${hrmax()||"okänd"}. Starttest: ${set.test?`1 km ${fmt(set.test.km)}${set.test.ski?", SkiErg "+fmt(set.test.ski):""}${set.test.wb?", 50 wall balls "+fmt(set.test.wb):""}`:"inte gjort"}.
-Planens anpassning just nu: ${ADAPT?ADAPT.mode+". "+ADAPT.note:"ingen"}.
-Veckans planerade pass: ${(PLAN[curWeekIdx()]||{ses:[]}).ses.map(s=>`${dayLbl(s.date)} ${s.t} ${s.m} min${sesDone(PLAN[curWeekIdx()],s)?" (klart)":""}`).join("; ")||"inga"}.
-Rekord: ${Object.entries(PRS).map(([k,v])=>`${(PRKEYS.find(x=>x[0]===k)||[k,k])[1]} ${fmt(v)}`).join(", ")||"inga"}.
-Senaste loggade pass (nyast först):
-${[...LOGS].sort((a,b)=>(b.date||"").localeCompare(a.date||"")).slice(0,14).map(l=>`${l.date}: ${l.type}, ${l.min} min, känsla ${l.rpe||"?"}/5${l.stations&&l.stations.length?", stationer "+l.stations.join("/"):""}${l.note?", "+String(l.note).slice(0,80):""}`).join("\n")||"inga"}
-Använd historiken när den är relevant och var konkret om vad personen ska göra härnäst.
-Fråga: ${q}`;
-  try{const r=await sample(ctx,{modelTier:"default",onText:({text})=>{out.textContent=text}});out.textContent=r.text}
-  catch(err){out.textContent=err&&err.code==="rate_limited"?"För många frågor just nu. Vänta en stund och försök igen.":"Coachen kunde inte svara just nu. Försök igen om en stund.";if(err&&err.code==="not_granted")$("#coach-wrap").hidden=true}
-  $("#c-go").disabled=false;
-};
 
 
 /* ============ Tävlingar ============ */
@@ -5537,8 +5437,6 @@ function renderProfile(){
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-hap").onclick=()=>{set.cues.haptic=set.cues.haptic===false;saveSet();renderProfile();renderCues()};
-  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}`;
-  $("#pf-con-wrap").hidden=!$("#pf-con").innerHTML.trim();
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
 }
@@ -6616,7 +6514,7 @@ drawOval();refreshDivision();renderSplits();renderPlan();renderLog();renderPRs()
 if(RACE&&!RACE.end){startTick();keepAwake()}
 route();
 if(!window.claude)initSupabase();
-(async()=>{await initDb();try{if(window.claude&&window.claude.use){MCP=await window.claude.use("mcp");renderStrava();if(MCP&&set.strava){await FIRST;syncStrava(false)}}}catch(e){}})();
+initDb();
 (async()=>{try{if(window.claude&&window.claude.use){DL=await window.claude.use("downloads");if(DL)$("#cal-btn").hidden=false}}catch(e){}})();
 if(!window.claude&&!IS_NATIVE&&"serviceWorker" in navigator&&location.protocol==="https:"){try{navigator.serviceWorker.register("sw.js")}catch(e){}}
 if(!window.claude){DL={raw:true,save:async({filename,data})=>{if(IS_NATIVE){try{const f=new File([data],filename,{type:/\.ics$/.test(filename)?"text/calendar":"application/octet-stream"});

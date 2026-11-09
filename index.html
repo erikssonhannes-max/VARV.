@@ -2145,7 +2145,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.30 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.31 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2190,7 +2190,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.30";
+const APPVER="1.1.31";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4522,7 +4522,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
    <section class="lg-sec"><div class="lg-h"><h3>Övningar</h3>${LG.items.length?`<span class="small">${LG.items.length}</span>`:""}</div>
      ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Dra i raderna för att ändra ordningen.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
        ${(set.tpls||[]).length?`<div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button></div>`).join("")}</div>`:""}
-       <div class="chips">${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
+       <div class="chips"><button type="button" class="divchip" data-quick="race">Fullt Hyrox-lopp</button>${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
      <button type="button" class="pill ghost block" id="lg-open">+ Lägg till övning</button></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">När och hur länge?</span><div class="chips lg-day"><button type="button" class="chip" data-day="${td}" aria-pressed="${LG.date===td}">I dag</button><button type="button" class="chip" data-day="${yd}" aria-pressed="${LG.date===yd}">I går</button>
      <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
@@ -4640,6 +4640,8 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
   if(d.quick){
     if(d.quick==="last"){const l=sortedLogs().find(x=>x.items&&x.items.length&&x.id!==LG.edit);if(l){LG.items=JSON.parse(JSON.stringify(l.items));if(!LG.typeSet){LG.type=l.type;LG.typeSet=true}LG.min=+l.min||LG.min}}
     else if(d.quick==="all8")EX.filter(x=>x.st).forEach(x=>LG.items.push(newItem(x)));
+    else if(d.quick==="race"){LG.items=raceSteps(S.map(x=>x.id));LG.type="Racesimulering";LG.typeSet=true;if(+set.target>0)LG.min=Math.max(1,Math.min(600,Math.round(+set.target)));LG.openIdx=null;HAPTIC("success");
+      setTimeout(()=>toast("Tryck på ett moment för att anpassa det."),150)}
     else if(d.quick==="int")LG.items.push(Object.assign(newItem(EX.find(x=>x.id==="run")),{sets:[1,2,3,4,5].map(()=>({m:1000}))}));
     renderLG();return}
   if(d.tog!==undefined){const i=+d.tog;LG.openIdx=LG.openIdx===i?null:i;LG.still=true;HAPTIC("light");renderLG();return}

@@ -2140,7 +2140,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.28 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.29 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2185,7 +2185,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.28";
+const APPVER="1.1.29";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4494,6 +4494,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
     return `<div class="lg-ex${open?" open":""}" data-i="${i}"><div class="lg-exh${grip?" has-grip":""}">${grip?dndGrip(it.n):""}<button type="button" class="lg-tog" data-tog="${i}" aria-expanded="${open}"><span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><span class="lg-et"><b>${esc(it.n)}</b><small>${esc(sum)}</small></span><span class="chev" aria-hidden="true">›</span></button><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>${body}</div>`}).join("");
   r.innerHTML=`${LG.fromLive?'<button type="button" class="linkbtn" id="fn-back" style="justify-self:start">‹ Tillbaka</button>':""}<div><span class="small">${esc(LG.kicker)}</span><h2>${LG.edit?"Ändra pass":LG.forLive?"Bygg ditt pass":LG.fromLive?"Spara passet":"Logga pass"}</h2></div>
    ${LG.draft?`<div class="lg-draft"><span>Du fortsätter där du slutade.</span><button type="button" class="linkbtn" data-fresh>Börja om</button></div>`:""}
+   ${LG.forLive?"":lgTogSec()}
    <section class="lg-sec"><div class="lg-h"><h3>Övningar</h3>${LG.items.length?`<span class="small">${LG.items.length}</span>`:""}</div>
      ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Dra i raderna för att ändra ordningen.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
        ${(set.tpls||[]).length?`<div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button></div>`).join("")}</div>`:""}
@@ -4503,7 +4504,6 @@ function renderLG(){const r=$("#lg");if(!r)return;
      <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
      <div class="lg-step"><button type="button" data-min="-5" aria-label="5 minuter kortare">−</button><label><input type="text" id="lg-minv" inputmode="numeric" value="${LG.min}" aria-label="Minuter"><span>min</span></label><button type="button" data-min="5" aria-label="5 minuter längre">+</button></div></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div></section>
-   ${LG.forLive?"":lgTogSec()}
    <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
@@ -4543,10 +4543,10 @@ function renderFinish(r){const seen={},rows=[],goals=[],split={r:0,s:0,x:0};let 
   prs=Object.keys(newPr).length;const mix=LG.items.some(lvIsRun)&&LG.items.some(i=>!lvIsRun(i)),snitt=mix?runs:all,avg=snitt.length?snitt.reduce((a,b)=>a+b,0)/snitt.length:null,total=LG.elapsed||((+LG.min||0)*60),bad=/inte|borttagna/.test(LG.kicker||"");
   r.innerHTML=`<div class="fn-top"><span class="small">${esc(LG.tplName||lgType())}</span><h2>Passet är klart.</h2><b class="fn-big">${fmt(total)}</b>${cmp?fnVs(vs,prevSum,cmp,all.length):""}${bad?`<p class="small">${esc(LG.kicker)}</p>`:""}</div>
    <div class="facts3 fn-facts">${LG.doneP!=null?`<div><small>Genomfört</small><b>${LG.doneP} %</b></div>`:`<div><small>${mix?"Moment":"Övningar"}</small><b>${LG.items.length}</b></div>`}${avg==null?`<div><small>Set</small><b>${LG.items.reduce((a,i)=>a+(i.sets||[]).length,0)}</b></div>`:`<div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${fmt(avg)}</b></div>`}<div><small>Nya rekord</small><b>${prs}</b></div></div>
+   ${lgTogSec()}
    ${fnSplit(split,LG.elapsed||0)}${fnGoals(goals)}<div class="card"><span class="lbl">Moment för moment</span><ol class="tl fn-l">${rows.join("")}</ol>${cmp?'<p class="small fn-note">Skillnaden är mot förra gången du gjorde momentet.</p>':""}</div>
    <section class="lg-sec"><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div>
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
-   ${lgTogSec()}
    <div class="lg-foot"><button type="button" class="pill block" id="lg-save">Spara passet</button><div class="grid2"><button type="button" class="pill ghost" id="fn-edit">Ändra värden</button><button type="button" class="pill ghost" id="fn-drop"${LG.dropArm?' style="color:var(--bad)"':""}>${LG.dropArm?"Tryck igen":"Släng passet"}</button></div></div>`}
 function renderCustom(r){const c=LG.cx||(LG.cx={n:"",m:null,k:"rw"});
   r.innerHTML=`<div><button type="button" class="linkbtn" id="lg-cback">‹ Tillbaka</button><h2>Egen övning</h2><p class="small">Övningen sparas i ditt konto och finns sedan i sökningen.</p></div>

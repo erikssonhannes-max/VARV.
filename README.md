@@ -86,6 +86,12 @@ Notis om nya tävlingar
     Varje timme jämförs tävlingarna i events och data/events.json och simuleringarna i sim_races och data/sim-races.json med de lopp som redan är kända. Nya lopp ger alla en notis. En ny källa lärs bara in och ger ingen notis.
     data/events.json och data/sim-races.json fylls på av två schemalagda uppgifter i Claude varje måndag. Kontrollera dem med node scripts/check-events.mjs och node scripts/check-sim-races.mjs. Lopp som läggs in för hand i tabellerna gäller före filen.
 
+Öppen tävlingskalender
+
+    varvtraining.com/tavlingar/ och en sida per land byggs av node scripts/build-kalender.mjs från data/events.json och data/sim-races.json, tillsammans med sitemap.xml. De schemalagda uppgifterna kör skriptet varje måndag. Ändra inte de byggda filerna för hand.
+    Knappen till appen styrs av APP_URL högst upp i skriptet. Byt den mot butikslänken när appen finns i App Store och Google Play.
+    Hyrox nämns bara för att beskriva loppen. Inga logotyper, bilder eller texter från HYROX, och varje sida säger att VARV. är fristående.
+
 Kopplingar att ansöka om
 
     Strava: skapa en app på strava.com/settings/api. Callback-domän varvtraining.com. Ge client id och secret till den som bygger kopplingen.

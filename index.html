@@ -1310,6 +1310,19 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lg-pk + .lg-pk::before{content:"";position:absolute;top:0;left:38px;right:0;height:1px;background:var(--hair)}
 .lg-pk .lg-dot{margin-top:0}.lg-pk:disabled{cursor:default}.lg-pk:disabled span:nth-child(2){color:var(--muted)}
 .lg-ck{font-weight:600;color:var(--accent);font-size:var(--t-sub)}.lg-pk:disabled .lg-ck{color:var(--muted);font-weight:400;font-size:var(--t-cap)}
+.lg-allw:empty{display:none}
+.lg-all{display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px;align-items:center;margin:4px 0 6px;padding:12px 14px;border-radius:12px;background:var(--card);cursor:pointer;position:relative;-webkit-tap-highlight-color:transparent;transition:background .25s var(--ease)}
+.lg-all.on{background:color-mix(in srgb,var(--accent) 9%,var(--card))}
+.lg-all input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.lg-allbox{width:26px;height:26px;border-radius:50%;border:2px solid var(--hair);display:grid;place-items:center;color:#fff;transition:background .2s var(--ease),border-color .2s var(--ease),transform .35s var(--spring)}
+.lg-allbox svg{width:15px;height:15px;opacity:0;transform:scale(.5);transition:opacity .15s,transform .35s var(--spring)}
+.lg-all.on .lg-allbox{background:var(--accent);border-color:var(--accent)}
+.lg-all.on .lg-allbox svg{opacity:1;transform:none}
+.lg-all:active .lg-allbox{transform:scale(.9)}
+.lg-all input:focus-visible + .lg-allbox{outline:2px solid var(--accent);outline-offset:2px}
+.lg-all b{display:block;font-size:var(--t-sub);font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.lg-all small{display:block;font-size:var(--t-cap);color:var(--muted);line-height:1.35;margin-top:2px}
+@media (prefers-reduced-motion:no-preference){.lg-all{animation:lgAllIn .4s var(--spring)}@keyframes lgAllIn{from{opacity:0;transform:translateY(6px)}}}
 .lg-nm{min-width:0}.lg-nm b{font-weight:600}.lg-nm small{display:block;color:var(--muted);font-size:var(--t-cap);margin-top:1px}
 .lg-pk[aria-pressed="true"]{background:color-mix(in srgb,var(--accent) 9%,var(--tile))}
 .lg-hist{color:var(--ink)!important;font-size:var(--t-sub)}
@@ -2050,7 +2063,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.17 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.18 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2095,7 +2108,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.17";
+const APPVER="1.1.18";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4255,6 +4268,29 @@ function lgMount(){const r=$("#lg");
 function lgYest(){const d=new Date(today()+"T12:00:00");d.setDate(d.getDate()-1);return iso(d)}
 function lgSum(){const n=LG.items.length,s=LG.items.reduce((a,i)=>a+(i.sets||[]).filter(x=>setTxt(i.k,x)).length,0);
   return [n?`${n} ${n===1?"övning":"övningar"}`:"",s?`${s} set`:"",`${LG.min} min`].filter(Boolean).join(" · ")}
+function lgItemSum(it){const txt=itemTxt(it);return [txt===it.n?"":txt.slice(it.n.length+1),nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t))?"Tid "+fmt(it.sec):""].filter(Boolean).join(" · ")||"Tryck för att fylla i"}
+/* Ändra alla: när samma övning finns på flera ställen i passet (till exempel åtta löpningar i en racesimulering)
+   och du ändrar ett värde, visas en kryssruta under raden. Ikryssad får alla samma värde, urkryssad återställs de gamla.
+   LG.all = {i,j,f,on,old:[[i,j,värde]]} gäller den senast ändrade rutan. */
+const LGALLW={m:"distans",t:"tid",kg:"vikt",r:"antal reps",c:"kcal"};
+function lgValTxt(f,v){return f==="m"?fmtM(+v):f==="t"?fmt(v):f==="kg"?fmtKg(v)+" kg":f==="r"?v+" reps":v+" kcal"}
+function lgOthers(i,j,f){const it=LG.items[i],o=[];if(!it)return o;
+  LG.items.forEach((x,a)=>{if(x.ex!==it.ex)return;(x.sets||[]).forEach((s,b)=>{if(a===i&&b===j)return;if(colsOf(x).some(c=>c[0]===f))o.push([a,b])})});return o}
+function lgAllOk(){const A=LG.all;if(!A)return false;const i=LG.items.indexOf(A.it),j=i<0?-1:LG.items[i].sets.indexOf(A.s);if(j<0){LG.all=null;return false}A.i=i;A.j=j;return true}
+function lgAllHtml(i){if(!lgAllOk())return "";const A=LG.all;if(A.i!==i)return "";const it=LG.items[i],s=A.s;if(!nz(s[A.f]))return "";
+  const oth=lgOthers(A.i,A.j,A.f),diff=oth.filter(([a,b])=>+LG.items[a].sets[b][A.f]!==+s[A.f]).length;
+  if(!A.on&&!diff)return "";const n=oth.length+1,val=lgValTxt(A.f,s[A.f]);
+  return `<label class="lg-all${A.on?" on":""}"><input type="checkbox" id="lg-allcb"${A.on?" checked":""}><span class="lg-allbox" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span>
+    <span><b>${A.on?`Alla ${n} har ${esc(val)}`:`Ändra resterande till ${esc(val)}`}</b><small>${esc(String(it.n).replace(/ \d+$/,""))} finns ${n} gånger i passet. ${A.on?"Kryssa ur för att ångra.":`Kryssa i så får alla samma ${LGALLW[A.f]}.`}</small></span></label>`}
+function lgAllRefresh(){$$("#lg .lg-allw").forEach(w=>{const i=+w.closest(".lg-ex").dataset.i,h=lgAllHtml(i),old=w.querySelector(".lg-all");
+  if(!h){if(old)w.innerHTML="";return}if(!old){w.innerHTML=h;return}
+  const n=document.createElement("div");n.innerHTML=h;const nw=n.firstElementChild;old.className=nw.className;old.querySelector("input").checked=nw.querySelector("input").checked;
+  old.querySelector("b").textContent=nw.querySelector("b").textContent;old.querySelector("small").textContent=nw.querySelector("small").textContent})}
+/* Skriver värdet till alla andra förekomster och uppdaterar fälten och sammanfattningarna utan att rita om, så att fokus stannar kvar. */
+function lgAllApply(){if(!lgAllOk())return;const A=LG.all,v=A.s[A.f];
+  lgOthers(A.i,A.j,A.f).forEach(([a,b])=>{LG.items[a].sets[b][A.f]=v;const inp=document.querySelector(`#lg input[data-i="${a}"][data-j="${b}"][data-f="${A.f}"]`);if(inp)inp.value=nz(v)?(A.f==="t"?fmt(v):A.f==="kg"?fmtKg(v):v):""});
+  lgSyncSums()}
+function lgSyncSums(){$$("#lg .lg-ex").forEach(e=>{const it=LG.items[+e.dataset.i],sm=e.querySelector(".lg-et small");if(it&&sm)sm.textContent=lgItemSum(it)});const su=$("#lg-sum");if(su)su.textContent=lgSum()}
 function renderLG(){const r=$("#lg");if(!r)return;
   r.classList.toggle("lg-still",!!LG.still);LG.still=false;
   if(LG.view==="pick"){renderPick(r);return}
@@ -4263,13 +4299,14 @@ function renderLG(){const r=$("#lg");if(!r)return;
   const td=today(),yd=lgYest(),other=LG.date!==td&&LG.date!==yd;
   const dl=new Date(LG.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short",day:"numeric",month:"short"});
   const ty=lgType(),last=sortedLogs().find(l=>l.items&&l.items.length&&l.id!==LG.edit);
-  const exHtml=LG.items.map((it,i)=>{const open=LG.openIdx===i,grip=LG.items.length>1,txt=itemTxt(it),sum=[txt===it.n?"":txt.slice(it.n.length+1),nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t))?"Tid "+fmt(it.sec):""].filter(Boolean).join(" · ")||"Tryck för att fylla i";
+  const exHtml=LG.items.map((it,i)=>{const open=LG.openIdx===i,grip=LG.items.length>1,sum=lgItemSum(it);
     let body="";
     if(open){const cols=colsOf(it),li=!LG.edit&&lastItem(it.ex),hint=li&&itemTxt(li)!==li.n?itemTxt(li).slice(li.n.length+1):"",gc=`28px repeat(${cols.length},minmax(0,1fr)) 36px`;
       body=`${hint?`<p class="small lg-ehint">Förra gången: ${esc(hint)}</p>`:""}<div class="lg-cols" style="grid-template-columns:${gc}"><span>Set</span>${cols.map(c=>`<span>${c[1]}${c[0]==="kg"&&it.ex==="farm"?" per hand":""}</span>`).join("")}<span></span></div>
       ${it.sets.map((s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];const val=nz(v)?(c[0]==="t"?fmt(v):c[0]==="kg"?fmtKg(v):v):"";
         return `<input type="text" enterkeyhint="next" data-i="${i}" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}"${c[0]==="t"?' data-tm="5"':""} autocomplete="off" placeholder="${c[0]==="t"?"0:00":"–"}" value="${val}" aria-label="${c[1]}, set ${j+1}">`}).join("")}
         <button type="button" class="lg-sx" data-rs="${i}:${j}" aria-label="Ta bort set ${j+1}"${it.sets.length<2?" disabled":""}>−</button></div>`).join("")}
+      <div class="lg-allw">${lgAllHtml(i)}</div>
       <button type="button" class="lg-add" data-as="${i}">+ Lägg till set</button>`}
     return `<div class="lg-ex${open?" open":""}" data-i="${i}"><div class="lg-exh${grip?" has-grip":""}">${grip?dndGrip(it.n):""}<button type="button" class="lg-tog" data-tog="${i}" aria-expanded="${open}"><span class="lg-dot${it.st?" st":""}" aria-hidden="true"></span><span class="lg-et"><b>${esc(it.n)}</b><small>${esc(sum)}</small></span><span class="chev" aria-hidden="true">›</span></button><button type="button" class="lg-x" data-rm="${i}" aria-label="Ta bort ${esc(it.n)}">✕</button></div>${body}</div>`}).join("");
   r.innerHTML=`${LG.fromLive?'<button type="button" class="linkbtn" id="fn-back" style="justify-self:start">‹ Tillbaka</button>':""}<div><span class="small">${esc(LG.kicker)}</span><h2>${LG.edit?"Ändra pass":LG.forLive?"Bygg ditt pass":LG.fromLive?"Spara passet":"Logga pass"}</h2></div>
@@ -4418,9 +4455,14 @@ function lgInput(e){const t=e.target;
     s[f]=!v?null:f==="t"?parseT(v):parseFloat(v.replace(",","."));if(!nz(s[f]))s[f]=null;
     if(f!=="t")for(let k=j+1;k<it.sets.length;k++){const o=it.sets[k],ov=nz(o[f])?+o[f]:null;if(ov!==prev)break;o[f]=s[f];
       const inp=document.querySelector(`#lg input[data-i="${t.dataset.i}"][data-j="${k}"][data-f="${f}"]`);if(inp)inp.value=nz(s[f])?(f==="kg"?fmtKg(s[f]):s[f]):""}
-    $("#lg-sum").textContent=lgSum()}
+    const A=LG.all;if(A&&A.s===s&&A.f===f&&A.on)lgAllApply();else if(!A||A.s!==s||A.f!==f)LG.all={it,s,f,on:false,old:null};
+    lgAllRefresh();$("#lg-sum").textContent=lgSum()}
 }
-function lgChange(e){if(e.target.id==="lg-date"&&e.target.value){LG.date=e.target.value>today()?today():e.target.value;renderLG()}}
+function lgChange(e){if(e.target.id==="lg-allcb"){if(!lgAllOk())return;const A=LG.all;
+    if(e.target.checked){A.old=lgOthers(A.i,A.j,A.f).map(([a,b])=>[LG.items[a].sets[b],LG.items[a].sets[b][A.f]]);A.on=true;lgAllApply();HAPTIC("success")}
+    else{(A.old||[]).forEach(([o,v])=>{o[A.f]=v});A.on=false;A.old=null;LG.items.forEach((x,a)=>x.sets.forEach((o,b)=>{const inp=document.querySelector(`#lg input[data-i="${a}"][data-j="${b}"][data-f="${A.f}"]`);if(inp&&inp!==document.activeElement)inp.value=nz(o[A.f])?(A.f==="t"?fmt(o[A.f]):A.f==="kg"?fmtKg(o[A.f]):o[A.f]):""}));lgSyncSums();HAPTIC("light")}
+    lgAllRefresh();return}
+  if(e.target.id==="lg-date"&&e.target.value){LG.date=e.target.value>today()?today():e.target.value;renderLG()}}
 async function saveLG(btn){if(btn.disabled)return;LG.items.forEach(i=>{delete i.spent});
   const items=LG.items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,...(nz(i.sec)?{sec:Math.round(+i.sec)}:{}),sets:(i.sets||[]).map(s=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(s[f]))o[f]=Math.round(+s[f]*10)/10});return o}).filter(s=>Object.keys(s).length)}));
   const f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};

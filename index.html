@@ -1476,6 +1476,16 @@ body.dnd-on{-webkit-user-select:none;user-select:none;cursor:grabbing}
 .pc-bar i{display:block;min-width:3px;background:var(--muted)}.pc-bar i.r{background:var(--accent)}.pc-bar i.s{background:var(--green)}
 .pc-sum{font-size:var(--t-sub);font-weight:600;color:var(--ink)}.pc-n{font-size:var(--t-cap);color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .post .po-media.big{padding:20px 18px;justify-items:center;text-align:center;gap:4px}
+.pr-cmp{display:flex;align-items:flex-end;justify-content:center;gap:14px;margin:6px 0 4px;font-variant-numeric:tabular-nums}
+.pr-cmp small{display:block;font-size:var(--t-cap);font-weight:600;color:var(--muted);letter-spacing:.02em;margin-bottom:2px}
+.pr-old s{display:block;font-size:var(--t-num);font-weight:600;color:var(--muted);letter-spacing:-.03em;line-height:1.05;text-decoration-thickness:2px;text-decoration-color:color-mix(in srgb,var(--muted) 70%,transparent)}
+.pr-new b{display:block;font-size:var(--t-num-xl);font-weight:700;color:var(--ink);letter-spacing:-.045em;line-height:1}
+.pr-arw{color:var(--muted);padding-bottom:8px}.pr-arw svg{width:22px;height:22px;display:block}
+.pr-pct{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:7px 14px;border-radius:980px;background:color-mix(in srgb,var(--good) 15%,transparent);color:var(--good);font-size:var(--t-sub);font-weight:600;font-variant-numeric:tabular-nums}
+.pr-pct svg{width:15px;height:15px}
+.pr-pct em{font-style:normal;font-weight:500;opacity:.8;padding-left:8px;border-left:1px solid color-mix(in srgb,var(--good) 35%,transparent)}
+@media (prefers-reduced-motion:no-preference){.post .pr-new b{animation:prPop .6s var(--spring) both}.post .pr-pct{animation:prIn .5s var(--ease) .15s both}
+  @keyframes prPop{from{transform:scale(.85);opacity:0}}@keyframes prIn{from{transform:translateY(6px);opacity:0}}}
 .post .po-media.big .po-ic{position:static;width:48px;height:48px;border-radius:14px;margin-bottom:6px}
 .post .po-media.big .po-big{font-size:clamp(3.1rem,16vw,4rem)}
 .post .po-media.big .po-d{font-size:var(--t-body);font-weight:600;color:var(--ink);white-space:pre-line}
@@ -2063,7 +2073,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.18 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.19 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2108,7 +2118,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.18";
+const APPVER="1.1.19";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -6112,13 +6122,23 @@ function fdPass(a){if(a.kind!=="pass"||!a.detail)return null;const L=String(a.de
   const avg=rows.filter(r=>r.t).reduce((c,r,i,A)=>c+r.t/A.length,0)||1,seg=rows.map(r=>`<i class="${r.run?"r":r.st?"s":"o"}" style="flex-grow:${r.t||avg}"></i>`).join("")+(extra?`<i class="o" style="flex-grow:${extra*avg}"></i>`:""),n=rows.length+extra,runs=rows.filter(r=>r.run).length,sts=rows.filter(r=>r.st).length;
   const names=[...new Set(rows.filter(r=>!r.run).map(r=>r.st?r.st.n:r.x.replace(/\s*·.*$/,"").replace(/\s+\d.*$/,"")))],sum=[runs?`${runs} ${runs===1?"löpning":"löpningar"}`:"",sts?`${sts} ${sts===1?"station":"stationer"}`:"",!runs&&!sts?`${n} ${n===1?"övning":"övningar"}`:""].filter(Boolean).join(" · ");
   return {head,seg,sum,names:names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""),feat:n>=16||a.title==="Racesimulering"}}
+/* Rekord i flödet: förra rekordet, det nya och förbättringen i procent.
+   Förra rekordet läses ur texten: "… snabbare än förra rekordet 4:20", eller räknas fram ur äldre inlägg som bara säger "8 sekunder snabbare". */
+const fdSec=s=>String(s).split(":").reduce((a,b)=>a*60+(+b||0),0);
+function fdPrCmp(a,big){if(a.kind!=="rekord"||!big)return "";const nw=fdSec(big),t=String(a.detail||"");let old=0;
+  const m=t.match(/förra rekordet (\d{1,2}:\d{2}(?::\d{2})?)/i);
+  if(m)old=fdSec(m[1]);else{const s=t.match(/(\d+) sekunder snabbare/i),c=t.match(/(\d{1,2}:\d{2}) snabbare/i);if(s)old=nw+(+s[1]);else if(c)old=nw+fdSec(c[1])}
+  if(!(nw>0&&old>nw))return "";const p=(old-nw)/old*100,pt=(p<10?p.toFixed(1):Math.round(p)).toString().replace(".",",");
+  return `<div class="pr-cmp" role="img" aria-label="Förra rekordet ${fmt(old)}, nytt rekord ${fmt(nw)}, ${pt} procent snabbare">
+     <span class="pr-old"><small>Förra</small><s>${fmt(old)}</s></span><span class="pr-arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span><span class="pr-new"><small>Nytt</small><b>${fmt(nw)}</b></span></div>
+   <span class="pr-pct" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg>${pt} % snabbare<em>−${fmt(old-nw)}</em></span>`}
 function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),k=FD_KIND[a.kind]?a.kind:"pass",pic=okPost(a.image_url);
   return `<article class="post" data-act="${a.id}">
    <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small><span class="po-kt k-${pic?"pic":k}">${pic?"Bild":FD_KIND[k]}</span>${agoTxt(a.created_at)}${a.edited_at?" · ändrat":""}</small></div></div>${mine?`<button class="po-menu" data-pomenu="${a.id}" aria-label="Fler val för inlägget"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>`:""}</header>
    ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:fdPass(a)?(c=>`<div class="po-media k-pass pc${c.feat?" feat":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}><span class="pc-t">${esc(a.title||"Pass")}</span><b class="pc-big">${esc(c.head)}</b><div class="pc-bar" aria-hidden="true">${c.seg}</div><span class="pc-sum">${esc(c.sum)}</span>${c.names?`<span class="pc-n">${esc(c.names)}</span>`:""}<span class="po-pop" aria-hidden="true">${THUMB}</span></div>`)(fdPass(a)):`<div class="po-media k-${k}${k!=="pass"?" big":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-ic" aria-hidden="true">${fdIcon(k)}</span>
      <span class="po-t">${esc(a.title||"")}</span>
-     ${big?`<b class="po-big">${esc(big)}</b>`:""}${a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":big&&dl[0].startsWith(big+" · ")?[dl[0].slice(big.length+3)].concat(dl.slice(1)).join("\n"):a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():""}
+     ${fdPrCmp(a,big)||(big?`<b class="po-big">${esc(big)}</b>`:"")+(a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":big&&dl[0].startsWith(big+" · ")?[dl[0].slice(big.length+3)].concat(dl.slice(1)).join("\n"):a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():"")}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own" aria-hidden="true">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera">${BUBBLE}<span>${(D.comments[a.id]||[]).length||""}</span></button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
@@ -6542,7 +6562,7 @@ function prFromItems(items){const out=[];
 async function checkPRs(items){const nw=prFromItems(items);if(!nw.length)return;
   nw.forEach(o=>{o.prev=+PRS[o.k]||0;prDate(o.k);PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
   const o=nw[0];setTimeout(()=>{toast(`Nytt rekord: ${o.n} ${fmt(o.t)}`);HAPTIC("success")},900);
-  nw.forEach(x=>{const d=x.prev?Math.round(x.prev-x.t):0;postActivity("rekord",x.n,fmt(x.t)+(d>0?`\n${d<60?`${d} sekunder`:fmt(d)} snabbare`:""))});
+  nw.forEach(x=>{const d=x.prev?Math.round(x.prev-x.t):0;postActivity("rekord",x.n,fmt(x.t)+(d>0?`\n${d<60?`${d} sekunder`:fmt(d)} snabbare än förra rekordet ${fmt(x.prev)}`:""))});
 }
 
 

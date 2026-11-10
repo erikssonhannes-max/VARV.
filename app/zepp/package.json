@@ -1,0 +1,9 @@
+{
+  "name": "varv-zepp",
+  "private": true,
+  "version": "1.0.0",
+  "description": "VARV. för Amazfit (Zepp OS)",
+  "dependencies": {
+    "@zeppos/zml": "latest"
+  }
+}

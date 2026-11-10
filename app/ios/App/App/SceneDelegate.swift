@@ -8,7 +8,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = scene as? UIWindowScene else { return }
 
         window = UIWindow(windowScene: windowScene)
-        // MainViewController registrerar VARV.:s egna insticksmoduler (Kalender och Apple Watch).
+        // MainViewController registrerar VARV.:s egna insticksmoduler (Kalender, Apple Watch och Hälsa).
         window?.rootViewController = MainViewController()
         window?.makeKeyAndVisible()
 

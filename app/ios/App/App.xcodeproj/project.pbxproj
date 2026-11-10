@@ -25,6 +25,7 @@
 		A1C0DE022F00000000000025 /* Views.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE022F00000000000015 /* Views.swift */; };
 		A1C0DE022F00000000000026 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1C0DE022F00000000000016 /* Assets.xcassets */; };
 		A1C0DE022F00000000000031 /* VarvWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = A1C0DE022F00000000000030 /* VarvWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A1C0DE032F00000000000002 /* VarvHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1C0DE032F00000000000001 /* VarvHealth.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		A1C0DE022F00000000000016 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1C0DE022F00000000000017 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1C0DE022F00000000000030 /* VarvWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VarvWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A1C0DE032F00000000000001 /* VarvHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VarvHealth.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -121,6 +123,7 @@
 				504EC3071FED79650016851F /* AppDelegate.swift */,
 				A1C0DE012F00000000000001 /* VarvCalendar.swift */,
 				A1C0DE022F00000000000001 /* VarvWatch.swift */,
+				A1C0DE032F00000000000001 /* VarvHealth.swift */,
 				504EC30B1FED79650016851F /* Main.storyboard */,
 				504EC30E1FED79650016851F /* Assets.xcassets */,
 				504EC3101FED79650016851F /* LaunchScreen.storyboard */,
@@ -200,6 +203,11 @@
 						CreatedOnToolsVersion = 9.2;
 						LastSwiftMigration = 1100;
 						ProvisioningStyle = Automatic;
+						SystemCapabilities = {
+							com.apple.HealthKit = {
+								enabled = 1;
+							};
+						};
 					};
 					A1C0DE022F00000000000040 = {
 						CreatedOnToolsVersion = 15.0;
@@ -261,6 +269,7 @@
 				504EC3081FED79650016851F /* AppDelegate.swift in Sources */,
 				A1C0DE012F00000000000002 /* VarvCalendar.swift in Sources */,
 				A1C0DE022F00000000000002 /* VarvWatch.swift in Sources */,
+				A1C0DE032F00000000000002 /* VarvHealth.swift in Sources */,
 				9582B6832FE993A70072D4E8 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

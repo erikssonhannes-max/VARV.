@@ -2244,7 +2244,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.39 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.40 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2291,7 +2291,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.39";
+const APPVER="1.1.40";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2906,17 +2906,19 @@ async function addLog(e){
   if(mode==="db"&&col){try{const id="log"+Date.now().toString(36);await col.doc(id).set(e);return id}catch(err){toast(err&&err.code==="quota_exceeded"?"Loggen är full. Ta bort gamla pass.":"Kunde inte spara. Försök igen.");return false}}
   e.id="l"+Date.now();LOGS.unshift(e);saveLocal();renderAllData();return e.id;
 }
+/* Pass som hämtas utifrån (Strava, Apple Hälsa) döljs i stället för att tas bort, så att de inte kommer tillbaka vid nästa hämtning */
+const isExtId=id=>/^(strava|health)-/.test(String(id||""));
 let HIDDEN=new Set();try{HIDDEN=new Set(JSON.parse(localStorage.getItem("hyrox-hidden")||"[]"))}catch(e){}
 async function updLog(id,f){const l=LOGS.find(x=>x.id===id);if(!l)return false;const n=Object.assign({},l,f,{edited:true});
   if(mode==="db"&&col){const b=Object.assign({},n);delete b.id;try{await col.doc(id).set(b);return true}catch(err){toast("Kunde inte spara ändringen.");return false}}
   LOGS=LOGS.map(x=>x.id===id?n:x);saveLocal();renderAllData();return true}
 function openEditLog(id){const l=LOGS.find(x=>x.id===id);if(l)openLogger({edit:l})}
 async function delWithUndo(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const copy=Object.assign({},l);await delLog(id);await fixPRs(l.items);
-  if(String(id).startsWith("strava-")){toast("Passet är dolt");return}
+  if(isExtId(id)){toast("Passet är dolt");return}
   toast("Passet är borttaget",{label:"Ångra",action:async()=>{const c=Object.assign({},copy);delete c.id;if(await addLog(c)){toast("Passet är tillbaka");try{checkPRs(c.items)}catch(e){}}}})}
 async function delLog(id){
-  if(String(id).startsWith("strava-")){HIDDEN.add(id);try{localStorage.setItem("hyrox-hidden",JSON.stringify([...HIDDEN]))}catch(e){}}
-  if(mode==="db"&&col){try{if(String(id).startsWith("strava-")){const l=LOGS.find(x=>x.id===id)||{};const b=Object.assign({},l,{hidden:true});delete b.id;await col.doc(id).set(b)}else await col.doc(id).delete()}catch(err){toast("Kunde inte ta bort passet.")}return}
+  if(isExtId(id)){HIDDEN.add(id);try{localStorage.setItem("hyrox-hidden",JSON.stringify([...HIDDEN]))}catch(e){}}
+  if(mode==="db"&&col){try{if(isExtId(id)){const l=LOGS.find(x=>x.id===id)||{};const b=Object.assign({},l,{hidden:true});delete b.id;await col.doc(id).set(b)}else await col.doc(id).delete()}catch(err){toast("Kunde inte ta bort passet.")}return}
   LOGS=LOGS.filter(l=>l.id!==id);saveLocal();renderAllData();
 }
 async function savePRs(){
@@ -3019,7 +3021,7 @@ async function sbStart(u){
   C.onSnapshot(onDataSnap,()=>{toast("Kunde inte hämta dina data. Kontrollera nätet.")});
   renderAvatar();if(location.hash==="#profil")renderProfile();
   loadMyProfile();
-  watchApple();watchPublish();
+  watchApple();watchPublish();healthImport(false);
 }
 
 /* Tar bort allt som hör till kontot från enheten. Inbjudningar och offentliga listor får vara kvar, och inloggningen sköts av Supabase. */
@@ -4627,7 +4629,7 @@ function openLogger(o){o=o||{};const ed=o.edit;
   if(LIVE&&!ed&&!o.date){LIVE.open=true;saveLive();renderLive();liveWake();return}
   if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT&&!o.forLive&&!o.fresh&&(!o.kicker||o.kicker===LGDRAFT.kicker)){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
   LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:(o.date||today()),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
-    rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":"Pass"):"Nytt pass"),
+    rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":ed.src==="health"?"Från Apple Hälsa":ed.src==="watch"?"Från klockan":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};
   if(ed&&!ed.items&&ed.stations)ed.stations.forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x,true))});
   if(!ed&&o.type==="Racesimulering"&&(o.stations||[]).length)LG.items=raceSteps(o.stations.map(n=>(EX.find(e=>e.n===n)||{}).id).filter(Boolean));
@@ -5128,7 +5130,7 @@ let filt="Alla",HM=null,HD=null,HQ="";
 const histMonth=d=>String(d||"").slice(0,7);
 function histNorm(l){return [l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
 function histRow(l){const d=new Date(l.date+"T12:00:00"),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))],sub=names.length?names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""):(l.stations||[]).join(", "),wd=d.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
-  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':l.src==="watch"?'<span class="src">Klocka</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
+  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':l.src==="watch"?'<span class="src">Klocka</span>':l.src==="health"?'<span class="src">Hälsa</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
 function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||HQ){el.innerHTML="";return}
   const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
   LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
@@ -5155,7 +5157,7 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
    ${l.bench&&+l.bench.t>0?`<p class="muted" style="margin:0">Din tid: <b style="color:var(--ink);font-variant-numeric:tabular-nums">${fmt(l.bench.t)}</b></p>`:""}
    ${rows?`<div class="card"><ol class="tl">${rows}</ol></div>`:(l.stations||[]).length?`<p class="muted" style="margin:0">${esc(l.stations.join(", "))}</p>`:""}
    ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
-   ${(()=>{const t=togLine(l),can=SBUSER&&TOG.ok&&!l.shared&&!String(id).startsWith("strava-")&&mode==="db"&&togMates().length;if(!t&&!can)return "";
+   ${(()=>{const t=togLine(l),can=SBUSER&&TOG.ok&&!l.shared&&!isExtId(id)&&mode==="db"&&togMates().length;if(!t&&!can)return "";
      return `<div class="card tog-card">${t?`<p class="tog-line big">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:""}${can?`<button class="linkbtn" id="ld-tog">${t?"+ Lägg till fler":"Tränade du med någon?"}</button>`:""}</div>`})()}
    ${isRace?`<button class="pill ghost block" id="ld-race">Visa loppanalys</button>`:""}
    ${its.length?`<button class="pill block" id="ld-again">Kör passet igen</button>`:""}
@@ -6064,8 +6066,9 @@ function renderProfile(){
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-man").onclick=()=>{set.lvManual=!set.lvManual;saveSet();renderProfile()};
   $("#pf-sw-hap").onclick=()=>{set.cues.haptic=set.cues.haptic===false;saveSet();renderProfile();renderCues()};
-  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}${SBUSER?`<button class="row" id="pf-watch"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6" width="11" height="12" rx="3"/><path d="M9 6l.6-3.500h4.800L15 6M9 18l.6 3.500h4.800L15 18M12 9.500V12l1.500 1.500"/></svg></span><div><h3>Klockor</h3><p>${set.watch?"Starta och logga pass från klockan":"Apple Watch och Garmin"}</p></div><span class="chev">›</span></button>`:""}`;
+  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}${SBUSER?`<button class="row" id="pf-watch"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6" width="11" height="12" rx="3"/><path d="M9 6l.6-3.500h4.800L15 6M9 18l.6 3.500h4.800L15 18M12 9.500V12l1.500 1.500"/></svg></span><div><h3>Klockor</h3><p>${set.watch?"Starta och logga pass från klockan":"Apple Watch, Garmin och Amazfit"}</p></div><span class="chev">›</span></button>`:""}`;
   {const b=$("#pf-watch");if(b)b.onclick=openWatches}
+  if(healthNative()){const g=$("#pf-con");g.insertAdjacentHTML("beforeend",`<button class="row" id="pf-health"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7-4.400-7-10a4 4 0 0 1 7-2.600A4 4 0 0 1 19 10c0 5.600-7 10-7 10z"/></svg></span><div><h3>Apple Hälsa</h3><p>${set.health?"Hämtar pass från andra klockor":"Pass från Amazfit, Polar och andra klockor"}</p></div><span class="chev">›</span></button>`);$("#pf-health").onclick=openHealth}
   $("#pf-con-wrap").hidden=!$("#pf-con").innerHTML.trim();
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
@@ -7225,7 +7228,7 @@ applyTheme();
 $("#pp-back").onclick=()=>{if(history.length>1)history.back();else location.hash="#feed"};
 drawOval();refreshDivision();renderSplits();renderPlan();renderLog();renderPRs();renderHome();renderPack();renderRace();
 if(RACE&&!RACE.end){startTick();keepAwake()}
-/* ============ Klockor: Apple Watch och Garmin ============ */
+/* ============ Klockor: Apple Watch, Garmin och Amazfit ============ */
 /* Klockan visar Förberedda och Färdiga pass och sparar passet direkt i kontot (se supabase/klocka.sql).
    Appen publicerar passen, kopplar klockan och tar hand om rekord och aktivitet när passet kommer in. */
 const WATCH_KEY="varv-watch";
@@ -7305,10 +7308,11 @@ async function openWatches(){
   const draw=()=>{const el=$("#wt");if(!el)return;const st=WATCHST,can=watchNative()&&st&&st.paired&&st.installed,on=!!mine()&&(rows||[]).some(r=>r.id===mine());
     el.innerHTML=`<div><span class="small">Kopplingar</span><h2>Klockor</h2><p class="small">Starta ett förberett eller färdigt pass på klockan. När du är klar sparas passet i VARV. och syns här i appen.</p></div>
      <div><span class="lbl">Apple Watch</span><div class="card" style="margin-top:8px"><p style="margin:0;line-height:1.5">${esc(apple())}</p>${can&&!on?`<button type="button" class="pill ghost block" id="wt-apple" style="margin-top:12px">Koppla Apple Watch</button>`:""}</div></div>
-     <div><span class="lbl">Garmin</span><div class="card" style="margin-top:8px">${code?`<span class="small">Din kod, giltig i 15 minuter</span><b style="display:block;font-size:var(--t-num-l);font-variant-numeric:tabular-nums;letter-spacing:.12em;margin:4px 0 10px">${esc(code.slice(0,4))} ${esc(code.slice(4))}</b>
-       <ol style="margin:0;padding-left:20px;line-height:1.6"><li>Installera VARV. på klockan från Connect IQ Store.</li><li>Öppna Garmin Connect på telefonen, välj din klocka och sedan Appar, VARV. och Inställningar.</li><li>Skriv in koden och spara.</li><li>Öppna VARV. på klockan.</li></ol>`
-       :`<p style="margin:0;line-height:1.5">Hämta en kod här och skriv in den i Garmin Connect, så kopplas klockan till ditt konto.</p><button type="button" class="pill block" id="wt-code" style="margin-top:12px">Koppla en Garmin</button>`}</div></div>
-     <div><span class="lbl">Kopplade klockor</span>${rows===null?`<p class="small" style="margin-top:8px">Klockorna gick inte att hämta. Kontrollera nätet och försök igen.</p>`:rows.length?`<div class="group" style="margin-top:8px">${rows.map(r=>`<div class="row"><span class="badge">${r.platform==="garmin"?"G":"A"}</span><div><h3>${esc(r.name||(r.platform==="garmin"?"Garmin":"Apple Watch"))}</h3><p>${esc(watchAgo(r.last_seen))}</p></div><button type="button" class="linkbtn" data-wt-del="${esc(r.id)}">Koppla bort</button></div>`).join("")}</div>`:`<p class="small" style="margin-top:8px">Ingen klocka är kopplad än.</p>`}</div>`;
+     <div><span class="lbl">Garmin och Amazfit</span><div class="card" style="margin-top:8px">${code?`<span class="small">Din kod, giltig i 15 minuter</span><b style="display:block;font-size:var(--t-num-l);font-variant-numeric:tabular-nums;letter-spacing:.12em;margin:4px 0 10px">${esc(code.slice(0,4))} ${esc(code.slice(4))}</b>
+       <span class="small">Garmin</span><ol style="margin:4px 0 12px;padding-left:20px;line-height:1.6"><li>Installera VARV. på klockan från Connect IQ Store.</li><li>Öppna Garmin Connect på telefonen, välj din klocka och sedan Appar, VARV. och Inställningar.</li><li>Skriv in koden och spara.</li><li>Öppna VARV. på klockan.</li></ol>
+       <span class="small">Amazfit</span><ol style="margin:4px 0 0;padding-left:20px;line-height:1.6"><li>Installera VARV. på klockan från appbutiken i appen Zepp.</li><li>Öppna VARV. bland klockans appar i Zepp och tryck Inställningar.</li><li>Skriv in koden.</li><li>Öppna VARV. på klockan.</li></ol>`
+       :`<p style="margin:0;line-height:1.5">Hämta en kod här och skriv in den i Garmin Connect eller Zepp, så kopplas klockan till ditt konto. Amazfit-klockor behöver Zepp OS 3 eller senare.</p><button type="button" class="pill block" id="wt-code" style="margin-top:12px">Koppla en klocka</button>`}</div></div>
+     <div><span class="lbl">Kopplade klockor</span>${rows===null?`<p class="small" style="margin-top:8px">Klockorna gick inte att hämta. Kontrollera nätet och försök igen.</p>`:rows.length?`<div class="group" style="margin-top:8px">${rows.map(r=>`<div class="row"><span class="badge">${r.platform==="garmin"?"G":r.platform==="amazfit"?"Z":"A"}</span><div><h3>${esc(r.name||(r.platform==="garmin"?"Garmin":r.platform==="amazfit"?"Amazfit":"Apple Watch"))}</h3><p>${esc(watchAgo(r.last_seen))}</p></div><button type="button" class="linkbtn" data-wt-del="${esc(r.id)}">Koppla bort</button></div>`).join("")}</div>`:`<p class="small" style="margin-top:8px">Ingen klocka är kopplad än.</p>`}</div>`;
     const a=$("#wt-apple");if(a)a.onclick=()=>busy(a,async()=>{await watchApple(true);await load();draw();if(mine())toast("Apple Watch är kopplad")});
     const c=$("#wt-code");if(c)c.onclick=()=>busy(c,async()=>{if(busyCode)return;busyCode=true;
       try{const {data,error}=await SB.rpc("watch_code");if(error||!data||!data.code)throw error||new Error("kod");code=data.code;if(!set.watch){set.watch=true;saveSet()}watchPublish(true)}
@@ -7322,6 +7326,51 @@ async function openWatches(){
   /* En Garmin som just har kopplats dyker upp i listan utan att man behöver stänga och öppna */
   const iv=setInterval(async()=>{if(!$("#wt")){clearInterval(iv);return}if(!code)return;const n=rows?rows.length:0;await load();if(rows&&rows.length>n){code=null;draw();toast("Klockan är kopplad")}},5000);
 }
+
+/* ============ Apple Hälsa: pass från andra klockor ============ */
+/* iPhone-appen läser träningspass ur Hälsa (app/ios/App/App/VarvHealth.swift). Det gör att klockor som
+   Amazfit, Polar, Suunto och Apple Watch utan VARV. kommer in i loggen. VARV. skriver aldrig till Hälsa. */
+const healthNative=()=>IS_NATIVE&&isIOS()&&typeof window.Capacitor.nativePromise==="function";
+function healthCall(m,o,ms){return Promise.race([window.Capacitor.nativePromise("VarvHealth",m,o||{}),new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),ms||8000))])}
+/* Typerna i Hälsa (HKWorkoutActivityType) som passtyper i VARV. Resten blir Annat, med namnet i anteckningen. */
+const HK_TYPE={37:"Löpning",35:"Motor (SkiErg/rodd)",50:"Styrka",20:"Styrka",59:"Styrka",11:"Styrka och stationer",63:"Styrka och stationer",73:"Styrka och stationer",30:"Styrka och stationer"};
+const HK_NAME={52:"Promenad",13:"Cykling",24:"Vandring",57:"Yoga",46:"Simning",16:"Crosstrainer",44:"Trappmaskin",68:"Trappor",66:"Pilates",8:"Boxning",64:"Hopprep",62:"Rörlighet",80:"Nedvarvning",60:"Längdskidor",61:"Utförsåkning"};
+let HEALTH={state:"idle",msg:""};
+function healthToLog(x){
+  const d=new Date(x.start),date=iso(d),min=Math.max(1,Math.round((x.duration||0)/60)),type=HK_TYPE[x.type]||"Annat";
+  const km=x.meters>0?x.meters/1000:0,run=x.type===37;
+  const note=[String(x.source||"").slice(0,40),type==="Annat"&&HK_NAME[x.type]?HK_NAME[x.type]:"",km>=.1?`${km.toFixed(2).replace(".",",")} km`:"",run&&km>=.4&&x.duration?`${fmt(x.duration/km)} /km`:"",x.hr?`snittpuls ${x.hr}`:""].filter(Boolean).join(" · ");
+  return {id:"health-"+x.id,date,type,min,rpe:null,stations:[],note,src:"health",ext:x.id,created:Math.round(x.start)};
+}
+async function healthImport(manual){
+  /* Bara när kontot är laddat, annars kan pass hamna på telefonen och skrivas över när kontot kommer */
+  if(!healthNative()||!set.health||HEALTH.state==="sync"||mode!=="db"||!col)return;
+  HEALTH.state="sync";renderHealth();
+  try{
+    /* Två dagar bakåt från senaste hämtningen, eftersom klockor ofta synkar sent. Första gången åtta veckor. */
+    const since=set.healthLast?set.healthLast-2*864e5:Date.now()-56*864e5;
+    const r=await healthCall("workouts",{since,limit:150},20000);
+    const list=((r&&r.workouts)||[]).filter(x=>x&&x.id&&x.duration>=180&&x.bundle!=="com.varvtraining.app");
+    let n=0;
+    for(const x of list){const l=healthToLog(x);if(HIDDEN.has(l.id)||LOGS.some(y=>y.id===l.id))continue;
+      const b=Object.assign({},l);delete b.id;try{await col.doc(l.id).set(b);n++}catch(e){}}
+    set.healthLast=Date.now();saveSet();
+    HEALTH={state:"ok",msg:n?`${n} ${n===1?"nytt pass":"nya pass"} från Hälsa`:list.length?"Allt är redan hämtat":"Inga pass hittades i Hälsa"};
+    if(manual||n)toast(HEALTH.msg);
+  }catch(e){HEALTH={state:"err",msg:"Hälsa svarade inte. Försök igen."}}
+  renderHealth();
+}
+function renderHealth(){const el=$("#hl");if(!el)return;const on=!!set.health,sync=HEALTH.state==="sync";
+  el.innerHTML=`<div><span class="small">Kopplingar</span><h2>Apple Hälsa</h2><p class="small">VARV. hämtar dina träningspass från Hälsa varje gång du öppnar appen. Då kommer pass från klockor som Amazfit, Polar, Suunto och Apple Watch in i din logg, med tid, sträcka och snittpuls.</p></div>
+   <div class="card"><p style="margin:0;line-height:1.5">${on?esc(sync?"Hämtar dina pass…":HEALTH.msg||(set.healthLast?"Hämtade senast "+new Date(set.healthLast).toLocaleString("sv-SE",{day:"numeric",month:"short",hour:"2-digit",minute:"2-digit"}).replace(/\./g,""):"Påslaget")):"Avstängt. Inga pass hämtas från Hälsa."}</p>
+   <p class="small" style="margin:8px 0 0">Din klocka måste lämna sina pass till Hälsa. För Amazfit slår du på det i appen Zepp under Profil, Lägg till konton och Apple Hälsa.</p></div>
+   ${on?`<button type="button" class="pill block" id="hl-sync"${sync?" disabled":""}>${sync?"Hämtar…":"Hämta nu"}</button><button type="button" class="pill ghost block" id="hl-off">Sluta hämta från Hälsa</button>`:`<button type="button" class="pill block" id="hl-on">Hämta pass från Hälsa</button>`}
+   <p class="small">Ser du inga pass? Öppna Inställningar på telefonen, Hälsa, Dataåtkomst och enheter, VARV. och slå på Träningspass. VARV. skriver aldrig något till Hälsa. Ett pass du tar bort i VARV. hämtas inte igen.</p>`;
+  const a=$("#hl-on");if(a)a.onclick=()=>busy(a,async()=>{if(!SBUSER){openAuth("in");return}try{await healthCall("authorize",{},120000)}catch(e){toast("Hälsa gick inte att öppna.");return}set.health=true;saveSet();renderProfile();await healthImport(true)});
+  const b=$("#hl-sync");if(b)b.onclick=()=>healthImport(true);
+  const c=$("#hl-off");if(c)c.onclick=()=>{set.health=false;saveSet();HEALTH={state:"idle",msg:""};renderHealth();renderProfile();toast("VARV. hämtar inte längre pass från Hälsa")}}
+function openHealth(){openSheet(`<div id="hl" style="display:grid;gap:16px"></div>`);renderHealth()}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&set.health&&(!set.healthLast||Date.now()-set.healthLast>10*6e4))healthImport(false)});
 
 route();
 if(!window.claude)initSupabase();

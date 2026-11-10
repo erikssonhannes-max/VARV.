@@ -8,6 +8,7 @@ class MainViewController: CAPBridgeViewController {
     override open func capacitorDidLoad() {
         bridge?.registerPluginInstance(VarvCalendarPlugin())
         bridge?.registerPluginInstance(VarvWatchPlugin())
+        bridge?.registerPluginInstance(VarvHealthPlugin())
     }
 }
 

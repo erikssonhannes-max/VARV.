@@ -1,10 +1,10 @@
--- VARV. – klockor: Apple Watch och Garmin
+-- VARV. – klockor: Apple Watch, Garmin och Amazfit
 -- Kör hela filen en gång i Supabase: SQL Editor → New query → klistra in → Run.
 -- Går att köra igen utan att något försvinner. Kräver att schema.sql redan är körd.
 --
 -- Det här skapas:
 --   watch_devices  – klockor som är kopplade till ett konto. Bara en hash av klockans nyckel sparas.
---   watch_codes    – korta koder för att koppla en Garmin, giltiga i 15 minuter
+--   watch_codes    – korta koder för att koppla en Garmin eller Amazfit, giltiga i 15 minuter
 --   watch_plans    – passen som klockan kan visa: Förberedda och Färdiga pass, publicerade av appen
 --   funktioner som klockan anropar med sin nyckel, utan inloggning:
 --     watch_claim(kod, namn)          → ny nyckel för en Garmin
@@ -31,6 +31,10 @@ create table if not exists public.watch_devices (
   last_seen  timestamptz
 );
 create index if not exists watch_devices_user on public.watch_devices (user_id);
+-- Amazfit kom till efter första versionen. Regeln byts ut så att filen går att köra igen.
+alter table public.watch_devices drop constraint if exists watch_devices_platform_check;
+alter table public.watch_devices add constraint watch_devices_platform_check
+  check (platform in ('apple', 'garmin', 'amazfit'));
 
 alter table public.watch_devices enable row level security;
 drop policy if exists "Se egna klockor" on public.watch_devices;
@@ -170,7 +174,7 @@ begin
   if uid is null then
     raise exception 'Inte inloggad';
   end if;
-  if p_platform not in ('apple', 'garmin') then
+  if p_platform not in ('apple', 'garmin', 'amazfit') then
     raise exception 'Okänd klocka';
   end if;
   if (select count(*) from public.watch_devices where user_id = uid) >= 10 then
@@ -218,7 +222,10 @@ begin
     raise exception 'Du har redan tio klockor kopplade';
   end if;
   insert into public.watch_devices (user_id, platform, name, token_hash)
-  values (uid, 'garmin', left(coalesce(nullif(p_name, ''), 'Garmin'), 60), private.watch_hash(t));
+  -- Amazfit-appen skickar namnet Amazfit. Allt annat är en Garmin, som i första versionen.
+  values (uid,
+          case when coalesce(p_name, '') ilike 'amazfit%' then 'amazfit' else 'garmin' end,
+          left(coalesce(nullif(p_name, ''), 'Garmin'), 60), private.watch_hash(t));
   return jsonb_build_object('token', t);
 end;
 $$;

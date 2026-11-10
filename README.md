@@ -92,12 +92,13 @@ Notis om nya tävlingar
     Knappen till appen styrs av APP_URL högst upp i skriptet. Byt den mot butikslänken när appen finns i App Store och Google Play.
     Hyrox nämns bara för att beskriva loppen. Inga logotyper, bilder eller texter från HYROX, och varje sida säger att VARV. är fristående.
 
-Klockor: Apple Watch och Garmin
+Klockor: Apple Watch, Garmin och Amazfit
 
-    Kör supabase/klocka.sql i Supabase. Kräver schema.sql. Går att köra igen.
+    Kör supabase/klocka.sql i Supabase. Kräver schema.sql. Går att köra igen, och ska köras igen när filen ändras.
     Klockan visar Förberedda och Färdiga pass och sparar passet direkt i kontot. Varje klocka har en egen nyckel, och bara en hash av den sparas.
-    Apple Watch kopplas av sig själv från iPhone-appen. En Garmin kopplas med en kod under Profil → Inställningar → Klockor.
-    Klockapparna ligger i app/ios/App/VarvWatch och app/garmin. Se app/README.md.
+    Apple Watch kopplas av sig själv från iPhone-appen. Garmin och Amazfit kopplas med en kod under Profil → Inställningar → Klockor.
+    Klockapparna ligger i app/ios/App/VarvWatch, app/garmin och app/zepp. Se app/README.md.
+    Andra klockor, som äldre Amazfit, Polar och Suunto, kommer in via Apple Hälsa i iPhone-appen (Profil → Inställningar → Apple Hälsa).
 
 Kopplingar att ansöka om
 

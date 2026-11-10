@@ -92,6 +92,13 @@ Notis om nya tävlingar
     Knappen till appen styrs av APP_URL högst upp i skriptet. Byt den mot butikslänken när appen finns i App Store och Google Play.
     Hyrox nämns bara för att beskriva loppen. Inga logotyper, bilder eller texter från HYROX, och varje sida säger att VARV. är fristående.
 
+Klockor: Apple Watch och Garmin
+
+    Kör supabase/klocka.sql i Supabase. Kräver schema.sql. Går att köra igen.
+    Klockan visar Förberedda och Färdiga pass och sparar passet direkt i kontot. Varje klocka har en egen nyckel, och bara en hash av den sparas.
+    Apple Watch kopplas av sig själv från iPhone-appen. En Garmin kopplas med en kod under Profil → Inställningar → Klockor.
+    Klockapparna ligger i app/ios/App/VarvWatch och app/garmin. Se app/README.md.
+
 Kopplingar att ansöka om
 
     Strava: skapa en app på strava.com/settings/api. Callback-domän varvtraining.com. Ge client id och secret till den som bygger kopplingen.

@@ -2406,7 +2406,7 @@ function calcLevel(){const km=set.test&&+set.test.km,t=+set.target;
   if(km>=120&&km<=900)return km<=225?"elit":km>=330?"ny":"mellan";
   if(t>0)return t<=75?"elit":t>=105?"ny":"mellan";return "mellan"}
 function autoLevel(){set.level=calcLevel()}
-function saveSet(){autoLevel();try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}pushSettings()}
+function saveSet(){autoLevel();try{localStorage.setItem("hyrox-set",JSON.stringify(set))}catch(e){}pushSettings();watchPublish()}
 function iso(d){const x=new Date(d);x.setMinutes(x.getMinutes()-x.getTimezoneOffset());return x.toISOString().slice(0,10)}
 const today=()=>iso(new Date());
 if(!set.date){const d=new Date();d.setDate(d.getDate()+84);set.date=iso(d)}
@@ -2889,6 +2889,7 @@ function onDataSnap(snap){
   const logs=[];let prs={};
   snap.docs.forEach(d=>{const v=d.data()||{};if(d.id==="meta")prs=Object.assign({},v.prs||{});else if(d.id==="settings")return;else if(v.hidden)HIDDEN.add(d.id);else logs.push(Object.assign({id:d.id},v))});
   LOGS=logs;PRS=prs;renderAllData();
+  try{watchIngest()}catch(e){}
 }
 async function initDb(){
   try{
@@ -2923,7 +2924,7 @@ async function savePRs(){
   saveLocal();renderAllData();
 }
 function renderAllData(){LOGS.forEach(l=>{if(!l)return;if(l.type==="Kompromiss"+"löpning")l.type="Löpning och stationer";
-  if(l.type==="Styrka och stationer"&&Array.isArray(l.items)&&l.items.length&&!l.items.some(i=>i&&i.st)&&!(l.stations||[]).length)l.type="Styrka"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();renderToPro();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800)}
+  if(l.type==="Styrka och stationer"&&Array.isArray(l.items)&&l.items.length&&!l.items.some(i=>i&&i.st)&&!(l.stations||[]).length)l.type="Styrka"});renderLog();renderPlan();renderHome();renderPRs();renderAvatar();renderToPro();if(location.hash==="#profil")renderProfile();clearTimeout(renderAllData.t);renderAllData.t=setTimeout(syncBoard,800);watchPublish()}
 
 /* ============ Konto: inloggning med Supabase ============ */
 /* Används när appen körs som vanlig webbapp. Pass, rekord och inställningar sparas
@@ -3018,6 +3019,7 @@ async function sbStart(u){
   C.onSnapshot(onDataSnap,()=>{toast("Kunde inte hämta dina data. Kontrollera nätet.")});
   renderAvatar();if(location.hash==="#profil")renderProfile();
   loadMyProfile();
+  watchApple();watchPublish();
 }
 
 /* Tar bort allt som hör till kontot från enheten. Inbjudningar och offentliga listor får vara kvar, och inloggningen sköts av Supabase. */
@@ -3027,6 +3029,7 @@ async function sbSignOut(){
   /* sista ändringen ska hinna sparas i kontot innan den rensas här */
   clearTimeout(pushSettings.t);
   try{if(SBCOL&&SBSETOK){const c=JSON.parse(JSON.stringify(set));delete c.geo;await SBCOL.doc("settings").set(c)}}catch(e){}
+  try{await watchUnlink()}catch(e){}
   try{await SB.auth.signOut()}catch(e){}
   wipeLocal();
   location.hash="#profil";location.reload();
@@ -5125,7 +5128,7 @@ let filt="Alla",HM=null,HD=null,HQ="";
 const histMonth=d=>String(d||"").slice(0,7);
 function histNorm(l){return [l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
 function histRow(l){const d=new Date(l.date+"T12:00:00"),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))],sub=names.length?names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""):(l.stations||[]).join(", "),wd=d.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
-  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
+  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':l.src==="watch"?'<span class="src">Klocka</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
 function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||HQ){el.innerHTML="";return}
   const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
   LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
@@ -6061,7 +6064,8 @@ function renderProfile(){
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-man").onclick=()=>{set.lvManual=!set.lvManual;saveSet();renderProfile()};
   $("#pf-sw-hap").onclick=()=>{set.cues.haptic=set.cues.haptic===false;saveSet();renderProfile();renderCues()};
-  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}`;
+  $("#pf-con").innerHTML=`${MCP?`<a class="row" href="#logg"><span class="badge">S</span><div><h3>Strava</h3><p>${set.strava?"Kopplad. Synkar dina pass och pulszoner.":"Inte kopplad än."}</p></div><span class="chev">›</span></a>`:""}${SBUSER?`<button class="row" id="pf-watch"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="6" width="11" height="12" rx="3"/><path d="M9 6l.6-3.500h4.800L15 6M9 18l.6 3.500h4.800L15 18M12 9.500V12l1.500 1.500"/></svg></span><div><h3>Klockor</h3><p>${set.watch?"Starta och logga pass från klockan":"Apple Watch och Garmin"}</p></div><span class="chev">›</span></button>`:""}`;
+  {const b=$("#pf-watch");if(b)b.onclick=openWatches}
   $("#pf-con-wrap").hidden=!$("#pf-con").innerHTML.trim();
   $("#pf-exp").hidden=!DL;
   if(typeof renderSocial==="function")renderSocial();
@@ -7221,6 +7225,104 @@ applyTheme();
 $("#pp-back").onclick=()=>{if(history.length>1)history.back();else location.hash="#feed"};
 drawOval();refreshDivision();renderSplits();renderPlan();renderLog();renderPRs();renderHome();renderPack();renderRace();
 if(RACE&&!RACE.end){startTick();keepAwake()}
+/* ============ Klockor: Apple Watch och Garmin ============ */
+/* Klockan visar Förberedda och Färdiga pass och sparar passet direkt i kontot (se supabase/klocka.sql).
+   Appen publicerar passen, kopplar klockan och tar hand om rekord och aktivitet när passet kommer in. */
+const WATCH_KEY="varv-watch";
+var WATCHST=null;
+const watchNative=()=>IS_NATIVE&&isIOS()&&typeof window.Capacitor.nativePromise==="function";
+/* Ett äldre bygge utan klockstöd svarar aldrig, därav tidsgränsen */
+function watchCall(m,o){return Promise.race([window.Capacitor.nativePromise("VarvWatch",m,o||{}),new Promise((_,no)=>setTimeout(()=>no(new Error("timeout")),4000))])}
+function watchLocal(){try{const w=JSON.parse(localStorage.getItem(WATCH_KEY)||"null");return w&&SBUSER&&w.uid===SBUSER.id?w:null}catch(e){return null}}
+function watchType(it){const isRun=i=>i.ex==="run"||i.ex==="tread",st=it.filter(i=>i.st).length,run=it.find(isRun);
+  const motor=it.every(i=>["ski","row","bike","bikeerg"].includes(i.ex)),other=it.some(i=>!i.st&&!isRun(i));
+  if(st>=8&&run)return "Racesimulering";if(motor)return "Motor (SkiErg/rodd)";if(run&&st)return "Löpning och stationer";
+  if(run&&!other)return run.sets.length>1?"Intervaller":"Löpning";return st?"Styrka och stationer":"Styrka"}
+function watchPasses(){
+  /* Målet som i passläget. Är tiden det enda målet, som i 4 × 4 min, står den med här. */
+  const goal=i=>{const g=lvGoal(i);if(g)return g;const t=itemTxt(i);return t===i.n?"":t.slice(i.n.length+1)};
+  const item=i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,g:goal(i),sets:(i.sets||[]).map(x=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(x[f]))o[f]=+x[f]});return o})});
+  const out=[];
+  (set.tpls||[]).slice().reverse().forEach(t=>{if(!t||!Array.isArray(t.items)||!t.items.length)return;
+    out.push({id:"t-"+t.id,n:String(t.name||"Pass").slice(0,60),t:t.type||watchType(t.items),m:null,g:"Förberedda",h:String(t.hint||"").slice(0,240),items:t.items.slice(0,60).map(item)})});
+  PRESETS.forEach((p,i)=>{let its;try{its=p.it()}catch(e){return}if(!its||!its.length)return;
+    out.push({id:"f-"+(p.id||i),n:p.n,t:p.t,m:p.m,g:"Färdiga",h:String(p.h||"").slice(0,240),items:its.slice(0,60).map(item)})});
+  return out}
+function watchHash(t){let h=5381;for(let i=0;i<t.length;i++)h=(h*33^t.charCodeAt(i))>>>0;return h.toString(36)+"."+t.length}
+/* Skickar passen till kontot när de har ändrats. Körs bara för den som har kopplat en klocka. */
+function watchPublish(force){
+  if(!set.watch||typeof SB==="undefined"||!SB||!SBUSER)return;clearTimeout(watchPublish.t);
+  watchPublish.t=setTimeout(async()=>{if(!SB||!SBUSER)return;
+    try{const passes=watchPasses(),sig=SBUSER.id+":"+watchHash(JSON.stringify(passes));
+      if(!force&&localStorage.getItem("varv-watch-sig")===sig)return;
+      const {error}=await SB.rpc("watch_publish",{p_data:{updated:new Date().toISOString(),passes}});
+      if(!error)localStorage.setItem("varv-watch-sig",sig)}catch(e){}},force?0:3000)}
+/* Apple Watch kopplas av sig själv: telefonen skapar en nyckel i kontot och lämnar över den till klockan. */
+async function watchApple(manual){
+  if(!watchNative()||!SB||!SBUSER)return;
+  try{WATCHST=await watchCall("status")}catch(e){WATCHST=null;return}
+  if(!WATCHST||!WATCHST.paired||!WATCHST.installed)return;
+  try{if(manual)localStorage.removeItem("varv-watch-off");else if(localStorage.getItem("varv-watch-off"))return}catch(e){}
+  let w=watchLocal();
+  try{
+    if(w){const {data,error}=await SB.from("watch_devices").select("id").eq("id",w.id);if(!error&&data&&!data.length)w=null}
+    if(!w){const {data,error}=await SB.rpc("watch_add",{p_platform:"apple",p_name:"Apple Watch"});if(error||!data||!data.token)return;
+      w={uid:SBUSER.id,id:data.id,token:data.token};localStorage.setItem(WATCH_KEY,JSON.stringify(w))}
+    const c=sbConf();await watchCall("link",{token:w.token,url:c.url,key:c.anonKey});
+    if(!set.watch){set.watch=true;saveSet()}
+    watchPublish(!!manual);
+  }catch(e){}
+}
+/* Kopplar bort Apple Watch från den här telefonen: nyckeln tas bort i kontot och på klockan. */
+async function watchUnlink(off){
+  const w=watchLocal();
+  try{if(off)localStorage.setItem("varv-watch-off","1");localStorage.removeItem(WATCH_KEY)}catch(e){}
+  if(w&&SB){try{await SB.from("watch_devices").delete().eq("id",w.id)}catch(e){}}
+  if(watchNative()){try{await watchCall("link",{token:"",url:"",key:""})}catch(e){}}
+}
+/* Ett pass som kommer från klockan: räkna rekord och visa det för vänner, en gång. */
+const WATCHSEEN=new Set();
+function watchIngest(){
+  if(mode!=="db"||!col)return;
+  LOGS.filter(l=>l&&l.src==="watch"&&!l.seen&&!WATCHSEEN.has(l.id)).forEach(async l=>{
+    WATCHSEEN.add(l.id);const b=Object.assign({},l,{seen:1});delete b.id;
+    try{await col.doc(l.id).set(b)}catch(e){WATCHSEEN.delete(l.id);return}
+    try{onLogged(b)}catch(e){}
+    try{checkPRs(b.items)}catch(e){}
+    toast("Passet från klockan är sparat")})}
+function watchAgo(t){if(!t)return "Har inte hörts av än";const d=Math.round((Date.now()-new Date(t))/6e4);
+  return d<2?"Synkade nyss":d<60?`Synkade för ${d} min sedan`:d<1440?`Synkade för ${Math.round(d/60)} tim sedan`:`Synkade ${new Date(t).toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"")}`}
+async function openWatches(){
+  if(!SB||!SBUSER){openAuth("in");return}
+  let rows=null,code=null,busyCode=false;const mine=()=>(watchLocal()||{}).id;
+  const load=async()=>{try{const {data,error}=await SB.from("watch_devices").select("id,platform,name,created_at,last_seen").order("created_at");rows=error?null:data}catch(e){rows=null}};
+  const apple=()=>{const st=WATCHST,on=!!mine()&&(rows||[]).some(r=>r.id===mine());
+    if(!watchNative())return "Kopplas av sig själv när du är inloggad i VARV. på din iPhone och har appen på klockan.";
+    if(!st)return "Uppdatera VARV. från App Store för att koppla din Apple Watch.";
+    if(!st.paired)return "Ingen Apple Watch är parkopplad med den här telefonen.";
+    if(!st.installed)return "Installera VARV. på klockan: öppna appen Watch på telefonen, bläddra ned till VARV. och tryck Installera.";
+    return on?"Kopplad. Öppna VARV. på klockan och välj ett pass.":"VARV. finns på klockan men är inte kopplad."};
+  const draw=()=>{const el=$("#wt");if(!el)return;const st=WATCHST,can=watchNative()&&st&&st.paired&&st.installed,on=!!mine()&&(rows||[]).some(r=>r.id===mine());
+    el.innerHTML=`<div><span class="small">Kopplingar</span><h2>Klockor</h2><p class="small">Starta ett förberett eller färdigt pass på klockan. När du är klar sparas passet i VARV. och syns här i appen.</p></div>
+     <div><span class="lbl">Apple Watch</span><div class="card" style="margin-top:8px"><p style="margin:0;line-height:1.5">${esc(apple())}</p>${can&&!on?`<button type="button" class="pill ghost block" id="wt-apple" style="margin-top:12px">Koppla Apple Watch</button>`:""}</div></div>
+     <div><span class="lbl">Garmin</span><div class="card" style="margin-top:8px">${code?`<span class="small">Din kod, giltig i 15 minuter</span><b style="display:block;font-size:var(--t-num-l);font-variant-numeric:tabular-nums;letter-spacing:.12em;margin:4px 0 10px">${esc(code.slice(0,4))} ${esc(code.slice(4))}</b>
+       <ol style="margin:0;padding-left:20px;line-height:1.6"><li>Installera VARV. på klockan från Connect IQ Store.</li><li>Öppna Garmin Connect på telefonen, välj din klocka och sedan Appar, VARV. och Inställningar.</li><li>Skriv in koden och spara.</li><li>Öppna VARV. på klockan.</li></ol>`
+       :`<p style="margin:0;line-height:1.5">Hämta en kod här och skriv in den i Garmin Connect, så kopplas klockan till ditt konto.</p><button type="button" class="pill block" id="wt-code" style="margin-top:12px">Koppla en Garmin</button>`}</div></div>
+     <div><span class="lbl">Kopplade klockor</span>${rows===null?`<p class="small" style="margin-top:8px">Klockorna gick inte att hämta. Kontrollera nätet och försök igen.</p>`:rows.length?`<div class="group" style="margin-top:8px">${rows.map(r=>`<div class="row"><span class="badge">${r.platform==="garmin"?"G":"A"}</span><div><h3>${esc(r.name||(r.platform==="garmin"?"Garmin":"Apple Watch"))}</h3><p>${esc(watchAgo(r.last_seen))}</p></div><button type="button" class="linkbtn" data-wt-del="${esc(r.id)}">Koppla bort</button></div>`).join("")}</div>`:`<p class="small" style="margin-top:8px">Ingen klocka är kopplad än.</p>`}</div>`;
+    const a=$("#wt-apple");if(a)a.onclick=()=>busy(a,async()=>{await watchApple(true);await load();draw();if(mine())toast("Apple Watch är kopplad")});
+    const c=$("#wt-code");if(c)c.onclick=()=>busy(c,async()=>{if(busyCode)return;busyCode=true;
+      try{const {data,error}=await SB.rpc("watch_code");if(error||!data||!data.code)throw error||new Error("kod");code=data.code;if(!set.watch){set.watch=true;saveSet()}watchPublish(true)}
+      catch(e){toast("Koden gick inte att hämta. Försök igen.")}busyCode=false;draw()});
+    el.querySelectorAll("[data-wt-del]").forEach(b=>{b.onclick=()=>busy(b,async()=>{const id=b.dataset.wtDel;
+      if(id===mine())await watchUnlink(true);else{try{const {error}=await SB.from("watch_devices").delete().eq("id",id);if(error)throw error}catch(e){toast("Klockan gick inte att koppla bort.");return}}
+      await load();if(rows&&!rows.length&&set.watch){set.watch=false;saveSet()}draw();toast("Klockan är bortkopplad")})})};
+  openSheet(`<div id="wt" style="display:grid;gap:18px"><div><span class="small">Kopplingar</span><h2>Klockor</h2><p class="small">Hämtar dina klockor…</p></div></div>`);
+  if(watchNative()){try{WATCHST=await watchCall("status")}catch(e){WATCHST=null}}
+  await load();draw();
+  /* En Garmin som just har kopplats dyker upp i listan utan att man behöver stänga och öppna */
+  const iv=setInterval(async()=>{if(!$("#wt")){clearInterval(iv);return}if(!code)return;const n=rows?rows.length:0;await load();if(rows&&rows.length>n){code=null;draw();toast("Klockan är kopplad")}},5000);
+}
+
 route();
 if(!window.claude)initSupabase();
 (async()=>{await initDb();try{if(window.claude&&window.claude.use){MCP=await window.claude.use("mcp");renderStrava();if(MCP&&set.strava){await FIRST;syncStrava(false)}}}catch(e){}})();

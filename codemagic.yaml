@@ -25,6 +25,10 @@ workflows:
   # iPhone till TestFlight. Kräver en gång i Codemagic:
   #   1. Teams → Integrations → Developer Portal: lägg till en App Store Connect API-nyckel med namnet "Varv Training".
   #   2. Appen skapad i App Store Connect med Bundle ID com.varvtraining.app.
+  #   3. För Apple Watch-appen, som följer med i samma bygge: ett App ID och en App Store-profil för
+  #      com.varvtraining.app.watchkitapp hos Apple, hämtad till Codemagic under
+  #      Teams → Code signing identities → iOS provisioning profiles → Fetch profiles.
+  #      ios_signing nedan hittar den själv, eftersom den börjar med com.varvtraining.app. Se app/README.md.
   ios-testflight:
     name: iPhone – TestFlight
     instance_type: mac_mini_m2
@@ -48,6 +52,10 @@ workflows:
         script: |
           # Varje bygge får ett nytt nummer, som TestFlight kräver. BUILD_NUMBER räknas upp av Codemagic.
           cd app/ios/App && agvtool new-version -all $((BUILD_NUMBER + 1))
+          # Klockappen måste ha exakt samma version som iPhone-appen, annars avvisar Apple bygget.
+          # iPhone-appens version står först i projektfilen och kopieras till klockappen.
+          V=$(grep -m1 "MARKETING_VERSION = " App.xcodeproj/project.pbxproj | sed -E 's/.*= (.*);/\1/')
+          sed -i '' -E "s/MARKETING_VERSION = .*;/MARKETING_VERSION = $V;/" App.xcodeproj/project.pbxproj
       - name: Bygg
         script: xcode-project build-ipa --project "app/ios/App/App.xcodeproj" --scheme "App"
     artifacts:

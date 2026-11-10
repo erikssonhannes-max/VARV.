@@ -1,0 +1,5 @@
+<settings>
+    <setting propertyKey="@Properties.code" title="@Strings.CodeTitle" prompt="@Strings.CodePrompt">
+        <settingConfig type="alphaNumeric" maxLength="9"/>
+    </setting>
+</settings>

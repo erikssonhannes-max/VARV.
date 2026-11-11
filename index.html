@@ -2266,7 +2266,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.52 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.53 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2327,7 +2327,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.52";
+const APPVER="1.1.53";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4445,8 +4445,10 @@ function openPlanPass(pl){const x=pl.s,its=planItems(x),o={type:x.t,min:x.m,stat
     $("#pp-go").onclick=()=>prefill(Object.assign({start:true},o));
     $("#pp-log").onclick=()=>prefill(Object.assign({fresh:true},o))})}
 document.addEventListener("click",e=>{if(!e.target.closest("[data-prep-manage]"))return;openSheet(`<div><span class="small">Sparade pass</span><h2>Redo att köras</h2></div><div id="hb-now" class="lg-grp prep-l">${prepRows()}</div>`)});
-function renderGo(){const el=$("#h-go");if(!el)return;if(LIVE){el.innerHTML="";return}const prep=(set.tpls||[]).slice().reverse(),Q=(goPlan()?[["hub","g-pre","Starta pass"]]:[]).concat([["after","g-plain","Logga pass"]]);
-  el.innerHTML=`${goPrimary()}<div class="go-q${Q.length<2?" one":""}">${Q.map(([k,c,l])=>`<button type="button" class="${c}" data-go="${k}"><span class="go-ic">${goIc(k==="hub"?"now":k)}</span><span>${l}</span></button>`).join("")}</div>
+function renderGo(){const el=$("#h-go");if(!el)return;if(LIVE){el.innerHTML="";return}const prep=(set.tpls||[]).slice().reverse(),Q=[["after","g-plain","Logga pass"]];
+  /* Hem: Kör igång och Logga pass. Finns ett pass från planen i dag öppnar Kör igång arket med dagens rekommenderade pass överst. */
+  const kor=`<button class="go-now" data-go="${goPlan()?"hub":"pre"}"><span class="go-ic">${goIc("now")}</span><span><b>Kör igång.</b><small>Hitta ett pass eller bygg ditt eget</small></span></button>`;
+  el.innerHTML=`${kor}<div class="go-q${Q.length<2?" one":""}">${Q.map(([k,c,l])=>`<button type="button" class="${c}" data-go="${k}"><span class="go-ic">${goIc(k)}</span><span>${l}</span></button>`).join("")}</div>
    ${prep.length?`<div class="go-prep"><div class="go-prep-h"><span class="lbl">Redo att köras</span><button type="button" class="linkbtn" data-prep-manage>Ändra</button></div><div class="go-scroll">${prep.map(t=>`<button class="go-chip" data-prep-go="${esc(t.id)}"><b>${esc(t.name)}</b><small>${t.items.length} ${t.items.length===1?"övning":"övningar"} · Starta</small></button>`).join("")}</div></div>`:""}`}
 function openHub(){if(LIVE){openLogger();return}openSheet(`<div><span class="small">Nytt pass</span><h2>Vad blir det i dag?</h2></div><div class="go-wrap">${goHtml()}</div>`)}
 document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!b)return;const k=b.dataset.go;

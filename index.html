@@ -2179,8 +2179,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       </div>
       <div class="pf-acts" id="pf-acts" hidden></div>
     </div>
-    <div class="sechead"><h2>Din träning</h2></div>
-    <div class="pf-sum" id="pf-stats"></div>
     <div class="sechead"><h2>Plan och mått</h2></div>
     <div class="group">
       <button class="row" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
@@ -6021,13 +6019,10 @@ function setSw(id,ic,title,sub,on){return `<button type="button" class="row sets
 function swRow(id,title,sub,on){return `<button type="button" class="switchrow" id="${id}" role="switch" aria-checked="${!!on}"><span><b>${title}</b><small>${sub}</small></span><span class="sw"></span></button>`}
 function renderProfile(){
   if(!set.since){set.since=today();saveSet()}
-  const st=weekStats(),hrs=Math.round(st.total/6)/10;
   $("#pf-av").innerHTML=avatarHtml();
   $("#pf-name").textContent=pName()||"Din profil";
   $("#pf-sub").textContent=cardSub(cardPayload());
-  {const P=progress(),nx=P.next,br=bestRace(),w12=pfWeeks();
-   $("#pf-stats").innerHTML=`<div class="pf-nums"><div><b><em class="cu">${LOGS.length}</em></b><span>pass</span></div><div><b><em class="cu">${String(hrs).replace(".",",")}</em><small> h</small></b><span>träningstid</span></div><div><b><em class="cu">${st.streak}</em></b><span>veckor i rad</span></div><div><b${br?"":' class="none"'}>${br?`<em class="cu">${fmt(br)}</em>`:"–"}</b><span>bästa lopp</span></div></div>
-    <div class="pf-weeks"><div class="pf-wh"><span>Minuter per vecka</span><b>${w12[11]} min<small> den här veckan</small></b></div>${miniBars(w12)}</div>`;
+  {const P=progress(),nx=P.next;
    /* Ranken på atletkortet: medalj, namn och antal pass, och profilbildens ring i rankens metallfärg */
    const rp=$("#pf-rankpill");rp.hidden=false;rp.setAttribute("aria-label",`Rank ${P.tier.n}, ${nx?`${P.toNext} pass kvar till ${nx.n}`:"högsta ranken"}. Visa alla nivåer`);
    rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b><span>${nx?`${P.toNext} kvar till ${nx.n}`:"Högsta"}</span>`;rp.onclick=openLevels;
@@ -6035,7 +6030,6 @@ function renderProfile(){
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
   /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */
-  {const v=$("#v-profil"),k=LOGS.length;if(v&&v.classList.contains("on")&&renderProfile._n!=null&&renderProfile._n!==k)$$("#pf-stats .cu").forEach(countUp);renderProfile._n=k}
   const db=mode==="db";
   if(SB){renderAccount();}else
   accRows(`<div class="row acc-row"><span class="badge">${ICO_DEV}</span><div><h3>${db?"Sparas i ditt konto":"Sparas på den här enheten"}</h3><p>${db?"Din logg, dina rekord och din plan följer med mellan enheter.":"Vill du flytta dina data kan du exportera under Inställningar."}</p></div><span></span></div>`);

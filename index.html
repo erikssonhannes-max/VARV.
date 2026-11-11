@@ -1744,7 +1744,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .wd.now small{color:var(--ink)}
 .plansum{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .plansum p{font-size:var(--t-sub);line-height:1.4;min-width:0}
-#p-edit{margin-top:12px}
+.plansum{width:100%;text-align:left;border:0;color:inherit;font:inherit;cursor:pointer}.ps-l{display:grid;gap:2px;min-width:0}.ps-l .eb{font-size:var(--t-cap);font-weight:600;letter-spacing:.04em;color:var(--muted)}.ps-l b{font-size:var(--t-num);font-weight:700;letter-spacing:-.03em;line-height:1.1;font-variant-numeric:tabular-nums}.plansum .linkbtn{color:var(--link);font-weight:600}.goal-pace{text-align:center;margin:0 0 6px}.goalrow .badge{font-size:var(--t-cap);font-weight:700}.goalrow h3 .goal-hm{font-variant-numeric:tabular-nums}
 /* En het yta per vy */
 .avatar-btn{background:var(--tile);color:var(--ink);box-shadow:none}
 /* Tryckytor på minst 44 px */
@@ -1914,12 +1914,12 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
     </div>
 
-    <div class="sechead"><h2>Ditt lopp</h2><a href="#race" data-tv-go="run">Ändra</a></div>
+    <div class="sechead"><h2>Ditt lopp</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
     <div class="tiles">
       <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
       <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
-      <a class="tile tap" href="#race" data-tv-go="run" hidden><b id="h-target">1:30</b><span>måltid</span></a>
-      <a class="tile tap" href="#race" data-tv-go="run" hidden><b id="h-pace">–</b><span>snittempo per km</span></a>
+      <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-target">1:30</b><span>måltid · ändra</span></button>
+      <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-pace">–</b><span>snittempo per km</span></button>
     </div>
     <a class="tile tap hx-est" id="h-est" href="#plan" aria-label="Din uppskattade sluttid i dag"></a>
     <div class="tile hx-weak" id="h-weak"></div>
@@ -1975,11 +1975,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 <section class="view" id="v-plan">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Träning</span><h1>Din plan.</h1><p id="p-intro">Veckans pass och vägen fram till loppet.</p></div>
-    <div class="card plansum"><p id="p-sum"></p><button class="linkbtn" id="p-edit-btn" aria-expanded="false" aria-controls="p-edit">Ändra plan</button></div>
-
-    <div id="p-edit" hidden>
-
-    </div>
+    <button class="card plansum tap" data-open="goal" aria-label="Ändra måltid och tävlingsdag"><div class="ps-l"><span class="eb">MÅLTID</span><b class="goal-hm">1:30</b><p id="p-sum"></p></div><span class="linkbtn" aria-hidden="true">Ändra</span></button>
 
     <div class="seg" id="pl-seg" role="group" aria-label="Visa" style="margin:14px 0 16px"><button data-pl="pass">Passen</button><button data-pl="lopp">Loppet</button></div>
 
@@ -2054,18 +2050,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div id="tv-kal"></div>
     <div id="tv-sim" hidden><div id="ev-sim"></div><p class="small" style="margin-top:14px">Simuleringar arrangeras av gym och klubbar, inte av HYROX. VARV. samlar de vi hittar och länkar till arrangörens anmälan. Saknas ett race? Lägg in det själv under Egna race, eller tipsa oss på <a href="mailto:info@varvtraining.com">info@varvtraining.com</a>.</p></div>
     <div id="tv-run" hidden>
-    <div class="sechead" style="margin-top:4px"><h2>Ditt mål</h2><span class="small" id="p-pace"></span></div>
-    <div class="card">
-      <div class="target"><span class="t" id="p-time">1:30:00</span><span class="small">Måltid</span></div>
-      <input type="range" id="p-range" min="55" max="150" step="1" value="90" aria-label="Måltid i minuter">
-      <div class="field"><label for="p-date">Tävlingsdag</label><input type="date" id="p-date"><a class="small" href="#race" data-tv-go="kal" style="color:var(--link);text-decoration:none">Välj bland kommande tävlingar ›</a></div>
-      <div class="field" hidden><span class="lbl" id="p-dayl">Träningsdagar</span><div class="daypick" id="p-days"></div></div>
-      <div class="chiprow">
-        <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
-        <button class="divchip" data-open="test">Starttest</button>
-        <button class="divchip" data-open="hr" id="hr-chip">Pulszoner</button>
-      </div>
-    </div>
+    <div class="sechead" style="margin-top:4px"><h2>Ditt mål</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
+    <div class="group"><button class="row goalrow" data-open="goal"><div class="badge">Mål</div><div><h3><span class="goal-hm">1:30</span> måltid</h3><p class="goal-sub"></p></div><span class="chev">›</span></button></div>
     <div class="sechead"><h2>Tidtagning</h2></div>
 
     <div class="clock">
@@ -2255,6 +2241,20 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 <a class="avatar-btn" id="avatar-btn" href="#profil" aria-label="Din profil"><span>V</span></a>
 
 <div id="log-holder" hidden></div>
+<div id="goal-home" hidden>
+    <div class="card" id="goal-card">
+      <p class="small goal-pace" id="p-pace"></p>
+      <div class="target"><span class="t" id="p-time">1:30:00</span><span class="small">Måltid</span></div>
+      <input type="range" id="p-range" min="55" max="150" step="1" value="90" aria-label="Måltid i minuter">
+      <div class="field"><label for="p-date">Tävlingsdag</label><input type="date" id="p-date"><a class="small" href="#race" data-tv-go="kal" style="color:var(--link);text-decoration:none">Välj bland kommande tävlingar ›</a></div>
+      <div class="field" hidden><span class="lbl" id="p-dayl">Träningsdagar</span><div class="daypick" id="p-days"></div></div>
+      <div class="chiprow">
+        <button class="divchip" data-open="division"><span class="divtxt">Open · Herr · Singel</span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6l4 4 4-4"/></svg></button>
+        <button class="divchip" data-open="test">Starttest</button>
+        <button class="divchip" data-open="hr" id="hr-chip">Pulszoner</button>
+      </div>
+    </div>
+</div>
 <canvas id="confetti" aria-hidden="true"></canvas>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 <div class="scrim" id="scrim" hidden></div>
@@ -2459,6 +2459,7 @@ var SHEETGEN=0;
 function openSheet(html,mount){
   {const lf=$("#logform"),sin=$("#sheet-in");if(lf&&sin.contains(lf))$("#log-holder").append(lf)}
   {const pa=$("#pf-about"),sin=$("#sheet-in");if(pa&&sin.contains(pa))$("#pf-about-home").append(pa)}
+  {const gc=$("#goal-card"),sin=$("#sheet-in");if(gc&&sin.contains(gc))$("#goal-home").append(gc)}
   $("#sheet-in").innerHTML=`<div class="shtop"><span></span><span class="grab"></span><button class="close" id="sh-x" aria-label="Stäng">✕</button></div>`+html;
   const sh=$("#sheet"),sc=$("#scrim");sh.hidden=false;sc.hidden=false;sh.scrollTop=0;
   const gen=++SHEETGEN;requestAnimationFrame(()=>{if(gen===SHEETGEN){sh.classList.add("on");sc.classList.add("on")}});
@@ -2580,6 +2581,7 @@ document.addEventListener("click",e=>{
   if(k==="division")openDivision();
   else if(k==="test")openTest(false);
   else if(k==="hr")openHR();
+  else if(k==="goal")openGoal();
   else if(CLS[k]){const c=CLS[k];const pick=k==="cls-doubles"||k==="cls-mixed";
     openSheet(`<div><span class="small">Klass</span><h2>${c.h}</h2></div><p class="muted">${c.p}</p><ul>${c.l.map(x=>`<li>${x}</li>`).join("")}</ul>${pick?`<button class="pill block" id="cls-use">Välj ${c.h}</button>`:""}`,
     ()=>{const b=$("#cls-use");if(b)b.onclick=()=>{set.fmt=k==="cls-mixed"?"mixed":"doubles";if(set.fmt==="mixed")set.k="open";saveSet();refreshDivision();closeSheet();toast(`${c.h} vald`)}})}
@@ -2685,6 +2687,7 @@ function planTimes(){
 function renderSplits(){
   const t=planTimes();
   $("#p-time").textContent=fmt(t.T);$("#p-pace").textContent=`${fmt(t.pace)} /km i snitt`;
+  document.querySelectorAll(".goal-hm").forEach(x=>x.textContent=fmtHM(set.target));document.querySelectorAll(".goal-sub").forEach(x=>x.textContent=`${fmt(t.pace)} /km i snitt · tävlingsdag och klass`);
   $("#p-stack").innerHTML=`<div style="flex-grow:${t.runs};background:var(--hot)"></div><div style="flex-grow:${t.sta};background:linear-gradient(135deg,var(--green),var(--green2))"></div><div style="flex-grow:${t.rox};background:linear-gradient(135deg,var(--cyan),var(--cyan2))"></div>`;
   $("#l-run").textContent=fmt(t.runs);$("#l-sta").textContent=fmt(t.sta);$("#l-rox").textContent=fmt(t.rox);
   {const pb=$("#p-pace-big");if(pb)pb.textContent=fmt(t.pace)}
@@ -2797,7 +2800,7 @@ function renderAdapt(){
 function renderPlan(){if(NOPLAN){PLAN=[];return}planChanged();
   const base=buildPlan();ADAPT=computeAdapt(base);PLAN=buildPlan(ADAPT);
   const days=daysLeft();const cw=curWeekIdx();
-  {const me=myEvent();$("#p-sum").textContent=[fmtHM(set.target)+" måltid",set.noRace?"Inget lopp valt":(me?me.c+" ":"")+new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}),divText()].join(" · ")}
+  {const me=myEvent();$("#p-sum").textContent=[set.noRace?"Inget lopp valt":(me?me.c+" ":"")+new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}),divText()].join(" · ")}
   const w=PLAN[cw],td=today();
   $("#p-weeks").textContent=!PLAN.length||days<=0?"Välj ett tävlingsdatum framåt.":`${w&&w.start>td?"Planen börjar "+fmtDM(w.start):"Vecka "+(cw+1)+" av "+PLAN.length} · ${days} dagar ${set.noRace?"kvar av planen":"till loppet"}. ${levelTxt()?levelTxt()+" ":""}${set.hrz?"Pulszonerna kommer från Strava.":hrmax()?"Pulszonerna utgår från maxpuls "+hrmax()+".":"Ange ålder under Ändra plan → Pulszoner för att se pulsintervall."}`;
   $("#p-bar").innerHTML=PLAN.map((x,i)=>`<i class="${i<cw?"d":i===cw&&x.start<=td?"n":""}"></i>`).join("");
@@ -4252,8 +4255,10 @@ $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach(
     $("#pr-pick").onclick=e=>{const b=e.target.closest("[data-pk]");if(b)openPR(b.dataset.pk)}})};
 function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
-function setPlanEdit(on){$("#p-edit").hidden=!on;$("#p-edit-btn").setAttribute("aria-expanded",on);$("#p-edit-btn").textContent=on?"Stäng":"Ändra plan"}
-$("#p-edit-btn").onclick=()=>setPlanEdit($("#p-edit").hidden);
+/* Måltiden ändras i ett ark som nås från Hem, Plan och Racedag. Kortet bor i #goal-home och lånas in i arket. */
+function openGoal(){openSheet(`<div><span class="small">Ditt mål</span><h2>Måltid.</h2><p class="small">Dra för att välja tiden du vill gå i mål på. Planen och tempot räknas om direkt.</p></div><div id="goal-slot"></div><button class="pill block" id="goal-ok">Klar</button>`,
+  ()=>{$("#goal-slot").append($("#goal-card"));$("#p-range").value=set.target;renderSplits();$("#goal-ok").onclick=()=>{saveSet();renderPlan();renderPRs();renderHome();closeSheet();toast("Måltiden är sparad")}})}
+function setPlanEdit(on){if(on)openGoal()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-lg],[data-plan-edit]");if(!a)return;if(a.dataset.lg)setLgView(a.dataset.lg);if("planEdit" in a.dataset)setPlanEdit(true)});
 setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
 
@@ -6834,7 +6839,7 @@ function openOnb(){
       read(){},ok:()=>st.other&&!st.date?["Välj datum för loppet.","#ob-d"]:st.ev==null&&!st.other&&!st.none?["Välj ett lopp, Annat lopp eller Inte bestämt än."]:null},
     goal:{eye:"Måltid",h:"Har du en måltid du satsar på?",p:"Tiden du vill gå i mål på i ett helt Hyrox-lopp. Planen sätter tempot för löpningen och stationerna utifrån den.",
       html:()=>`<div class="chips">${LEVEL_GOALS.all.map(([v,l])=>`<button type="button" class="chip" data-sg="${v}" aria-pressed="${!st.noGoal&&st.goalSet&&st.target===v}">${l}</button>`).join("")}<button type="button" class="chip" data-sng aria-pressed="${st.noGoal}">Vet inte än</button></div>
-        ${st.noGoal?`<p class="ob-note">Då siktar planen på ungefär ${fmtHM(90)}. Du kan sätta en måltid när som helst under Tävla → Racedag, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
+        ${st.noGoal?`<p class="ob-note">Då siktar planen på ungefär ${fmtHM(90)}. Du kan sätta en måltid när som helst på Hem under Ditt lopp, eller göra starttestet under Profil så räknar VARV. ut en tid åt dig.</p>`
         :`<div class="st-goal"><b id="ob-gv">${fmtHM(st.target)}</b><input type="range" id="ob-g" min="55" max="150" step="1" value="${st.target}" aria-label="Måltid i timmar och minuter"><span class="small">Dra för att välja en egen tid</span></div>`}`,
       read(){},ok:()=>st.goalSet||st.noGoal?null:["Välj en tid, dra i reglaget eller välj Vet inte än."]},
     past:{eye:"Tidigare resultat",h:"Har du kört Hyrox förut?",p:"Lägg in dina tider så utgår måltiden från var du står i dag.",

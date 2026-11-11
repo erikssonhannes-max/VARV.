@@ -1085,13 +1085,7 @@ a.row{color:inherit;text-decoration:none}
 .pf-card .pf-rankpill{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
 .pf-card .pf-fw>span{background:rgba(255,255,255,.35)}
 /* ============ Feed: inlägg, åtgärder och kommentarer ============ */
-.fd-compose{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;border:0;cursor:pointer;font:inherit;text-align:left;background:var(--tile);color:var(--muted);border-radius:var(--r);padding:12px 12px 12px 14px;margin-bottom:18px;min-height:64px;transition:transform .15s var(--ease)}
-.fd-compose:active{transform:scale(.985)}
-.fd-cav,.po-cav,.cm-me{border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));flex:none}.fd-cav img,.po-cav img,.cm-me img{width:100%;height:100%;object-fit:cover}
-.fd-cav{width:40px;height:40px;font-size:var(--t-cap)}
-.fd-compose>span:nth-child(2){font-size:var(--t-sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.fd-cic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--hot);color:#fff;box-shadow:0 8px 18px -10px var(--glow)}
-.fd-cic svg{width:20px;height:20px}
+.po-cav,.cm-me{border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));flex:none}.po-cav img,.cm-me img{width:100%;height:100%;object-fit:cover}
 #fd-flow .post{margin-bottom:12px;box-shadow:none}
 .post .po-h{padding:14px 16px 10px}
 .post .po-h .fr-av{width:42px;height:42px;font-size:var(--t-sub)}
@@ -1869,6 +1863,50 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 @keyframes soX{from{transform:scaleX(0)}}
 @keyframes soRing{from{stroke-dashoffset:100}}
 @keyframes soDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+/* Flödet, version 3: ett inlägg per pass. Passbilden står i fokus, kortet runt den är lugnt. */
+#fd-flow .post{border-radius:24px;margin-bottom:14px;background:var(--tile)}
+.post .po-h{padding:14px 16px 12px}
+.post .po-img{margin:0 12px;border-radius:18px;overflow:hidden;background:var(--card);isolation:isolate}
+.post .po-img img{width:100%;max-height:none;object-fit:cover}
+.post .po-img.card{aspect-ratio:4/5}.post .po-img.card img{height:100%}
+.post .po-img::after{content:"";position:absolute;inset:0;border-radius:inherit;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 6%,transparent);pointer-events:none}
+.post .po-media:not(.po-img){margin:0 12px}
+.post .po-a{padding:8px 8px 2px}
+.post .po-who{padding:2px 16px 4px}
+.post .po-cap{padding:4px 16px 8px;font-size:var(--t-body);line-height:1.4}
+.post .po-cap.po-note{color:var(--ink)}
+.post>.po-cm{padding-top:2px}
+.po-kt.k-pass{background:color-mix(in srgb,var(--cyan) 14%,transparent);color:var(--cyan)}
+@media (prefers-reduced-motion:no-preference){#fd-flow .post{animation:fdIn .55s var(--ease) both}#fd-flow .post:nth-of-type(2){animation-delay:.05s}#fd-flow .post:nth-of-type(3){animation-delay:.1s}#fd-flow .post:nth-of-type(n+4){animation-delay:.15s}}
+@keyframes fdIn{from{opacity:0;transform:translateY(14px)}}
+/* Rad som leder till delning: i flödet när man inte har delat något, och i passets ark */
+.fd-hint,.ld-share{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:12px;width:100%;min-height:64px;border:0;cursor:pointer;font:inherit;text-align:left;color:var(--ink);background:var(--tile);border-radius:var(--r);padding:12px 14px;transition:transform .15s var(--ease)}
+.fd-hint{margin-bottom:14px}.ld-share{background:var(--card)}
+.fd-hint:active,.ld-share:active{transform:scale(.98)}
+.fd-hint b,.ld-share b{display:block;font-weight:600;font-size:var(--t-body);letter-spacing:-.01em}
+.fd-hint small,.ld-share small{display:block;color:var(--muted);font-size:var(--t-cap);margin-top:1px}
+.fd-hi,.ld-si{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
+.fd-hi svg,.ld-si svg{width:20px;height:20px}
+.ld-share.done .ld-si{background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--good)}
+.fd-hint .chev,.ld-share .chev{color:var(--muted);font-size:22px}
+/* Arket Dela passet: förhandsvisning och val av bakgrund */
+.ps-prev{position:relative;aspect-ratio:4/5;width:min(100%,380px);justify-self:center;margin:0 auto;border-radius:18px;overflow:hidden;background:var(--tile);display:grid;place-items:center;box-shadow:0 22px 44px -28px rgba(0,0,0,.45)}
+.ps-prev canvas{width:100%;height:100%;display:block}
+@media (prefers-reduced-motion:no-preference){.ps-prev canvas{animation:fadeIn .25s var(--ease)}}
+@keyframes fadeIn{from{opacity:.4}}
+.ps-load{color:var(--muted);font-size:var(--t-cap)}
+.ps-bgs{display:flex;gap:10px;justify-content:center;overflow-x:auto;scrollbar-width:none;padding:2px}
+.ps-bgs::-webkit-scrollbar{display:none}
+.ps-bg{flex:none;display:grid;justify-items:center;gap:6px;width:68px;border:0;background:none;padding:0;font:inherit;color:var(--muted);cursor:pointer;font-size:var(--t-cap)}
+.ps-bg i{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--tile) center/cover no-repeat;color:var(--ink);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ink) 8%,transparent);transition:box-shadow .2s var(--ease),transform .15s var(--ease)}
+.ps-bg:active i{transform:scale(.94)}
+.ps-mork i{background:radial-gradient(circle at 85% 10%,rgba(255,45,85,.55),transparent 60%),#000}
+.ps-ljus i{background:radial-gradient(circle at 85% 10%,rgba(255,45,85,.22),transparent 60%),#fff}
+.ps-mork i::after,.ps-ljus i::after{content:"";width:30px;height:16px;border-radius:9px;border:3px solid #ff2d55;border-left-color:transparent}
+.ps-bg[aria-pressed="true"]{color:var(--ink);font-weight:600}
+.ps-bg[aria-pressed="true"] i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
+.ps-add i svg{width:22px;height:22px}
+.ps-bg:focus-visible{outline:none}.ps-bg:focus-visible i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--link)}
 </style>
 
 <div id="gate" hidden role="dialog" aria-modal="true" aria-labelledby="gt-h">
@@ -2222,7 +2260,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.50 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.51 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2283,7 +2321,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.50";
+const APPVER="1.1.51";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4854,15 +4892,16 @@ async function saveLG(btn){if(btn.disabled)return;LG.items.forEach(i=>{delete i.
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
   const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;if(LG.ext){entry.ext=LG.ext;entry.src="health";if(LG.extCreated)entry.created=LG.extCreated}if(LG.fromLive&&LG.elapsed>0)entry.total=LG.elapsed;const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
-  const before=weekStats().now.n,tw=Array.isArray(LG.with)?LG.with.slice():[];const ok=await addLog(entry);btn.disabled=false;if(!ok)return;
+  const before=weekStats().now.n,tw=Array.isArray(LG.with)?LG.with.slice():[];const prHint=prFromItems(items).map(o=>({k:o.k,n:o.n,t:o.t,prev:+PRS[o.k]||0}));const ok=await addLog(entry);btn.disabled=false;if(!ok)return;
   if(tw.length&&mode==="db"&&typeof ok==="string")setTimeout(()=>sendTogether(ok,entry,tw),1600);LG.saved=true;dropDraft();if(LG.fromLive)clearLive();
   const after=weekStats().now.n;closeSheet();HAPTIC("success");
   const br=bch?benchSave(bch.id,bch.t,entry.date):null;
   if(br&&br.pr){toast(br.prev?`Nytt rekord på ${br.n}: ${fmt(bch.t)}, ${fmt(br.prev-bch.t)} snabbare`:`Första tiden på ${br.n}: ${fmt(bch.t)}`);setTimeout(confetti,250)}
   else if(br)toast(`Sparat. ${fmt(bch.t)}, ${fmt(bch.t-br.best)} från ditt rekord`);
   else if(before<set.per&&after>=set.per){toast("Veckans mål är klart");confetti()}else toast("Passet är sparat");
-  try{if(typeof onLogged==="function")onLogged(entry)}catch(x){}
+  if(br&&br.pr&&br.prev)prHint.push({k:"bench",n:br.n,t:bch.t,prev:br.prev});
   try{checkPRs(entry.items)}catch(x){}
+  if(canPost()&&typeof ok==="string")setTimeout(()=>openPassShare(ok,{log:Object.assign({},entry,{id:ok}),prs:prHint,fresh:true}),650);
 }
 /* ============ Dra för att ändra ordning ============ */
 /* Fungerar med finger, mus och piltangenter. Bara rader med handtag går att dra, och ordningen ändras först när raden släpps. */
@@ -5152,12 +5191,16 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
    ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
    ${(()=>{const t=togLine(l),can=SBUSER&&TOG.ok&&!l.shared&&!isExtId(id)&&mode==="db"&&togMates().length;if(!t&&!can)return "";
      return `<div class="card tog-card">${t?`<p class="tog-line big">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:""}${can?`<button class="linkbtn" id="ld-tog">${t?"+ Lägg till fler":"Tränade du med någon?"}</button>`:""}</div>`})()}
+   ${canPost()?l.posted?`<button type="button" class="ld-share done" id="ld-feed"><span class="ld-si" aria-hidden="true">${SHAREI}</span><span><b>Delat i flödet</b><small>Visa inlägget</small></span><span class="chev" aria-hidden="true">›</span></button>`
+     :`<button type="button" class="ld-share" id="ld-share"><span class="ld-si" aria-hidden="true">${SHAREI}</span><span><b>Dela passet i flödet</b><small>Med en VARV.-bakgrund eller en egen bild</small></span><span class="chev" aria-hidden="true">›</span></button>`:""}
    ${isRace?`<button class="pill ghost block" id="ld-race">Visa loppanalys</button>`:""}
    ${its.length?`<button class="pill block" id="ld-again">Kör passet igen</button>`:""}
    <div class="grid2"><button class="pill ghost" id="ld-edit">Ändra passet</button><button class="pill ghost" id="ld-del" style="color:var(--bad)">Ta bort passet</button></div>`,()=>{
     const del=$("#ld-del");del.onclick=()=>{if(!del.dataset.c){del.dataset.c=1;del.textContent="Tryck igen";return}closeSheet();delWithUndo(id)};
     const ag=$("#ld-again");if(ag)ag.onclick=()=>{const c=JSON.parse(JSON.stringify(its));c.forEach(i=>{delete i.sec;if((i.sets||[]).length===1&&LGCOLS[i.k]&&i.k!=="t")delete i.sets[0].t});closeSheet();setTimeout(()=>liveFrom(c,l.type),320)};
     const rc=$("#ld-race");if(rc)rc.onclick=()=>{closeSheet();setTimeout(()=>openRaceAn(id),320)};
+    const sh=$("#ld-share");if(sh)sh.onclick=()=>{closeSheet();setTimeout(()=>openPassShare(id),320)};
+    const fd=$("#ld-feed");if(fd)fd.onclick=()=>{closeSheet();set.fdsub="flow";saveSet();location.hash="#feed";setTimeout(()=>{const el=document.querySelector(`.post[data-act="${l.posted}"]`);if(el)el.scrollIntoView({block:"start",behavior:RM()?"auto":"smooth"})},900)};
     const tg=$("#ld-tog");if(tg)tg.onclick=()=>{closeSheet();setTimeout(()=>openTogether(id),320)};
     $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)}})}
 $("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;HD=null;renderHist()};
@@ -5606,10 +5649,13 @@ $("#rc-next").onclick=async()=>{
     const b=$("#rc-next");b.disabled=true;
     const total=(RACE.end-RACE.start)/1000;
     const rsg=segs();let rp=RACE.start;const rsp=RACE.marks.slice(0,16).map(m=>{const x=Math.round((m-rp)/1000);rp=m;return x});
-    await addLog({date:today(),type:"Racesimulering",min:Math.max(1,Math.round(total/60)),rpe:5,stations:S.map(s=>s.n),note:`Sluttid ${fmt(total)} mot målet ${fmtHM(RACE.target)}`,created:Date.now(),race:{sp:rsp,tg:rsg.map(x=>Math.round(x.tg)),cls:clsMine()}});
-    {const ev=myEvent();if(ev&&evLive(ev))postActivity("lopp",ev.c,`${fmt(total)} · ${divText()}`);else postActivity("pass","Racesimulering",`Sluttid ${fmt(total)}`)}
+    const rlog={date:today(),type:"Racesimulering",min:Math.max(1,Math.round(total/60)),rpe:5,stations:S.map(s=>s.n),note:`Sluttid ${fmt(total)} mot målet ${fmtHM(RACE.target)}`,created:Date.now(),race:{sp:rsp,tg:rsg.map(x=>Math.round(x.tg)),cls:clsMine()}};
+    {const ev=myEvent();if(ev&&evLive(ev))rlog.lopp=ev.c}
+    const rHint=PRS.race&&total<PRS.race?[{k:"race",n:prName("race"),t:Math.round(total),prev:PRS.race}]:[];
+    const rid=await addLog(rlog);
     if(!PRS.race||total<PRS.race){PRS.race=Math.round(total);prDate("race");await savePRs();toast("Sparat, och nytt rekord för hel Hyrox")}else toast("Loppet är sparat i loggen");
-    {const ev=myEvent(),tt=Math.round(total),kd=ev&&evLive(ev)?"race":"sim";RACE=null;saveRace();renderRace();b.disabled=false;if(tt>=600&&tt<=36000&&SBUSER)setTimeout(()=>openResult(null,{t:tt,kind:kd}),900);}return}
+    {const ev=myEvent(),tt=Math.round(total),kd=ev&&evLive(ev)?"race":"sim";RACE=null;saveRace();renderRace();b.disabled=false;const res=tt>=600&&tt<=36000&&SBUSER?()=>openResult(null,{t:tt,kind:kd}):null;
+     if(canPost()&&typeof rid==="string")setTimeout(()=>openPassShare(rid,{log:Object.assign({},rlog,{id:rid}),prs:rHint,fresh:true,after:res}),900);else if(res)setTimeout(res,900);}return}
   RACE.marks.push(Date.now());cue("tap");
   {const sg=segs(),n=RACE.marks.length;let c=0;for(let i=0;i<n;i++)c+=sg[i].tg;const d=(RACE.marks[n-1]-RACE.start)/1000-c;
    if(n===16){RACE.end=RACE.marks[15];releaseWake();confetti();say(`Mål! Tid ${spokenTime((RACE.end-RACE.start)/1000)}. ${spokenDelta(d)}.`)}
@@ -6364,8 +6410,9 @@ async function renderFeed(force){
   if(!D.actOk){el.innerHTML=`<div class="card"><p class="small">Aktiviteten är inte uppsatt än.</p></div>`;return}
   const posts=D.acts.filter(a=>a.user_id===SBUSER.id||!BLOCKED.includes(a.user_id));
   const empty=!FRIENDS.length?`<div class="card fd-empty"><h3>Följ några för att komma igång</h3><p class="small">Här syns dina och dina vänners pass, lopp och rekord.</p><a class="pill block" href="#vanner" data-vn-go="find">Hitta vänner</a></div>`:"";
-  el.innerHTML=`<div id="fd-know"></div><button type="button" class="fd-compose" data-fd-new>${avImg(MYPROF.avatar_url,MYPROF.username,"fd-cav")}<span>Dela något med dina vänner</span><span class="fd-cic">${CAMI}</span></button>`+empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
-  el.onclick=e=>{if(e.target.closest("[data-fd-new]")){openComposer();return}
+  const mineN=posts.filter(a=>a.user_id===SBUSER.id).length,hint=!mineN&&LOGS.length?`<button type="button" class="fd-hint" data-fd-hint><span class="fd-hi" aria-hidden="true">${SHAREI}</span><span><b>Dela ett pass</b><small>Efter passet, eller under Statistik, Pass</small></span><span class="chev" aria-hidden="true">›</span></button>`:"";
+  el.innerHTML=`<div id="fd-know"></div>`+hint+empty+(posts.length?posts.map(a=>fdPost(a,D)).join(""):(FRIENDS.length?`<div class="card"><p class="small">Inget nytt än. När du eller de du följer tränar syns det här.</p></div>`:""));
+  el.onclick=e=>{if(e.target.closest("[data-fd-hint]")){const l=sortedLogs().find(x=>!x.posted);if(l)openPassShare(l.id);else{set.lgv="pass";saveSet();location.hash="#logg"}return}
     if(e.target.closest("#fd-know")){knowClick(e);return}
     postClick(e,D)};
   renderKnow(force);
@@ -6494,50 +6541,22 @@ async function shrinkImg(file){const url=URL.createObjectURL(file);try{const img
   let max=1600,q=.82,blob=null;for(let t=0;t<5;t++){const k=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight)),w=Math.round(img.naturalWidth*k),h=Math.round(img.naturalHeight*k);
     const c=document.createElement("canvas");c.width=w;c.height=h;c.getContext("2d").drawImage(img,0,0,w,h);blob=await new Promise(r=>c.toBlob(r,"image/jpeg",q));
     if(blob&&blob.size<1.8e6)break;max=Math.round(max*.8);q=Math.max(.6,q-.06)}return blob}finally{URL.revokeObjectURL(url)}}
-function openComposer(){if(!SB||!SBUSER){openAuth();return}
-  let blob=null,prev=null;
-  openSheet(`<div><span class="small">Aktivitet</span><h2>Nytt inlägg</h2></div>
-   <label class="cp-pick" id="cp-pick" for="cp-file"><span class="cp-empty">${CAMI}<b>Välj en bild</b><small>Ta ett foto eller välj från biblioteket</small></span></label>
-   <input type="file" id="cp-file" accept="image/*" class="sr">
-   <div class="cp-tools" id="cp-tools" hidden><button type="button" class="pill ghost" id="cp-crop">Beskär</button><button type="button" class="pill ghost" id="cp-new">Byt bild</button></div>
-   <div class="field"><label for="cp-txt">Text</label><textarea id="cp-txt" rows="3" maxlength="160" placeholder="Skriv något om passet. Tagga vänner med @"></textarea></div>
-   <button class="pill block" id="cp-go">Dela</button>
-   <p class="small">Syns för dem som följer dig. Bilden sparas med en slumpad länk, precis som profilbilder.</p>`,()=>{
-    const f=$("#cp-file"),pk=$("#cp-pick");attachMentions($("#cp-txt"));
-    let orig=null,ratio=.8;
-    const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
-      orig=cr.src||x;ratio=cr.ratio;blob=cr.blob;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);pk.classList.add("has");pk.style.aspectRatio=String(ratio);pk.innerHTML=`<img src="${prev}" alt="Vald bild">`;$("#cp-tools").hidden=false;return true};
-    f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}
-      await crop(x)};
-    $("#cp-crop").onclick=()=>{if(orig)crop(orig)};$("#cp-new").onclick=()=>f.click();
-    $("#cp-go").onclick=()=>busy($("#cp-go"),async()=>{const txt=$("#cp-txt").value.trim();
-      if(!blob&&!txt){toast("Lägg till en bild eller skriv något.");return}
-      let image_url=null;
-      if(blob){const small=await shrinkImg(blob).catch(()=>null);if(!small){toast("Kunde inte läsa bilden. Prova en annan.");return}
-        const path=`${SBUSER.id}/${Date.now().toString(36)}${Math.random().toString(36).slice(2,10)}.jpg`;
-        const {error}=await SB.storage.from("posts").upload(path,small,{contentType:"image/jpeg",cacheControl:"31536000",upsert:false});
-        if(error){toast("Kunde inte ladda upp bilden. Försök igen.");return}
-        image_url=SB.storage.from("posts").getPublicUrl(path).data.publicUrl}
-      const title=blob?"Delade en bild":"Delade ett inlägg",detail=txt.replace(/\s+/g," ").slice(0,160)||null;
-      const mentions=$("#cp-txt")._mentions?$("#cp-txt")._mentions():[];const {error}=await SB.from("activity").insert({kind:"pass",title,detail,image_url,mentions:mentions.length?mentions:null});
-      if(error){toast("Kunde inte dela. Försök igen.");return}
-      if(prev)URL.revokeObjectURL(prev);closeSheet();HAPTIC("success");toast("Inlägget är delat");FRC=null;set.fdsub="flow";saveSet();renderFeed(true)})})}
 /* Ändra ett eget inlägg: lägg till eller byt bild, och skriv en kommentar. Egna inlägg (Delade ...) ändrar sin text,
    inlägg som appen skapade, som ett pass eller ett rekord, får en kommentar under. */
 function openEditPost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!==SBUSER.id)return;
-  const own=/^Delade/.test(a.title||""),field=own?"detail":"note",max=own?160:300,hadPic=okPost(a.image_url);
+  const own=/^Delade/.test(a.title||""),field=own?"detail":"note",max=own?160:300,hadPic=okPost(a.image_url),card=isCard(a);
   let blob=null,prev=null,orig=null,ratio=.8,removePic=false;
   openSheet(`<div><span class="small">${esc(a.title||FD_KIND[a.kind]||"Inlägg")} · ${agoTxt(a.created_at)}</span><h2>Ändra inlägg</h2></div>
-   <label class="cp-pick${hadPic?" has":""}" id="ep2-pick" for="ep2-file">${hadPic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`}</label>
+   <label class="cp-pick${hadPic?" has":""}${card?" card":""}" id="ep2-pick" for="ep2-file"${card?' hidden':""}>${hadPic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`}</label>
    <input type="file" id="ep2-file" accept="image/*" class="sr">
-   <div class="cp-tools" id="ep2-tools"${hadPic?"":" hidden"}><button type="button" class="pill ghost" id="ep2-new">Byt bild</button><button type="button" class="pill ghost" id="ep2-rm">Ta bort bild</button></div>
-   <div class="field"><label for="ep2-txt">${own?"Text":"Kommentar"}</label><textarea id="ep2-txt" rows="3" maxlength="${max}" placeholder="${own?"Skriv något om passet. Tagga vänner med @":"Hur gick det? Tagga vänner med @"}">${esc(a[field]||"")}</textarea></div>
+   <div class="cp-tools" id="ep2-tools"${hadPic&&!card?"":" hidden"}><button type="button" class="pill ghost" id="ep2-new">Byt bild</button><button type="button" class="pill ghost" id="ep2-rm">Ta bort bild</button></div>
+   <div class="field"><label for="ep2-txt">${own||card?"Text":"Kommentar"}</label><textarea id="ep2-txt" rows="3" maxlength="${max}" placeholder="${own?"Skriv något om passet. Tagga vänner med @":"Hur gick det? Tagga vänner med @"}">${esc(a[field]||"")}</textarea></div>
    <button class="pill block" id="ep2-go">Spara</button>
-   <p class="small">${own?"":"Det som appen skrev om passet ligger kvar. Din kommentar visas under. "}Ändringen syns för dem som följer dig.</p>`,()=>{
+   <p class="small">${card?"Bilden med passet ligger kvar. ":own?"":"Det som appen skrev om passet ligger kvar. Din kommentar visas under. "}Ändringen syns för dem som följer dig.</p>`,()=>{
     const f=$("#ep2-file"),pk=$("#ep2-pick");attachMentions($("#ep2-txt"));
     const show=()=>{pk.classList.toggle("has",!!blob||(hadPic&&!removePic));
       pk.innerHTML=blob?`<img src="${prev}" alt="Vald bild">`:hadPic&&!removePic?`<img src="${esc(a.image_url)}" alt="Nuvarande bild">`:`<span class="cp-empty">${CAMI}<b>Lägg till en bild</b><small>Ta ett foto eller välj från biblioteket</small></span>`;
-      pk.style.aspectRatio=blob?String(ratio):"";$("#ep2-tools").hidden=!(blob||(hadPic&&!removePic))};
+      pk.style.aspectRatio=blob?String(ratio):"";$("#ep2-tools").hidden=card||!(blob||(hadPic&&!removePic))};
     const crop=async x=>{const cr=await cropImage(x,{ratios:[[.8,"4:5"],[1,"1:1"],[16/9,"16:9"]],ratio,maxW:1600,q:.86});if(!cr)return false;
       orig=cr.src||x;ratio=cr.ratio;blob=cr.blob;removePic=false;if(prev)URL.revokeObjectURL(prev);prev=URL.createObjectURL(blob);show();return true};
     f.onchange=async()=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}await crop(x)};
@@ -6562,7 +6581,8 @@ function openEditPost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!=
 async function deletePost(id,D){const a=D.acts.find(x=>x.id===id);if(!a||a.user_id!==SBUSER.id)return;
   const {error}=await SB.from("activity").delete().eq("id",id);if(error){toast("Kunde inte ta bort. Försök igen.");return}
   if(okPost(a.image_url)){try{await SB.storage.from("posts").remove([a.image_url.slice(POSTIMG.length).split("?")[0]])}catch(e){}}
-  D.acts=D.acts.filter(x=>x.id!==id);const el=document.querySelector(`.post[data-act="${id}"]`);if(el)el.remove();toast("Inlägget är borttaget")}
+  D.acts=D.acts.filter(x=>x.id!==id);const el=document.querySelector(`.post[data-act="${id}"]`);if(el)el.remove();
+  LOGS.filter(l=>l.posted===id).forEach(l=>markPosted(l.id,null));toast("Inlägget är borttaget")}
 
 /* Passkortet: tid, moment och en tidslinje. Äldre inlägg utan den formen visas som text. */
 function fdPass(a){if(a.kind!=="pass"||!a.detail)return null;const L=String(a.detail).split("\n"),head=L[0].trim();if(L.length<2||!/^(\d+:\d{2}(:\d{2})?|\d+ min)$/.test(head))return null;
@@ -6580,17 +6600,17 @@ function fdPrCmp(a,big){if(a.kind!=="rekord"||!big)return "";const nw=fdSec(big)
   return `<div class="pr-cmp" role="img" aria-label="Förra rekordet ${fmt(old)}, nytt rekord ${fmt(nw)}, ${pt} procent snabbare">
      <span class="pr-old"><small>Förra</small><s>${fmt(old)}</s></span><span class="pr-arw" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M13 6l6 6-6 6"/></svg></span><span class="pr-new"><small>Nytt</small><b>${fmt(nw)}</b></span></div>
    <span class="pr-pct" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 13V3M3.5 7.5 8 3l4.5 4.5"/></svg>${pt} % snabbare<em>−${fmt(old-nw)}</em></span>`}
-function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),k=FD_KIND[a.kind]?a.kind:"pass",pic=okPost(a.image_url);
+function fdPost(a,D){const mine=a.user_id===SBUSER.id,p=mine?MYPROF:(NAMES[a.user_id]||{username:"Någon"}),L=D.likes[a.id]||[],liked=L.includes(SBUSER.id),big=fdBig(a),card=isCard(a),k=card&&/Nytt rekord/.test(a.detail||"")?"rekord":FD_KIND[a.kind]?a.kind:"pass",pic=okPost(a.image_url),photo=pic&&!card;
   return `<article class="post" data-act="${a.id}">
-   <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small><span class="po-kt k-${pic?"pic":k}">${pic?"Bild":FD_KIND[k]}</span>${agoTxt(a.created_at)}${a.edited_at?" · ändrat":""}</small></div></div>${mine?`<button class="po-menu" data-pomenu="${a.id}" aria-label="Fler val för inlägget"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>`:""}</header>
-   ${pic?`<div class="po-media po-img" data-id="${a.id}"><img src="${esc(a.image_url)}" alt="Bild från ${mine?"dig":esc(p.username)}" loading="lazy"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:fdPass(a)?(c=>`<div class="po-media k-pass pc${c.feat?" feat":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}><span class="pc-t">${esc(a.title||"Pass")}</span><b class="pc-big">${esc(c.head)}</b><div class="pc-bar" aria-hidden="true">${c.seg}</div><span class="pc-sum">${esc(c.sum)}</span>${c.names?`<span class="pc-n">${esc(c.names)}</span>`:""}<span class="po-pop" aria-hidden="true">${THUMB}</span></div>`)(fdPass(a)):`<div class="po-media k-${k}${k!=="pass"?" big":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
+   <header class="po-h"><div class="po-who2" data-prof="${esc(a.user_id)}" role="button" tabindex="0" aria-label="Visa ${mine?"din profil":esc(p.username)+"s profil"}">${avImg(p.avatar_url,p.username)}<div><b>${mine?"Du":esc(p.username)}</b><small><span class="po-kt k-${photo?"pic":k}">${photo?"Bild":FD_KIND[k]}</span>${agoTxt(a.created_at)}${a.edited_at?" · ändrat":""}</small></div></div>${mine?`<button class="po-menu" data-pomenu="${a.id}" aria-label="Fler val för inlägget"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><circle cx="5" cy="12" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="19" cy="12" r="1.8"/></svg></button>`:""}</header>
+   ${pic?`<div class="po-media po-img${card?" card":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}><img src="${esc(a.image_url)}" alt="${card?esc(`${a.title||"Pass"}. ${String(a.detail||"").split("\n").slice(0,4).join(". ")}`):`Bild från ${mine?"dig":esc(p.username)}`}" loading="lazy" decoding="async"><span class="po-pop" aria-hidden="true">${THUMB}</span></div>`:fdPass(a)?(c=>`<div class="po-media k-pass pc${c.feat?" feat":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}><span class="pc-t">${esc(a.title||"Pass")}</span><b class="pc-big">${esc(c.head)}</b><div class="pc-bar" aria-hidden="true">${c.seg}</div><span class="pc-sum">${esc(c.sum)}</span>${c.names?`<span class="pc-n">${esc(c.names)}</span>`:""}<span class="po-pop" aria-hidden="true">${THUMB}</span></div>`)(fdPass(a)):`<div class="po-media k-${k}${k!=="pass"?" big":""}" data-id="${a.id}"${mine?"":` aria-label="Dubbeltryck för tumme upp"`}>
      <span class="po-ic" aria-hidden="true">${fdIcon(k)}</span>
      <span class="po-t">${esc(a.title||"")}</span>
      ${fdPrCmp(a,big)||(big?`<b class="po-big">${esc(big)}</b>`:"")+(a.detail?(()=>{const dl=String(a.detail).split("\n"),rest=dl.length>1&&big&&dl[0].trim()===big?dl.slice(1).join("\n"):(big&&dl.length===1&&dl[0].trim()===big?"":big&&dl[0].startsWith(big+" · ")?[dl[0].slice(big.length+3)].concat(dl.slice(1)).join("\n"):a.detail);return rest?`<span class="po-d">${richText(rest,a.mentions)}</span>`:""})():"")}
      <span class="po-pop" aria-hidden="true">${THUMB}</span>
    </div>`}
    <div class="po-a">${mine?`<span class="po-own" aria-hidden="true">${THUMB}</span>`:`<button class="po-like" data-like="${a.id}" aria-pressed="${liked}" aria-label="${liked?"Ta bort tumme upp":"Ge tumme upp"}">${THUMB}</button>`}<span class="po-n" id="po-n${a.id}">${fdCount(L)}</span>${D.comOk?`<button class="po-com" data-com="${a.id}" aria-label="Kommentera, ${(D.comments[a.id]||[]).length} kommentarer">${BUBBLE}<span>${(D.comments[a.id]||[]).length||""}</span></button>`:""}<button class="po-sh${D.comOk?"":" solo"}" data-share="${a.id}" aria-label="Dela inlägget">${SHAREI}</button></div>
-   ${fdWho(L)}${pic&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText((()=>{const dl=String(a.detail||"").split("\n");return [[a.title==="Delade en bild"?"":a.title,dl[0]].filter(Boolean).join(" · ")].concat(dl.slice(1)).join("\n")})(),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
+   ${fdWho(L)}${photo&&(a.title!=="Delade en bild"||a.detail)?`<p class="po-cap"><b>${mine?"Du":esc(p.username)}</b> ${richText((()=>{const dl=String(a.detail||"").split("\n");return [[a.title==="Delade en bild"?"":a.title,dl[0]].filter(Boolean).join(" · ")].concat(dl.slice(1)).join("\n")})(),a.mentions)}</p>`:""}${a.note?`<p class="po-cap po-note"><b>${mine?"Du":esc(p.username)}</b> ${richText(a.note,a.mentions)}</p>`:""}${D.comOk?fdComPrev(a.id,D):""}
   </article>`}
 const BUBBLE=`<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4c4.7 0 8.5 3.2 8.5 7.2s-3.8 7.3-8.5 7.3c-1 0-2-.1-2.9-.4L5 20l1-3.6c-1.6-1.3-2.5-3.1-2.5-5.2C3.5 7.2 7.3 4 12 4z"/></svg>`;
 const cName=u=>u===SBUSER.id?"Du":((NAMES[u]||{}).username||"Någon");
@@ -6684,21 +6704,146 @@ function fdCard(p,top,depth){const why=+p.common?`${p.common} av dem du följer 
    ${top?`<button class="linkbtn" data-prof="${esc(p.user_id)}">Visa profil</button>`:""}
   </div>`}
 
-/* ============ Aktivitet för vänner ============ */
-/* Texten får vara 600 tecken när supabase/inlagg-text.sql är körd. Annars skickas en kortare version på högst 160 tecken. */
-async function postActivity(kind,title,detail,short){
-  if(!SB||!SBUSER)return;
-  const ins=d=>SB.from("activity").insert({kind,title:String(title).slice(0,80),detail:d?String(d).slice(0,600):null});
-  try{const {error}=await ins(detail);if(error&&short!==undefined&&String(detail||"").length>160)await ins(String(short||"").slice(0,160))}catch(e){}
-}
-/* Passet i flödet: tiden på första raden och en övning per rad. */
-function actDetail(e,max,compact){const head=e.total?fmt(e.total):`${e.min} min`,its=(e.items||[]),tm=it=>nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t))?` · ${fmt(it.sec)}`:"",lines=its.map(it=>compact?`${it.n}${nz(it.sec)?` · ${fmt(it.sec)}`:` · ${(it.sets||[]).length} set`}`:itemTxt(it)+tm(it));
-  const out=[head];let used=head.length;
-  for(let i=0;i<lines.length;i++){const left=lines.length-i,tail=left>1?`och ${left-1} ${left-1===1?"övning":"övningar"} till`:"";
-    if(used+1+lines[i].length+(tail?tail.length+1:0)>max){out.push(`och ${left} ${left===1?"övning":"övningar"} till`);break}
-    out.push(lines[i]);used+=1+lines[i].length}
-  return out.join("\n")}
-function onLogged(e){postActivity("pass",e.type,actDetail(e,600),actDetail(e,160,true))}
+/* ============ Dela passet: ett inlägg per pass ============ */
+/* Det enda sättet att dela i flödet. Direkt efter passet, eller i efterhand under Statistik, Pass, blir passet ett inlägg med en bild:
+   en VARV.-bakgrund eller ett eget foto med passet ovanpå. Rekorden från passet står i grönt med förbättringen i procent. */
+const canPost=()=>!!(SB&&SBUSER);
+const isCard=a=>okPost(a&&a.image_url)&&/\/p-[a-z0-9]+\.jpg(\?|$)/i.test(a.image_url);
+const raceTotal=l=>{const sp=l&&l.race&&l.race.sp;if(!Array.isArray(sp)||sp.length<16)return 0;const t=sp.slice(0,16).reduce((a,b)=>a+(+b||0),0);return t>=600?t:0};
+const pctTxt=r=>{const p=(r.prev-r.t)/r.prev*100;return (p<10?p.toFixed(1):String(Math.round(p))).replace(".",",")};
+const kmTxt=m=>{if(m<1000)return Math.round(m)+" m";const v=m/1000;return (v>=10?v.toFixed(1):v.toFixed(2)).replace(/\.?0+$/,"").replace(".",",")+" km"};
+/* Rekorden i ett pass. Direkt efter passet kommer de från sparningen. I efterhand jämförs passet med alla pass före det. */
+function passRecs(l,hint){if(hint)return hint.filter(r=>r&&+r.prev>+r.t);
+  const before=x=>x&&x.id!==l.id&&!(x.shared&&!x.edited)&&((x.date||"")<(l.date||"")||(x.date===l.date&&(x.created||0)<(l.created||0)));
+  const best={};(l.items||[]).forEach(it=>(it.sets||[]).forEach(s=>{const p=prOfSet(it,s);if(p&&(!best[p.k]||p.t<best[p.k].t))best[p.k]={k:p.k,n:prName(p.k),t:p.t}}));
+  const prev={};LOGS.filter(before).forEach(x=>(x.items||[]).forEach(it=>(it.sets||[]).forEach(s=>{const p=prOfSet(it,s);if(p&&best[p.k]&&(!prev[p.k]||p.t<prev[p.k]))prev[p.k]=p.t})));
+  const out=Object.values(best).map(o=>Object.assign(o,{prev:prev[o.k]||0})).filter(o=>o.prev>o.t);
+  const rt=raceTotal(l);if(rt){let pv=0;LOGS.filter(before).forEach(x=>{const t=raceTotal(x);if(t&&(!pv||t<pv))pv=t});if(pv>rt)out.unshift({k:"race",n:prName("race"),t:rt,prev:pv})}
+  return out}
+/* Allt som står på bilden och i texten till inlägget */
+function passModel(l,recs){const its=l.items||[],rt=raceTotal(l),lopp=!!l.lopp,d=new Date((l.date||today())+"T12:00:00");
+  const time=rt?fmt(rt):+l.total>0?fmt(l.total):+l.min>0?pgMin(+l.min):"";
+  let runM=0,allM=0;its.forEach(it=>(it.sets||[]).forEach(s=>{const m=+s.m||0;if(m>0){allM+=m;if(lvIsRun(it))runM+=m}}));if(rt)runM=8000;
+  const dist=runM||allM,recKeys=new Set(recs.map(r=>r.k));
+  let rows;
+  if(rt){const sp=l.race.sp;rows=[{n:"Löpning",v:`8 × 1 km · ${fmt(sp.filter((x,i)=>i%2===0).slice(0,8).reduce((a,b)=>a+(+b||0),0))}`,c:"run"}].concat(S.map((s,i)=>({n:s.n,v:+sp[2*i+1]>0?fmt(+sp[2*i+1]):"",c:"st"})))}
+  else rows=its.map(it=>{const t=itemTxt(it),g=t===it.n?"":t.slice(it.n.length+1),own=nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t)),rec=(it.sets||[]).some(s=>{const p=prOfSet(it,s);return p&&recKeys.has(p.k)&&recs.some(r=>r.k===p.k&&Math.round(r.t)===Math.round(p.t))});
+    return {n:it.n,v:[g,own?fmt(it.sec):""].filter(Boolean).join(" · "),c:lvIsRun(it)?"run":it.st?"st":"ot",rec}});
+  const stats=[time?["Tid",time]:null,dist?[runM?"Löpning":"Sträcka",kmTxt(dist)]:null,rt?["Stationer","8"]:its.length?["Övningar",String(its.length)]:(l.stations||[]).length?["Stationer",String(l.stations.length)]:null].filter(Boolean);
+  const title=lopp?l.lopp:(l.type||"Pass"),kind=lopp?"lopp":"pass";
+  const eyebrow=[lopp?"Tävling":rt?"Hyrox-simulering":"Träning",d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"})].join(" · ").toUpperCase();
+  const sum=[stats.map(s=>s[1]).slice(0,2).join(" · ")].concat(recs.map(r=>`Nytt rekord: ${r.n} ${fmt(r.t)}, ${pctTxt(r)} % snabbare`),rows.map(r=>[r.n,r.v].filter(Boolean).join(" ")));
+  let summary="";for(const s of sum){if(!s)continue;if((summary+"\n"+s).length>600)break;summary=summary?summary+"\n"+s:s}
+  return {title,kind,eyebrow,stats,recs,rows,summary}}
+let VARVICON=null;
+async function varvIcon(){if(VARVICON)return VARVICON;try{const im=new Image();im.src="icons/varv-512.png";await im.decode();VARVICON=im}catch(e){}return VARVICON}
+/* Bilden till inlägget, 1080 × 1350. Bakgrunden är mörk, ljus eller ett eget foto. På fotot ligger texten direkt på bilden,
+   med en mjuk skugga nedtill så att den går att läsa. */
+async function passCanvas(m,o){const W=1080,H=1350,M=84,c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  const F='-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI Variable Display","Segoe UI","Helvetica Neue",Helvetica,Arial,sans-serif';
+  const font=(w,px)=>{x.font=`${w} ${px}px ${F}`},ls=v=>{if("letterSpacing" in x)x.letterSpacing=v};
+  const txt=(t,X,Y,col,al)=>{x.textAlign=al||"left";x.fillStyle=col;x.fillText(t,X,Y);x.textAlign="left"};
+  const ell=(t,w)=>{t=String(t);if(x.measureText(t).width<=w)return t;while(t&&x.measureText(t+"…").width>w)t=t.slice(0,-1);return t.trim()+"…"};
+  const foto=o.bg==="foto"&&o.img,light=!foto&&o.bg==="ljus";
+  const T=foto?{ink:"#ffffff",mut:"rgba(255,255,255,.78)",hair:"rgba(255,255,255,.26)",grn:"#30d158",acc:"#ff5c7a",st:"#30d158"}
+    :light?{ink:"#111114",mut:"#6e6e76",hair:"#dcdce1",grn:"#1a9a45",acc:"#f0124a",st:"#1fae4b"}
+    :{ink:"#f5f5f7",mut:"#9a9aa3",hair:"#2e2e33",grn:"#30d158",acc:"#ff2d55",st:"#30d158"};
+  x.textBaseline="alphabetic";
+  // Bakgrund
+  if(foto){const iw=o.img.naturalWidth||o.img.width,ih=o.img.naturalHeight||o.img.height,k=Math.max(W/iw,H/ih);x.drawImage(o.img,(W-iw*k)/2,(H-ih*k)/2,iw*k,ih*k);
+    const gt=x.createLinearGradient(0,0,0,300);gt.addColorStop(0,"rgba(0,0,0,.42)");gt.addColorStop(1,"rgba(0,0,0,0)");x.fillStyle=gt;x.fillRect(0,0,W,300)}
+  else{x.fillStyle=light?"#ffffff":"#000000";x.fillRect(0,0,W,H);
+    const glow=(cx,cy,r,col)=>{const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,col);g.addColorStop(1,col.replace(/[\d.]+\)$/,"0)"));x.fillStyle=g;x.fillRect(0,0,W,H)};
+    glow(W*.92,H*.06,W*.8,light?"rgba(255,45,85,.09)":"rgba(255,45,85,.2)");glow(W*.02,H*.98,W*.75,light?"rgba(255,122,69,.07)":"rgba(255,122,69,.10)");
+    // Löparbanan uppe till höger, som i VARV.:s bakgrunder
+    const cx=W+40,cy=34,rx=520,ry=236;x.save();x.lineWidth=40;x.strokeStyle=light?"#f2f2f4":"rgba(255,255,255,.055)";x.beginPath();x.ellipse(cx,cy,rx,ry,0,0,Math.PI*2);x.stroke();
+    x.setLineDash([2,14]);x.lineWidth=3;x.strokeStyle=light?"rgba(240,18,74,.35)":"rgba(255,45,85,.45)";x.beginPath();x.ellipse(cx,cy,rx,ry,0,Math.PI*.5,Math.PI*.74);x.stroke();x.setLineDash([]);
+    const a0=Math.PI*.74,a1=Math.PI*1.12,ga=x.createLinearGradient(cx-rx,cy+ry,cx-rx*.6,cy-ry);ga.addColorStop(0,"#ff2d55");ga.addColorStop(1,"#ff7a45");
+    x.lineWidth=8;x.lineCap="round";x.strokeStyle=ga;x.shadowColor="rgba(255,45,85,.55)";x.shadowBlur=22;x.beginPath();x.ellipse(cx,cy,rx,ry,0,a0,a1);x.stroke();
+    const px=cx+rx*Math.cos(a1),py=cy+ry*Math.sin(a1);x.fillStyle="#ff2d55";x.beginPath();x.arc(px,py,17,0,Math.PI*2);x.fill();x.shadowBlur=0;x.fillStyle="#fff";x.beginPath();x.arc(px,py,7,0,Math.PI*2);x.fill();x.restore()}
+  // Logotypen: appikonen och VARV.
+  {const ic=foto?64:72,y=M-6,im=await varvIcon();if(foto){x.shadowColor="rgba(0,0,0,.35)";x.shadowBlur=18}
+    if(im){x.save();x.beginPath();x.roundRect?x.roundRect(M,y,ic,ic,ic*.23):x.rect(M,y,ic,ic);x.clip();x.drawImage(im,M,y,ic,ic);x.restore()}
+    font(800,foto?42:48);ls("-1px");txt("VARV.",M+ic+18,y+ic/2+(foto?15:17),T.ink);ls("0px");x.shadowBlur=0;x.shadowColor="transparent"}
+  // Innehållet. Samma block används för båda layouterna; först mäts det, sedan ritas det.
+  const block=(y,draw,cp,maxY)=>{const w=W-2*M;if(foto&&draw){x.shadowColor="rgba(0,0,0,.28)";x.shadowBlur=14}
+    font(700,cp?24:26);ls("2.5px");if(draw)txt(m.eyebrow,M,y+24,T.acc);ls("0px");y+=24+(cp?18:24);
+    let s=cp?72:92;font(800,s);ls("-3px");let L=wrapLines(x,m.title+".",w,2);while(s>48&&L.some(l=>x.measureText(l).width>w)){s-=4;font(800,s);L=wrapLines(x,m.title+".",w,2)}
+    L.forEach((l,i)=>{if(draw)txt(l,M-3,y+s*.8+i*s*1.02,T.ink)});ls("0px");y+=s*.8+(L.length-1)*s*1.02+(cp?34:48);
+    if(m.stats.length){const cw=w/m.stats.length,vp=cp?62:78;
+      m.stats.forEach(([lb,v],i)=>{const X=M+i*cw;font(600,cp?21:23);ls("2px");if(draw)txt(lb.toUpperCase(),X,y+22,T.mut);ls("0px");
+        let vs=vp;font(800,vs);while(vs>40&&x.measureText(v).width>cw-24){vs-=4;font(800,vs)}ls("-2px");if(draw)txt(v,X-2,y+22+14+vp*.8,T.ink);ls("0px")});
+      y+=22+14+vp*.8+(cp?34:46)}
+    const rmax=cp?2:3;
+    if(m.recs.length){font(700,cp?22:24);ls("2.5px");if(draw){x.fillStyle=T.grn;x.beginPath();x.arc(M+7,y+16,7,0,Math.PI*2);x.fill();txt(m.recs.length>1?"NYA REKORD":"NYTT REKORD",M+24,y+24,T.grn)}ls("0px");y+=24+(cp?16:20);
+      if(cp)m.recs.slice(0,rmax).forEach(r=>{const rp=32,tm=fmt(r.t),pt=`  ▲ ${pctTxt(r)} %`;font(600,rp);const pw=x.measureText(pt).width;font(700,rp);const tw=x.measureText(tm).width;
+        if(draw){txt(tm,W-M-pw,y+rp*.8,T.grn,"right");font(600,rp);txt(pt,W-M,y+rp*.8,T.grn,"right");txt(ell(r.n,w-tw-pw-30),M,y+rp*.8,T.grn)}y+=rp*.8+20});
+      else m.recs.slice(0,rmax).forEach(r=>{const rp=38,sp=27;font(700,rp);const tm=fmt(r.t),tw=x.measureText(tm).width;
+        if(draw){txt(tm,W-M,y+rp*.8,T.grn,"right");font(600,rp);txt(ell(r.n,w-tw-30),M,y+rp*.8,T.grn)}y+=rp*.8+12;
+        if(draw){font(600,sp);txt(`▲ ${pctTxt(r)} % snabbare`,M,y+sp*.8,T.grn);font(500,sp);txt(`Förra ${fmt(r.prev)}`,W-M,y+sp*.8,T.mut,"right")}y+=sp*.8+(cp?18:22)});
+      if(m.recs.length>rmax){font(500,cp?24:26);if(draw)txt(`och ${m.recs.length-rmax} rekord till`,M,y+24,T.grn);y+=24+16}
+      y+=cp?8:14}
+    let rh=cp?52:60;if(!cp&&m.rows.length*rh>maxY-y)rh=Math.max(50,Math.floor((maxY-y)/m.rows.length));const cap=Math.max(0,Math.min(cp?3:99,Math.floor((maxY-y)/rh)));let n=m.rows.length<=cap?m.rows.length:Math.max(0,cap-1);
+    m.rows.slice(0,n).forEach(r=>{if(draw){x.fillStyle=T.hair;x.fillRect(M,y,w,2);x.fillStyle=r.c==="run"?T.acc:r.c==="st"?T.st:T.mut;x.beginPath();x.arc(M+7,y+rh/2+1,7,0,Math.PI*2);x.fill();
+        font(500,cp?27:29);const vv=r.v?ell(r.v,w*.5):"",vw=vv?x.measureText(vv).width:0;if(vv)txt(vv,W-M,y+rh/2+11,r.rec?T.grn:T.mut,"right");
+        font(r.rec?700:600,cp?29:31);txt(ell(r.n,w-30-vw-24),M+28,y+rh/2+11,r.rec?T.grn:T.ink)}y+=rh});
+    if(m.rows.length>n&&n>=0&&cap>0){const k=m.rows.length-n;if(draw){x.fillStyle=T.hair;x.fillRect(M,y,w,2);font(500,cp?26:28);txt(`och ${k} ${k===1?"övning":"övningar"} till`,M+28,y+rh/2+10,T.mut)}y+=rh}
+    x.shadowBlur=0;x.shadowColor="transparent";return y};
+  if(foto){const h=block(0,false,true,1e5);const y0=H-M+10-h;
+    const gb=x.createLinearGradient(0,y0-260,0,H);gb.addColorStop(0,"rgba(0,0,0,0)");gb.addColorStop(.35,"rgba(0,0,0,.45)");gb.addColorStop(1,"rgba(0,0,0,.82)");x.fillStyle=gb;x.fillRect(0,y0-260,W,H-y0+260);
+    block(y0,true,true,1e5)}
+  else{const foot=H-M+20;block(M+72+120,true,false,foot-92);
+    x.fillStyle=T.hair;x.fillRect(M,foot-58,W-2*M,2);font(500,26);txt("Träna smartare för Hyrox.",M,foot,T.mut);font(600,26);txt("varvtraining.com",W-M,foot,T.ink,"right")}
+  return c}
+async function passBlob(cv){let q=.9,b=null;for(let i=0;i<4;i++){b=await new Promise(r=>cv.toBlob(r,"image/jpeg",q));if(b&&b.size<1.9e6)break;q-=.1}return b}
+/* Spara på passet att det är delat, så att det inte delas två gånger */
+async function markPosted(id,act){const l=LOGS.find(x=>x.id===id);if(!l)return;const n=Object.assign({},l);if(act)n.posted=act;else delete n.posted;
+  if(mode==="db"&&col){const b=Object.assign({},n);delete b.id;try{await col.doc(id).set(b)}catch(e){}return}
+  LOGS=LOGS.map(x=>x.id===id?n:x);saveLocal()}
+const PSBG=[["mork","Mörk"],["ljus","Ljus"]];
+/* Arket "Dela passet". o.log: passet om det inte har hunnit in i LOGS, o.prs: rekorden från sparningen, o.after: körs när arket stängs. */
+function openPassShare(id,o){o=o||{};const l=LOGS.find(x=>x.id===id)||o.log;if(!l)return;
+  if(!canPost()){openAuth();return}
+  const m=passModel(l,passRecs(l,o.prs)),after=()=>{const f=o.after;o.after=null;if(f)setTimeout(f,350)};
+  let bg=set.psbg==="ljus"?"ljus":"mork",img=null,imgUrl=null,cv=null,gen=0;
+  openSheet(`<div><span class="small">${o.fresh?"Passet är sparat":"Dela passet"}</span><h2>${o.fresh?"Vill du dela passet?":"Dela i flödet"}</h2></div>
+   <div class="ps-prev" id="ps-prev" aria-live="polite"><span class="ps-load">Ritar bilden…</span></div>
+   <div class="ps-bgs" role="group" aria-label="Bakgrund">
+    ${PSBG.map(([k,t])=>`<button type="button" class="ps-bg ps-${k}" data-bg="${k}" aria-pressed="false"><i aria-hidden="true"></i><span>${t}</span></button>`).join("")}
+    <button type="button" class="ps-bg ps-foto" data-bg="foto" aria-pressed="false" hidden><i aria-hidden="true"></i><span>Din bild</span></button>
+    <label class="ps-bg ps-add" for="ps-cam"><i aria-hidden="true">${CAMI}</i><span>Kamera</span></label>
+    <label class="ps-bg ps-add" for="ps-lib"><i aria-hidden="true"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2.5"/><circle cx="9" cy="10" r="1.8"/><path d="m20.5 16-4.8-4.8L6 19.5"/></svg></i><span>Bibliotek</span></label>
+   </div>
+   <input type="file" id="ps-cam" accept="image/*" capture="environment" class="sr"><input type="file" id="ps-lib" accept="image/*" class="sr">
+   <div class="field"><label for="ps-txt">Text</label><textarea id="ps-txt" rows="2" maxlength="300" placeholder="Hur gick passet? Tagga vänner med @"></textarea></div>
+   <button class="pill block" id="ps-go">Dela i flödet</button>
+   <button class="pill ghost block" id="ps-no">${o.fresh?"Inte nu":"Avbryt"}</button>
+   <p class="small" style="text-align:center">Syns för dem som följer dig.${o.fresh?" Du kan dela passet senare under Statistik, Pass.":""}</p>`,()=>{
+    const pv=$("#ps-prev"),ta=$("#ps-txt");attachMentions(ta);
+    const draw=async()=>{const g=++gen;const c=await passCanvas(m,{bg,img});if(g!==gen)return;cv=c;c.setAttribute("role","img");c.setAttribute("aria-label",`Bilden som delas: ${m.title}. ${m.summary.split("\n")[0]}`);pv.replaceChildren(c);
+      $$(".ps-bg[data-bg]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.bg===bg))};
+    const pick=async f=>{const x=f.files&&f.files[0];f.value="";if(!x)return;if(!/^image\//.test(x.type)){toast("Välj en bild.");return}
+      const cr=await cropImage(x,{ratios:[[.8,"4:5"]],ratio:.8,maxW:1600,q:.9});if(!cr)return;
+      try{const u=URL.createObjectURL(cr.blob),im=new Image();im.src=u;await im.decode();if(imgUrl)URL.revokeObjectURL(imgUrl);imgUrl=u;img=im}catch(e){toast("Kunde inte läsa bilden. Prova en annan.");return}
+      const fb=$(".ps-foto");fb.hidden=false;fb.querySelector("i").style.backgroundImage=`url(${imgUrl})`;bg="foto";HAPTIC("light");draw()};
+    $("#ps-cam").onchange=e=>pick(e.target);$("#ps-lib").onchange=e=>pick(e.target);
+    $(".ps-bgs").onclick=e=>{const b=e.target.closest("[data-bg]");if(!b||b.dataset.bg===bg)return;bg=b.dataset.bg;if(bg!=="foto"){set.psbg=bg;saveSet()}HAPTIC("light");draw()};
+    const done=()=>{if(imgUrl)URL.revokeObjectURL(imgUrl);closeSheet();after()};
+    $("#ps-no").onclick=done;$("#sh-x").onclick=done;
+    $("#ps-go").onclick=()=>busy($("#ps-go"),async()=>{if(!cv){toast("Bilden är inte klar än.");return}
+      const blob=await passBlob(cv);if(!blob){toast("Kunde inte skapa bilden. Försök igen.");return}
+      const path=`${SBUSER.id}/p-${Date.now().toString(36)}${Math.random().toString(36).slice(2,10)}.jpg`;
+      const up=await SB.storage.from("posts").upload(path,blob,{contentType:"image/jpeg",cacheControl:"31536000",upsert:false});
+      if(up.error){toast("Kunde inte ladda upp bilden. Försök igen.");return}
+      const image_url=SB.storage.from("posts").getPublicUrl(path).data.publicUrl,note=ta.value.replace(/\s+/g," ").trim().slice(0,300),mn=ta._mentions?ta._mentions():[];
+      const base={kind:m.kind,title:m.title.slice(0,80),detail:m.summary,image_url,mentions:mn.length?mn:null};
+      /* Äldre databaser saknar kanske kolumnen för text, eller tillåter bara 160 tecken. Då prövas en enklare variant. */
+      const tries=[Object.assign({},base,note?{note}:{}),Object.assign({},base,{detail:[note,m.summary].filter(Boolean).join("\n").slice(0,600)}),Object.assign({},base,{detail:[note,m.summary].filter(Boolean).join("\n").slice(0,160)})];
+      let row=null;for(const t of tries){const {data,error}=await SB.from("activity").insert(t).select("id").maybeSingle();if(!error&&data){row=data;break}}
+      if(!row){try{await SB.storage.from("posts").remove([path])}catch(e){}toast("Kunde inte dela. Försök igen.");return}
+      await markPosted(id,row.id);if(imgUrl)URL.revokeObjectURL(imgUrl);closeSheet();HAPTIC("success");toast("Passet är delat");
+      FRC=null;set.fdsub="flow";saveSet();if(location.hash==="#feed")renderFeed(true);try{if(location.hash==="#logg")renderHist()}catch(e){}after()});
+    draw()})}
 
 /* ============ Notiser ============ */
 const PUSHKEY=(window.VARV_SUPABASE&&window.VARV_SUPABASE.pushKey)||"BKngCUNxkMao_gb9Zlpo97GmuYHNvhWmOXMg9AIuwPQEi9frf1S9awn-wFB8ERsy7-LqlU3ctAUwQITxpF_n_Po";
@@ -7026,7 +7171,6 @@ function prFromItems(items){const out=[];
 async function checkPRs(items){const nw=prFromItems(items);if(!nw.length)return;
   nw.forEach(o=>{o.prev=+PRS[o.k]||0;prDate(o.k);PRS[o.k]=Math.round(o.t)});await savePRs();try{renderPRs()}catch(e){}
   const o=nw[0];setTimeout(()=>{toast(`Nytt rekord: ${o.n} ${fmt(o.t)}`);HAPTIC("success")},900);
-  nw.forEach(x=>{const d=x.prev?Math.round(x.prev-x.t):0;postActivity("rekord",x.n,fmt(x.t)+(d>0?`\n${d<60?`${d} sekunder`:fmt(d)} snabbare än förra rekordet ${fmt(x.prev)}`:""))});
 }
 
 
@@ -7332,9 +7476,8 @@ function watchIngest(){
   LOGS.filter(l=>l&&l.src==="watch"&&!l.seen&&!WATCHSEEN.has(l.id)).forEach(async l=>{
     WATCHSEEN.add(l.id);const b=Object.assign({},l,{seen:1});delete b.id;
     try{await col.doc(l.id).set(b)}catch(e){WATCHSEEN.delete(l.id);return}
-    try{onLogged(b)}catch(e){}
     try{checkPRs(b.items)}catch(e){}
-    toast("Passet från klockan är sparat")})}
+    toast("Passet från klockan är sparat",canPost()?{label:"Dela",action:()=>openPassShare(l.id,{log:l})}:undefined)})}
 function watchAgo(t){if(!t)return "Har inte hörts av än";const d=Math.round((Date.now()-new Date(t))/6e4);
   return d<2?"Synkade nyss":d<60?`Synkade för ${d} min sedan`:d<1440?`Synkade för ${Math.round(d/60)} tim sedan`:`Synkade ${new Date(t).toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(/\./g,"")}`}
 async function openWatches(){

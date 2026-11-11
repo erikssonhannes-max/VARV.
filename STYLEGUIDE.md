@@ -174,6 +174,17 @@ Medaljfärger efter typ: hot för antal och plan, turkos för tid, grönt för v
 
 En ny utmärkelse eller nivå visas i ett ark med stor medalj, en glansanimation, konfetti och en dubbel vibration. Visa högst ett sådant ark åt gången.
 
+## Dela i flödet
+
+Aktivitet är en plats för gemenskap, inte ett socialt medium. Det finns ett enda sätt att lägga ut något: att dela ett pass.
+
+- **Ett pass, ett inlägg.** Tid, sträcka, övningar och passets rekord står i samma inlägg. Rekord läggs aldrig ut för sig.
+- **När:** direkt efter passet visas arket "Vill du dela passet?". Väljer man Inte nu går passet att dela senare under Statistik, Pass, i passets ark.
+- **Bilden:** 1080 × 1350 (4:5). Bakgrunden är Mörk eller Ljus, med löparbanan uppe till höger, eller en egen bild från kameran eller biblioteket. På en egen bild ligger texten direkt på fotot med en mjuk skugga nedtill, som hos Strava.
+- **Innehåll uppifrån:** logotypen, `eyebrow` med typ och datum, passets namn med punkt, tre siffror (Tid, Löpning eller Sträcka, Övningar), rekorden och sedan övningarna rad för rad.
+- **Rekord är alltid gröna** och står med förbättringen i procent: "▲ 4,2 % snabbare" och förra tiden bredvid.
+- Den egna texten blir bildtext under bilden. Vänner taggas med @.
+
 ## Genomgång
 
 Första gången appen öppnas efter starttestet får användaren en genomgång i tio steg. Varje steg tonar ner skärmen och lyfter fram en del med en ljus ring, med ett kort som har stegnummer, rubrik, en eller två meningar och knapparna Tillbaka och Nästa. Hoppa över finns alltid. Genomgången kan visas igen under Profil, Hjälp.

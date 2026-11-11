@@ -1382,6 +1382,7 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .rl-empty-go{display:grid;gap:10px;width:100%;max-width:300px;margin-top:4px}.rl-empty-go .ghost{background:var(--card)}
 .ma-paste{background:var(--tile);border-radius:12px;padding:12px 14px}.ma-paste summary{cursor:pointer;font-weight:600;color:var(--link);font-size:var(--t-sub);min-height:28px}.ma-paste[open]{display:grid;gap:10px}.ma-paste textarea{width:100%;font:inherit;font-size:var(--t-sub);border:1px solid var(--hair);border-radius:12px;padding:10px;background:var(--card);color:var(--ink)}.ma-paste .ghost{background:var(--card)}
 .ma-grid{display:grid;gap:6px}
+.ra-edit{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pill.ma-del{color:var(--bad)}.ma-del-go{background:var(--bad)}
 .ma-r{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px;align-items:center;padding:4px 0 4px 12px;border-left:3px solid var(--accent)}.ma-r.s{border-color:var(--green)}.ma-r.x{border-color:var(--cyan);margin-top:6px}
 .ma-n{font-size:var(--t-sub);display:flex;align-items:center;gap:8px;min-width:0}.ma-n i{font-style:normal;font-size:var(--t-micro);font-weight:700;width:20px;height:20px;border-radius:50%;background:var(--card);display:grid;place-items:center;flex:none}
 .ma-r input{text-align:right;font-variant-numeric:tabular-nums;font-size:var(--t-body);min-height:44px}
@@ -2314,7 +2315,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.60 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.61 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2375,7 +2376,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.60";
+const APPVER="1.1.61";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5561,16 +5562,18 @@ function rlParse(txt){const lines=String(txt||"").split(/\n|\t{2,}/).map(x=>x.tr
     if(/total|sluttid|finish|overall|run total|work/.test(low))return;free.push(t)});
   if(out.sp.every(x=>x==null)&&free.length>=16){free.slice(0,16).forEach((t,i)=>out.sp[i]=t);if(free.length>16)out.rx=free[16]}
   return out}
-function openRaceAdd(){const kind0="race",segN=segs();let kind=kind0;
-  const row=(i)=>{const n=i%2?S[(i-1)/2].n:`Löpning ${i/2+1}`;return `<div class="ma-r${i%2?" s":""}"><span class="ma-n">${i%2?"":`<i>${i/2+1}</i>`}${esc(n)}</span><input type="text" inputmode="numeric" data-tm="4" data-ma="${i}" placeholder="${fmt(segN[i].tg)}" aria-label="${esc(n)}" autocomplete="off"></div>`};
-  openSheet(`<div><span class="small">Loppanalys</span><h2>Lägg till lopp</h2><p class="small">Skriv in tiderna från resultatlistan på hyrox.com, din klocka eller en simulering. Skriv 448 för 4:48.</p></div>
+function openRaceAdd(eid){const ed=eid?LOGS.find(x=>x.id===eid&&x.race):null,ec=ed?raceClean(ed):null,segN=segs();let kind=ed?(ed.race.kind||"sim"):"race";
+  const row=(i)=>{const n=i%2?S[(i-1)/2].n:`Löpning ${i/2+1}`;return `<div class="ma-r${i%2?" s":""}"><span class="ma-n">${i%2?"":`<i>${i/2+1}</i>`}${esc(n)}</span><input type="text" inputmode="numeric" data-tm="4" data-ma="${i}" placeholder="${fmt(segN[i].tg)}" value="${ec?fmt(ec.sp[i]):""}" aria-label="${esc(n)}" autocomplete="off"></div>`};
+  const eName=ed?(ed.race.name||""):"",eCls=ed?ed.race.cls:clsMine();
+  openSheet(`<div><span class="small">Loppanalys</span><h2>${ed?"Ändra lopp":"Lägg till lopp"}</h2><p class="small">${ed?"Rätta en tid, datumet eller klassen. Löpning och stationer är utan Roxzone.":"Skriv in tiderna från resultatlistan på hyrox.com, din klocka eller en simulering. Skriv 448 för 4:48."}</p></div>
    <div class="seg" id="ma-kind" role="group" aria-label="Typ"><button data-k="race">Hyrox-lopp</button><button data-k="sim">Simulering</button></div>
-   <div class="grid2"><div class="field"><label for="ma-d">Datum</label><input type="date" id="ma-d" max="${today()}" value="${today()}"></div><div class="field"><label for="ma-cls">Klass</label><select id="ma-cls">${RCL.map(([v,l])=>`<option value="${v}"${v===clsMine()?" selected":""}>${l}</option>`).join("")}</select></div></div>
-   <div class="field"><label for="ma-name">Lopp eller plats</label><input type="text" id="ma-name" maxlength="50" placeholder="Valfritt, till exempel HYROX Stockholm"></div>
+   <div class="grid2"><div class="field"><label for="ma-d">Datum</label><input type="date" id="ma-d" max="${today()}" value="${esc(ed?ed.date:today())}"></div><div class="field"><label for="ma-cls">Klass</label><select id="ma-cls">${RCL.map(([v,l])=>`<option value="${v}"${v===eCls?" selected":""}>${l}</option>`).join("")}</select></div></div>
+   <div class="field"><label for="ma-name">Lopp eller plats</label><input type="text" id="ma-name" maxlength="50" placeholder="Valfritt, till exempel HYROX Stockholm" value="${esc(eName)}"></div>
    <details class="ma-paste"><summary>Klistra in från hyrox.com</summary><p class="small">Kopiera splittarna från din resultatsida och klistra in dem här, så fyller VARV. i fälten.</p><textarea id="ma-txt" rows="4" placeholder="Running 1  4:12&#10;SkiErg  4:35&#10;…"></textarea><button type="button" class="pill ghost block" id="ma-fill">Fyll i tiderna</button></details>
-   <div class="ma-grid">${Array.from({length:16},(_,i)=>row(i)).join("")}<div class="ma-r x"><span class="ma-n">Roxzone</span><input type="text" inputmode="numeric" data-tm="4" id="ma-rx" placeholder="Valfritt" autocomplete="off"></div></div>
+   <div class="ma-grid">${Array.from({length:16},(_,i)=>row(i)).join("")}<div class="ma-r x"><span class="ma-n">Roxzone</span><input type="text" inputmode="numeric" data-tm="4" id="ma-rx" placeholder="Valfritt" value="${ec&&ec.rx?fmt(ec.rx):""}" autocomplete="off"></div></div>
    <div class="ma-sum"><span>Sluttid</span><b id="ma-tot">–</b></div>
-   <button class="pill block" id="ma-save">Spara loppet</button>`,()=>{
+   <button class="pill block" id="ma-save">${ed?"Spara ändringarna":"Spara loppet"}</button>${ed?'<button class="pill ghost block ma-del" id="ma-del">Radera loppet</button>':""}`,()=>{
+    if(ed)$("#ma-del").onclick=()=>raceDelete(ed.id);
     const dk=()=>$$("#ma-kind [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===kind));dk();$("#ma-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(b){kind=b.dataset.k;dk()}};
     const ins=()=>$$("#sheet [data-ma]"),val=i=>parseRes(i.value);
     const sum=()=>{const v=ins().map(val),rx=parseRes($("#ma-rx").value)||0,ok=v.every(x=>x>0);$("#ma-tot").textContent=ok?fmt(v.reduce((a,b)=>a+b,0)+rx):`${v.filter(x=>x>0).length} av 16`};
@@ -5583,14 +5586,25 @@ function openRaceAdd(){const kind0="race",segN=segs();let kind=kind0;
       const d=$("#ma-d").value||today();if(d>today()){toast("Datumet kan inte vara framåt i tiden.");return}
       const run=spSum(v,false),sta=spSum(v,true),sp=v.map((x,i)=>Math.round(rx?x*(1+rx/2/(i%2?sta:run)):x)),tot=v.reduce((a,b)=>a+b,0)+rx,name=$("#ma-name").value.trim().slice(0,50);
       sp[15]+=Math.round(tot)-sp.reduce((a,x)=>a+x,0);
-      const race={sp,tg:segN.map(x=>Math.round(x.tg)),cls:$("#ma-cls").value,src:"manual",kind};if(rx)race.rx=Math.round(rx);
-      const b=$("#ma-save");b.disabled=true;
-      const ok=await addLog({date:d,type:"Racesimulering",min:Math.max(1,Math.round(tot/60)),rpe:5,stations:S.map(s=>s.n),note:`${kind==="race"?"Hyrox-lopp":"Simulering"}${name?" · "+name:""} · Sluttid ${fmt(tot)}`,created:Date.now(),race});
+      const race={sp,tg:ed&&ed.race.tg?ed.race.tg:segN.map(x=>Math.round(x.tg)),cls:$("#ma-cls").value,src:"manual",kind};if(rx)race.rx=Math.round(rx);if(name)race.name=name;
+      const b=$("#ma-save");b.disabled=true;const note=`${kind==="race"?"Hyrox-lopp":"Simulering"}${name?" · "+name:""} · Sluttid ${fmt(tot)}`;
+      if(ed){const ok=await updLog(ed.id,{date:d,min:Math.max(1,Math.round(tot/60)),note,race});b.disabled=false;if(!ok)return;Object.assign(ed,{date:d,note,race});
+        await racePRFix();closeSheet();HAPTIC("success");toast("Loppet är ändrat");try{renderRaceStats()}catch(e){}setTimeout(()=>openRaceAn(ed.id),420);return}
+      const ok=await addLog({date:d,type:"Racesimulering",min:Math.max(1,Math.round(tot/60)),rpe:5,stations:S.map(s=>s.n),note,created:Date.now(),race});
       b.disabled=false;if(!ok)return;
       const pr=!PRS.race||tot<PRS.race;if(pr){PRS.race=Math.round(tot);prDate("race");await savePRs()}
       closeSheet();HAPTIC("success");toast(pr?"Loppet är sparat, och nytt rekord för hel Hyrox":"Loppet är sparat");
       try{renderRaceStats()}catch(e){}const nid=ok;let tries=0;const op=()=>{if(raceLogs().some(l=>l.id===nid))openRaceAn(nid);else if(++tries<8)setTimeout(op,250)};setTimeout(op,420)}})}
 document.addEventListener("click",e=>{if(e.target.closest("[data-race-add]")){e.preventDefault();openRaceAdd()}});
+/* Rekordet för hel Hyrox följer loppen: ett ändrat eller raderat lopp kan ha varit rekordet. */
+async function racePRFix(){const L=raceLogs();if(!L.length)return;const best=Math.round(Math.min(...L.map(l=>spSum(l.race.sp))));if(PRS.race!==best&&(!PRS.race||best<PRS.race||L.every(l=>Math.round(spSum(l.race.sp))!==PRS.race))){PRS.race=best;prDate("race");await savePRs()}}
+function raceDelete(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const t=fmt(spSum(l.race.sp));
+  openSheet(`<div><span class="small">Loppanalys</span><h2>Radera loppet?</h2><p class="small">${esc(fmtDM(l.date))} · ${t}. Loppet och dess mellantider tas bort ur loggen och analysen.</p></div>
+   <button class="pill block ma-del-go" id="rd-go">Radera loppet</button><button class="pill ghost block" id="rd-no">Avbryt</button>`,()=>{
+    $("#rd-no").onclick=()=>openRaceAn(id);
+    $("#rd-go").onclick=async()=>{const wasPR=PRS.race&&Math.round(spSum(l.race.sp))===PRS.race;closeSheet();await delWithUndo(id);
+      if(wasPR){const L=raceLogs().filter(x=>x.id!==id);if(L.length){PRS.race=Math.round(Math.min(...L.map(x=>spSum(x.race.sp))));prDate("race")}else delete PRS.race;await savePRs()}
+      try{renderRaceStats()}catch(e){}}})}
 /* Räknar upp en tid, även med timmar, från noll till slutet. */
 function countTime(el,sec){if(!el)return;if(RM()){el.textContent=fmt(sec);return}const t0=performance.now(),dur=900,tok=(el._ct=(el._ct||0)+1);
   const step=now=>{if(el._ct!==tok)return;const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(sec*e);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
@@ -5674,8 +5688,10 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
    <div class="ra-h"><h3>Del för del</h3></div>
    <div class="group">${rounds}</div>
    ${stIdx>=0?`<button class="pill block" id="ra-train">Öva på ${esc(S[stIdx].n)}</button>`:""}
-   <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment har fått en sextondel av Roxzone-tiden från planen."} Tiden mäts när du trycker.</p>`,()=>{
-    {const t=$("#sheet .rl-time");if(t)countTime(t,+t.dataset.sec)}if(RS.pb&&!cmp&&!RM())setTimeout(confetti,500);
+   <div class="ra-edit"><button type="button" class="pill ghost" id="ra-ed">Ändra tider</button><button type="button" class="pill ghost ma-del" id="ra-del">Radera</button></div>
+   <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment har fått en sextondel av Roxzone-tiden från planen."} ${l.race.src==="manual"?"Tiderna är inskrivna.":"Tiden mäts när du trycker."}</p>`,()=>{
+    $("#ra-ed").onclick=()=>openRaceAdd(id);$("#ra-del").onclick=()=>raceDelete(id);
+    {const t=$("#sheet .rl-time");if(t)countTime(t,+t.dataset.sec)}if(RS.pb&&!cmp&&!RM()){let seen=[];try{seen=JSON.parse(localStorage.getItem("varv-pb-seen")||"[]")}catch(e){}const k=id+":"+Math.round(RS.tot);if(!seen.includes(k)){setTimeout(confetti,500);try{localStorage.setItem("varv-pb-seen",JSON.stringify(seen.concat(k).slice(-20)))}catch(e){}}}
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
     const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)};
     const rb=$("#ra-rx-save");if(rb)rb.onclick=async()=>{const raw=$("#ra-rx").value.trim(),v=raw?parseT(raw):0;

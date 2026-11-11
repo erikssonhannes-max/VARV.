@@ -1338,7 +1338,17 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 @keyframes barW{from{transform:scaleX(0)}}
 /* Loppanalys och passertider */
 .ra-big{font-size:clamp(3rem,15vw,4.2rem);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums;margin-top:4px}
-.hp{margin:22px 0 14px}.hp-h{margin:0 2px 10px}.hp-h h3{font-size:var(--t-lead);font-weight:600;letter-spacing:-.025em}.hp-h p{font-size:var(--t-sub);color:var(--muted);margin-top:3px;text-wrap:pretty}
+.hpc{background:var(--tile);border-radius:var(--r);padding:18px;margin:10px 0;display:grid;gap:14px}
+.hpc-top{display:grid;gap:6px;color:inherit;text-decoration:none}
+.hpc-k{font-size:var(--t-cap);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.hpc-w{display:flex;align-items:baseline;gap:8px}.hpc-w b{font-size:var(--t-num-l);font-weight:700;letter-spacing:-.04em;line-height:1.05;font-variant-numeric:tabular-nums}.hpc-w span{font-size:var(--t-body);color:var(--muted);font-variant-numeric:tabular-nums}
+.hpc-bar{height:6px;border-radius:980px;background:var(--hair);overflow:hidden;margin-top:4px}.hpc-bar i{display:block;height:100%;border-radius:inherit;background:var(--accent);transition:width 1.1s var(--ease)}
+.hpc-sum{font-size:var(--t-sub);color:var(--muted);line-height:1.4;text-wrap:pretty}
+.hpc-dots{display:flex;align-items:center;gap:6px;font-size:var(--t-sub)}.hpc-dots i{width:10px;height:10px;border-radius:50%;background:var(--hair);flex:none}.hpc-dots i.d{background:var(--green)}.hpc-dots i.t{background:none;box-shadow:inset 0 0 0 2px var(--accent)}.hpc-dots span{margin-left:4px;color:var(--muted)}
+.hpc-next{display:grid;grid-template-columns:1fr auto;grid-template-areas:"k c" "t c" "m c";align-items:center;width:100%;margin-top:10px;padding:12px 14px;border:0;border-radius:12px;background:var(--card);color:var(--ink);text-align:left;cursor:pointer;font:inherit;min-height:44px}
+.hpc-nk{grid-area:k;font-size:var(--t-cap);color:var(--muted)}.hpc-next b{grid-area:t;font-size:var(--t-body);font-weight:600}.hpc-next>span:nth-of-type(2){grid-area:m;font-size:var(--t-cap);color:var(--muted)}.hpc-next .chev{grid-area:c;color:var(--muted)}
+.hpc-done{margin-top:10px;font-size:var(--t-sub);color:var(--green)}
+.hpc-go{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hpc-go .pill{background:var(--card);font-size:var(--t-sub);padding:10px 12px;text-align:center}
 .ra-rx{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.ra-rx .field{margin:0}.ra-rx input{font-variant-numeric:tabular-nums}
 .ra-sub{font-size:var(--t-sub);color:var(--muted);margin-top:8px}.ra-sub b{font-weight:600;font-variant-numeric:tabular-nums}
 .ra-h{display:grid;gap:2px}.ra-h h3{font-size:var(--t-head);letter-spacing:-.03em}
@@ -1961,13 +1971,19 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-target">1:30</b><span>måltid · ändra</span></button>
       <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-pace">–</b><span>snittempo per km</span></button>
     </div>
-    <div class="hp" id="h-plan" hidden>
-      <div class="hp-h"><h3>Din plan</h3><p id="h-plan-sum">Byggd från din måltid och loppdagen.</p></div>
-      <div class="group">
-      <a class="row" href="#plan" data-plgo="pass"><div class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div><div><h3>Träningsschema</h3><p id="h-plan-w">Veckans pass och vägen fram till loppet.</p></div><span class="chev">›</span></a>
-      <a class="row" href="#plan" data-plgo="lopp"><div class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 2.5h5M18.5 6.5l1.5-1.5"/></svg></div><div><h3>Splittider och Roxzone</h3><p id="h-plan-l">Tiden för varje del av loppet mot din måltid.</p></div><span class="chev">›</span></a>
+    <section class="hpc" id="h-plan" hidden aria-label="Din plan">
+      <a class="hpc-top" href="#plan" data-plgo="pass">
+        <span class="hpc-k">Din plan</span>
+        <span class="hpc-w"><b id="h-plan-wk">Vecka 1</b><span id="h-plan-of">av 18</span></span>
+        <span class="hpc-bar" aria-hidden="true"><i id="h-plan-bar"></i></span>
+        <span class="hpc-sum" id="h-plan-sum"></span>
+      </a>
+      <div class="hpc-week" id="h-plan-week"></div>
+      <div class="hpc-go">
+        <a class="pill ghost" href="#plan" data-plgo="pass">Träningsschema</a>
+        <a class="pill ghost" href="#plan" data-plgo="lopp">Splittider</a>
       </div>
-    </div>
+    </section>
     <a class="tile tap hx-est" id="h-est" href="#logg" data-lg="form" aria-label="Din uppskattade sluttid i dag"></a>
     <p class="small" id="h-med" hidden></p>
 
@@ -2268,7 +2284,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.55 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.56 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2329,7 +2345,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.55";
+const APPVER="1.1.56";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5381,12 +5397,14 @@ function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E)return;const
 function openFocus(i){const s=S[i],std=exStd(s.id)||{},half=std.r?{r:Math.round(std.r/2)}:{m:Math.round(std.m/2)};
   openPass({name:`Fokus: ${s.n}`,type:"Löpning och stationer",m:40,why:`Träna ${s.n} trött, som i loppet. Håll ett jämnt tempo på löpningen och gå direkt in i stationen.`,hint:"Fyra varv. Vila högst en minut efter varje varv.",items:[sugItem("run",4,{m:1000}),sugItem(s.id,4,half)]},"Fokuspass")}
 const STATION_IC='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h3l2-5 4 10 2-5h7"/></svg>';
-/* Din plan på Hem: var i planen du är och vad Loppet-delen visar */
+/* Din plan på Hem: vilken vecka det är, hur långt planen har kommit, veckans pass och nästa pass */
 function renderHomePlan(){const box=$("#h-plan");if(!box)return;if(NOPLAN||!PLAN.length){box.hidden=true;return}box.hidden=false;
-  const i=curWeekIdx(),w=PLAN[i],n=w?w.ses.length:0,done=w?w.ses.filter(x=>sesDone(w,x)).length:0,t=planTimes();
+  const i=curWeekIdx(),w=PLAN[i],N=PLAN.length,ses=w?w.ses:[],done=ses.filter(x=>sesDone(w,x)).length,nx=w?nextPass(w).next:null,td=today();
+  $("#h-plan-wk").textContent=`Vecka ${i+1}`;$("#h-plan-of").textContent=`av ${N}`;
+  $("#h-plan-bar").style.width=Math.max(4,Math.round((i+1)/N*100))+"%";
   $("#h-plan-sum").textContent=`Byggd från din måltid ${fmtHM(set.target)}${set.noRace?"":" och loppet "+fmtDM(set.date)}. Den anpassar sig efter det du loggar.`;
-  $("#h-plan-w").textContent=`Vecka ${i+1} av ${PLAN.length} · ${done} av ${n} pass klara`;
-  $("#h-plan-l").textContent=`${fmt(t.pace)} /km i snitt · Roxzone ${fmt(t.rox)}`}
+  $("#h-plan-week").innerHTML=`<div class="hpc-dots" aria-label="${done} av ${ses.length} pass klara den här veckan">${ses.map(x=>`<i class="${sesDone(w,x)?"d":x.date===td?"t":""}"></i>`).join("")}<span>${done} av ${ses.length} pass klara den här veckan</span></div>
+   ${nx?`<button type="button" class="hpc-next" data-go="plan"><span class="hpc-nk">${nx.date===td?"I dag":nx.date<td?"Att ta igen":"Nästa pass · "+esc(dayLbl(nx.date))}</span><b>${esc(nx.t)}</b><span>${nx.m} min</span><span class="chev">›</span></button>`:`<p class="hpc-done">Veckans pass är klara.</p>`}`}
 function renderHome(){try{renderGo()}catch(e){}try{renderHyroxHome()}catch(e){}try{renderHomePlan()}catch(e){}
   const t=planTimes(),days=daysLeft(),st=weekStats();
   {const v=$("#v-hem"),b=!!set.onboarded;v.classList.toggle("back",b);$("#h-hello").hidden=!b;if(b){const h=new Date().getHours(),n=(set.name||"").split(" ")[0]||(MYPROF&&MYPROF.username)||(pName()||"").split(" ")[0];

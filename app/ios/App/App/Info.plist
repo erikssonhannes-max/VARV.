@@ -32,6 +32,8 @@
 	<string>VARV. öppnar dina bilder när du väljer en bild till ett inlägg eller din profilbild.</string>
 	<key>NSHealthShareUsageDescription</key>
 	<string>VARV. läser dina träningspass och din puls från Hälsa, så att pass från din klocka hamnar i din träningslogg.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>VARV. sparar aldrig något i Hälsa. Appen läser bara dina träningspass och din puls, så att pass från din klocka hamnar i din träningslogg.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>VARV. använder din ungefärliga position för att visa hur långt det är till loppen nära dig. Positionen sparas bara på telefonen.</string>
 	<key>ITSAppUsesNonExemptEncryption</key>

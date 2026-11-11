@@ -4518,7 +4518,7 @@ document.addEventListener("click",e=>{const b=e.target.closest("[data-go]");if(!
   if(k==="now"||k==="plan")openLogger({forLive:true,kicker:"Träna nu"});else if(k==="prep")openLogger({forLive:true,kicker:"Förbered till gymmet"});else if(k==="after")openLogger({kicker:"Logga i efterhand",fresh:!(LGDRAFT&&LGDRAFT.kicker==="Logga i efterhand")});else if(k==="pre")openPresets();else openSuggest()});
 document.addEventListener("click",e=>{const b=e.target.closest("[data-prep-go],[data-prep-edit],[data-prep-del]");if(!b)return;const d=b.dataset,t=(set.tpls||[]).find(x=>x.id===(d.prepGo||d.prepEdit||d.prepDel));if(!t)return;
   if(d.prepGo){liveFrom(t.items,t.type,t.hint);return}
-  if(d.prepEdit){buildFrom(t.items,t.type,{forLive:true,kicker:"Förberett pass"});LG.tplName=t.name;return}
+  if(d.prepEdit){buildFrom(t.items,t.type,{forLive:true,kicker:"Förberett pass"});LG.tplName=t.name;LG.tplId=t.id;return}
   if(!b.dataset.arm){b.dataset.arm=1;b.textContent="?";b.style.color="var(--bad)";setTimeout(()=>{if(b.isConnected){delete b.dataset.arm;b.textContent="✕";b.style.color=""}},3000);return}
   set.tpls=set.tpls.filter(x=>x.id!==t.id);saveSet();renderPrep();const row=b.closest(".prep");if(row&&$("#hb-now"))row.remove();toast("Passet är borttaget.")});
 /* Förslag: byggs av dina senaste vikter, din nivå och de stationer du tränat minst på sistone. */
@@ -4815,6 +4815,7 @@ function renderLG(){const r=$("#lg");if(!r)return;
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
      ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Kör passet</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button><button type="button" class="linkbtn" id="lg-share" style="justify-self:center">Dela passet</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
+     ${LG.forLive&&LG.items.length&&!LG.showTpl?`<button type="button" class="linkbtn" id="lg-drop" style="justify-self:center${LG.delArm?";color:var(--bad)":""}">${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}
      ${LG.edit?`<button type="button" class="pill ghost block" id="lg-del"${LG.delArm?' style="color:var(--bad)"':""}>${LG.delArm?"Tryck igen för att ta bort":"Ta bort passet"}</button>`:""}</div>`;
 }
 /* Avslutet efter ett pass: tiden först, sedan varje moment mot förra gången. Spara är ett tryck, och värden går att ändra vid behov. */
@@ -4937,6 +4938,9 @@ function lgClick(e){const t=e.target.closest("button,[data-day]");if(!t||t.disab
   if(d.showtype!==undefined){LG.showType=true;renderLG();return}
   if(d.note!==undefined){LG.showNote=true;renderLG();const n=$("#lg-note");if(n)n.focus();return}
   if(t.id==="lg-save"){saveLG(t);return}
+  if(t.id==="lg-drop"){if(!LG.delArm){LG.delArm=true;renderLG();return}
+    if(LG.tplId){set.tpls=(set.tpls||[]).filter(x=>x.id!==LG.tplId);saveSet();renderPrep()}
+    LG.saved=true;dropDraft();closeSheet();toast("Passet är borttaget.");return}
   if(t.id==="lg-del"){if(!LG.delArm){LG.delArm=true;renderLG();return}delWithUndo(LG.edit);closeSheet();return}
 }
 function lgInput(e){const t=e.target;

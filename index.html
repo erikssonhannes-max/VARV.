@@ -2176,7 +2176,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 <section class="view" id="v-logg">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Din data</span><h1>Statistik.</h1><p class="small" id="store-note">Laddar…</p></div>
-    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="lopp">Lopp</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
+    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="lopp">Lopp</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button></div>
     <div class="card strava" id="strava" hidden></div>
 
     <div class="lgv" data-v="pass" hidden>
@@ -2209,9 +2209,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div class="prs" id="prs"></div><div class="card" id="prs-empty" hidden><p class="small">Inga rekord än. Lägg till din bästa tid, till exempel på 100 Wall Balls eller 5 km löpning. Rekorden uppdateras också av sig själva när du loggar ett pass där du slår dem.</p></div>
 
     </div>
-    <div class="lgv" data-v="medaljer" hidden>
-    <div class="sechead"><h2>Utmärkelser</h2><button class="linkbtn" id="med-all">Visa alla</button></div>
-    <div class="card"><div class="medals" id="medals"></div></div>
 
   </div>
 </section>
@@ -2253,6 +2250,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       </div>
       <div class="pf-acts" id="pf-acts" hidden></div>
     </div>
+    <div class="sechead"><h2>Utmärkelser</h2><button class="linkbtn" id="med-all">Visa alla</button></div>
+    <div class="card"><div class="medals" id="medals"></div></div>
     <div class="sechead"><h2>Plan och mått</h2></div>
     <div class="group">
       <button class="row tn-accent" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
@@ -2308,7 +2307,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.58 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.59 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2369,7 +2368,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.58";
+const APPVER="1.1.59";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4349,7 +4348,7 @@ function openGoal(){openSheet(`<div><span class="small">Ditt mål</span><h2>Mål
   ()=>{$("#goal-slot").append($("#goal-card"));$("#p-range").value=set.target;renderSplits();$("#goal-ok").onclick=()=>{saveSet();renderPlan();renderPRs();renderHome();closeSheet();toast("Måltiden är sparad")}})}
 function setPlanEdit(on){if(on)openGoal()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-lg],[data-plan-edit]");if(!a)return;if(a.dataset.lg)setLgView(a.dataset.lg);if("planEdit" in a.dataset)setPlanEdit(true)});
-setLgView(["pass","form","lopp","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
+setLgView(["pass","form","lopp","rekord"].includes(set.lgv)?set.lgv:"form");
 
 /* ============ Logg-UI ============ */
 /* ============ Logga pass ============ */

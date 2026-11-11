@@ -2181,13 +2181,12 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <div class="sechead"><h2>Din träning</h2></div>
     <div class="pf-sum" id="pf-stats"></div>
-    <div id="pf-social"></div>
-    <div class="sechead"><h2>Om mig</h2></div>
+    <div class="sechead"><h2>Plan och mått</h2></div>
     <div class="group">
       <button class="row" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
       <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.200 4 2.200 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
       <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.300-5.600"/><path d="M4 4v4.500h4.500"/></svg></span><div><h3>Gör om starttestet</h3><p>Uppdatera planen efter din form</p></div><span class="chev">›</span></button>
+      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.300-5.600"/><path d="M4 4v4.500h4.500"/></svg></span><div><h3>Starttest</h3><p>Gör om testet när formen har ändrats</p></div><span class="chev">›</span></button>
     </div>
     <div id="pf-about-home" hidden>
     <div class="card" id="pf-about">
@@ -2203,22 +2202,19 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <button type="button" class="pill block" id="pf-about-done">Klar</button>
     </div>
     </div>
-    <div class="sechead"><h2>Konto och inställningar</h2></div>
-    <div class="group">
-      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, notiser, integritet och hjälp</p></div><span class="chev">›</span></button>
+    <div class="sechead"><h2>Konto</h2></div>
+    <div class="group" id="pf-acc">
+      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, ljud, klockor och data</p></div><span class="chev">›</span></button>
       <button class="row" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.600 7.100L4 20l.9-5.400A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm</p></div><span class="chev">›</span></button>
     </div>
-    <div class="group" id="pf-acc" style="margin-top:10px"></div>
     </div>
     <div id="pf-more" hidden>
     <div class="pagehead"><span class="eyebrow">Profil</span><h1>Inställningar.</h1></div>
     <p class="lede pf-more-lede">Välj hur VARV. ser ut, låter och påminner dig.</p>
     <div class="sechead"><h2>Utseende</h2></div>
     <div class="card" id="pf-look"></div>
-    <div class="sechead"><h2>Ljud och vibration</h2></div>
-    <div class="group tn-accent" id="pf-set"></div>
     <div class="sechead"><h2>Under passet</h2></div>
-    <div class="group tn-green" id="pf-run"></div>
+    <div class="group tn-accent" id="pf-set"></div>
     <div class="sechead"><h2>Notiser och kalender</h2></div>
     <div class="group tn-cyan"><div id="pf-push"></div><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M9 14.5l2 2 4-4"/></svg></span><div><h3>Påminnelser i kalendern</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
     <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
@@ -2229,22 +2225,19 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <button class="row" id="pf-exp"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7.500 10.500 12 15l4.500-4.500"/><path d="M5 20h14"/></svg></span><div><h3>Exportera mina data</h3><p>Pass, rekord och inställningar som en fil</p></div><span class="chev">›</span></button>
       <label class="row" for="pf-imp-file" style="cursor:pointer"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V4M7.500 8.500 12 4l4.500 4.500"/><path d="M5 20h14"/></svg></span><div><h3>Importera data</h3><p>Läs in en tidigare export</p></div><span class="chev">›</span></label>
     </div>
-    <div class="sechead"><h2>Hjälp och villkor</h2></div>
+    <div class="sechead"><h2>Hjälp och om VARV.</h2></div>
     <div class="group tn-cyan">
       <button class="row" id="pf-tour"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M9.700 9.500a2.400 2.400 0 1 1 3.600 2.100c-.8.500-1.300 1-1.300 1.900"/><path d="M12 17h.01"/></svg></span><div><h3>Visa genomgången</h3><p>En snabb tur genom appen</p></div><span class="chev">›</span></button>
       <a class="row" href="legal/integritet.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7.500 3v5.500c0 4.500-3 8-7.500 9.500-4.500-1.500-7.500-5-7.500-9.500V6z"/></svg></span><div><h3>Integritetspolicy</h3></div><span class="chev">↗</span></a>
       <a class="row" href="legal/villkor.html" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3h7l4 4v14H7z"/><path d="M14 3v4h4M10 12h5M10 16h5"/></svg></span><div><h3>Användarvillkor</h3></div><span class="chev">↗</span></a>
-    </div>
-    <div class="sechead"><h2>Följ VARV.</h2></div>
-    <div class="group">
       <a class="row" href="https://www.tiktok.com/@varvtraining" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6c-1.4.1-2.6-.3-3.9-1.1v5.4c0 6.9-7.5 9-10.5 4.1-1.9-3.1-.7-8.6 5.5-8.8v2.7c-.5.1-1 .2-1.4.4-1.4.5-2.2 1.4-2 3 .4 3.1 6.1 4 5.6-2V3h2.8z"/></svg></span><div><h3>TikTok</h3><p>@varvtraining · Tips, stationer och racedagar.</p></div><span class="chev">↗</span></a>
       <a class="row" href="https://www.linkedin.com/company/varv" target="_blank" rel="noopener"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.84-2.05 3.78-2.05 4.04 0 4.79 2.66 4.79 6.12v5.43h-4v-4.8c0-1.15-.02-2.62-1.6-2.62-1.6 0-1.84 1.25-1.84 2.54v4.88h-4z"/></svg></span><div><h3>LinkedIn</h3><p>Nyheter om VARV.</p></div><span class="chev">↗</span></a>
     </div>
-    <div class="group" style="margin-top:34px"><button class="row" id="pf-del"><span class="badge" style="color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar</p></div><span></span></button></div>
+    <div class="group" style="margin-top:34px"><button class="row" id="pf-del"><span class="badge" style="color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera alla data</h3><p>Tar bort pass, rekord och inställningar</p></div><span></span></button><button class="row" id="au-del" hidden><span class="badge" style="color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--card))"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6 1.6 0 3 .4 4.2 1.1M16 17l4 4M20 17l-4 4"/></svg></span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt i det</p></div><span></span></button></div>
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.40 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.41 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2291,7 +2284,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.40";
+const APPVER="1.1.41";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3037,15 +3030,16 @@ async function sbSignOut(){
   location.hash="#profil";location.reload();
 }
 
+const ICO_OUT='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5h5.5v15H14"/><path d="M15 12H4M8 7.5 3.5 12 8 16.5"/></svg>',ICO_IN='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.5h5.5v15H14"/><path d="M3.5 12H15M10.5 7.5 15 12l-4.5 4.5"/></svg>',ICO_DEV='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="3" width="11" height="18" rx="2.5"/><path d="M11 18h2"/></svg>';
+/* Kontoraden ligger sist i gruppen Konto, under Inställningar och Tyck till */
+function accRows(html){const el=$("#pf-acc");if(!el)return;el.querySelectorAll(".acc-row").forEach(r=>r.remove());el.insertAdjacentHTML("beforeend",html)}
 function renderAccount(){
-  const el=$("#pf-acc");if(!el)return;
+  const del=$("#au-del");if(del){del.hidden=!SBUSER;del.onclick=deleteAccount}
   if(SBUSER){
-    el.innerHTML=`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>${esc(SBUSER.email||"")}</p></div><span></span></div>
-      <button class="row" id="au-out"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.500h5.500v15H14"/><path d="M15 12H4M8 7.500 3.500 12 8 16.500"/></svg></span><div><h3>Logga ut</h3><p>Dina data ligger kvar i kontot</p></div><span class="chev">›</span></button>
-      <button class="row" id="au-del"><span class="badge" style="color:var(--bad)"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.500 7h15M9.500 7V4.500h5V7M6.500 7l1 13.500h9l1-13.500"/></svg></span><div><h3 style="color:var(--bad)">Radera konto</h3><p>Tar bort kontot och allt i det</p></div><span class="chev">›</span></button>`;
-    $("#au-out").onclick=sbSignOut;$("#au-del").onclick=deleteAccount;
+    accRows(`<button class="row acc-row" id="au-out"><span class="badge">${ICO_OUT}</span><div><h3>Logga ut</h3><p>${esc(SBUSER.email||"Dina data ligger kvar i kontot")}</p></div><span class="chev">›</span></button>`);
+    $("#au-out").onclick=sbSignOut;
   }else{
-    el.innerHTML=`<button class="row" id="au-open"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4.500h5.500v15H14"/><path d="M3.500 12H15M10.500 7.500 15 12l-4.500 4.500"/></svg></span><div><h3>Logga in eller skapa konto</h3><p>Det du loggat hittills följer med</p></div><span class="chev">›</span></button>`;
+    accRows(`<button class="row acc-row" id="au-open"><span class="badge">${ICO_IN}</span><div><h3>Logga in eller skapa konto</h3><p>Det du loggat hittills följer med</p></div><span class="chev">›</span></button>`);
     $("#au-open").onclick=()=>openAuth("in");
   }
 }
@@ -3284,32 +3278,25 @@ function profErr(e){const c=e&&e.code;if(c==="23505")return "Det namnet är reda
   if(c==="23514")return "Användarnamnet får ha 2–20 tecken: bokstäver, siffror, _ och punkt.";return sbErr(e)}
 
 function renderSocial(){
-  const id=$("#pf-id"),soc=$("#pf-social");if(!id||!soc)return;
+  const id=$("#pf-id");if(!id)return;
   const av=$("#pf-av");av.classList.toggle("edit",!!MYPROF);
-  if(!SBUSER||!MYPROF){$("#pf-fw").hidden=true;$("#pf-acts").hidden=true}
-  if(!SBUSER){id.hidden=true;soc.innerHTML="";return}
-  if(!MYPROF){id.hidden=true;soc.innerHTML=`<div class="sechead"><h2>Vänner</h2></div><div class="card"><p class="small">Profiler och vänner är inte uppsatta än. Kör supabase/profiler.sql i Supabase.</p></div>`;return}
-  /* Samma namn som andra ser: hela namnet om du visar det, annars användarnamnet */
-  $("#pf-name").textContent=cardPayload().name||MYPROF.username;
+  if(!SBUSER||!MYPROF){$("#pf-fw").hidden=true;$("#pf-acts").hidden=true;id.hidden=true;return}
+  /* Samma namn som andra ser: hela namnet om du visar det, annars användarnamnet. Står användarnamnet redan som rubrik visas bara koden under. */
+  const nm=cardPayload().name||MYPROF.username,same=nm===MYPROF.username;
+  $("#pf-name").textContent=nm;
   if(!av.querySelector(".pf-cam"))av.insertAdjacentHTML("beforeend",`<span class="pf-cam" aria-hidden="true">${CAM}</span>`);
   id.hidden=false;
-  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button>`;
-  $("#pf-copy").onclick=async()=>{try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}};
+  id.innerHTML=`<button class="tagchip" id="pf-copy" aria-label="Kopiera ${esc(handleTxt(MYPROF))}">${same?"":esc(MYPROF.username)}<span>#${esc(MYPROF.tag)}</span>${COPY}</button>`;
+  $("#pf-copy").onclick=copyHandle;
   $("#pf-sub").textContent=cardSub(cardPayload());
   const fw=$("#pf-fw");fw.hidden=false;
   fw.innerHTML=`<button type="button" id="fw-ers"><b class="cu">${FOLLOWERS.length}</b> följare</button><span aria-hidden="true"></span><button type="button" id="fw-ing"><b class="cu">${FRIENDS.length}</b> följer</button>`;
   const ac=$("#pf-acts");ac.hidden=false;
   ac.innerHTML=`<button class="pill ghost" id="pf-edit" type="button">Redigera profil</button><button class="pill ghost" id="fr-link" type="button"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7.5 7.5L12 3l4.5 4.5"/><path d="M5 12v7h14v-7"/></svg>Dela</button>`;
-  $("#pf-edit").onclick=openEditProfile;
-  soc.innerHTML=`<div class="sechead"><h2>Vänner</h2></div>
-   <div class="group">
-    <button class="row" id="fr-add"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></span><div><h3>Hitta atleter</h3><p>Sök på namn eller kod.</p></div><span class="chev">›</span></button>
-    <button class="row" id="fr-qr"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.2"/><rect x="14" y="4" width="6" height="6" rx="1.2"/><rect x="4" y="14" width="6" height="6" rx="1.2"/><path d="M14 14h2.5v2.5H14zM20 14v2.5M14 20h6M17.5 17.5V20"/></svg></span><div><h3>Visa QR-kod</h3><p>Låt någon skanna och följa dig.</p></div><span class="chev">›</span></button>
-    <button class="row" id="pf-view"><span class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div><h3>Visa min profil</h3><p>Så ser andra den.</p></div><span class="chev">›</span></button>
-   </div>`;
-  $("#fr-add").onclick=openAddFriend;$("#fw-ers").onclick=()=>openPeople("followers");$("#fw-ing").onclick=()=>openPeople("following");$("#fr-link").onclick=shareFriendLink;$("#fr-qr").onclick=showFriendQR;$("#pf-view").onclick=()=>viewProfile(SBUSER.id);
-  soc.querySelectorAll("[data-prof]").forEach(b=>b.onclick=()=>viewProfile(b.dataset.prof));
+  $("#pf-edit").onclick=openEditProfile;$("#fr-link").onclick=showFriendQR;
+  $("#fw-ers").onclick=()=>openPeople("followers");$("#fw-ing").onclick=()=>openPeople("following");
 }
+async function copyHandle(){try{await navigator.clipboard.writeText(handleTxt(MYPROF));toast("Kopierat. Dela det så att andra kan följa dig.")}catch(e){toast(handleTxt(MYPROF))}}
 function openAddFriend(){
   openSheet(`<div><span class="small">Hitta atleter</span><h2>Sök och följ</h2><p class="small">Sök på ett namn bland offentliga profiler. Privata profiler hittar du med namn och kod, till exempel Johan#1234.</p></div>
    <form id="fa-f" novalidate style="display:grid;gap:14px"><div class="field"><input type="text" inputmode="search" enterkeyhint="search" id="fa-in" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Namn eller namn#kod" aria-label="Sök"></div><button type="submit" id="fa-go" hidden></button></form>
@@ -3505,22 +3492,22 @@ function openEditProfile(){
   const opts=FRIENDS.map(fid=>{const p=NAMES[fid];return p?`<option value="${esc(fid)}"${fid===MYPROF.partner_id?" selected":""}>${esc(handleTxt(p))}</option>`:""}).join("");
   openSheet(`<div class="ep-top">
      <button class="ep-av" id="ep-pic" type="button" aria-label="Byt profilbild"><span class="ep-avin">${avatarHtml()}</span><span class="pf-cam" aria-hidden="true">${CAM}</span></button>
-     <div class="ep-who"><span class="small">Profil</span><h2>Redigera profil</h2><p class="ep-handle"><b id="ep-prev">${esc(MYPROF.username)}</b><span>#${esc(MYPROF.tag)}</span></p>
+     <div class="ep-who"><span class="small">Så ser andra dig</span><h2>Redigera profil</h2><p class="ep-handle"><b id="ep-prev">${esc(MYPROF.username)}</b><span>#${esc(MYPROF.tag)}</span></p>
        <div class="ep-picacts"><button class="linkbtn" id="ep-pic2" type="button">Byt bild</button>${MYPROF.avatar_url?`<button class="linkbtn" id="ep-nopic" type="button">Ta bort bild</button>`:""}</div></div>
    </div>
    <form id="ep-f" novalidate class="ep-f">
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-hot"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M5 20a7 7 0 0 1 14 0"/></svg></span>Om dig</h3>
        <div class="ep-box">
          <div class="field"><label for="ep-name">Användarnamn</label><input type="text" id="ep-name" maxlength="20" autocomplete="nickname" autocapitalize="off" spellcheck="false" value="${esc(MYPROF.username)}"><span class="small">Koden #${esc(MYPROF.tag)} är fast och följer med om du byter namn.</span></div>
-         <div class="grid2"><div class="field"><label for="ep-races">Tävlingar</label><input type="number" id="ep-races" inputmode="numeric" min="0" max="500" value="${MYPROF.races_count||0}"></div><div class="field"><label for="ep-age">Ålder</label><input type="number" id="ep-age" inputmode="numeric" min="14" max="99" value="${esc(set.age||"")}"></div></div>
-         <div class="grid2"><div class="field"><label for="ep-city">Ort</label><input type="text" id="ep-city" maxlength="40" autocomplete="address-level2" value="${esc(cd.city||"")}" placeholder="Säter"></div><div class="field"><label for="ep-since">Började med HYROX</label><input type="month" id="ep-since" max="${today().slice(0,7)}" value="${esc(cd.since||"")}"></div></div>
+         <div class="field"><label for="ep-city">Ort</label><input type="text" id="ep-city" maxlength="40" autocomplete="address-level2" value="${esc(cd.city||"")}" placeholder="Säter"></div>
+         <div class="grid2"><div class="field"><label for="ep-races">Antal lopp</label><input type="number" id="ep-races" inputmode="numeric" min="0" max="500" value="${MYPROF.races_count||0}"></div><div class="field"><label for="ep-since">Började med Hyrox</label><input type="month" id="ep-since" max="${today().slice(0,7)}" value="${esc(cd.since||"")}"></div></div>
          <div class="field"><label for="ep-bio">Kort presentation</label><textarea id="ep-bio" rows="3" maxlength="200" placeholder="Vad tränar du för, och vad är ditt mål?">${esc(cd.bio||"")}</textarea></div>
        </div></section>
      <section class="ep-sec"><h3 class="ep-h"><span class="ep-ic i-green"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg></span>Visa på din profil</h3>
        <p class="small ep-note">Ort, presentation och startår visas när du fyllt i dem. Resten visas bara om du slår på det.</p>
        <div class="ep-box ep-sw">
          ${swRow("ep-showName","Ditt namn",set.name?esc(set.name):"Namnet du angav när du började",!!cd.showName)}
-         ${swRow("ep-showAge","Ålder","Visas som antal år",!!cd.showAge)}
+         ${swRow("ep-showAge","Ålder",set.age?set.age+" år, från Mina uppgifter":"Fyll i under Mina uppgifter",!!cd.showAge)}
          ${swRow("ep-showCls","Klass",divText(),cd.showCls!==false)}
          ${swRow("ep-showSim","Nästa simulering","Racet du har markerat, med datum och plats",cd.showSim!==false)}
          ${SHARE.map(([k,l])=>swRow("ep-sh-"+k,l,"",k==="races"?sh[k]!==false:!!sh[k])).join("")}
@@ -3543,7 +3530,6 @@ function openEditProfile(){
     $("#ep-f").onsubmit=e=>{e.preventDefault();busy($("#ep-go"),async()=>{
       const name=$("#ep-name").value.trim();if(!NAME_RE.test(name)){msg.textContent="Användarnamnet får ha 2–20 tecken: bokstäver, siffror, _ och punkt.";msg.classList.add("bad");return}
       const races=Math.max(0,Math.min(500,Math.round(+$("#ep-races").value||0)));
-      const ag=Math.round(+$("#ep-age").value||0);if(ag>=14&&ag<=99)set.age=ag;
       cd.city=$("#ep-city").value.trim().slice(0,40);cd.bio=$("#ep-bio").value.trim().slice(0,200);cd.since=/^\d{4}-\d{2}$/.test($("#ep-since").value)?$("#ep-since").value:"";cd.share=sh;set.card=cd;saveSet();
       if(MYPROF)MYPROF.races_count=races;
       const upd={username:name,experience:exp||null,races_count:races,partner_id:$("#ep-partner").value||null,is_public:pub,card:cardPayload()};if("suggestable" in MYPROF){upd.suggestable=sug;set.sugAsked=true;saveSet()}
@@ -3630,8 +3616,9 @@ async function showFriendQR(){
   try{if(!window.qrcode)await loadScript("vendor/qrcode.js")}catch(e){toast("Kunde inte visa QR-koden.");return}
   const q=qrcode(0,"M");q.addData(FRIEND_URL(MYPROF));q.make();
   const svg=q.createSvgTag({cellSize:6,margin:2,scalable:true});
-  openSheet(`<div class="medpop"><span class="small">Följ mig</span><div class="qrbox">${svg}</div><h2>${handleHtml(MYPROF)}</h2><p>Låt en kompis skanna koden med kameran. Hen kommer till VARV. och lägger till dig direkt.</p></div>
-    <button class="pill block" id="qr-share" type="button">Dela länken</button>`,()=>{$("#qr-share").onclick=shareFriendLink});
+  openSheet(`<div class="medpop"><span class="small">Dela din profil</span><div class="qrbox">${svg}</div><h2>${handleHtml(MYPROF)}</h2><p>Låt en kompis skanna koden med kameran. Hen kommer till VARV. och lägger till dig direkt.</p></div>
+    <button class="pill block" id="qr-share" type="button">Dela länken</button>
+    <div class="grid2" style="margin-top:10px"><button class="pill ghost" id="qr-copy" type="button">Kopiera kod</button><button class="pill ghost" id="qr-view" type="button">Visa som andra</button></div>`,()=>{$("#qr-share").onclick=shareFriendLink;$("#qr-copy").onclick=copyHandle;$("#qr-view").onclick=()=>viewProfile(SBUSER.id)});
 }
 /* ============ Strava ============ */
 let MCP=null,STRAVA={state:"idle",msg:"",last:null};
@@ -6039,13 +6026,11 @@ function renderProfile(){
   $("#pf-name").textContent=pName()||"Din profil";
   $("#pf-sub").textContent=cardSub(cardPayload());
   {const P=progress(),nx=P.next,br=bestRace(),w12=pfWeeks();
-   $("#pf-stats").innerHTML=`<button class="pf-lvl" id="pf-rank-btn" aria-label="Din rank: ${P.tier.n}">${tierHTML(P.tier)}<div><b>${P.tier.n}</b><small>${nx?`${P.toNext} pass kvar till ${nx.n}`:"Högsta ranken"}</small><div class="lvbar"><i style="width:${Math.round(P.frac*100)}%"></i></div></div><span class="chev">›</span></button>
-    <div class="pf-nums"><div><b><em class="cu">${LOGS.length}</em></b><span>pass</span></div><div><b><em class="cu">${String(hrs).replace(".",",")}</em><small> h</small></b><span>träningstid</span></div><div><b><em class="cu">${st.streak}</em></b><span>veckor i rad</span></div><div><b${br?"":' class="none"'}>${br?`<em class="cu">${fmt(br)}</em>`:"–"}</b><span>bästa lopp</span></div></div>
+   $("#pf-stats").innerHTML=`<div class="pf-nums"><div><b><em class="cu">${LOGS.length}</em></b><span>pass</span></div><div><b><em class="cu">${String(hrs).replace(".",",")}</em><small> h</small></b><span>träningstid</span></div><div><b><em class="cu">${st.streak}</em></b><span>veckor i rad</span></div><div><b${br?"":' class="none"'}>${br?`<em class="cu">${fmt(br)}</em>`:"–"}</b><span>bästa lopp</span></div></div>
     <div class="pf-weeks"><div class="pf-wh"><span>Minuter per vecka</span><b>${w12[11]} min<small> den här veckan</small></b></div>${miniBars(w12)}</div>`;
-   $("#pf-rank-btn").onclick=openLevels;pfTrack(P.frac);
    /* Ranken på atletkortet: medalj, namn och antal pass, och profilbildens ring i rankens metallfärg */
-   const rp=$("#pf-rankpill");rp.hidden=false;rp.setAttribute("aria-label",`Rank ${P.tier.n}, ${P.st.n} pass. Visa alla nivåer`);
-   rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b>`;rp.onclick=openLevels;
+   const rp=$("#pf-rankpill");rp.hidden=false;rp.setAttribute("aria-label",`Rank ${P.tier.n}, ${nx?`${P.toNext} pass kvar till ${nx.n}`:"högsta ranken"}. Visa alla nivåer`);
+   rp.innerHTML=`${tierHTML(P.tier,"xs")}<b>${P.tier.n}</b><span>${nx?`${P.toNext} kvar till ${nx.n}`:"Högsta"}</span>`;rp.onclick=openLevels;
    {const hx=$("#pf-hx");if(hx)hx.innerHTML=cardHx(cardPayload(),true)}
    const rg=document.querySelector(".pf-card .pf-ring");if(rg){rg.style.setProperty("--m1",P.tier.m[0]);rg.style.setProperty("--m2",P.tier.m[1]);rg.dataset.tier=P.ti}}
   renderFacts();
@@ -6053,15 +6038,13 @@ function renderProfile(){
   {const v=$("#v-profil"),k=LOGS.length;if(v&&v.classList.contains("on")&&renderProfile._n!=null&&renderProfile._n!==k)$$("#pf-stats .cu").forEach(countUp);renderProfile._n=k}
   const db=mode==="db";
   if(SB){renderAccount();}else
-  $("#pf-acc").innerHTML=db?`<div class="row"><span class="badge pf-mini">${avatarHtml()}</span><div><h3>Inloggad</h3><p>Din logg, dina rekord och din plan sparas i ditt konto och följer med mellan enheter.</p></div><span></span></div>`
-   :`<div class="row"><span class="badge">✓</span><div><h3>Sparas på den här enheten</h3><p>Allt ligger kvar i webbläsaren. Vill du flytta det kan du exportera under Inställningar.</p></div><span></span></div>`;
-  const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=!fixed;$("#pf-name-fixed").textContent=set.name||"";$("#pf-name-set").hidden=fixed;
-  $("#pf-name-note").textContent=fixed?"Namnet går inte att ändra.":"Skriv ditt namn. Det går inte att ändra efteråt.";
+  accRows(`<div class="row acc-row"><span class="badge">${ICO_DEV}</span><div><h3>${db?"Sparas i ditt konto":"Sparas på den här enheten"}</h3><p>${db?"Din logg, dina rekord och din plan följer med mellan enheter.":"Vill du flytta dina data kan du exportera under Inställningar."}</p></div><span></span></div>`);
+  const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=true;$("#pf-name-set").hidden=fixed;nm.closest(".field").hidden=fixed;
+  $("#pf-name-note").textContent="Skriv ditt för- och efternamn. Det går inte att ändra efteråt.";
   if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";
   $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||"";{const pe=$("#pf-in-pace");if(document.activeElement!==pe)pe.value=set.pace?fmt(set.pace):""}
   $("#pf-look").innerHTML=themeSeg();
-  $("#pf-set").innerHTML=setSw("pf-sw-sound","sound","Ljud","Pip i tidtagningen",set.cues.sound)+setSw("pf-sw-voice","voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+setSw("pf-sw-hap","hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false);
-  $("#pf-run").innerHTML=setSw("pf-sw-man","clock","Starta klockan själv","Klockan för nästa set eller övning startar först när du trycker Starta klockan",!!set.lvManual);
+  $("#pf-set").innerHTML=setSw("pf-sw-sound","sound","Ljud","Pip i tidtagningen",set.cues.sound)+setSw("pf-sw-voice","voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+setSw("pf-sw-hap","hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false)+setSw("pf-sw-man","clock","Starta klockan själv","Klockan för nästa set eller övning startar först när du trycker Starta klockan",!!set.lvManual);
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
   $("#pf-sw-voice").onclick=()=>{set.cues.voice=!set.cues.voice;saveSet();renderProfile();renderCues()};
   $("#pf-sw-man").onclick=()=>{set.lvManual=!set.lvManual;saveSet();renderProfile()};
@@ -6118,7 +6101,7 @@ function openFeedback(){let kind="Förslag";
     $("#fb-text").oninput=()=>{$("#fb-msg").textContent=""};
     $("#fb-send").onclick=()=>{const t=$("#fb-text").value.trim();if(!t){$("#fb-msg").textContent="Skriv ett meddelande först.";$("#fb-text").focus();return}
       location.href=`mailto:${FB_MAIL}?subject=${encodeURIComponent("VARV.: "+kind)}&body=${encodeURIComponent(t)}`;closeSheet();HAPTIC("success");toast("Din e-post öppnas.")}})}
-function openPfAbout(){openSheet(`<div><span class="small">Profil</span><h2>Om mig</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider. Allt utom namnet går att ändra.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
+function openPfAbout(){openSheet(`<div><span class="small">Plan och mått</span><h2>Mina uppgifter</h2><p class="small">Uppgifterna styr din plan, dina pulszoner och dina tider.</p></div>`,()=>{$("#sheet-in").append($("#pf-about"))})}
 $("#pf-facts").onclick=openPfAbout;
 $("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};
 function saveProfileFields(){set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;

@@ -1545,7 +1545,7 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .lv-timer{display:block;font-size:clamp(4.6rem,25vw,7.5rem);font-weight:700;letter-spacing:-.045em;line-height:1.05;font-variant-numeric:tabular-nums;margin-top:4px;transition:opacity .25s}
 .lv-paused .lv-timer{opacity:.4}
 .lv-mode{display:inline-flex;align-items:center;gap:10px;min-height:44px;margin-top:6px;padding:0 4px;border:0;background:none;color:var(--muted);font:inherit;font-size:var(--t-cap);font-weight:500;cursor:pointer}.lv-mode .sw{transform:scale(.8);margin:0 -4px}
-.lv-load{display:block;font-size:var(--t-num-xl);font-weight:700;letter-spacing:-.035em;line-height:1.1;font-variant-numeric:tabular-nums;margin:4px 0}.lv-clockbtn{margin-top:4px;min-height:44px}
+.lv-load{display:block;font-size:var(--t-num-xl);font-weight:700;letter-spacing:-.035em;line-height:1.1;font-variant-numeric:tabular-nums;margin:4px 0}
 .lv-cmp{min-height:1.3em;color:var(--muted);font-size:var(--t-sub);margin:0;font-variant-numeric:tabular-nums}
 .lv-good{color:var(--good);font-weight:600}.lv-bad{color:var(--bad);font-weight:600}
 #live .lv-stats{grid-template-columns:repeat(3,minmax(0,1fr))}.lv-stats b{font-size:var(--t-lead)}
@@ -2322,7 +2322,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.63 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.64 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2383,7 +2383,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.63";
+const APPVER="1.1.64";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5062,7 +5062,10 @@ const lvItems=()=>LIVE.lg.items;
 const lvDone=()=>lvItems().filter((it,i)=>i<LIVE.cur&&nz(it.sec));
 /* Klocka bara där tiden betyder något: övningar med en tidskolumn, som stationer och löpning. Övriga kan få klocka om man väljer det, och valet minns per övning. */
 const lvNeedsClock=it=>!!it&&colsOf(it).some(c=>c[0]==="t");
-const lvTimed=it=>lvNeedsClock(it)||!!(it&&set.clockEx&&set.clockEx[it.ex]);
+/* Tid loggas bara där tiden är resultatet: stationer, löpning, kondition på maskin och övningar som hålls på tid (plankan, hopprep).
+   Styrka och övningar med reps, som marklyft och knäböj, får aldrig klocka. Där är vikt och reps resultatet. */
+const exTimeless=it=>!!it&&!it.st&&(it.k||"r")==="r";
+const lvTimed=it=>!exTimeless(it)&&lvNeedsClock(it);
 /* Starta klockan själv: efter Nästa set eller Nästa övning väntar klockan för momentet tills man trycker Starta. Passets totala tid rullar hela tiden. */
 const lvManual=()=>!!set.lvManual;
 function lvArm(){const it=lvItems()[LIVE.cur];LIVE.wait=!LIVE.ready&&lvManual()&&lvTimed(it)}
@@ -5100,7 +5103,7 @@ function renderLive(){let v=$("#live"),bar=$("#lv-bar");
     <div class="lv-main${paused?" lv-paused":""}">
       <div class="lv-now${LVIN?" in":""}"><h2>${it?esc(it.n):""}</h2><button type="button" class="lv-goal" data-ledit="${LIVE.cur}">${g&&(timed||!cs)?esc(g)+" · ":""}<span>Ändra</span></button>
         ${timed?`<b class="lv-timer${LIVE.wait?" lv-wait":""}" id="lv-time" role="timer">${fmt(lvSetEx(it))}</b>${LIVE.wait?`<p class="lv-cmp">Klockan startar när du trycker Starta klockan</p>`:`<p class="lv-cmp" id="lv-cmp"></p>`}`:cs?`<b class="lv-load">${esc(cs)}</b>`:""}
-        ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN}`}</button>`:""}${it&&!lvNeedsClock(it)?`<button type="button" class="linkbtn lv-clockbtn" id="lv-clock">${timed?"Ta bort klockan":"Ta tid"}</button>`:""}${anyT?`<button type="button" class="lv-mode" id="lv-mode" role="switch" aria-checked="${lvManual()}"><span>Starta klockan själv</span><span class="sw" aria-hidden="true"></span></button>`:""}</div>
+        ${setN&&!ready?`<button type="button" class="lv-setc" id="lv-setc" aria-label="Markera nästa set som klart"><span class="lv-dots" aria-hidden="true">${it.sets.map((_,i)=>`<i class="${i<setD?"on":""}"></i>`).join("")}</span>${setD>=setN?"Alla set klara":`Set ${setD+1} av ${setN}`}</button>`:""}${anyT?`<button type="button" class="lv-mode" id="lv-mode" role="switch" aria-checked="${lvManual()}"><span>Starta klockan själv</span><span class="sw" aria-hidden="true"></span></button>`:""}</div>
       <div class="facts3 lv-stats"><div><small>Totalt</small><b id="lv-total">${fmt(liveElapsed())}</b></div>${anyT?`<div><small>${mix?"Snitt löpning":"Snitt övning"}</small><b>${avg==null?"–":fmt(avg)}</b></div>`:`<div><small>Set klara</small><b>${setsDone} av ${setsAll}</b></div>`}${vs!=null?`<div><small>Mot förra</small><b>${lvDelta(vs)}</b></div>`:anyT?`<div><small>Kvar ca</small><b id="lv-kvar">–</b></div>`:`<div><small>Övningar kvar</small><b>${Math.max(0,its.length-LIVE.cur)}</b></div>`}</div>
       ${pv&&LVUNDO===LIVE.cur?`<div class="lv-prev"><span>${esc(pv.n)}: ${pv.skip?"skippad":nz(pv.sec)?fmt(pv.sec):"klar"}${pd!=null?` ${lvDelta(pd)}`:""}</span><span class="lv-pacts"><button type="button" class="linkbtn" data-ldone="${LIVE.cur-1}">Ändra</button><button type="button" class="linkbtn" id="lv-undo">Ångra</button></span></div>`:""}
       ${(()=>{const dn=lvLastDone();if(ready||dn<0||(pv&&LVUNDO===LIVE.cur&&dn===LIVE.cur-1))return "";const x=its[dn];return `<button type="button" class="lv-prevrow" data-ldone="${dn}"><span><small>Förra</small><b>${esc(x.n)}</b></span><span class="lv-pt">${x.skip?"Skippad":nz(x.sec)?fmt(x.sec):"Klar"}</span><span class="lv-pe">Ändra</span></button>`})()}
@@ -5154,7 +5157,7 @@ function lvLastDone(){for(let i=LIVE.cur-1;i>=0;i--){const x=lvItems()[i];if(x&&
 /* Ändra en övning du redan har gjort: tiden och värdena. Passets klocka och övningen som pågår påverkas inte.
    En skippad övning blir klar om du skriver in en tid. */
 function lvDoneEdit(i,back){const its=lvItems(),it=its[i];if(!it||i>=(LIVE.ready?0:LIVE.cur))return;
-  const cols=colsOf(it).filter(c=>c[0]!=="t"),gc=`28px repeat(${Math.max(1,cols.length)},minmax(0,1fr)) 36px`,timed=lvTimed(it)||nz(it.sec);
+  const cols=colsOf(it).filter(c=>c[0]!=="t"),gc=`28px repeat(${Math.max(1,cols.length)},minmax(0,1fr)) 36px`,timed=lvTimed(it)||(nz(it.sec)&&!exTimeless(it));
   const row=(s,j)=>`<div class="lg-set" style="grid-template-columns:${gc}"><span class="lg-n">${j+1}</span>${cols.map(c=>{const v=s[c[0]];return `<input type="text" data-j="${j}" data-f="${c[0]}" inputmode="${c[0]==="kg"?"decimal":"numeric"}" autocomplete="off" placeholder="–" value="${nz(v)?(c[0]==="kg"?fmtKg(v):v):""}" aria-label="${c[1]}, set ${j+1}">`}).join("")}<span></span></div>`;
   const pv=LVPREV[i]!=null?LVPREV[i]:null;
   openSheet(`<div><span class="small">${lvMixed()?"Moment":"Övning"} ${i+1} av ${its.length} · ${it.skip?"skippad":"klar"}</span><h2>${esc(it.n)}</h2></div>
@@ -5217,7 +5220,6 @@ function bindLive(){const v=$("#live");
     if(b.id==="lv-all"||b.id==="lv-nextcard"){openLvAll();return}
     if(d.ledit!==undefined){lvEdit(+d.ledit);return}
     if(d.ldone!==undefined){lvDoneEdit(+d.ldone);return}
-    if(b.id==="lv-clock"){const it=lvItems()[LIVE.cur];if(!it)return;const m=Object.assign({},set.clockEx);if(m[it.ex])delete m[it.ex];else{m[it.ex]=1;LIVE.exAt=liveElapsed();delete it.setAt}set.clockEx=m;saveSet();saveLive();HAPTIC("light");renderLive();return}
     if(b.id==="lv-setc"){const it=lvItems()[LIVE.cur];if(!it)return;const n=it.sets.length,c=+it.setsDone||0;it.setsDone=c>=n?0:c+1;it.setAt=liveElapsed();saveLive();HAPTIC(it.setsDone===n?"success":"light");renderLive();return}
     if(d.lrm!==undefined){lvRemove(+d.lrm);return}
   });

@@ -18,7 +18,7 @@ src=json.load(open(sys.argv[1]));out={}
 for x in src:
     if x["category"] not in("strength","powerlifting","olympic weightlifting","strongman") or x.get("equipment")=="foam roll":continue
     n=re.sub(r"\s+"," ",x["name"]).strip()
-    k="d" if re.search(r"\b(Sled|Walk|Carry|Yoke|Prowler)\b",n) else "t" if x.get("force")=="static" else "r"
+    k="d" if re.search(r"\b(Sled|Walk|Carry|Yoke|Prowler)\b",n) and not re.search(r"\b(Row|Flye|Triceps|Monster)\b",n) else "t" if x.get("force")=="static" else "r"
     w=0 if x.get("equipment") in(None,"body only") else 1
     out[n.lower()]=[n,M.get(x["primaryMuscles"][0],"axlar"),w,k]
 for n,m,w in EXTRA:out.setdefault(n.lower(),[n,m,w,"r"])

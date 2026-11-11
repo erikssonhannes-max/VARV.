@@ -1748,7 +1748,10 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .back .hero-big,.back .hero .sub,.back .hero .divchip{display:none}
 .back .hello{display:grid;gap:4px}
 #h-msg{color:var(--muted);font-size:var(--t-body);letter-spacing:-.01em;margin:0}
-.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--ink);text-wrap:balance;margin:0}
+.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;text-wrap:balance;margin:0;padding-bottom:.08em;color:var(--accent2);
+  background-image:linear-gradient(100deg,var(--accent2) 0%,#ffa066 20%,var(--accent2) 40%,#ff4e45 60%,var(--accent2) 80%,#ffa066 100%);background-size:250% 100%;background-position:0% 50%;
+  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:greetflow 9s ease-in-out infinite alternate,hellofade .9s var(--ease) both}
+@keyframes greetflow{from{background-position:0% 50%}to{background-position:100% 50%}}
 @keyframes hellopan{0%{background-position:100% 50%,0% 50%}45%{background-position:0% 50%,90% 50%}100%{background-position:0% 50%,200% 50%}}
 @keyframes hellofade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.back .hello h1{animation:none}}
@@ -2319,7 +2322,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.62 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.63 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2380,7 +2383,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.62";
+const APPVER="1.1.63";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},

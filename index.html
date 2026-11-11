@@ -1379,6 +1379,13 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .rl-empty svg{width:100%;max-width:260px}.rl-empty .tr{fill:none;stroke:var(--hair);stroke-width:8}.rl-empty .st{fill:var(--card);stroke:var(--green);stroke-width:2.4;animation:hlIn .5s var(--spring) both;animation-delay:calc(var(--i)*80ms)}.rl-empty .me{fill:var(--accent)}
 .rl-empty h2{font-size:var(--t-head);letter-spacing:-.03em}.rl-empty p{font-size:var(--t-sub);color:var(--muted);max-width:34ch;text-wrap:pretty}
 @media (prefers-reduced-motion:reduce){.rstrip i,.hl,.rl-empty .st{animation:none}}
+.rl-empty-go{display:grid;gap:10px;width:100%;max-width:300px;margin-top:4px}.rl-empty-go .ghost{background:var(--card)}
+.ma-paste{background:var(--tile);border-radius:12px;padding:12px 14px}.ma-paste summary{cursor:pointer;font-weight:600;color:var(--link);font-size:var(--t-sub);min-height:28px}.ma-paste[open]{display:grid;gap:10px}.ma-paste textarea{width:100%;font:inherit;font-size:var(--t-sub);border:1px solid var(--hair);border-radius:12px;padding:10px;background:var(--card);color:var(--ink)}.ma-paste .ghost{background:var(--card)}
+.ma-grid{display:grid;gap:6px}
+.ma-r{display:grid;grid-template-columns:minmax(0,1fr) 96px;gap:10px;align-items:center;padding:4px 0 4px 12px;border-left:3px solid var(--accent)}.ma-r.s{border-color:var(--green)}.ma-r.x{border-color:var(--cyan);margin-top:6px}
+.ma-n{font-size:var(--t-sub);display:flex;align-items:center;gap:8px;min-width:0}.ma-n i{font-style:normal;font-size:var(--t-micro);font-weight:700;width:20px;height:20px;border-radius:50%;background:var(--card);display:grid;place-items:center;flex:none}
+.ma-r input{text-align:right;font-variant-numeric:tabular-nums;font-size:var(--t-body);min-height:44px}
+.ma-sum{display:flex;justify-content:space-between;align-items:baseline;padding:12px 0;border-top:1px solid var(--hair)}.ma-sum span{color:var(--muted)}.ma-sum b{font-size:var(--t-num);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}
 .ra-rx{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.ra-rx .field{margin:0}.ra-rx input{font-variant-numeric:tabular-nums}
 .ra-sub{font-size:var(--t-sub);color:var(--muted);margin-top:8px}.ra-sub b{font-weight:600;font-variant-numeric:tabular-nums}
 .ra-h{display:grid;gap:2px}.ra-h h3{font-size:var(--t-head);letter-spacing:-.03em}
@@ -2307,7 +2314,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.59 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.60 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2368,7 +2375,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.59";
+const APPVER="1.1.60";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5540,6 +5547,50 @@ function raceHighlights(R){const c=[];
   else c.push({c:"rox",i:"dn",k:"Andra halvan",v:`+${R.fade} s /km`,p:"Där finns tid att hämta med jämnare start"});
   if(R.weak.d>0&&R.weak.i!==R.strong.i)c.push({c:"gold",i:"up",k:"Mest att hämta",v:R.weak.s.n,p:`${hxSigned(R.weak.d)} mot snittet i Open`});
   return `<div class="hl-scroll">${c.map((x,j)=>`<div class="hl ${x.c}" style="--i:${j}"><span class="hl-ic">${hlIc(x.i)}</span><small>${esc(x.k)}</small><b>${esc(x.v)}</b><span>${esc(x.p)}</span></div>`).join("")}</div>`}
+
+/* Skriv in ett lopp i efterhand, till exempel från resultatlistan på hyrox.com eller en simulering.
+   Tiderna i resultatlistan är utan Roxzone. Roxzone fördelas tillbaka på delarna som i tidtagningen,
+   så att raceClean ger exakt de inskrivna tiderna och sluttiden blir delarna plus Roxzone. */
+const RL_EN={ski:"skierg",push:"sled push",pull:"sled pull",bbj:"burpee",row:"row",farm:"farmer",lunge:"lunge",wall:"wall ball"};
+function rlParse(txt){const lines=String(txt||"").split(/\n|\t{2,}/).map(x=>x.trim()).filter(Boolean),T=/(\d{1,2}:\d{2}:\d{2}|\d{1,3}:\d{2})(?:\.\d+)?/,out={sp:Array(16).fill(null),rx:null},free=[];
+  const tm=l=>{const m=l.match(T);return m?parseRes(m[1]):null};
+  lines.forEach(l=>{const t=tm(l);if(t==null)return;const low=l.toLowerCase();
+    const rn=low.match(/(?:running|run|löpning|lopning)\s*(\d)/);if(rn&&+rn[1]>=1&&+rn[1]<=8){out.sp[(+rn[1]-1)*2]=t;return}
+    if(/roxzone|rox zone/.test(low)){if(out.rx==null)out.rx=t;return}
+    const si=S.findIndex(x=>low.includes(RL_EN[x.id])||low.includes(x.n.toLowerCase()));if(si>=0){out.sp[2*si+1]=t;return}
+    if(/total|sluttid|finish|overall|run total|work/.test(low))return;free.push(t)});
+  if(out.sp.every(x=>x==null)&&free.length>=16){free.slice(0,16).forEach((t,i)=>out.sp[i]=t);if(free.length>16)out.rx=free[16]}
+  return out}
+function openRaceAdd(){const kind0="race",segN=segs();let kind=kind0;
+  const row=(i)=>{const n=i%2?S[(i-1)/2].n:`Löpning ${i/2+1}`;return `<div class="ma-r${i%2?" s":""}"><span class="ma-n">${i%2?"":`<i>${i/2+1}</i>`}${esc(n)}</span><input type="text" inputmode="numeric" data-tm="4" data-ma="${i}" placeholder="${fmt(segN[i].tg)}" aria-label="${esc(n)}" autocomplete="off"></div>`};
+  openSheet(`<div><span class="small">Loppanalys</span><h2>Lägg till lopp</h2><p class="small">Skriv in tiderna från resultatlistan på hyrox.com, din klocka eller en simulering. Skriv 448 för 4:48.</p></div>
+   <div class="seg" id="ma-kind" role="group" aria-label="Typ"><button data-k="race">Hyrox-lopp</button><button data-k="sim">Simulering</button></div>
+   <div class="grid2"><div class="field"><label for="ma-d">Datum</label><input type="date" id="ma-d" max="${today()}" value="${today()}"></div><div class="field"><label for="ma-cls">Klass</label><select id="ma-cls">${RCL.map(([v,l])=>`<option value="${v}"${v===clsMine()?" selected":""}>${l}</option>`).join("")}</select></div></div>
+   <div class="field"><label for="ma-name">Lopp eller plats</label><input type="text" id="ma-name" maxlength="50" placeholder="Valfritt, till exempel HYROX Stockholm"></div>
+   <details class="ma-paste"><summary>Klistra in från hyrox.com</summary><p class="small">Kopiera splittarna från din resultatsida och klistra in dem här, så fyller VARV. i fälten.</p><textarea id="ma-txt" rows="4" placeholder="Running 1  4:12&#10;SkiErg  4:35&#10;…"></textarea><button type="button" class="pill ghost block" id="ma-fill">Fyll i tiderna</button></details>
+   <div class="ma-grid">${Array.from({length:16},(_,i)=>row(i)).join("")}<div class="ma-r x"><span class="ma-n">Roxzone</span><input type="text" inputmode="numeric" data-tm="4" id="ma-rx" placeholder="Valfritt" autocomplete="off"></div></div>
+   <div class="ma-sum"><span>Sluttid</span><b id="ma-tot">–</b></div>
+   <button class="pill block" id="ma-save">Spara loppet</button>`,()=>{
+    const dk=()=>$$("#ma-kind [data-k]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.k===kind));dk();$("#ma-kind").onclick=e=>{const b=e.target.closest("[data-k]");if(b){kind=b.dataset.k;dk()}};
+    const ins=()=>$$("#sheet [data-ma]"),val=i=>parseRes(i.value);
+    const sum=()=>{const v=ins().map(val),rx=parseRes($("#ma-rx").value)||0,ok=v.every(x=>x>0);$("#ma-tot").textContent=ok?fmt(v.reduce((a,b)=>a+b,0)+rx):`${v.filter(x=>x>0).length} av 16`};
+    $("#sheet").addEventListener("input",e=>{if(e.target.matches("[data-ma],#ma-rx"))sum()});sum();
+    $("#ma-fill").onclick=()=>{const r=rlParse($("#ma-txt").value),n=r.sp.filter(x=>x>0).length;if(!n){toast("Hittade inga tider. Kopiera raderna med tiderna.");return}
+      ins().forEach((el,i)=>{if(r.sp[i]>0)el.value=fmt(r.sp[i])});if(r.rx>0)$("#ma-rx").value=fmt(r.rx);sum();HAPTIC("light");toast(`${n} av 16 tider ifyllda${r.rx>0?", och Roxzone":""}`)};
+    $("#ma-save").onclick=async()=>{const v=ins().map(val),miss=v.findIndex(x=>!(x>=20&&x<=3600));
+      if(miss>=0){toast(`Fyll i ${miss%2?S[(miss-1)/2].n:"Löpning "+(miss/2+1)}.`);ins()[miss].focus();return}
+      const rxv=$("#ma-rx").value.trim(),rx=rxv?parseRes(rxv):0;if(rxv&&!(rx>=30&&rx<=1800)){toast("Skriv Roxzone som 6:48.");$("#ma-rx").focus();return}
+      const d=$("#ma-d").value||today();if(d>today()){toast("Datumet kan inte vara framåt i tiden.");return}
+      const run=spSum(v,false),sta=spSum(v,true),sp=v.map((x,i)=>Math.round(rx?x*(1+rx/2/(i%2?sta:run)):x)),tot=v.reduce((a,b)=>a+b,0)+rx,name=$("#ma-name").value.trim().slice(0,50);
+      sp[15]+=Math.round(tot)-sp.reduce((a,x)=>a+x,0);
+      const race={sp,tg:segN.map(x=>Math.round(x.tg)),cls:$("#ma-cls").value,src:"manual",kind};if(rx)race.rx=Math.round(rx);
+      const b=$("#ma-save");b.disabled=true;
+      const ok=await addLog({date:d,type:"Racesimulering",min:Math.max(1,Math.round(tot/60)),rpe:5,stations:S.map(s=>s.n),note:`${kind==="race"?"Hyrox-lopp":"Simulering"}${name?" · "+name:""} · Sluttid ${fmt(tot)}`,created:Date.now(),race});
+      b.disabled=false;if(!ok)return;
+      const pr=!PRS.race||tot<PRS.race;if(pr){PRS.race=Math.round(tot);prDate("race");await savePRs()}
+      closeSheet();HAPTIC("success");toast(pr?"Loppet är sparat, och nytt rekord för hel Hyrox":"Loppet är sparat");
+      try{renderRaceStats()}catch(e){}const nid=ok;let tries=0;const op=()=>{if(raceLogs().some(l=>l.id===nid))openRaceAn(nid);else if(++tries<8)setTimeout(op,250)};setTimeout(op,420)}})}
+document.addEventListener("click",e=>{if(e.target.closest("[data-race-add]")){e.preventDefault();openRaceAdd()}});
 /* Räknar upp en tid, även med timmar, från noll till slutet. */
 function countTime(el,sec){if(!el)return;if(RM()){el.textContent=fmt(sec);return}const t0=performance.now(),dur=900,tok=(el._ct=(el._ct||0)+1);
   const step=now=>{if(el._ct!==tok)return;const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(sec*e);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
@@ -5552,18 +5603,19 @@ function raceHero(R,tap){const d=R.goal?R.tot-R.goal:null;
    ${tap?`<span class="rl-more">Visa hela analysen<span class="chev">›</span></span>`:""}</${tap?"button":"div"}>`}
 function renderRaceStats(anim){const el=$("#rl");if(!el)return;const L=raceLogs();
   if(!L.length){el.innerHTML=`<div class="rl-empty"><svg viewBox="0 0 240 110" aria-hidden="true"><ellipse cx="120" cy="55" rx="104" ry="42" class="tr"/>${[0,1,2,3,4,5,6,7].map(i=>{const a=Math.PI*2*i/8-Math.PI/2;return `<circle cx="${(120+104*Math.cos(a)).toFixed(1)}" cy="${(55+42*Math.sin(a)).toFixed(1)}" r="6" class="st" style="--i:${i}"/>`}).join("")}<circle cx="120" cy="13" r="5" class="me"/></svg>
-    <h2>Din första loppanalys.</h2><p>Starta tidtagningen när du kör ett lopp eller en simulering och tryck en gång efter varje del. Efteråt ser du här var tiden gick, din snabbaste kilometer och din starkaste station.</p>
-    <a class="pill" href="#race" data-tv-go="run">Öppna tidtagningen</a></div>`;return}
+    <h2>Din första loppanalys.</h2><p>Skriv in tiderna från hyrox.com eller en simulering, eller använd tidtagningen nästa gång. Sedan ser du här var tiden gick, din snabbaste kilometer och din starkaste station.</p>
+    <div class="rl-empty-go"><button type="button" class="pill" data-race-add>Skriv in tider</button><a class="pill ghost" href="#race" data-tv-go="run">Öppna tidtagningen</a></div></div>`;return}
   const R=raceSum(L[0]),A=L.map(raceSum),bestT=Math.min(...A.map(x=>x.tot)),bestKm=Math.min(...A.map(x=>x.fast.t)),bestPace=Math.min(...A.map(x=>x.run/8));
   const pts=L.slice(0,10).reverse().map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
-  el.innerHTML=`<div class="sechead" style="margin-top:4px"><h2>Senaste loppet</h2></div>${raceHero(R,true)}
+  el.innerHTML=`<div class="sechead" style="margin-top:4px"><h2>Senaste loppet</h2><button type="button" class="linkbtn" data-race-add>Lägg till lopp</button></div>${raceHero(R,true)}
    <div class="sechead"><h2>Höjdpunkter</h2></div>${raceHighlights(R)}
    <div class="sechead"><h2>Från dina lopp</h2></div>
    <div class="rl-tiles"><div><small>Bästa sluttid</small><b>${fmt(bestT)}</b></div><div><small>Snabbaste km</small><b>${fmt(bestKm)}</b></div><div><small>Bästa snittempo</small><b>${fmt(bestPace)}</b><span>/km</span></div><div><small>Lopp</small><b>${L.length}</b></div></div>
    ${pts.length>1?`<div class="sechead"><h2>Över tid</h2></div><div class="card">${lineSvg(pts,set.target?set.target*60:0,"Sluttid för dina lopp")}</div>`:""}
    <div class="sechead"><h2>Alla lopp</h2></div>
    <div class="group">${A.map(x=>{const d=x.goal?x.tot-x.goal:null;return `<button class="row rl-row" data-rav="${esc(x.l.id)}"><div class="badge">${new Date(x.l.date+"T12:00:00").getDate()}<br>${MON[new Date(x.l.date+"T12:00:00").getMonth()]}</div><div><h3>${fmt(x.tot)}${x.tot===bestT&&L.length>1?' <span class="rl-pb sm">Rekord</span>':""}</h3><p>${esc(clsName(x.l.race.cls)||"Hyrox")}${d!=null?` · <span class="${Math.round(d)<=0?"ahead":"behind"}">${fmtD(d)}</span> mot målet`:""}</p>${raceStrip(x)}</div><span class="chev">›</span></button>`}).join("")}</div>
-   <p class="small" style="margin-top:12px">Tiderna kommer från tidtagningen och mäts när du trycker.${L.some(raceRx)?" Lopp med Roxzone inskriven visar löpning och stationer utan den.":" Skriv in Roxzone-tiden från resultatlistan i ett lopp, så räknas den bort från löpning och stationer."}</p>`;
+   <button type="button" class="pill ghost block" data-race-add style="margin-top:12px">Lägg till lopp med tider</button>
+   <p class="small" style="margin-top:12px">Tiderna kommer från tidtagningen eller det du skriver in.${L.some(raceRx)?" Lopp med Roxzone inskriven visar löpning och stationer utan den.":" Skriv in Roxzone-tiden från resultatlistan i ett lopp, så räknas den bort från löpning och stationer."}</p>`;
   if(anim!==false){const t=el.querySelector(".rl-time");if(t)countTime(t,+t.dataset.sec)}}
 /* Grafer: radar, linje och staplar som SVG i appens färger */
 const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
@@ -5610,7 +5662,7 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
   const RS=raceSum(l);
   openSheet(`${raceHero(RS,false)}${o?`<p class="ra-sub"><b class="${dTot<=0?"ahead":"behind"}">${fmtD(dTot)}</b> mot loppet ${esc(fmtDM(o.date))} (${fmt(spSum(ref))})</p>`:""}
    ${raceHighlights(RS)}
-   <div class="ra-h"><h3>Roxzone</h3><p class="small">${rx?`${(rx/tot*100).toLocaleString("sv-SE",{maximumFractionDigits:1})} % av sluttiden. Hälften är bortdragen från löpningen och hälften från stationerna, och planen räknar nu med din egen andel.`:"Skriv in Roxzone-tiden från resultatlistan. Då räknar VARV. bort den från löpningen och stationerna och använder din egen andel i planen."}</p></div>
+   <div class="ra-h"><h3>Roxzone</h3><p class="small">${rx?`${(rx/tot*100).toLocaleString("sv-SE",{maximumFractionDigits:1})} % av sluttiden. ${l.race.src==="manual"?"Löpning och stationer är tiderna du skrev in, utan Roxzone":"Hälften är bortdragen från löpningen och hälften från stationerna"}, och planen räknar nu med din egen andel.`:"Skriv in Roxzone-tiden från resultatlistan. Då räknar VARV. bort den från löpningen och stationerna och använder din egen andel i planen."}</p></div>
    <div class="ra-rx"><div class="field"><label for="ra-rx">Total tid i Roxzone</label><input type="text" id="ra-rx" inputmode="numeric" placeholder="6:48" value="${rx?fmt(rx):""}" autocomplete="off"></div><button class="pill ghost" id="ra-rx-save" type="button">${rx?"Ändra":"Spara"}</button></div>
    ${opts.length?`<div class="field"><label for="ra-cmp">Jämför med</label><select id="ra-cmp"><option value="">Målet</option>${opts.map(x=>`<option value="${esc(x.id)}"${o&&o.id===x.id?" selected":""}>${esc(fmtDM(x.date))} · ${fmt(spSum(x.race.sp))}</option>`).join("")}</select></div>`:""}
    ${top.length?`<div class="ra-h"><h3>Var tiden gick</h3>${dTot>0?`<p class="small">${top.length===1?"En del":top.length===2?"Två delar":"Tre delar"} står för ${fmt(topSum)} av ${fmt(dTot)}.</p>`:""}</div>

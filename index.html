@@ -1349,6 +1349,35 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 .hpc-nk{grid-area:k;font-size:var(--t-cap);color:var(--muted)}.hpc-next b{grid-area:t;font-size:var(--t-body);font-weight:600}.hpc-next>span:nth-of-type(2){grid-area:m;font-size:var(--t-cap);color:var(--muted)}.hpc-next .chev{grid-area:c;color:var(--muted)}
 .hpc-done{margin-top:10px;font-size:var(--t-sub);color:var(--green)}
 .hpc-go{display:grid;grid-template-columns:1fr 1fr;gap:10px}.hpc-go .pill{background:var(--card);font-size:var(--t-sub);padding:10px 12px;text-align:center}
+/* Loppanalys */
+.rl-hero{display:grid;gap:10px;width:100%;background:var(--tile);border:0;border-radius:var(--r);padding:18px;color:var(--ink);text-align:left;font:inherit}
+#sheet .rl-hero{background:none;padding:0}
+.rl-hero.tap{cursor:pointer;transition:transform .15s var(--ease)}.rl-hero.tap:active{transform:scale(.98)}
+.rl-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.rl-k{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--t-cap);font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.rl-pb{font-size:var(--t-cap);font-weight:600;color:#5a3800;background:linear-gradient(135deg,#ffe896,#f2b02a 55%,#d48712);padding:4px 10px;border-radius:980px;white-space:nowrap}
+.rl-pb.sm{font-size:var(--t-micro);padding:2px 8px;vertical-align:middle;margin-left:4px}
+.rl-time{font-size:clamp(3rem,16vw,4.6rem);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.rl-d{font-size:var(--t-sub);font-weight:600;font-variant-numeric:tabular-nums}.rl-d.ahead{color:var(--good)}.rl-d.behind{color:var(--bad)}
+.rstrip{display:flex;gap:2px;height:10px;border-radius:980px;overflow:hidden;margin-top:6px}.rstrip.big{height:18px;gap:3px;border-radius:7px;margin-top:4px}
+.rstrip i{display:block;min-width:2px;border-radius:3px;background:var(--accent);transform-origin:left;animation:rsIn .5s var(--spring) both;animation-delay:calc(var(--i)*45ms)}
+.rstrip i.s{background:var(--green)}.rstrip i.x{background:var(--cyan)}
+@keyframes rsIn{from{transform:scaleX(0);opacity:0}to{transform:none;opacity:1}}
+.rleg{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:var(--t-cap);color:var(--muted)}.rleg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;background:var(--accent)}.rleg i.s{background:var(--green)}.rleg i.x{background:var(--cyan)}.rleg b{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums;margin-left:2px}
+.rl-more{display:flex;justify-content:space-between;align-items:center;font-size:var(--t-sub);color:var(--link);font-weight:500;padding-top:8px;border-top:1px solid var(--hair);margin-top:4px}
+.hl-scroll{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;margin-inline:calc(-1*max(16px,env(safe-area-inset-left,0px)));padding:2px max(16px,env(safe-area-inset-left,0px)) 6px}.hl-scroll::-webkit-scrollbar{display:none}
+#sheet .hl-scroll{margin-inline:-20px;padding-inline:20px}
+.hl{flex:0 0 min(62%,220px);scroll-snap-align:start;background:var(--tile);border-radius:var(--r);padding:16px;display:grid;gap:3px;align-content:start;animation:hlIn .55s var(--ease) both;animation-delay:calc(var(--i)*70ms)}
+.hl-ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:#fff;background:var(--accent);margin-bottom:8px}.hl-ic svg{width:20px;height:20px}
+.hl.sta .hl-ic{background:var(--green)}.hl.good .hl-ic{background:var(--good)}.hl.rox .hl-ic{background:var(--cyan)}.hl.gold .hl-ic{background:linear-gradient(135deg,#ffe896,#f2b02a 55%,#d48712);color:#5a3800}
+.hl small{font-size:var(--t-cap);color:var(--muted)}.hl b{font-size:var(--t-lead);font-weight:700;letter-spacing:-.02em;line-height:1.15;overflow-wrap:anywhere;text-wrap:balance;font-variant-numeric:tabular-nums}.hl span:last-child{font-size:var(--t-cap);color:var(--muted);line-height:1.35}
+@keyframes hlIn{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+.rl-tiles{display:grid;grid-template-columns:1fr 1fr;gap:10px}.rl-tiles>div{background:var(--tile);border-radius:var(--r);padding:16px;display:grid;gap:2px}.rl-tiles small{font-size:var(--t-cap);color:var(--muted)}.rl-tiles b{font-size:var(--t-num);font-weight:700;letter-spacing:-.04em;font-variant-numeric:tabular-nums}.rl-tiles span{font-size:var(--t-cap);color:var(--muted)}
+.rl-row>div:nth-child(2){min-width:0}.rl-row .rstrip{max-width:220px;height:6px;margin-top:8px}
+.rl-empty{background:var(--tile);border-radius:var(--r);padding:26px 20px;display:grid;gap:10px;justify-items:center;text-align:center}
+.rl-empty svg{width:100%;max-width:260px}.rl-empty .tr{fill:none;stroke:var(--hair);stroke-width:8}.rl-empty .st{fill:var(--card);stroke:var(--green);stroke-width:2.4;animation:hlIn .5s var(--spring) both;animation-delay:calc(var(--i)*80ms)}.rl-empty .me{fill:var(--accent)}
+.rl-empty h2{font-size:var(--t-head);letter-spacing:-.03em}.rl-empty p{font-size:var(--t-sub);color:var(--muted);max-width:34ch;text-wrap:pretty}
+@media (prefers-reduced-motion:reduce){.rstrip i,.hl,.rl-empty .st{animation:none}}
 .ra-rx{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.ra-rx .field{margin:0}.ra-rx input{font-variant-numeric:tabular-nums}
 .ra-sub{font-size:var(--t-sub);color:var(--muted);margin-top:8px}.ra-sub b{font-weight:600;font-variant-numeric:tabular-nums}
 .ra-h{display:grid;gap:2px}.ra-h h3{font-size:var(--t-head);letter-spacing:-.03em}
@@ -2153,7 +2182,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 <section class="view" id="v-logg">
   <div class="wrap">
     <div class="pagehead"><span class="eyebrow">Din data</span><h1>Statistik.</h1><p class="small" id="store-note">Laddar…</p></div>
-    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
+    <div class="seg" id="lg-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-lgv="form">Översikt</button><button data-lgv="lopp">Lopp</button><button data-lgv="pass">Pass</button><button data-lgv="rekord">Rekord</button><button data-lgv="medaljer">Utmärkelser</button></div>
     <div class="card strava" id="strava" hidden></div>
 
     <div class="lgv" data-v="pass" hidden>
@@ -2180,6 +2209,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div id="ex-sec" hidden><div class="sechead"><h2>Övningar</h2><span class="small" id="ex-count"></span></div>
     <div class="group" id="exlist"></div></div>
     </div>
+    <div class="lgv" data-v="lopp" hidden><div id="rl"></div></div>
     <div class="lgv" data-v="rekord" hidden>
     <div class="sechead"><h2>Personliga rekord</h2><button class="linkbtn" id="pr-add">Lägg till</button></div>
     <div class="prs" id="prs"></div><div class="card" id="prs-empty" hidden><p class="small">Inga rekord än. Lägg till din bästa tid, till exempel på 100 Wall Balls eller 5 km löpning. Rekorden uppdateras också av sig själva när du loggar ett pass där du slår dem.</p></div>
@@ -2284,7 +2314,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.56 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.57 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2345,7 +2375,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.56";
+const APPVER="1.1.57";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4318,14 +4348,14 @@ $("#prs").onclick=e=>{const b=e.target.closest("[data-pr]");if(b)openPR(b.datase
 $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach((s,i)=>tg[s.id]=t.st[i]);
   openSheet(`<div><span class="small">Personliga rekord</span><h2>Lägg till rekord</h2></div><p class="small">Välj vad du vill lägga in en tid för. Vikterna gäller ${esc(divText())}.</p><div class="group" id="pr-pick">${PRKEYS.filter(([k])=>!PRS[k]).map(([k])=>`<button class="row nob" data-pk="${k}"><div><h3>${esc(prLabel(k))}</h3><p>${tg[k]!=null?"Målet för din måltid är "+fmt(tg[k]):"Din bästa tid"}</p></div><span class="chev">›</span></button>`).join("")}</div>`,()=>{
     $("#pr-pick").onclick=e=>{const b=e.target.closest("[data-pk]");if(b)openPR(b.dataset.pk)}})};
-function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));}
+function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));if(v==="lopp")try{renderRaceStats(true)}catch(e){}}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
 /* Måltiden ändras i ett ark som nås från Hem, Plan och Racedag. Kortet bor i #goal-home och lånas in i arket. */
 function openGoal(){openSheet(`<div><span class="small">Ditt mål</span><h2>Måltid.</h2><p class="small">Dra för att välja tiden du vill gå i mål på. Planen och tempot räknas om direkt.</p></div><div id="goal-slot"></div><button class="pill block" id="goal-ok">Klar</button>`,
   ()=>{$("#goal-slot").append($("#goal-card"));$("#p-range").value=set.target;renderSplits();$("#goal-ok").onclick=()=>{saveSet();renderPlan();renderPRs();renderHome();closeSheet();toast("Måltiden är sparad")}})}
 function setPlanEdit(on){if(on)openGoal()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-lg],[data-plan-edit]");if(!a)return;if(a.dataset.lg)setLgView(a.dataset.lg);if("planEdit" in a.dataset)setPlanEdit(true)});
-setLgView(["pass","form","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
+setLgView(["pass","form","lopp","rekord","medaljer"].includes(set.lgv)?set.lgv:"form");
 
 /* ============ Logg-UI ============ */
 /* ============ Logga pass ============ */
@@ -5256,7 +5286,7 @@ function renderLog(){
   noteStore();renderPrep();
   if(!HM){const t=histMonth(today());HM=LOGS.some(l=>histMonth(l.date)===t)||!LOGS.length?t:histMonth(sortedLogs()[0].date)}
   renderHist();
-  renderProgress();try{renderExList()}catch(e){}
+  renderProgress();try{renderExList()}catch(e){}try{renderRaceStats()}catch(e){}
 }
 
 /* ============ Hem ============ */
@@ -5492,7 +5522,55 @@ function roxNote(e){
   let n=0;try{n=raceLogs().filter(raceRx).slice(0,3).length}catch(x){}
   if(n)return `Roxzone räknas som ${(roxShare()*100).toLocaleString("sv-SE",{maximumFractionDigits:1})} % av sluttiden, ditt snitt från ${n===1?"loppet":`de ${n} senaste loppen`} där du har skrivit in Roxzone.`;
   return "Roxzone räknas som 8 % av sluttiden, en vanlig andel i Hyrox. Skriv in din Roxzone-tid under Loppanalys efter ett lopp, så används din egen andel."}
-function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs();el.innerHTML=L.length?`<div class="sechead"><h2>Loppanalys</h2></div><div class="group">${L.slice(0,12).map(l=>{const t=spSum(l.race.sp),g=spSum(l.race.tg||[]),d=t-g;return `<button class="row" data-rav="${esc(l.id)}"><div class="badge">${new Date(l.date+"T12:00:00").getDate()}<br>${MON[new Date(l.date+"T12:00:00").getMonth()]}</div><div><h3>${fmt(t)}</h3><p>${esc(clsName(l.race.cls)||"Hyrox")}${g?` · <span class="${d<=0?"ahead":"behind"}">${fmtD(d)}</span> mot målet`:""}</p></div><span class="chev">›</span></button>`}).join("")}</div>`:""}
+function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs();el.innerHTML=L.length?`<div class="group" style="margin-top:12px"><a class="row" href="#logg" data-lg="lopp"><div class="badge">${L.length}</div><div><h3>Loppanalys</h3><p>${L.length===1?"Ditt lopp":"Dina "+L.length+" lopp"} finns under Statistik, Lopp.</p></div><span class="chev">›</span></a></div>`:""}
+
+/* ============ Loppanalys ============ */
+/* Allt som går att säga om ett lopp: delarna utan Roxzone, snabbaste km, starkaste och svagaste station och hur löpningen höll. */
+function raceSum(l){const raw=l.race.sp.map(Number),c=raceClean(l),sp=c.sp,rx=c.rx,tot=spSum(raw),tg=(l.race.tg||[]).map(Number),goal=tg.length===16?spSum(tg):0;
+  const km=[0,2,4,6,8,10,12,14].map((j,k)=>({k:k+1,t:sp[j]})),fast=km.reduce((a,b)=>b.t<a.t?b:a),slow=km.reduce((a,b)=>b.t>a.t?b:a);
+  const st=S.map((x,i)=>{const r=stRef(x.id).open*hxFactor(x.id,hxClsOf(l.race.cls));return {i,s:x,t:sp[2*i+1],r,d:sp[2*i+1]-r}});
+  const strong=st.reduce((a,b)=>b.d<a.d?b:a),weak=st.reduce((a,b)=>b.d>a.d?b:a);
+  const first=(sp[0]+sp[2]+sp[4]+sp[6])/4,last=(sp[8]+sp[10]+sp[12]+sp[14])/4;
+  const all=raceLogs(),best=Math.min(...all.map(x=>spSum(x.race.sp))),pb=all.length>1&&Math.round(tot)<=Math.round(best);
+  return {l,raw,sp,rx,tot,goal,run:spSum(sp,false),sta:spSum(sp,true),km,fast,slow,st,strong,weak,fade:Math.round(last-first),pb}}
+/* Loppremsan: loppets 16 delar i ordning och i rätt längd. Löpning rosa, stationer gröna, Roxzone turkos sist. */
+function raceStrip(R,big){const t=R.run+R.sta+R.rx;return `<div class="rstrip${big?" big":""}" aria-hidden="true">${R.sp.map((x,i)=>`<i class="${i%2?"s":"r"}" style="flex-grow:${Math.max(1,Math.round(x/t*1000))};--i:${i}"></i>`).join("")}${R.rx?`<i class="x" style="flex-grow:${Math.round(R.rx/t*1000)};--i:16"></i>`:""}</div>`}
+function raceLegend(R){return `<div class="rleg"><span><i class="r"></i>Löpning <b>${fmt(R.run)}</b></span><span><i class="s"></i>Stationer <b>${fmt(R.sta)}</b></span>${R.rx?`<span><i class="x"></i>Roxzone <b>${fmt(R.rx)}</b></span>`:""}<span>Snittempo <b>${fmt(R.run/8)} /km</b></span></div>`}
+/* Höjdpunkter: korta kort om det som gick bra och det som finns att hämta */
+const HLI={km:'<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',st:'<path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.5 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/>',up:'<path d="M5 15l7-7 7 7"/>',flat:'<path d="M4 12h16M14 6l6 6-6 6"/>',dn:'<path d="M5 9l7 7 7-7"/>'};
+const hlIc=k=>`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${HLI[k]}</svg>`;
+function raceHighlights(R){const c=[];
+  c.push({c:"run",i:"km",k:"Snabbaste km",v:fmt(R.fast.t),p:`Kilometer ${R.fast.k}${R.fast.k===1?", med pigga ben":""}`});
+  c.push({c:"sta",i:"st",k:R.strong.d<=0?"Starkaste station":"Närmast snittet",v:R.strong.s.n,p:`${hxSigned(R.strong.d)} mot snittet i Open`});
+  if(R.fade<=5)c.push({c:"good",i:R.fade<-5?"up":"flat",k:"Andra halvan",v:R.fade<-5?`${-R.fade} s snabbare`:"Jämnt tempo",p:R.fade<-5?"per km än första halvan":"hela vägen in i mål"});
+  else c.push({c:"rox",i:"dn",k:"Andra halvan",v:`+${R.fade} s /km`,p:"Där finns tid att hämta med jämnare start"});
+  if(R.weak.d>0&&R.weak.i!==R.strong.i)c.push({c:"gold",i:"up",k:"Mest att hämta",v:R.weak.s.n,p:`${hxSigned(R.weak.d)} mot snittet i Open`});
+  return `<div class="hl-scroll">${c.map((x,j)=>`<div class="hl ${x.c}" style="--i:${j}"><span class="hl-ic">${hlIc(x.i)}</span><small>${esc(x.k)}</small><b>${esc(x.v)}</b><span>${esc(x.p)}</span></div>`).join("")}</div>`}
+/* Räknar upp en tid, även med timmar, från noll till slutet. */
+function countTime(el,sec){if(!el)return;if(RM()){el.textContent=fmt(sec);return}const t0=performance.now(),dur=900,tok=(el._ct=(el._ct||0)+1);
+  const step=now=>{if(el._ct!==tok)return;const p=Math.min(1,(now-t0)/dur),e=1-Math.pow(1-p,3);el.textContent=fmt(sec*e);if(p<1)requestAnimationFrame(step)};requestAnimationFrame(step)}
+function raceHero(R,tap){const d=R.goal?R.tot-R.goal:null;
+  return `<${tap?`button type="button" class="rl-hero tap" data-rav="${esc(R.l.id)}"`:'div class="rl-hero"'}>
+   <div class="rl-top"><span class="rl-k">${esc(clsName(R.l.race.cls)||"Hyrox")} · ${esc(fmtDM(R.l.date))}</span>${R.pb?`<span class="rl-pb">Personligt rekord</span>`:""}</div>
+   <b class="rl-time" data-sec="${Math.round(R.tot)}">${fmt(R.tot)}</b>
+   ${d!=null?`<span class="rl-d ${Math.round(d)<=0?"ahead":"behind"}">${Math.round(d)<=0?fmt(-d)+" under målet":fmt(d)+" över målet"}</span>`:""}
+   ${raceStrip(R,true)}${raceLegend(R)}
+   ${tap?`<span class="rl-more">Visa hela analysen<span class="chev">›</span></span>`:""}</${tap?"button":"div"}>`}
+function renderRaceStats(anim){const el=$("#rl");if(!el)return;const L=raceLogs();
+  if(!L.length){el.innerHTML=`<div class="rl-empty"><svg viewBox="0 0 240 110" aria-hidden="true"><ellipse cx="120" cy="55" rx="104" ry="42" class="tr"/>${[0,1,2,3,4,5,6,7].map(i=>{const a=Math.PI*2*i/8-Math.PI/2;return `<circle cx="${(120+104*Math.cos(a)).toFixed(1)}" cy="${(55+42*Math.sin(a)).toFixed(1)}" r="6" class="st" style="--i:${i}"/>`}).join("")}<circle cx="120" cy="13" r="5" class="me"/></svg>
+    <h2>Din första loppanalys.</h2><p>Starta tidtagningen när du kör ett lopp eller en simulering och tryck en gång efter varje del. Efteråt ser du här var tiden gick, din snabbaste kilometer och din starkaste station.</p>
+    <a class="pill" href="#race" data-tv-go="run">Öppna tidtagningen</a></div>`;return}
+  const R=raceSum(L[0]),A=L.map(raceSum),bestT=Math.min(...A.map(x=>x.tot)),bestKm=Math.min(...A.map(x=>x.fast.t)),bestPace=Math.min(...A.map(x=>x.run/8));
+  const pts=L.slice(0,10).reverse().map(l=>({x:fmtDM(l.date),y:spSum(l.race.sp)}));
+  el.innerHTML=`<div class="sechead" style="margin-top:4px"><h2>Senaste loppet</h2></div>${raceHero(R,true)}
+   <div class="sechead"><h2>Höjdpunkter</h2></div>${raceHighlights(R)}
+   <div class="sechead"><h2>Från dina lopp</h2></div>
+   <div class="rl-tiles"><div><small>Bästa sluttid</small><b>${fmt(bestT)}</b></div><div><small>Snabbaste km</small><b>${fmt(bestKm)}</b></div><div><small>Bästa snittempo</small><b>${fmt(bestPace)}</b><span>/km</span></div><div><small>Lopp</small><b>${L.length}</b></div></div>
+   ${pts.length>1?`<div class="sechead"><h2>Över tid</h2></div><div class="card">${lineSvg(pts,set.target?set.target*60:0,"Sluttid för dina lopp")}</div>`:""}
+   <div class="sechead"><h2>Alla lopp</h2></div>
+   <div class="group">${A.map(x=>{const d=x.goal?x.tot-x.goal:null;return `<button class="row rl-row" data-rav="${esc(x.l.id)}"><div class="badge">${new Date(x.l.date+"T12:00:00").getDate()}<br>${MON[new Date(x.l.date+"T12:00:00").getMonth()]}</div><div><h3>${fmt(x.tot)}${x.tot===bestT&&L.length>1?' <span class="rl-pb sm">Rekord</span>':""}</h3><p>${esc(clsName(x.l.race.cls)||"Hyrox")}${d!=null?` · <span class="${Math.round(d)<=0?"ahead":"behind"}">${fmtD(d)}</span> mot målet`:""}</p>${raceStrip(x)}</div><span class="chev">›</span></button>`}).join("")}</div>
+   <p class="small" style="margin-top:12px">Tiderna kommer från tidtagningen och mäts när du trycker.${L.some(raceRx)?" Lopp med Roxzone inskriven visar löpning och stationer utan den.":" Skriv in Roxzone-tiden från resultatlistan i ett lopp, så räknas den bort från löpning och stationer."}</p>`;
+  if(anim!==false){const t=el.querySelector(".rl-time");if(t)countTime(t,+t.dataset.sec)}}
 /* Grafer: radar, linje och staplar som SVG i appens färger */
 const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
 const stShort=s=>({bbj:"Burpee\nBroad Jumps",farm:"Farmers\nCarry",lunge:"Sandbag\nLunges"})[s.id]||s.n;
@@ -5535,8 +5613,9 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
   const radar=ref?radarSvg(S.map(stShort),[{v:S.map(()=>.5),c:"ref"},{v:S.map((s,i)=>{const k=ref[2*i+1]/Math.max(1,sp[2*i+1]);return (k-.6)/.8}),c:"you s"}],"Stationerna mot "+refName+". Den streckade ringen är "+refName+", utanför är snabbare."):"";
   const rounds=S.map((s,i)=>{const a=2*i,b=2*i+1,da=ref?sp[a]-ref[a]:null,db=ref?sp[b]-ref[b]:null,dl=d=>d==null?"":`<small class="${Math.round(d)<=0?"ahead":"behind"}">${fmtD(d)}</small>`;
     return `<div class="rnd"><span class="n">${i+1}</span><div class="c"><div class="ln"><span>Löpning</span><b>${fmt(sp[a])}</b>${dl(da)}</div><div class="ln"><span>${esc(names[b])}</span><b>${fmt(sp[b])}</b>${dl(db)}</div></div><span></span></div>`}).join("");
-  openSheet(`<div><span class="small">${esc(clsName(l.race.cls)||"Hyrox")} · ${esc(fmtDM(l.date))}</span><h2 class="ra-big">${fmt(tot)}</h2>${ref?`<p class="ra-sub"><b class="${dTot<=0?"ahead":"behind"}">${fmtD(dTot)}</b> mot ${o?"loppet "+esc(fmtDM(o.date))+" ("+fmt(spSum(ref))+")":"målet "+fmt(spSum(ref))}</p>`:""}</div>
-   <div class="facts3"><div><small>Löpning</small><b>${fmt(run)}</b>${ref?`<small class="${run-spSum(ref,false)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(run-spSum(ref,false))}</small>`:""}</div><div><small>Stationer</small><b>${fmt(sta)}</b>${ref?`<small class="${sta-spSum(ref,true)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(sta-spSum(ref,true))}</small>`:""}</div><div><small>Snittempo</small><b>${fmt(runC/8)}</b><small>/km${rx?" utan Roxzone":""}</small></div></div>
+  const RS=raceSum(l);
+  openSheet(`${raceHero(RS,false)}${o?`<p class="ra-sub"><b class="${dTot<=0?"ahead":"behind"}">${fmtD(dTot)}</b> mot loppet ${esc(fmtDM(o.date))} (${fmt(spSum(ref))})</p>`:""}
+   ${raceHighlights(RS)}
    <div class="ra-h"><h3>Roxzone</h3><p class="small">${rx?`${(rx/tot*100).toLocaleString("sv-SE",{maximumFractionDigits:1})} % av sluttiden. Hälften är bortdragen från löpningen och hälften från stationerna, och planen räknar nu med din egen andel.`:"Skriv in Roxzone-tiden från resultatlistan. Då räknar VARV. bort den från löpningen och stationerna och använder din egen andel i planen."}</p></div>
    <div class="ra-rx"><div class="field"><label for="ra-rx">Total tid i Roxzone</label><input type="text" id="ra-rx" inputmode="numeric" placeholder="6:48" value="${rx?fmt(rx):""}" autocomplete="off"></div><button class="pill ghost" id="ra-rx-save" type="button">${rx?"Ändra":"Spara"}</button></div>
    ${opts.length?`<div class="field"><label for="ra-cmp">Jämför med</label><select id="ra-cmp"><option value="">Målet</option>${opts.map(x=>`<option value="${esc(x.id)}"${o&&o.id===x.id?" selected":""}>${esc(fmtDM(x.date))} · ${fmt(spSum(x.race.sp))}</option>`).join("")}</select></div>`:""}
@@ -5550,6 +5629,7 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
    <div class="group">${rounds}</div>
    ${stIdx>=0?`<button class="pill block" id="ra-train">Öva på ${esc(S[stIdx].n)}</button>`:""}
    <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment har fått en sextondel av Roxzone-tiden från planen."} Tiden mäts när du trycker.</p>`,()=>{
+    {const t=$("#sheet .rl-time");if(t)countTime(t,+t.dataset.sec)}if(RS.pb&&!cmp&&!RM())setTimeout(confetti,500);
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
     const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)};
     const rb=$("#ra-rx-save");if(rb)rb.onclick=async()=>{const raw=$("#ra-rx").value.trim(),v=raw?parseT(raw):0;

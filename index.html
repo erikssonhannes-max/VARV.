@@ -825,8 +825,9 @@ details.more[open] summary{margin-bottom:6px}
 .pf-head h1{font-size:var(--t-title);letter-spacing:-.04em}
 .pf-mini{overflow:hidden;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2))}
 /* Inställningar: färgade ikonplattor per sektion, väljare för utseende */
-#pf-more .tn-accent{--tn:var(--accent)}#pf-more .tn-green{--tn:var(--green)}#pf-more .tn-cyan{--tn:var(--cyan)}
-#pf-more [class*="tn-"] .row .badge{color:var(--tn);background:color-mix(in srgb,var(--tn) 15%,var(--card))}
+/* Färgade ikonplattor på hela profilen: på en grupp färgas alla rader, på en rad bara den */
+#v-profil .tn-accent{--tn:var(--accent)}#v-profil .tn-green{--tn:var(--green)}#v-profil .tn-cyan{--tn:var(--cyan)}#v-profil .tn-muted{--tn:var(--muted)}
+#v-profil :is(.tn-accent,.tn-green,.tn-cyan,.tn-muted) .badge,#v-profil .row:is(.tn-accent,.tn-green,.tn-cyan,.tn-muted) .badge{color:var(--tn);background:color-mix(in srgb,var(--tn) 15%,var(--card))}
 #pf-more .pf-more-lede{color:var(--muted);font-size:var(--t-sub);margin:6px 0 0}
 #pf-more .row h3{font-size:var(--t-body);font-weight:600}
 #pf-more .row p{line-height:1.35}
@@ -2181,10 +2182,10 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <div class="sechead"><h2>Plan och mått</h2></div>
     <div class="group">
-      <button class="row" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
-      <button class="row" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.200 4 2.200 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls</p></div><span class="chev">›</span></button>
-      <button class="row" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.300-5.600"/><path d="M4 4v4.500h4.500"/></svg></span><div><h3>Starttest</h3><p>Gör om testet när formen har ändrats</p></div><span class="chev">›</span></button>
+      <button class="row tn-accent" id="pf-facts"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c.8-4 3.8-6 7.5-6s6.700 2 7.500 6"/></svg></span><div><h3>Mina uppgifter</h3><p><span id="pf-facts-sub"></span></p></div><span class="chev">›</span></button>
+      <button class="row tn-green" data-open="division"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21V4M6 4h11l-2.200 4 2.200 4H6"/></svg></span><div><h3>Klass</h3><p class="divtxt">Open · Herr · Singel</p></div><span class="chev">›</span></button>
+      <button class="row tn-cyan" data-open="hr"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l2-5 4 10 2-5h6"/></svg></span><div><h3>Pulszoner</h3><p>Fem zoner från din maxpuls</p></div><span class="chev">›</span></button>
+      <button class="row tn-accent" data-open="test"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.300-5.600"/><path d="M4 4v4.500h4.500"/></svg></span><div><h3>Starttest</h3><p>Gör om testet när formen har ändrats</p></div><span class="chev">›</span></button>
     </div>
     <div id="pf-about-home" hidden>
     <div class="card" id="pf-about">
@@ -2202,8 +2203,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <div class="sechead"><h2>Konto</h2></div>
     <div class="group" id="pf-acc">
-      <button class="row" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, ljud, klockor och data</p></div><span class="chev">›</span></button>
-      <button class="row" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.600 7.100L4 20l.9-5.400A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm</p></div><span class="chev">›</span></button>
+      <button class="row tn-cyan" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, ljud, klockor och data</p></div><span class="chev">›</span></button>
+      <button class="row tn-green" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.600 7.100L4 20l.9-5.400A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm</p></div><span class="chev">›</span></button>
     </div>
     </div>
     <div id="pf-more" hidden>
@@ -3034,10 +3035,10 @@ function accRows(html){const el=$("#pf-acc");if(!el)return;el.querySelectorAll("
 function renderAccount(){
   const del=$("#au-del");if(del){del.hidden=!SBUSER;del.onclick=deleteAccount}
   if(SBUSER){
-    accRows(`<button class="row acc-row" id="au-out"><span class="badge">${ICO_OUT}</span><div><h3>Logga ut</h3><p>${esc(SBUSER.email||"Dina data ligger kvar i kontot")}</p></div><span class="chev">›</span></button>`);
+    accRows(`<button class="row acc-row tn-muted" id="au-out"><span class="badge">${ICO_OUT}</span><div><h3>Logga ut</h3><p>${esc(SBUSER.email||"Dina data ligger kvar i kontot")}</p></div><span class="chev">›</span></button>`);
     $("#au-out").onclick=sbSignOut;
   }else{
-    accRows(`<button class="row acc-row" id="au-open"><span class="badge">${ICO_IN}</span><div><h3>Logga in eller skapa konto</h3><p>Det du loggat hittills följer med</p></div><span class="chev">›</span></button>`);
+    accRows(`<button class="row acc-row tn-accent" id="au-open"><span class="badge">${ICO_IN}</span><div><h3>Logga in eller skapa konto</h3><p>Det du loggat hittills följer med</p></div><span class="chev">›</span></button>`);
     $("#au-open").onclick=()=>openAuth("in");
   }
 }
@@ -6032,7 +6033,7 @@ function renderProfile(){
   /* Siffrorna räknas upp även när passen laddas efter att fliken öppnats */
   const db=mode==="db";
   if(SB){renderAccount();}else
-  accRows(`<div class="row acc-row"><span class="badge">${ICO_DEV}</span><div><h3>${db?"Sparas i ditt konto":"Sparas på den här enheten"}</h3><p>${db?"Din logg, dina rekord och din plan följer med mellan enheter.":"Vill du flytta dina data kan du exportera under Inställningar."}</p></div><span></span></div>`);
+  accRows(`<div class="row acc-row tn-muted"><span class="badge">${ICO_DEV}</span><div><h3>${db?"Sparas i ditt konto":"Sparas på den här enheten"}</h3><p>${db?"Din logg, dina rekord och din plan följer med mellan enheter.":"Vill du flytta dina data kan du exportera under Inställningar."}</p></div><span></span></div>`);
   const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=true;$("#pf-name-set").hidden=fixed;nm.closest(".field").hidden=fixed;
   $("#pf-name-note").textContent="Skriv ditt för- och efternamn. Det går inte att ändra efteråt.";
   if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";

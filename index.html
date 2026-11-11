@@ -1344,6 +1344,7 @@ html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
 @keyframes barW{from{transform:scaleX(0)}}
 /* Loppanalys och passertider */
 .ra-big{font-size:clamp(3rem,15vw,4.2rem);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums;margin-top:4px}
+.ra-rx{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end}.ra-rx .field{margin:0}.ra-rx input{font-variant-numeric:tabular-nums}
 .ra-sub{font-size:var(--t-sub);color:var(--muted);margin-top:8px}.ra-sub b{font-weight:600;font-variant-numeric:tabular-nums}
 .ra-h{display:grid;gap:2px}.ra-h h3{font-size:var(--t-head);letter-spacing:-.03em}
 .ra-ic{width:40px;height:40px;border-radius:12px;background:var(--card);display:grid;place-items:center}
@@ -2221,7 +2222,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.46 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.47 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2282,7 +2283,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.46";
+const APPVER="1.1.47";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2678,9 +2679,9 @@ document.addEventListener("click",e=>{const b=e.target.closest("button[data-st]"
 
 /* ============ Plan ============ */
 function planTimes(){
-  const T=set.target*60,runs=T*RUNSHARE,rox=T*ROXSHARE;
+  const rs=roxShare(),T=set.target*60,runs=T*RUNSHARE,rox=T*rs;
   const ms=RUNM.reduce((a,b)=>a+b,0),rn=RUNM.map(m=>runs*m/ms);
-  const ss=S.reduce((a,s)=>a+s.share,0),st=S.map(s=>T*(1-RUNSHARE-ROXSHARE)*s.share/ss);
+  const ss=S.reduce((a,s)=>a+s.share,0),st=S.map(s=>T*(1-RUNSHARE-rs)*s.share/ss);
   return {T,runs,rox,rn,st,sta:st.reduce((a,b)=>a+b,0),pace:runs/8};
 }
 function renderSplits(){
@@ -4154,7 +4155,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
       <div class="so-leg">
        <div style="--c:var(--accent)"><b>${fmt(e.runs)}</b><span>Löpning</span><span>8 × ${fmt(pace)} /km</span></div>
        <div style="--c:var(--green)"><b>${fmt(e.sta)}</b><span>Stationer</span><span>${e.own===8?"Dina rekord":e.own?`${e.own} av 8 egna`:"Snitt i Open"}</span></div>
-       <div style="--c:var(--cyan)"><b>${e.rox?fmt(e.rox):"Ingår"}</b><span>Roxzone</span><span>${e.rox?"Uppskattad":"I löpningen"}</span></div>
+       <div style="--c:var(--cyan)"><b>${e.rox?fmt(e.rox):"Ingår"}</b><span>Roxzone</span><span>${e.rox?e.rxSrc:"I löpningen"}</span></div>
       </div>
       <p class="so-foot">Löpningen bygger på ${esc(e.rsrc)}${e.inRun?", med Roxzone":""}. ${e.own===8?"Stationerna bygger på dina rekord, lite långsammare eftersom du är trött i loppet.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open${set.fmt==="mixed"?"":" "+cls}.`:`Stationerna utgår från snittet i Open${set.fmt==="mixed"?"":" "+cls} tills du loggar egna tider.`}${set.fmt!=="singel"?" Stationstiden är uppskattad för två som delar på arbetet.":""}</p></div></section>`}
   // Insikt: stationen där mest tid finns att hämta
@@ -5287,16 +5288,19 @@ function hxFactor(id,c){if(!c||c.f==="singel"&&c.k!=="pro")return 1;return (c.f=
 function hxClsOf(key){if(key==="mixed")return {f:"mixed",k:"open"};const a=String(key||"").split("-");return a.length===3?{k:a[0],g:a[1],f:a[2]}:null}
 function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+set.test.km)||0,rsum=RUNM.reduce((a,b)=>a+b,0);
   let runs=0,rsrc="";
-  if(rl&&rl.date>=dAgo(365)){runs=[0,2,4,6,8,10,12,14].reduce((a,j)=>a+(+rl.race.sp[j]||0),0);rsrc="senaste loppet"}
+  const rlc=rl?raceClean(rl):null;
+  if(rl&&rl.date>=dAgo(365)){runs=[0,2,4,6,8,10,12,14].reduce((a,j)=>a+(+rlc.sp[j]||0),0);rsrc="senaste loppet"}
   if(!runs&&km>=150&&km<=900){runs=km*1.22*rsum;rsrc="ditt 1 km-test"}
   if(!runs&&+set.pace>=150){runs=+set.pace*1.05*rsum;rsrc="ditt snittempo"}
   /* Stationstid i ett lopp räknas som den är. Rekord från egna pass får lite extra, eftersom man är trött i loppet. */
-  const own=[],st=S.map((x,i)=>{const iso=+PRS[x.id]>0?+PRS[x.id]*HX_FATIGUE:0;let race=0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1]/hxFactor(x.id,hxClsOf(l.race.cls));if(t>0&&(!race||t<race))race=t});
+  const own=[],st=S.map((x,i)=>{const iso=+PRS[x.id]>0?+PRS[x.id]*HX_FATIGUE:0;let race=0;raceLogs().forEach(l=>{const t=raceClean(l).sp[2*i+1]/hxFactor(x.id,hxClsOf(l.race.cls));if(t>0&&(!race||t<race))race=t});
     const v=iso&&race?Math.min(iso,race):iso||race;if(v){own.push(i);return v}if(set.fmt==="mixed"){const r=ST_REF[x.id];return (r[0]+r[1])/2}return stRef(x.id).open});
   if(!runs)return {none:true,own:own.length};
-  /* Från ett loggat lopp ingår Roxzone redan i löpningen */
-  const inRun=rsrc==="senaste loppet",base=st.reduce((a,b)=>a+b,0),rox=inRun?0:(runs+base)*ROXSHARE/(1-ROXSHARE),c={f:set.fmt,k:set.k,g:set.g},stc=st.map((v,i)=>v*hxFactor(S[i].id,c)),sta=stc.reduce((a,b)=>a+b,0),T=runs+sta+rox;
-  return {T,base:runs+base+rox,runs,sta,rox,st:stc,own:own.length,rsrc,inRun}}
+  /* Roxzone: från loppet om den är inskriven. Har loppet ingen Roxzone ingår den redan i löpningen.
+     Annars din egen andel eller 8 %, räknad på stationstiden för din klass så att andelen stämmer även i doubles. */
+  const fromRace=rsrc==="senaste loppet",rx=fromRace?rlc.rx:0,inRun=fromRace&&!rx,rs=roxShare(),base=st.reduce((a,b)=>a+b,0),c={f:set.fmt,k:set.k,g:set.g},stc=st.map((v,i)=>v*hxFactor(S[i].id,c)),sta=stc.reduce((a,b)=>a+b,0),
+    rox=rx||(inRun?0:(runs+sta)*rs/(1-rs)),rxSrc=rx?"Från loppet":roxOwn()?"Din andel":"Uppskattad",T=runs+sta+rox;
+  return {T,base:runs+base+rox,runs,sta,rox,st:stc,own:own.length,rsrc,inRun,rxSrc}}
 function hxWeak(){let best=null;S.forEach((x,i)=>{const pr=stPR(i);if(!pr)return;const d=pr-stRef(x.id).open;if(!best||d>best.d)best={i,s:x,pr,d}});return best}
 function hxSigned(d){const r=Math.round(Math.abs(d));return (d>0?"+":d<0?"−":"±")+fmt(r)}
 function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E||!K)return;const e=hxEstimate(),goal=set.target*60,cls=set.g==="w"?"dam":"herr";
@@ -5389,6 +5393,15 @@ function renderRace(){try{renderRaceHist()}catch(e){}
 /* Loppanalys: splittarna sparas när ett lopp från tidtagningen sparas i loggen */
 const raceLogs=()=>sortedLogs().filter(l=>l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16&&l.race.sp.every(x=>+x>=0));
 const spSum=(a,odd)=>a.reduce((t,x,i)=>t+(odd==null||(i%2===1)===odd?+x:0),0);
+/* Roxzone från resultatlistan: race.rx är den totala tiden i Roxzone i sekunder.
+   Tidtagningens tryck lägger Roxzone i både löpningen och stationerna, så hälften dras från vardera, fördelat efter hur långa delarna är. */
+const raceRx=l=>{const x=+(l&&l.race&&l.race.rx);return x>0?x:0};
+function raceClean(l){const sp=l.race.sp.map(Number),rx=raceRx(l);if(!rx)return {sp,rx:0};
+  const kr=Math.max(0,1-rx/2/Math.max(1,spSum(sp,false))),ks=Math.max(0,1-rx/2/Math.max(1,spSum(sp,true)));return {sp:sp.map((x,i)=>x*(i%2?ks:kr)),rx}}
+/* Din Roxzone-andel: snittet av de tre senaste loppen där Roxzone är inskriven. Annars 8 %. */
+function roxShare(){try{const a=raceLogs().filter(raceRx).slice(0,3).map(l=>raceRx(l)/Math.max(1,spSum(l.race.sp)));
+  return a.length?Math.min(.15,Math.max(.03,a.reduce((x,y)=>x+y,0)/a.length)):ROXSHARE}catch(e){return ROXSHARE}}
+const roxOwn=()=>{try{return raceLogs().some(raceRx)}catch(e){return false}};
 function renderRaceHist(){const el=$("#rc-hist");if(!el)return;const L=raceLogs();el.innerHTML=L.length?`<div class="sechead"><h2>Loppanalys</h2></div><div class="group">${L.slice(0,12).map(l=>{const t=spSum(l.race.sp),g=spSum(l.race.tg||[]),d=t-g;return `<button class="row" data-rav="${esc(l.id)}"><div class="badge">${new Date(l.date+"T12:00:00").getDate()}<br>${MON[new Date(l.date+"T12:00:00").getMonth()]}</div><div><h3>${fmt(t)}</h3><p>${esc(clsName(l.race.cls)||"Hyrox")}${g?` · <span class="${d<=0?"ahead":"behind"}">${fmtD(d)}</span> mot målet`:""}</p></div><span class="chev">›</span></button>`}).join("")}</div>`:""}
 /* Grafer: radar, linje och staplar som SVG i appens färger */
 const STSHORT={ski:"SkiErg",push:"Sled Push",pull:"Sled Pull",bbj:"Burpees",row:"Rowing",farm:"Farmers",lunge:"Lunges",wall:"Wall Balls"};
@@ -5397,7 +5410,7 @@ const stShort=s=>({bbj:"Burpee\nBroad Jumps",farm:"Farmers\nCarry",lunge:"Sandba
 const ST_REF={ski:[272,293,225],push:[151,159,122],pull:[217,285,140],bbj:[358,458,240],row:[267,309,225],farm:[110,136,85],lunge:[344,317,180],wall:[351,377,240]};
 function stRef(id){const r=ST_REF[id],w=set.g==="w",o=w?r[1]:r[0];return {open:o,elite:w?Math.round(r[2]*r[1]/r[0]):r[2]}}
 /* Personligt rekord på en station: bästa av rekordlistan och sträckorna i loggade lopp. */
-function stPR(i){const s=S[i];let b=+PRS[s.id]>0?+PRS[s.id]:0;raceLogs().forEach(l=>{const t=+l.race.sp[2*i+1];if(t>0&&(!b||t<b))b=t});return b||null}
+function stPR(i){const s=S[i];let b=+PRS[s.id]>0?+PRS[s.id]:0;raceLogs().forEach(l=>{const t=raceClean(l).sp[2*i+1];if(t>0&&(!b||t<b))b=t});return b||null}
 /* Hur långt ut rekordet når: snittet i Open ligger på mitten, elit i ytterkanten. */
 function stReach(i){const t=stPR(i);if(!t)return 0;const r=stRef(S[i].id);return Math.max(.04,Math.min(1.06,.5+.5*(r.open-t)/(r.open-r.elite)))}
 function radarSvg(lab,ser,aria,goal){const n=lab.length,R=92,cx=160,cy=132,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*R*r,cy+Math.sin(a)*R*r]};
@@ -5419,7 +5432,7 @@ function barsSvg(vals,refs,aria){const W=320,H=150,T=24,B=22,n=vals.length,gw=(W
 const svgIco={check:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>`};
 function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)return;const sp=l.race.sp.map(Number),tg=(l.race.tg||[]).map(Number),names=segs().map(x=>x.n),o=cmp&&L.find(x=>x.id===cmp),hasT=tg.length===16;
   const ref=o?o.race.sp.map(Number):hasT?tg:null,refName=o?"loppet du valde":"planen";
-  const tot=spSum(sp),run=spSum(sp,false),sta=spSum(sp,true),dTot=ref?tot-spSum(ref):null;
+  const tot=spSum(sp),run=spSum(sp,false),sta=spSum(sp,true),dTot=ref?tot-spSum(ref):null,rx=raceRx(l),cl=raceClean(l),runC=spSum(cl.sp,false);
   const lost=ref?sp.map((x,i)=>({i,n:names[i],x,r:ref[i],d:x-ref[i]})).sort((a,b)=>b.d-a.d):[];
   const top=lost.filter(x=>Math.round(x.d)>0).slice(0,3),topSum=top.reduce((a,x)=>a+x.d,0);
   const firstRun=(sp[0]+sp[2]+sp[4]+sp[6])/4,lastRun=(sp[8]+sp[10]+sp[12]+sp[14])/4,fade=Math.round(lastRun-firstRun);
@@ -5433,7 +5446,9 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
   const rounds=S.map((s,i)=>{const a=2*i,b=2*i+1,da=ref?sp[a]-ref[a]:null,db=ref?sp[b]-ref[b]:null,dl=d=>d==null?"":`<small class="${Math.round(d)<=0?"ahead":"behind"}">${fmtD(d)}</small>`;
     return `<div class="rnd"><span class="n">${i+1}</span><div class="c"><div class="ln"><span>Löpning</span><b>${fmt(sp[a])}</b>${dl(da)}</div><div class="ln"><span>${esc(names[b])}</span><b>${fmt(sp[b])}</b>${dl(db)}</div></div><span></span></div>`}).join("");
   openSheet(`<div><span class="small">${esc(clsName(l.race.cls)||"Hyrox")} · ${esc(fmtDM(l.date))}</span><h2 class="ra-big">${fmt(tot)}</h2>${ref?`<p class="ra-sub"><b class="${dTot<=0?"ahead":"behind"}">${fmtD(dTot)}</b> mot ${o?"loppet "+esc(fmtDM(o.date))+" ("+fmt(spSum(ref))+")":"målet "+fmt(spSum(ref))}</p>`:""}</div>
-   <div class="facts3"><div><small>Löpning</small><b>${fmt(run)}</b>${ref?`<small class="${run-spSum(ref,false)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(run-spSum(ref,false))}</small>`:""}</div><div><small>Stationer</small><b>${fmt(sta)}</b>${ref?`<small class="${sta-spSum(ref,true)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(sta-spSum(ref,true))}</small>`:""}</div><div><small>Snittempo</small><b>${fmt(run/8)}</b><small>/km</small></div></div>
+   <div class="facts3"><div><small>Löpning</small><b>${fmt(run)}</b>${ref?`<small class="${run-spSum(ref,false)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(run-spSum(ref,false))}</small>`:""}</div><div><small>Stationer</small><b>${fmt(sta)}</b>${ref?`<small class="${sta-spSum(ref,true)<=0?"ahead":"behind"}" style="font-weight:600">${fmtD(sta-spSum(ref,true))}</small>`:""}</div><div><small>Snittempo</small><b>${fmt(runC/8)}</b><small>/km${rx?" utan Roxzone":""}</small></div></div>
+   <div class="ra-h"><h3>Roxzone</h3><p class="small">${rx?`${(rx/tot*100).toLocaleString("sv-SE",{maximumFractionDigits:1})} % av sluttiden. Planen och din beräknade sluttid räknar nu med din egen andel.`:"Skriv in Roxzone-tiden från resultatlistan. Då räknar VARV. bort den från löpningen och stationerna och använder din egen andel i planen."}</p></div>
+   <div class="ra-rx"><div class="field"><label for="ra-rx">Total tid i Roxzone</label><input type="text" id="ra-rx" inputmode="numeric" placeholder="6:48" value="${rx?fmt(rx):""}" autocomplete="off"></div><button class="pill ghost" id="ra-rx-save" type="button">${rx?"Ändra":"Spara"}</button></div>
    ${opts.length?`<div class="field"><label for="ra-cmp">Jämför med</label><select id="ra-cmp"><option value="">Målet</option>${opts.map(x=>`<option value="${esc(x.id)}"${o&&o.id===x.id?" selected":""}>${esc(fmtDM(x.date))} · ${fmt(spSum(x.race.sp))}</option>`).join("")}</select></div>`:""}
    ${top.length?`<div class="ra-h"><h3>Var tiden gick</h3>${dTot>0?`<p class="small">${top.length===1?"En del":top.length===2?"Två delar":"Tre delar"} står för ${fmt(topSum)} av ${fmt(dTot)}.</p>`:""}</div>
    <div class="group">${top.map(x=>`<div class="row"><span class="ra-ic${x.i%2?" s":""}"><i></i></span><div><h3>${esc(x.n)}</h3><p>${fmt(x.x)} mot ${o?"":"planerade "}${fmt(x.r)}</p></div><span class="amt behind" style="font-weight:600">${fmtD(x.d)}</span></div>`).join("")}${fadeTxt?`<div class="row"><span class="ra-ic"><i></i></span><div><h3>Andra halvan</h3><p>${fadeTxt}</p></div><span></span></div>`:""}</div>`:""}
@@ -5446,7 +5461,13 @@ function openRaceAn(id,cmp){const L=raceLogs(),l=L.find(x=>x.id===id);if(!l)retu
    ${stIdx>=0?`<button class="pill block" id="ra-train">Öva på ${esc(S[stIdx].n)}</button>`:""}
    <p class="small">${o?"Skillnad mot loppet du valde.":"Målet för varje moment inkluderar en del av Roxzone-tiden."} Tiden mäts när du trycker.</p>`,()=>{
     const c=$("#ra-cmp");if(c)c.onchange=()=>openRaceAn(id,c.value||null);
-    const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)}})}
+    const t=$("#ra-train");if(t)t.onclick=()=>{HAPTIC("light");openStation(stIdx)};
+    const rb=$("#ra-rx-save");if(rb)rb.onclick=async()=>{const raw=$("#ra-rx").value.trim(),v=raw?parseT(raw):0;
+      if(raw&&!(v>=30&&v<=Math.min(1800,tot*.3))){toast("Skriv tiden som 6:48.");return}
+      const r=Object.assign({},l.race);if(v)r.rx=Math.round(v);else delete r.rx;
+      rb.disabled=true;const ok=await updLog(l.id,{race:r});rb.disabled=false;if(!ok)return;l.race=r;
+      HAPTIC("success");toast(v?"Roxzone är sparad":"Roxzone är borttagen");
+      try{renderPlan();renderHome()}catch(e){}setTimeout(()=>openRaceAn(id,cmp),60)}})}
 /* Statistik: tydlig översikt med period, insikter och grafer */
 /* Perioden för alla grafer på Statistik: 30 dagar, 90 dagar eller sedan start (0). */
 const STPER=[[30,"30 dagar"],[90,"90 dagar"],[0,"Sedan start"]];

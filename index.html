@@ -1957,6 +1957,12 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div class="tile hx-weak" id="h-weak"></div>
     <p class="small" id="h-med" hidden></p>
 
+    <div class="sechead"><h2>Din plan</h2></div>
+    <div class="group">
+      <a class="row" href="#plan" data-plgo="pass"><div class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></div><div><h3>Träningsschema</h3><p>Veckans pass och vägen fram till loppet.</p></div><span class="chev">›</span></a>
+      <a class="row" href="#plan" data-plgo="lopp"><div class="badge"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7.5"/><path d="M12 13.5V9.5M9.5 2.5h5M18.5 6.5l1.5-1.5"/></svg></div><div><h3>Splittider och Roxzone</h3><p>Tiden för varje del av loppet mot din måltid.</p></div><span class="chev">›</span></a>
+    </div>
+
     <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
     <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span></div></div>
     <div class="tiles" style="margin-top:10px" hidden>
@@ -2815,7 +2821,7 @@ function computeAdapt(base){
   if(PRS.km&&(!set.test||PRS.km<set.test.km-2)){const est=Math.max(55,Math.min(150,Math.round(PRS.km*1.25*8/.5/60)));if(Math.abs(est-set.target)>=3)res.suggest=est}
   return res;
 }
-let PLAN=[],ADAPT=null;const NOPLAN=true;
+let PLAN=[],ADAPT=null;const NOPLAN=false;
 function curWeekIdx(){const t=today();let idx=0;PLAN.forEach((w,i)=>{if(w.start<=t)idx=i});return idx}
 /* Ett loggat pass räknas bara för ett planerat pass: först det det är kopplat till, annars det första av samma typ. Strava-pass har egna namn och matchas på dagen. */
 function sesDone(w,s){const end=wEnd(w.start),inW=LOGS.filter(l=>l.date>=w.start&&l.date<=end),keys=new Set(w.ses.map(x=>x.key+"@"+set.date));
@@ -2870,6 +2876,8 @@ function renderPlanNext(){const el=$("#p-next"),cw=curWeekIdx(),w=PLAN[cw];
   $("#pn-start").onclick=()=>nextStart({start:true});$("#pn-log").onclick=()=>nextStart({});$("#pn-move").onclick=()=>openMove(cw,si)}
 function renderPlanSub(){const sub=set.psub==="lopp"?"lopp":"pass";$("#pl-pass").hidden=sub!=="pass";$("#pl-lopp").hidden=sub!=="lopp";$$("#pl-seg [data-pl]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.pl===sub))}
 $$("#pl-seg [data-pl]").forEach(b=>b.onclick=()=>{set.psub=b.dataset.pl;saveSet();renderPlanSub()});
+/* Ingångarna till Plan på Hem öppnar rätt del: Passen eller Loppet. */
+document.addEventListener("click",e=>{const a=e.target.closest("[data-plgo]");if(!a)return;set.psub=a.dataset.plgo;saveSet();renderPlanSub()});
 $("#pl-pass").addEventListener("click",e=>{const b=e.target.closest(".logbtn");if(!b)return;if(b.classList.contains("mv")){openMove(+b.dataset.w,+b.dataset.s);return}const w=PLAN[+b.dataset.w],x=w.ses[+b.dataset.s];prefill({type:x.t,min:x.m,stations:x.s||[],note:`Vecka ${w.w}`,plan:x.key+"@"+set.date})});
 
 function openMove(wi,si){const w=PLAN[wi],s=w.ses[si],k=s.key+"@"+set.date;
@@ -5375,7 +5383,7 @@ function renderHome(){try{renderGo()}catch(e){}try{renderHyroxHome()}catch(e){}
   $("#h-days").textContent=days>=0?days:"–";
   $("#h-racename").textContent=days<0?"Loppet har varit":days===1?"dag till HYROX":"dagar till HYROX";
   $("#h-racedate").textContent=new Date(set.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"});
-  {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#race")}
+  {const a=$("#h-days").closest("a");if(set.noRace){$("#h-days").textContent=Math.max(0,days);$("#h-racename").textContent="dagar kvar";$("#h-racedate").textContent="Inget lopp valt. Tryck för att välja.";if(a)a.setAttribute("href","#race")}else if(a)a.setAttribute("href","#plan")}
   $("#h-target").textContent=fmtHM(set.target);$("#h-pace").textContent=fmt(t.pace);
   {const hn=$("#h-new");if(hn){hn.hidden=set.level!=="ny"||!!set.newSeen;hn.onclick=()=>{set.newSeen=true;saveSet();hn.hidden=true}}}
   $("#h-week").textContent=`${st.now.n}/${set.per}`;$("#h-streak").textContent=st.streak;
@@ -7388,9 +7396,9 @@ function appBadge(n){try{if("setAppBadge" in navigator){n?navigator.setAppBadge(
     if(dy>120||fast){sh.style.transform="";closeSheet()}else sh.style.transform="";y0=null})})();
 
 /* ============ Routing ============ */
-const VIEWS=["hem","stationer","feed","race","logg","vanner","notiser","profil"];
+const VIEWS=["hem","stationer","plan","feed","race","logg","vanner","notiser","profil"];
 function route(){
-  {const h=location.hash.slice(1);if(h==="plan"){history.replaceState(null,"","#feed")}if(h==="race-kal"||h==="race-sim"){set.tsub=h.slice(5);saveSet();history.replaceState(null,"","#race")}}
+  {const h=location.hash.slice(1);if(h==="race-kal"||h==="race-sim"){set.tsub=h.slice(5);saveSet();history.replaceState(null,"","#race")}}
   const raw=location.hash.slice(1),person=/^u\/[\w-]{1,64}$/.test(raw);
   const v=person?"person":VIEWS.includes(raw)?raw:"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));

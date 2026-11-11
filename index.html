@@ -125,7 +125,8 @@ a{-webkit-tap-highlight-color:transparent}
 .tile.hot::after{content:"";position:absolute;inset:-40% -10% auto auto;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none}
 .tile .acc{color:var(--accent)}
 .countdown{display:flex;align-items:center;gap:16px;min-width:0}
-.countdown .big{color:var(--accent2);font-size:var(--t-num-xl);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
+.h-goal{display:flex;gap:18px;margin-top:14px;padding-top:12px;border-top:1px solid var(--hair);font-size:var(--t-sub);color:var(--muted)}.tile .h-goal span{display:inline;margin:0;font-size:var(--t-sub);color:var(--muted)}.tile .h-goal b{display:inline;font-size:var(--t-sub);letter-spacing:0;line-height:inherit;color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.countdown .big{color:var(--ink);font-size:var(--t-num-xl);font-weight:700;letter-spacing:-.045em;line-height:1;font-variant-numeric:tabular-nums}
 .countdown div{min-width:0}
 #today[hidden]{display:none}
 .today{background:var(--tile);border-radius:var(--r);padding:20px;display:grid;gap:10px}
@@ -967,7 +968,7 @@ a.row{color:inherit;text-decoration:none}
 .go-q button{display:flex;align-items:center;gap:10px;min-height:68px;padding:12px;border:0;border-radius:var(--r);background:var(--tile);color:var(--ink);font:inherit;font-weight:600;text-align:left;white-space:nowrap;cursor:pointer}
 .go-q .go-ic{flex:none;width:40px;height:40px;border-radius:13px;display:grid;place-items:center}.go-q .go-ic svg{width:22px;height:22px}
 @media (max-width:360px){.go-q button{gap:8px;padding:10px;font-size:var(--t-sub)}.go-q .go-ic{width:34px;height:34px;border-radius:11px}.go-q .go-ic svg{width:18px;height:18px}}
-.go-q.one{grid-template-columns:1fr}.go-q.one button{min-height:60px}
+.go-q.one{grid-template-columns:1fr}.go-q.one button{min-height:52px;padding:8px 12px}.go-q.one .go-ic{width:36px;height:36px;border-radius:11px}
 .go-q .g-plain .go-ic,.go-ic-s.g-plain .go-ic{background:var(--card);color:var(--ink)}
 .go-ic-s{background:none!important;padding:0}.go-ic-s .go-ic{width:44px;height:44px;border-radius:13px;display:grid;place-items:center}.go-ic-s .go-ic svg{width:22px;height:22px}
 @media (prefers-reduced-motion:no-preference){.go-q button{transition:transform .15s ease}.go-q button:active{transform:scale(.97)}}
@@ -1735,7 +1736,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .back .hero-big,.back .hero .sub,.back .hero .divchip{display:none}
 .back .hello{display:grid;gap:4px}
 #h-msg{color:var(--muted);font-size:var(--t-body);letter-spacing:-.01em;margin:0}
-.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;padding-bottom:.08em;background-image:linear-gradient(105deg,rgba(255,170,120,0) 42%,rgba(255,170,120,.9) 50%,rgba(255,170,120,0) 58%),linear-gradient(90deg,#ff2d55,#ff7a3d,#ff4e45,#ff7a3d,#ff2d55);background-size:300% 100%,200% 100%;background-repeat:no-repeat,repeat;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:hellopan 5s linear infinite,hellofade .9s var(--ease) both}
+.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;color:var(--ink);text-wrap:balance;margin:0}
 @keyframes hellopan{0%{background-position:100% 50%,0% 50%}45%{background-position:0% 50%,90% 50%}100%{background-position:0% 50%,200% 50%}}
 @keyframes hellofade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.back .hello h1{animation:none}}
@@ -1995,23 +1996,16 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 
     <div class="sechead"><h2>Ditt lopp</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
     <div class="tiles">
-      <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
+      <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div><div class="h-goal"><span>Måltid <b id="h-target">1:30</b></span><span><b id="h-pace">–</b> /km</span></div></a>
       <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
-      <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-target">1:30</b><span>måltid · ändra</span></button>
-      <button class="tile tap" data-open="goal" aria-label="Ändra måltid"><b id="h-pace">–</b><span>snittempo per km</span></button>
     </div>
     <section class="hpc" id="h-plan" hidden aria-label="Din plan">
       <a class="hpc-top" href="#plan" data-plgo="pass">
         <span class="hpc-k">Din plan</span>
         <span class="hpc-w"><b id="h-plan-wk">Vecka 1</b><span id="h-plan-of">av 18</span></span>
         <span class="hpc-bar" aria-hidden="true"><i id="h-plan-bar"></i></span>
-        <span class="hpc-sum" id="h-plan-sum"></span>
       </a>
       <div class="hpc-week" id="h-plan-week"></div>
-      <div class="hpc-go">
-        <a class="pill ghost" href="#plan" data-plgo="pass">Träningsschema</a>
-        <a class="pill ghost" href="#plan" data-plgo="lopp">Splittider</a>
-      </div>
     </section>
     <a class="tile tap hx-est" id="h-est" href="#logg" data-lg="form" aria-label="Din uppskattade sluttid i dag"></a>
     <p class="small" id="h-med" hidden></p>
@@ -2314,7 +2308,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.57 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.58 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2375,7 +2369,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.57";
+const APPVER="1.1.58";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5297,6 +5291,8 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
     const pl=PLAN.some(w=>w.ses.some(x=>x.date===ds)),dn=LOGS.some(l=>l.date===ds),r=rd[ds]||(!dn&&ds<td&&(!set.since||ds>=set.since)?{k:"rest",auto:1}:null);if(r&&!dn)rests++;
     const c=dn?" pass":r?(r.k==="active"?" active":" rest"):"",lbl=d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"})+(dn?", pass loggat":r?(r.k==="active"?", aktiv vila":", vilodag"):"");
     return `<button type="button" class="wd${c}${pl&&!dn&&!r?" plan":""}${ds===td?" now":""}" data-wday="${ds}" aria-label="${esc(lbl)}"><small>${n[0]}</small><i aria-hidden="true">${d.getDate()}</i></button>`}).join("");
+  {const has=k=>!!el.querySelector(".wd."+k);[["k-pass","pass"],["k-rest","rest"],["k-active","active"]].forEach(([c,k])=>{const x=document.querySelector(".weekcard .wd-legend ."+c);if(x)x.parentElement.hidden=!has(k)});
+   const lg=document.querySelector(".weekcard .wd-legend");if(lg)lg.hidden=![...lg.children].some(x=>!x.hidden)}
   const st=weekStats().streak;
   $("#h-weektxt").textContent=`${weekStats().now.n} pass den här veckan`+(st?` · ${st} ${st===1?"vecka":"veckor"} i rad`:"");
   renderRestPrompt()}
@@ -5409,14 +5405,14 @@ function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+se
 function hxWeak(){let best=null;S.forEach((x,i)=>{const pr=stPR(i);if(!pr)return;const d=pr-stRef(x.id).open;if(!best||d>best.d)best={i,s:x,pr,d}});return best}
 function hxSigned(d){const r=Math.round(Math.abs(d));return (d>0?"+":d<0?"−":"±")+fmt(r)}
 function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E)return;const e=hxEstimate(),goal=set.target*60,cls=set.g==="w"?"dam":"herr";
-  if(e.none){E.innerHTML=`<span class="hx-k">Racetid i dag</span><b class="hx-big hx-none">–</b><p class="hx-sub">Gör starttestet under Profil, så räknar VARV. ut var du står i dag.</p>`;E.href="#profil"}
+  E.hidden=!!e.none;if(e.none)E.innerHTML="";
   else{const d=e.T-goal,dTxt=Math.abs(d)<30?"Precis på din måltid":d>0?`${fmt(Math.round(d))} från målet ${fmtHM(set.target)}`:`${fmt(Math.round(-d))} under målet ${fmtHM(set.target)}`;
     E.href="#logg";
     E.innerHTML=`<span class="hx-k">Racetid i dag · ${esc(divText())}</span>
      <div class="hx-row"><b class="hx-big">${fmt(Math.round(e.T))}</b><span class="hx-delta ${d>30?"behind":d<-30?"ahead":""}">${esc(dTxt)}</span></div>
      <div class="hx-bar" aria-hidden="true"><i class="r" style="flex-grow:${e.runs}"></i><i class="s" style="flex-grow:${e.sta}"></i>${e.rox?`<i class="x" style="flex-grow:${e.rox}"></i>`:""}</div>
      <div class="hx-leg"><span><i class="r"></i>Löpning <b>${fmt(Math.round(e.runs))}</b></span><span><i class="s"></i>Stationer <b>${fmt(Math.round(e.sta))}</b></span>${e.rox?`<span><i class="x"></i>Roxzone <b>${fmt(Math.round(e.rox))}</b></span>`:""}</div>
-     <p class="hx-foot">Löpningen bygger på ${esc(e.rsrc)}. ${e.own===8?"Stationerna bygger på dina rekord.":e.own?`${e.own} av 8 stationer bygger på dina rekord, resten på snittet i Open${set.fmt==="mixed"?"":" "+cls}.`:`Stationerna utgår från snittet i Open${set.fmt==="mixed"?"":" "+cls} tills du loggar egna tider.`}${set.fmt!=="singel"?" Stationstiden är uppskattad för två som delar på arbetet.":""}${set.k==="pro"&&set.fmt!=="mixed"?" Pro räknas med tyngre vikter.":""} ${esc(roxNote(e))}</p>`}
+     <p class="hx-foot">Bygger på ${esc(e.rsrc)} och ${e.own===8?"dina rekord på stationerna":e.own?`${e.own} av 8 stationsrekord`:`snittet i Open${set.fmt==="mixed"?"":" "+cls} på stationerna`}.</p>`}
   if(!K)return;const w=hxWeak();
   if(!w){K.innerHTML=`<div class="hx-wtop"><span class="hx-ic">${STATION_IC}</span><div><b>Var tappar du mest?</b><p>Logga tid på en station, så jämför VARV. med snittet i Open och visar vad du ska träna.</p></div></div><a class="pill ghost block" href="#stationer">Visa stationerna</a>`;return}
   const ahead=w.d<=0;
@@ -5432,7 +5428,6 @@ function renderHomePlan(){const box=$("#h-plan");if(!box)return;if(NOPLAN||!PLAN
   const i=curWeekIdx(),w=PLAN[i],N=PLAN.length,ses=w?w.ses:[],done=ses.filter(x=>sesDone(w,x)).length,nx=w?nextPass(w).next:null,td=today();
   $("#h-plan-wk").textContent=`Vecka ${i+1}`;$("#h-plan-of").textContent=`av ${N}`;
   $("#h-plan-bar").style.width=Math.max(4,Math.round((i+1)/N*100))+"%";
-  $("#h-plan-sum").textContent=`Byggd från din måltid ${fmtHM(set.target)}${set.noRace?"":" och loppet "+fmtDM(set.date)}. Den anpassar sig efter det du loggar.`;
   $("#h-plan-week").innerHTML=`<div class="hpc-dots" aria-label="${done} av ${ses.length} pass klara den här veckan">${ses.map(x=>`<i class="${sesDone(w,x)?"d":x.date===td?"t":""}"></i>`).join("")}<span>${done} av ${ses.length} pass klara den här veckan</span></div>
    ${nx?`<button type="button" class="hpc-next" data-go="plan"><span class="hpc-nk">${nx.date===td?"I dag":nx.date<td?"Att ta igen":"Nästa pass · "+esc(dayLbl(nx.date))}</span><b>${esc(nx.t)}</b><span>${nx.m} min</span><span class="chev">›</span></button>`:`<p class="hpc-done">Veckans pass är klara.</p>`}`}
 function renderHome(){try{renderGo()}catch(e){}try{renderHyroxHome()}catch(e){}try{renderHomePlan()}catch(e){}

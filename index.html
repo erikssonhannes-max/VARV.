@@ -1907,13 +1907,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <a class="card" id="h-new" href="#stationer" hidden style="display:block;margin-bottom:12px;color:inherit;text-decoration:none"><h3>Ny till Hyrox?</h3><p class="small">Gå igenom de åtta stationerna och reglerna i lugn och ro. Börja enkelt och logga dina pass, så växer statistiken.</p></a><div class="today" id="today" hidden></div>
     <div id="h-go"></div>
 
-    <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
-    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span></div></div>
-    <div class="tiles" style="margin-top:10px" hidden>
-      <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
-      <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
-    </div>
-
     <div class="sechead"><h2>Ditt lopp</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
     <div class="tiles">
       <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a>
@@ -1924,6 +1917,14 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <a class="tile tap hx-est" id="h-est" href="#plan" aria-label="Din uppskattade sluttid i dag"></a>
     <div class="tile hx-weak" id="h-weak"></div>
     <p class="small" id="h-med" hidden></p>
+
+    <div class="sechead"><h2>Den här veckan</h2><a href="#logg" data-lg="pass">Alla pass</a></div>
+    <div class="card weekcard"><div class="weekstrip" id="h-strip"></div><p class="small" id="h-weektxt"></p><div class="wd-today" id="h-rest" hidden></div><div class="wd-legend"><span aria-hidden="true"><i class="k-pass"></i>Pass</span><span aria-hidden="true"><i class="k-rest"></i>Vila</span><span aria-hidden="true"><i class="k-active"></i>Aktiv vila</span></div></div>
+    <div class="tiles" style="margin-top:10px" hidden>
+      <a class="tile tap" href="#logg"><b id="h-week">0/4</b><span>pass denna vecka</span></a>
+      <a class="tile tap" href="#logg"><b id="h-streak">0</b><span>veckor i rad</span></a>
+    </div>
+
 
     
     <div class="sechead"><h2>Tävlingar nära dig</h2><a href="#race" data-tv-go="kal">Alla tävlingar</a></div>
@@ -2070,8 +2071,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div id="rc-result"></div>
     <div id="rc-hist"></div>
 
-    <div class="sechead"><h2>Ditt mål</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
-    <div class="group"><button class="row goalrow" data-open="goal"><div class="badge">Mål</div><div><h3><span class="goal-hm">1:30</span> måltid</h3><p class="goal-sub"></p></div><span class="chev">›</span></button></div>
 
     <div class="sechead"><h2>Packlista</h2><span class="pk-links"><button class="linkbtn" id="pk-clear">Rensa</button><button class="linkbtn" id="pk-edit">Ändra</button></span></div>
     <div class="group" id="pack"></div>
@@ -2223,7 +2222,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.42 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.43 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2284,7 +2283,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.42";
+const APPVER="1.1.43";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},

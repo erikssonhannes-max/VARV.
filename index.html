@@ -2050,9 +2050,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div id="tv-kal"></div>
     <div id="tv-sim" hidden><div id="ev-sim"></div><p class="small" style="margin-top:14px">Simuleringar arrangeras av gym och klubbar, inte av HYROX. VARV. samlar de vi hittar och länkar till arrangörens anmälan. Saknas ett race? Lägg in det själv under Egna race, eller tipsa oss på <a href="mailto:info@varvtraining.com">info@varvtraining.com</a>.</p></div>
     <div id="tv-run" hidden>
-    <div class="sechead" style="margin-top:4px"><h2>Ditt mål</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
-    <div class="group"><button class="row goalrow" data-open="goal"><div class="badge">Mål</div><div><h3><span class="goal-hm">1:30</span> måltid</h3><p class="goal-sub"></p></div><span class="chev">›</span></button></div>
-    <div class="sechead"><h2>Tidtagning</h2></div>
+    <div class="sechead" style="margin-top:4px"><h2>Tidtagning</h2></div>
 
     <div class="clock">
       <span class="seglbl" id="rc-lbl">Redo</span>
@@ -2071,6 +2069,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <div id="rc-result"></div>
     <div id="rc-hist"></div>
+
+    <div class="sechead"><h2>Ditt mål</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
+    <div class="group"><button class="row goalrow" data-open="goal"><div class="badge">Mål</div><div><h3><span class="goal-hm">1:30</span> måltid</h3><p class="goal-sub"></p></div><span class="chev">›</span></button></div>
 
     <div class="sechead"><h2>Packlista</h2><span class="pk-links"><button class="linkbtn" id="pk-clear">Rensa</button><button class="linkbtn" id="pk-edit">Ändra</button></span></div>
     <div class="group" id="pack"></div>
@@ -2222,7 +2223,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.41 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.42 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2283,7 +2284,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.41";
+const APPVER="1.1.42";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},

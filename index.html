@@ -2221,7 +2221,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.45 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.46 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2282,7 +2282,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.45";
+const APPVER="1.1.46";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5145,6 +5145,7 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
   openSheet(`<div><span class="small">${esc(d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</span><h2>${esc(l.type)}</h2></div>
    <div class="facts3"><div><small>Tid</small><b>${pgMin(+l.min||0)}</b></div><div><small>Känsla</small><b>${l.rpe?l.rpe+" av 5":"–"}</b></div><div><small>Övningar</small><b>${its.length||(l.stations||[]).length||"–"}</b></div></div>
    ${l.bench&&+l.bench.t>0?`<p class="muted" style="margin:0">Din tid: <b style="color:var(--ink);font-variant-numeric:tabular-nums">${fmt(l.bench.t)}</b></p>`:""}
+   ${l.facts?`<p class="muted" style="margin:0;font-variant-numeric:tabular-nums">${esc(l.facts)}</p>`:""}
    ${rows?`<div class="card"><ol class="tl">${rows}</ol></div>`:(l.stations||[]).length?`<p class="muted" style="margin:0">${esc(l.stations.join(", "))}</p>`:""}
    ${l.note?`<div class="card"><span class="lbl">Anteckning</span><p style="margin:4px 0 0">${esc(l.note)}</p></div>`:""}
    ${(()=>{const t=togLine(l),can=SBUSER&&TOG.ok&&!l.shared&&!isExtId(id)&&mode==="db"&&togMates().length;if(!t&&!can)return "";
@@ -7089,19 +7090,50 @@ function togPicker(sel,done){const m=togMates().filter(id=>!(done||[]).includes(
   return `<div class="tog-pick" role="group" aria-label="Välj vänner">${m.slice(0,12).map(id=>{const p=NAMES[id]||{username:"Vän"},on=sel.includes(id);
     return `<button type="button" class="tog-p" data-togu="${esc(id)}" aria-pressed="${on}">${avImg(p.avatar_url,p.username,"tog-av")}<span class="tog-ck" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l3 3 6-7"/></svg></span><span class="tog-n">${esc(p.username)}</span></button>`}).join("")}</div>`}
 function togToggle(sel,id){const i=sel.indexOf(id);if(i<0){if(sel.length>=4){toast("Högst fyra åt gången.");return false}sel.push(id)}else sel.splice(i,1);HAPTIC("light");return true}
-/* Passet som skickas: samma fält som sparas i loggen, utan det som bara gäller den som loggade. */
-function togPayload(l){const c=JSON.parse(JSON.stringify(l));["id","plan","bench","ext","src","with","shared","hidden","edited","note"].forEach(k=>delete c[k]);return c}
+/* Passet som skickas: all statistik från passet (tider, övningar, sträckor, vikter, stationer, loppets mellantider,
+   benchmarktid). Det personliga stannar hos den som loggade: känsla, anteckning, plan och loppets mål.
+   Siffror som klockan, Strava eller Hälsa skrev i anteckningen (km, tempo, puls) följer med som "facts". */
+const TOG_FACT=/\d+(?:,\d+)? km|\d+:\d{2} \/km|snittpuls \d+|relativ ansträngning \d+/g;
+function togPayload(l){const c=JSON.parse(JSON.stringify(l));["id","plan","ext","src","with","shared","hidden","edited","note","rpe","seen","facts"].forEach(k=>delete c[k]);
+  const f=[...new Set([].concat(l.facts?String(l.facts).match(TOG_FACT)||[]:[],String(l.note||"").match(TOG_FACT)||[]))].join(" · ");if(f)c.facts=f.slice(0,200);
+  if(c.race&&typeof c.race==="object")delete c.race.tg;return c}
+/* Dina egna mål för loppets 16 delar, så att loppanalysen i din logg jämför mot din plan och inte den andras. */
+function togTargets(){try{const t=segs().map(x=>Math.round(x.tg));return t.length===16&&t.every(x=>x>=0&&x<=36000)?t:null}catch(e){return null}}
 async function sendTogether(logId,entry,ids){if(!SB||!SBUSER||!ids.length)return;let sent=[],fail=0,first="";
   for(const id of ids){const {data,error}=await SB.rpc("varv_share_session",{p_to:id,p_log_id:String(logId),p_log:togPayload(entry)});
     if(error){fail++;first=first||sbErr(error)}else if(data==="sent"||data==="pending")sent.push(id);else{fail++;first=first||(data==="notfriends"?`Ni måste följa varandra för att dela pass.`:data==="limit"?"Du har bjudit in många i dag. Försök igen i morgon.":"Kunde inte skicka. Försök igen.")}}
   await loadTogether();if(location.hash==="#logg")renderHist();
   if(sent.length)toast(`${togList(sent)} får frågan om ni tränade tillsammans`);else if(fail)toast(first)}
-async function answerTogether(id,yes,btn){const r=TOG.inv.find(x=>x.id===id);if(btn)btn.disabled=true;
-  const {data,error}=await SB.rpc("varv_answer_session",{p_id:id,p_accept:yes});if(error){if(btn)btn.disabled=false;toast(sbErr(error));return}
+/* Svaret på en inbjudan. Säger du ja skickas din egen känsla och anteckning med, och dina mål för loppets delar. */
+async function answerTogether(id,yes,btn,rpe,note){const r=TOG.inv.find(x=>x.id===id);if(btn)btn.disabled=true;
+  let {data,error}=yes?await SB.rpc("varv_answer_session",{p_id:id,p_accept:true,p_rpe:rpe||null,p_note:(note||"").trim().slice(0,300)||null,p_tg:r&&r.log&&r.log.race?togTargets():null})
+    :await SB.rpc("varv_answer_session",{p_id:id,p_accept:false});
+  /* Servern har inte fått nya kollab.sql än: svara på det gamla sättet. */
+  if(error&&yes&&(error.code==="PGRST202"||/function/i.test(error.message||"")))({data,error}=await SB.rpc("varv_answer_session",{p_id:id,p_accept:true}));
+  if(error){if(btn)btn.disabled=false;toast(sbErr(error));return false}
   TOG.inv=TOG.inv.filter(x=>x.id!==id);
-  if(data==="accepted"){HAPTIC("success");try{await SBCOL.refresh()}catch(e){}toast(`Passet med ${r?togName(r.from_user):"din vän"} finns nu i din logg`)}
+  if(data==="accepted"){HAPTIC("success");try{await SBCOL.refresh()}catch(e){}await togCount(id);toast(`Passet med ${r?togName(r.from_user):"din vän"} finns nu i din logg`)}
   else if(data==="declined")toast("Inbjudan är borttagen");
-  await loadNotis();refreshSocialViews()}
+  await loadNotis();refreshSocialViews();return true}
+/* Kopian räknas som ett eget pass: rekord för övningar, benchmark och hel Hyrox. Stationstiderna läses direkt ur loppet. */
+async function togCount(sid){const c=LOGS.find(l=>l&&l.shared&&+l.shared.id===+sid);if(!c)return;
+  try{checkPRs(c.items)}catch(e){}
+  try{if(c.bench&&c.bench.id&&+c.bench.t>0)benchSave(c.bench.id,+c.bench.t,c.date)}catch(e){}
+  try{if(c.race&&Array.isArray(c.race.sp)&&c.race.sp.length===16&&c.race.sp.every(x=>+x>=0)){const t=Math.round(spSum(c.race.sp));if(t>=600&&(!PRS.race||t<PRS.race)){PRS.race=t;prDate("race");await savePRs()}}}catch(e){}
+  try{renderAllData()}catch(e){}}
+/* Arket när du säger ja: din egen känsla 1–5 och en anteckning om du vill. */
+function openTogAnswer(id){const r=TOG.inv.find(x=>x.id===id);if(!r)return;const l=r.log||{},p=NAMES[r.from_user]||{username:"Din vän"};let rpe=3;
+  const d=l.date?new Date(l.date+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long"}):"";
+  const race=l.race&&Array.isArray(l.race.sp)&&l.race.sp.length===16,what=[l.min?"tiden":"",(l.items||[]).length?"övningarna":"",race?"loppets mellantider och stationstider":(l.stations||[]).length?"stationerna":"",l.bench?"benchmarktiden":"",l.facts?"sträcka, tempo och puls":""].filter(Boolean);
+  openSheet(`<div><span class="small">Med ${esc(p.username)}${d?" · "+esc(d):""}</span><h2>Hur kändes passet?</h2></div>
+    <p class="muted" style="margin:0">${esc(l.type||"Passet")}${l.min?" · "+esc(pgMin(+l.min)):""}${race?" · "+esc(fmt(spSum(l.race.sp))):""}${l.facts?" · "+esc(l.facts):""}</p>
+    <div class="lg-rpe" id="ta-rpe" role="group" aria-label="Känsla från 1 till 5">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div>
+    <div class="field"><label for="ta-note">Anteckning</label><textarea id="ta-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km"></textarea></div>
+    ${what.length?`<p class="small" style="margin:0">${esc(what.join(", ").replace(/, ([^,]*)$/," och $1"))} läggs i din logg och räknas i din statistik. Känslan och anteckningen är bara dina.</p>`:""}
+    <button class="pill block" id="ta-yes">Lägg till i min logg</button><button class="pill ghost block" id="ta-no">Vi tränade inte ihop</button>`,()=>{
+    $("#ta-rpe").onclick=e=>{const b=e.target.closest("[data-rpe]");if(!b)return;rpe=+b.dataset.rpe;HAPTIC("light");$$("#ta-rpe button").forEach(x=>x.setAttribute("aria-pressed",x===b))};
+    $("#ta-yes").onclick=async e=>{const b=e.currentTarget;b.textContent="Sparar …";if(await answerTogether(id,true,b,rpe,$("#ta-note").value))closeSheet();else b.textContent="Lägg till i min logg"};
+    $("#ta-no").onclick=async e=>{if(await answerTogether(id,false,e.currentTarget))closeSheet()}})}
 /* Raden "Med Elin" eller "Väntar på Elin" på ett pass. */
 function togLine(l){if(!l||!SBUSER)return "";const w=Array.isArray(l.with)?l.with.filter(Boolean):[],wait=TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending"&&!w.includes(r.to_user)).map(r=>r.to_user);
   if(!w.length&&!wait.length)return "";
@@ -7153,7 +7185,7 @@ function renderNotiser(){const el=$("#nt-body");if(!el)return;
    ${FRQ_OUT.length?`<div class="sechead"><h2>Skickade förfrågningar</h2></div><div class="group">${FRQ_OUT.map(r=>{const p=NAMES[r.to_user]||{username:"Okänd",tag:"0000"};return `<div class="row nt-out" data-req="${esc(r.to_user)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på svar</p></div><button class="linkbtn" data-undo="${esc(r.to_user)}">Ångra</button></div>`}).join("")}</div>`:""}`;
   el.onclick=async e=>{const b=e.target.closest("button");
     if(!b){const r=e.target.closest("[data-req]");if(r)viewProfile(r.dataset.req);return}if(b.disabled)return;
-    if(b.dataset.togyes){await answerTogether(+b.dataset.togyes,true,b);return}
+    if(b.dataset.togyes){openTogAnswer(+b.dataset.togyes);return}
     if(b.dataset.togno){await answerTogether(+b.dataset.togno,false,b);return}
     if(b.dataset.yes){b.disabled=true;await answerFriend(b.dataset.yes,true);return}
     if(b.dataset.no){b.disabled=true;await answerFriend(b.dataset.no,false);return}

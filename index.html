@@ -2180,16 +2180,17 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
       <div class="field"><label for="pf-in-h">Längd (cm)</label><input type="number" id="pf-in-h" inputmode="numeric" min="120" max="230" placeholder="175"></div>
       <div class="field"><label for="pf-in-w">Vikt (kg)</label><input type="number" id="pf-in-w" inputmode="decimal" min="30" max="250" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-sex">Kön</label><select id="pf-in-sex"><option value="">Välj</option><option value="w">Kvinna</option><option value="m">Man</option><option value="x">Annat</option></select></div>
-      <div class="field"><label for="pf-in-pace">Snittempo per km</label><input type="text" id="pf-in-pace" inputmode="numeric" data-tm="4" placeholder="5:15"></div>
       <div class="field"><label for="pf-in-max">Maxpuls</label><input type="number" id="pf-in-max" inputmode="numeric" min="120" max="230" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-rhr">Vilopuls</label><input type="number" id="pf-in-rhr" inputmode="numeric" min="30" max="120" placeholder="Valfritt"></div>
       <div class="field"><label for="pf-in-vo2">VO2max</label><input type="number" id="pf-in-vo2" inputmode="numeric" min="20" max="95" placeholder="Valfritt"></div></div>
       <button type="button" class="pill block" id="pf-about-done">Klar</button>
     </div>
     </div>
+    <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
+    <div class="group tn-accent" id="pf-con"></div></div>
     <div class="sechead"><h2>Konto</h2></div>
     <div class="group" id="pf-acc">
-      <button class="row tn-cyan" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, ljud, klockor och data</p></div><span class="chev">›</span></button>
+      <button class="row tn-cyan" id="pf-more-btn"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg></span><div><h3>Inställningar</h3><p>Utseende, ljud, notiser och data</p></div><span class="chev">›</span></button>
       <button class="row tn-green" id="pf-feedback"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.600 7.100L4 20l.9-5.400A8 8 0 1 1 21 12z"/></svg></span><div><h3>Tyck till</h3><p>Skicka förslag, fel eller beröm</p></div><span class="chev">›</span></button>
     </div>
     </div>
@@ -2202,8 +2203,6 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div class="group tn-accent" id="pf-set"></div>
     <div class="sechead"><h2>Notiser och kalender</h2></div>
     <div class="group tn-cyan"><div id="pf-push"></div><button class="row" id="pf-rem"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4M9 14.5l2 2 4-4"/></svg></span><div><h3>Påminnelser i kalendern</h3><p>Lägg planen i din kalender</p></div><span class="chev">›</span></button></div>
-    <div id="pf-con-wrap"><div class="sechead"><h2>Kopplingar</h2></div>
-    <div class="group tn-accent" id="pf-con"></div></div>
     <div class="sechead"><h2>Integritet och data</h2></div>
     <div class="group tn-green">
       <button class="row" id="pf-blocked"><span class="badge"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.500"/><path d="M6 6l12 12"/></svg></span><div><h3>Blockerade</h3><p>De kan inte se eller följa dig</p></div><span class="chev">›</span></button>
@@ -2222,7 +2221,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.43 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.44 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2283,7 +2282,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.43";
+const APPVER="1.1.44";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4139,8 +4138,8 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
   // Beräknad sluttid
   if(e.none){h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
     <div class="so-row"><span class="so-big none">–</span></div>
-    <p class="so-sub">Gör starttestet eller fyll i ditt snittempo under Profil, så räknar VARV. ut din sluttid och följer den vecka för vecka.</p>
-    <a class="pill ghost block" href="#profil" style="margin-top:14px;background:var(--card)">Fyll i ditt tempo</a></section>`}
+    <p class="so-sub">Gör starttestet, så räknar VARV. ut din sluttid och följer den vecka för vecka.</p>
+    <button type="button" class="pill ghost block" data-open="test" style="margin-top:14px;background:var(--card)">Gör starttestet</button></section>`}
   else{const T=Math.round(e.T),d=T-goal,hist=Object.entries(set.estHist||{}).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12).map(([k,v])=>({k,v:Math.round(+v*e.T/e.base)})).filter(p=>p.v>0);
     if(!hist.length||hist[hist.length-1].k!==weekStart(td))hist.push({k:weekStart(td),v:T});hist[hist.length-1].v=T;
     const first=hist[0],ch=T-first.v,cw=el.clientWidth||$("#v-logg .wrap").clientWidth||358,W=Math.max(240,Math.round(cw-36));
@@ -5300,7 +5299,7 @@ function hxEstimate(){const rl=raceLogs()[0],km=+PRS.km>0?+PRS.km:(set.test&&+se
 function hxWeak(){let best=null;S.forEach((x,i)=>{const pr=stPR(i);if(!pr)return;const d=pr-stRef(x.id).open;if(!best||d>best.d)best={i,s:x,pr,d}});return best}
 function hxSigned(d){const r=Math.round(Math.abs(d));return (d>0?"+":d<0?"−":"±")+fmt(r)}
 function renderHyroxHome(){const E=$("#h-est"),K=$("#h-weak");if(!E||!K)return;const e=hxEstimate(),goal=set.target*60,cls=set.g==="w"?"dam":"herr";
-  if(e.none){E.innerHTML=`<span class="hx-k">Racetid i dag</span><b class="hx-big hx-none">–</b><p class="hx-sub">Gör starttestet eller fyll i ditt snittempo under Profil, så räknar VARV. ut var du står i dag.</p>`;E.href="#profil"}
+  if(e.none){E.innerHTML=`<span class="hx-k">Racetid i dag</span><b class="hx-big hx-none">–</b><p class="hx-sub">Gör starttestet under Profil, så räknar VARV. ut var du står i dag.</p>`;E.href="#profil"}
   else{const d=e.T-goal,dTxt=Math.abs(d)<30?"Precis på din måltid":d>0?`${fmt(Math.round(d))} från målet ${fmtHM(set.target)}`:`${fmt(Math.round(-d))} under målet ${fmtHM(set.target)}`;
     E.href="#plan";
     E.innerHTML=`<span class="hx-k">Racetid i dag · ${esc(divText())}</span>
@@ -6042,7 +6041,7 @@ function renderProfile(){
   const nm=$("#pf-in-name"),fixed=!!set.name;$("#pf-name-fixed").hidden=true;$("#pf-name-set").hidden=fixed;nm.closest(".field").hidden=fixed;
   $("#pf-name-note").textContent="Skriv ditt för- och efternamn. Det går inte att ändra efteråt.";
   if(!fixed&&document.activeElement!==nm&&!nm.value)nm.value=(MEINFO&&MEINFO.name)||"";nm.placeholder="För- och efternamn";
-  $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||"";{const pe=$("#pf-in-pace");if(document.activeElement!==pe)pe.value=set.pace?fmt(set.pace):""}
+  $("#pf-in-age").value=set.age||"";$("#pf-in-max").value=set.maxhr||"";$("#pf-in-h").value=set.height||"";$("#pf-in-sex").value=set.sex||"";$("#pf-in-w").value=set.weight||"";$("#pf-in-vo2").value=set.vo2||"";$("#pf-in-rhr").value=set.rhr||""
   $("#pf-look").innerHTML=themeSeg();
   $("#pf-set").innerHTML=setSw("pf-sw-sound","sound","Ljud","Pip i tidtagningen",set.cues.sound)+setSw("pf-sw-voice","voice","Röst","Säger nästa moment och om du ligger före planen",set.cues.voice)+setSw("pf-sw-hap","hap","Vibration","Känn knapptryck och milstolpar",set.cues.haptic!==false)+setSw("pf-sw-man","clock","Starta klockan själv","Klockan för nästa set eller övning startar först när du trycker Starta klockan",!!set.lvManual);
   $("#pf-sw-sound").onclick=()=>{set.cues.sound=!set.cues.sound;saveSet();renderProfile();renderCues()};
@@ -6086,7 +6085,7 @@ function pfTrack(frac,play,el){el=el||$("#pf-track");if(!el)return;const unknown
   put(el._f);dot.style.opacity=""}
 const SEXL={w:"Kvinna",m:"Man",x:"Annat"},LVLL={ny:"Ny",mellan:"Mellan",elit:"Elit"};
 function renderFacts(){const el=$("#pf-facts-sub");if(!el)return;
-  const have=[set.age&&set.age+" år",set.height&&set.height+" cm",set.weight&&String(set.weight).replace(".",",")+" kg"].filter(Boolean),miss=[set.age,set.height,set.weight,set.sex,set.pace,set.maxhr,set.rhr,set.vo2].filter(x=>!x).length;
+  const have=[set.age&&set.age+" år",set.height&&set.height+" cm",set.weight&&String(set.weight).replace(".",",")+" kg"].filter(Boolean),miss=[set.age,set.height,set.weight,set.sex,set.maxhr,set.rhr,set.vo2].filter(x=>!x).length;
   el.textContent=have.length?have.join(" · ")+(miss?` · ${miss} saknas`:""):"Ålder, längd, puls och tempo"}
 /* Tyck till: meddelandet skrivs här och skickas från användarens egen e-post */
 const FB_MAIL="info@varvtraining.com";
@@ -6105,13 +6104,12 @@ function openPfAbout(){openSheet(`<div><span class="small">Plan och mått</span>
 $("#pf-facts").onclick=openPfAbout;
 $("#pf-about-done").onclick=()=>{saveProfileFields();closeSheet()};
 function saveProfileFields(){set.age=+$("#pf-in-age").value||null;set.maxhr=+$("#pf-in-max").value||null;set.height=+$("#pf-in-h").value||null;
-  {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);
-   const pv=$("#pf-in-pace").value.trim(),pp=pv?parseRes(pv):null;if(!pv)set.pace=null;else if(pp&&pp>=150&&pp<=720)set.pace=pp}saveSet();renderAvatar();renderFacts()}
+  {const rg=(id,a,b)=>{const v=+String($(id).value).replace(",",".");return v>=a&&v<=b?v:null};set.weight=rg("#pf-in-w",30,250);set.vo2=rg("#pf-in-vo2",20,95);set.rhr=rg("#pf-in-rhr",30,120);}saveSet();renderAvatar();renderFacts()}
 $("#pf-name-save").onclick=()=>{const v=$("#pf-in-name").value.trim().replace(/\s+/g," ").slice(0,60);
   if(!NAME_OK(v)){toast("Skriv ditt för- och efternamn med bokstäver.");$("#pf-in-name").focus();return}
   set.name=v;saveSet();renderAvatar();renderProfile();renderHome();toast("Namnet är sparat");HAPTIC("success")};
 $("#pf-in-sex").addEventListener("change",e=>{set.sex=e.target.value||null;if(set.sex==="w"||set.sex==="m"){set.g=set.sex;refreshDivision()}saveSet();renderFacts()});
-["#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr","#pf-in-pace"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
+["#pf-in-age","#pf-in-h","#pf-in-max","#pf-in-w","#pf-in-vo2","#pf-in-rhr"].forEach(id=>{const el=$(id);el.addEventListener("input",()=>{clearTimeout(el._t);el._t=setTimeout(()=>{saveProfileFields();renderPlan();renderHome()},400)})});
 function setPfMore(on){$("#pf-more").hidden=!on;$("#pf-main").hidden=on;window.scrollTo(0,0)}
 $("#pf-more-btn").onclick=()=>setPfMore(true);$("#pf-blocked").onclick=()=>{if(!SB||!SBUSER){toast("Logga in först.");return}openBlocked()};
 $("#pf-back").onclick=()=>{if(!$("#pf-more").hidden){setPfMore(false);return}if(history.length>1)history.back();else location.hash="#hem"};

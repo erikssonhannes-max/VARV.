@@ -2322,7 +2322,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.65 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.66 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2383,7 +2383,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.65";
+const APPVER="1.1.66";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3535,8 +3535,8 @@ function miniBars(v){const mx=Math.max(1,...v);return `<div class="pp-bars" role
 let ACT_EDIT=true;const ACT_BASE="id,user_id,kind,title,detail,created_at,image_url,mentions";
 const actCols=()=>ACT_EDIT?ACT_BASE+",note,edited_at":ACT_BASE;
 async function actSel(build){let r=await build(actCols());if(r&&r.error&&ACT_EDIT&&/note|edited_at|column/i.test(String(r.error.message||""))){ACT_EDIT=false;r=await build(actCols())}return r}
-async function loadPosts(uid){const {data:acts,error}=await actSel(c=>SB.from("activity").select(c).eq("user_id",uid).order("created_at",{ascending:false}).limit(30));
-  if(error)return null;const D={acts:acts||[],likes:{},comments:{}};if(!D.acts.length)return D;const ids=D.acts.map(a=>a.id);
+async function loadPosts(uid){const {data:acts,error}=await actSel(c=>SB.from("activity").select(c).eq("user_id",uid).like("image_url","%/p-%.jpg").order("created_at",{ascending:false}).limit(30));
+  if(error)return null;const D={acts:(acts||[]).filter(isCard),likes:{},comments:{}};if(!D.acts.length)return D;const ids=D.acts.map(a=>a.id);
   const [lk,cm]=await Promise.all([SB.from("activity_likes").select("activity_id,user_id").in("activity_id",ids),SB.from("activity_comments").select("id,activity_id,user_id,body,created_at,mentions").in("activity_id",ids).order("created_at",{ascending:true}).limit(500)]);
   if(!lk.error){D.likeOk=true;(lk.data||[]).forEach(l=>{(D.likes[l.activity_id]=D.likes[l.activity_id]||[]).push(l.user_id)})}
   if(!cm.error){D.comOk=true;(cm.data||[]).forEach(x=>{(D.comments[x.activity_id]=D.comments[x.activity_id]||[]).push(x)})}
@@ -6419,9 +6419,9 @@ async function loadFriendData(force){
   {
     const [pr,ac]=await Promise.all([
       ids.length?SB.from("profiles").select("user_id,username,tag,avatar_url,stats,next_race,best_division,partner_id,prs").in("user_id",ids):Promise.resolve({data:[]}),
-      actSel(c=>SB.from("activity").select(c).in("user_id",ids.concat(SBUSER.id)).order("created_at",{ascending:false}).limit(30))]);
+      actSel(c=>SB.from("activity").select(c).in("user_id",ids.concat(SBUSER.id)).like("image_url","%/p-%.jpg").order("created_at",{ascending:false}).limit(30))]);
     (pr.data||[]).forEach(p=>{out.profs[p.user_id]=p;NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},{user_id:p.user_id,username:p.username,tag:p.tag,avatar_url:p.avatar_url})});
-    if(ac.error)out.actOk=false;else out.acts=ac.data||[];
+    if(ac.error)out.actOk=false;else out.acts=(ac.data||[]).filter(isCard);
     if(out.acts.length){const {data:lk,error:le}=await SB.from("activity_likes").select("activity_id,user_id").in("activity_id",out.acts.map(a=>a.id));
       if(!le){out.likeOk=true;(lk||[]).forEach(l=>{(out.likes[l.activity_id]=out.likes[l.activity_id]||[]).push(l.user_id)})}
       out.comments={};const {data:cm,error:ce}=await SB.from("activity_comments").select("id,activity_id,user_id,body,created_at,mentions").in("activity_id",out.acts.map(a=>a.id)).order("created_at",{ascending:true}).limit(500);

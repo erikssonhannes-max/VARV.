@@ -179,6 +179,7 @@ En ny utmärkelse eller nivå visas i ett ark med stor medalj, en glansanimation
 Aktivitet är en plats för gemenskap, inte ett socialt medium. Det finns ett enda sätt att lägga ut något: att dela ett pass.
 
 - **Ett pass, ett inlägg.** Tid, sträcka, övningar och passets rekord står i samma inlägg. Rekord läggs aldrig ut för sig.
+- **Bara summeringsbilder.** Flödet och profilerna visar bara inlägg med passbilden. Databasen nekar allt annat (`supabase/endast-passbilder.sql`).
 - **När:** direkt efter passet visas arket "Vill du dela passet?". Väljer man Inte nu går passet att dela senare under Statistik, Pass, i passets ark.
 - **Bilden:** 1080 × 1350 (4:5). Bakgrunden är Mörk eller Ljus, med löparbanan uppe till höger, eller en egen bild från kameran eller biblioteket. På en egen bild ligger texten direkt på fotot med en mjuk skugga nedtill, som hos Strava.
 - **Innehåll uppifrån:** logotypen, `eyebrow` med typ och datum, passets namn med punkt, tre siffror (Tid, Löpning eller Sträcka, Övningar), rekorden och sedan övningarna rad för rad.

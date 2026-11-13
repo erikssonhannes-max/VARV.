@@ -2395,7 +2395,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.75 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.76 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2456,7 +2456,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.75";
+const APPVER="1.1.76";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2465,31 +2465,22 @@ const APPVER="1.1.75";
   addEventListener("unhandledrejection",e=>{const r=e.reason;rep(r&&r.message||r,"promise")});
 })();
 /* ============ Illustrationer ============ */
+/* Piktogram för stationerna: en fylld figur som gör övningen, med utrustningen. Tydliga även i 30 px.
+   Varje del sätter sin egen fyllning och linje, så de går att lägga in i andra svg:er (banan på Hem). */
 const SW='fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"';
-const ART={
- ski:`<svg viewBox="0 0 64 64" ${SW}><rect x="26" y="6" width="12" height="44" rx="3"/><circle cx="32" cy="14" r="4"/><path d="M27 22c-5 4-8 10-8 18M37 22c5 4 8 10 8 18"/><path d="M15 40h8M41 40h8"/><path d="M22 56h20"/><path d="M32 50v6"/></svg>`,
- push:`<svg viewBox="0 0 64 64" ${SW}><path d="M10 48h40l4-6"/><path d="M14 48v-6h34"/><rect x="22" y="30" width="16" height="12" rx="2"/><circle cx="30" cy="36" r="2.5"/><path d="M16 42V14M44 42V14"/><path d="M8 54h48" stroke-dasharray="3 5"/></svg>`,
- pull:`<svg viewBox="0 0 64 64" ${SW}><path d="M30 48h26l2-6"/><path d="M33 48v-6h24"/><rect x="38" y="31" width="14" height="11" rx="2"/><path d="M33 44C24 44 22 34 14 34s-6-10 2-10"/><circle cx="12" cy="20" r="3.5"/><path d="M6 54h52" stroke-dasharray="3 5"/></svg>`,
- bbj:`<svg viewBox="0 0 64 64" ${SW}><circle cx="44" cy="12" r="4"/><path d="M42 17l-6 12 8 6-2 10M36 29l-8 4M36 22l10 2"/><path d="M8 50h18"/><path d="M10 50c4-18 22-28 30-24" stroke-dasharray="3 4"/><path d="M34 54h22"/></svg>`,
- row:`<svg viewBox="0 0 64 64" ${SW}><path d="M6 46h44"/><circle cx="52" cy="38" r="8"/><path d="M52 38h-12"/><rect x="18" y="40" width="10" height="5" rx="1.5"/><path d="M10 46v6M48 46v6"/><path d="M40 38l-6-6"/><path d="M30 32h8"/></svg>`,
- farm:`<svg viewBox="0 0 64 64" ${SW}><path d="M13 28a6 6 0 0 1 12 0"/><rect x="9" y="28" width="20" height="24" rx="9"/><path d="M39 28a6 6 0 0 1 12 0"/><rect x="35" y="28" width="20" height="24" rx="9"/><path d="M19 14v8M45 14v8"/></svg>`,
- lunge:`<svg viewBox="0 0 64 64" ${SW}><rect x="14" y="12" width="36" height="12" rx="6"/><path d="M22 12v-2M42 12v-2"/><path d="M32 24v12"/><path d="M32 36l-10 8v10M32 36l12 4-2 14"/><path d="M8 56h48"/></svg>`,
- wall:`<svg viewBox="0 0 64 64" ${SW}><path d="M54 4v56"/><path d="M42 12h12"/><circle cx="24" cy="38" r="12"/><path d="M14 32c6 3 14 3 20 0"/><path d="M33 26l6-10" stroke-dasharray="3 4"/><path d="M4 58h50"/></svg>`
-};
-/* Figurer som utför stationerna, för "Vad är Hyrox" och stationsarket. Personen i ink, utrustningen i green.
-   Tillfälliga tills riktiga bilder finns. Små ytor (listan, banan) använder fortfarande ART. */
-const FW='fill="none" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';
-const fig=(eq,body)=>`<svg viewBox="0 0 120 120" ${FW} aria-hidden="true"><g stroke="var(--green)">${eq}</g><g stroke="currentColor">${body}</g></svg>`;
-const FIG={
- ski:fig(`<path d="M88 10V111M76 111h24M84 14 72 62"/>`,`<circle cx="52" cy="30" r="7"/><path d="M51 38 42 68M49 44l13 12 10 6M42 68l5 22-2 21M42 68l-7 22 2 21M14 112h56"/>`),
- push:fig(`<path d="M70 111h42M76 111l-2-49M86 111V96h22v15"/>`,`<circle cx="50" cy="50" r="7"/><path d="M54 58 30 80M53 62l21 2M30 80l-8 16-12 15M30 80l13 13-2 18M6 112h62"/>`),
- pull:fig(`<path d="M80 111h32M84 111V98h22v13M58 64 88 98"/>`,`<circle cx="30" cy="44" r="7"/><path d="M46 82 34 52M35 58l23 6M36 62l16 10M46 82l14 14 4 15M46 82l-6 16-2 13M14 112h58"/>`),
- bbj:fig(`<path d="M10 104c10-30 26-44 40-44" stroke-dasharray="3 6"/><path d="M84 111h18"/>`,`<circle cx="68" cy="32" r="7"/><path d="M65 40 52 64M63 46l-15 6M63 46l11 12M52 64l14 10-6 16M52 64l8 16-8 10M8 112h104"/>`),
- row:fig(`<path d="M10 106h102M44 98h16M86 92l4 12M52 76l36 12"/><circle cx="98" cy="92" r="12"/>`,`<circle cx="40" cy="56" r="7"/><path d="M50 95 43 64M44 68l-8 10 16-2M50 95l20-13 16 10"/>`),
- farm:fig(`<circle cx="46" cy="74" r="8"/><circle cx="74" cy="74" r="8"/><path d="M46 66v-4M74 66v-4"/>`,`<circle cx="60" cy="22" r="7"/><path d="M60 30v36M60 36 46 62M60 36l14 26M60 66l-8 22-4 23M60 66l8 22 6 23M20 112h80"/>`),
- lunge:fig(`<rect x="42" y="38" width="36" height="10" rx="5"/>`,`<circle cx="60" cy="27" r="7"/><path d="M60 48v30M60 50 46 43M60 50l14-7M60 78l22 2v31M60 78l-14 30H28M14 112h90"/>`),
- wall:fig(`<path d="M104 8v104M96 22h16M70 44c10-18 20-22 28-22" stroke-dasharray="3 6"/><circle cx="62" cy="52" r="8"/>`,`<circle cx="50" cy="40" r="7"/><path d="M50 48l-2 30M50 54l8 4M48 78l20 4-2 29M48 78l12 10-2 23M14 112h82"/>`)
-};
+const ART=(()=>{const L=(d,w=6)=>`<path d="${d}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;const H=(x,y,r=5.2)=>`<circle cx="${x}" cy="${y}" r="${r}" fill="currentColor" stroke="none"/>`;const F=d=>`<path d="${d}" fill="currentColor" stroke="none"/>`;const T=(d,w=2)=>`<path d="${d}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>`;const D=(d,w=2.2)=>`<path d="${d}" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-dasharray="1 5"/>`;const G=(x1=4,x2=60)=>T(`M${x1} 60H${x2}`,2.4);const S0=b=>`<svg viewBox="0 0 64 64" aria-hidden="true">${b}</svg>`;
+ return {
+ ski:S0(F("M47 3h9v55h-9z")+F("M43 56h17v4H43z")+T("M49 8 38 39M54 8l-12 31",1.8)+H(29,16)+L("M30 23 24 37")+L("M30 25l9 13")+L("M24 37l7 10-3 11M24 37l-3 11 2 10")+G(14,60)),
+ push:S0(F("M38 44h22v10H38z")+T("M36 57h26",2.6)+L("M42 44V27",4)+H(31,22)+L("M29 28 15 41")+L("M29 29l12-2")+L("M15 41 7 58M15 41l9 7-2 10")+G(4,62)),
+ pull:S0(F("M3 46h17v9H3z")+T("M2 57h20",2.6)+T("M20 49c8-4 14-10 19-16M39 33c5 8 10 18 18 27",1.8)+H(45,15)+L("M45 22l3 18")+L("M46 25l-8 8")+L("M48 40l-7 8-1 10M48 40l5 9 2 9")),
+ bbj:S0(H(9,53,4.6)+L("M15 55H34",5.5)+L("M18 55l-5-4",4)+D("M22 46C26 30 34 22 40 21")+H(51,13)+L("M49 19 41 31")+L("M48 21l10-4")+L("M41 31l9 4-2 8M41 31l2 9-7 4")+G(4,60)),
+ row:S0(T("M4 55h56",4)+F("M45 33a9 9 0 1 1 0 18a9 9 0 1 1 0-18z")+F("M40 47h3v8h-3z")+F("M12 46h12v5H12z")+H(10,21)+L("M18 46 12 29",7)+L("M13 31l8 5")+T("M21 36 50 42",1.8)+L("M18 46h14l7 5")),
+ farm:S0(H(32,8)+L("M32 15v19",7)+L("M32 18 20 35M32 18l12 17")+L("M32 34l-5 12-2 12M32 34l5 12 2 12")+T("M13 39a4 4 0 0 1 8 0M43 39a4 4 0 0 1 8 0",2.6)+F("M10 46a7 6.5 0 1 1 14 0a7 6.5 0 1 1-14 0zM40 46a7 6.5 0 1 1 14 0a7 6.5 0 1 1-14 0z")+G(6,58)),
+ lunge:S0(F("M14 17q18-6 36 0v9q-18-6-36 0z")+H(32,9)+L("M32 22v18",7)+L("M32 40l13 4 1 14M32 40l-8 15H12",6)+G(6,58)),
+ wall:S0(F("M55 2h5v58h-5z")+T("M48 6h7M48 12h7",2)+F("M37 9a6 6 0 1 1 12 0a6 6 0 1 1-12 0z")+H(22,19)+L("M24 26 22 41",7)+L("M24 27l8-12M24 28l6-12",5)+L("M22 41l10 4-1 13M22 41l-6 7 2 10")+G(8,54)),
+ }})();
+/* Samma piktogram i stort format i "Vad är Hyrox" och stationsarket. */
+const FIG=ART;
 const FIGTXT={
  ski:"Dra handtagen nedåt med hela kroppen, som stavtag på skidor.",
  push:"Skjut en tung släde framåt, lågt och framåtlutad.",

@@ -1334,14 +1334,19 @@ a.row{color:inherit;text-decoration:none}
 .deck-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 /* Pass från klockan */
 /* Dra för att uppdatera flödet */
-#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 46px);z-index:43;width:28px;height:28px;margin-left:-14px;color:var(--muted);opacity:0;transform:scale(.7);pointer-events:none}
-#ptr svg{display:block;width:100%;height:100%}#ptr line{opacity:0;transition:opacity .12s linear}
+#ptr{position:fixed;left:50%;top:calc(env(safe-area-inset-top,0px) + 46px);z-index:43;width:36px;height:36px;margin-left:-18px;opacity:0;transform:scale(.7);pointer-events:none;filter:drop-shadow(0 6px 12px var(--glow))}
+#ptr svg{display:block;width:100%;height:100%;overflow:visible}
+#ptr .ptr-tr{fill:none;stroke:#fff;stroke-width:88;stroke-linecap:round;stroke-dasharray:0 1000;stroke-dashoffset:0}
+#ptr .ptr-run{fill:none;stroke:#fff;stroke-width:116;stroke-linecap:round;stroke-dasharray:0 1000;opacity:0}
+#ptr .ptr-dot{fill:#fff;transition:opacity .15s linear}
 #ptr.ptr-anim{transition:opacity .2s var(--ease),transform .28s var(--ease)}
-#ptr.ptr-spin svg{animation:ptrSpin .9s steps(12) infinite}#ptr.ptr-spin line{opacity:var(--o)}
-@keyframes ptrSpin{to{transform:rotate(360deg)}}
+#ptr.ptr-spin .ptr-tr{stroke-dasharray:790 1000;transition:stroke-dasharray .25s var(--ease)}
+#ptr.ptr-spin .ptr-run{opacity:1;animation:ptrRun 1.1s linear infinite}
+#ptr.ptr-spin .ptr-dot{opacity:0}
+@keyframes ptrRun{from{stroke-dashoffset:0}to{stroke-dashoffset:-1000}}
 .ptr-view{will-change:transform}.ptr-back{transition:transform .32s var(--ease)}
 html.ptr-on,html.ptr-on body{overscroll-behavior-y:none}
-@media (prefers-reduced-motion:reduce){#ptr.ptr-spin svg{animation:none}.ptr-back,#ptr.ptr-anim,#ptr line{transition:none}}
+@media (prefers-reduced-motion:reduce){#ptr.ptr-spin .ptr-run{animation:none;opacity:0}#ptr.ptr-spin .ptr-dot{opacity:1}.ptr-back,#ptr.ptr-anim,#ptr .ptr-tr{transition:none}}
 /* Statistik */
 .hy{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px;align-items:start}
 .hy-days{display:grid;grid-template-rows:16px repeat(7,11px);row-gap:3px;font-size:var(--t-micro);color:var(--muted);line-height:11px}
@@ -2395,7 +2400,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 </section>
 </main>
 <div id="live" role="dialog" aria-label="Pågående pass" hidden></div>
-<div id="ptr" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.08" transform="rotate(0 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.17" transform="rotate(30 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.25" transform="rotate(60 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.33" transform="rotate(90 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.42" transform="rotate(120 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.50" transform="rotate(150 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.58" transform="rotate(180 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.67" transform="rotate(210 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.75" transform="rotate(240 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.83" transform="rotate(270 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:0.92" transform="rotate(300 12 12)"/><line x1="12" y1="2.5" x2="12" y2="7" style="--o:1.00" transform="rotate(330 12 12)"/></svg></div>
+<div id="ptr" aria-hidden="true"><svg viewBox="0 0 1024 1024"><defs><linearGradient id="ptrg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff2d55"/><stop offset=".55" stop-color="#ff4e45"/><stop offset="1" stop-color="#ff7a3d"/></linearGradient></defs><path class="ptr-sq" d="M1024.0 512.0 L1023.9 631.2 L1023.7 669.3 L1023.4 697.0 L1022.9 719.5 L1022.2 738.8 L1021.5 755.8 L1020.6 771.1 L1019.5 785.2 L1018.3 798.1 L1016.9 810.2 L1015.5 821.5 L1013.8 832.1 L1012.0 842.1 L1010.1 851.6 L1008.0 860.7 L1005.8 869.3 L1003.4 877.5 L1000.9 885.3 L998.2 892.8 L995.4 900.0 L992.4 906.9 L989.2 913.5 L985.9 919.9 L982.4 926.0 L978.7 931.8 L974.9 937.4 L970.9 942.8 L966.7 948.0 L962.3 953.0 L957.7 957.7 L953.0 962.3 L948.0 966.7 L942.8 970.9 L937.4 974.9 L931.8 978.7 L926.0 982.4 L919.9 985.9 L913.5 989.2 L906.9 992.4 L900.0 995.4 L892.8 998.2 L885.3 1000.9 L877.5 1003.4 L869.3 1005.8 L860.7 1008.0 L851.6 1010.1 L842.1 1012.0 L832.1 1013.8 L821.5 1015.5 L810.2 1016.9 L798.1 1018.3 L785.2 1019.5 L771.1 1020.6 L755.8 1021.5 L738.8 1022.2 L719.5 1022.9 L697.0 1023.4 L669.3 1023.7 L631.2 1023.9 L512.0 1024.0 L392.8 1023.9 L354.7 1023.7 L327.0 1023.4 L304.5 1022.9 L285.2 1022.2 L268.2 1021.5 L252.9 1020.6 L238.8 1019.5 L225.9 1018.3 L213.8 1016.9 L202.5 1015.5 L191.9 1013.8 L181.9 1012.0 L172.4 1010.1 L163.3 1008.0 L154.7 1005.8 L146.5 1003.4 L138.7 1000.9 L131.2 998.2 L124.0 995.4 L117.1 992.4 L110.5 989.2 L104.1 985.9 L98.0 982.4 L92.2 978.7 L86.6 974.9 L81.2 970.9 L76.0 966.7 L71.0 962.3 L66.3 957.7 L61.7 953.0 L57.3 948.0 L53.1 942.8 L49.1 937.4 L45.3 931.8 L41.6 926.0 L38.1 919.9 L34.8 913.5 L31.6 906.9 L28.6 900.0 L25.8 892.8 L23.1 885.3 L20.6 877.5 L18.2 869.3 L16.0 860.7 L13.9 851.6 L12.0 842.1 L10.2 832.1 L8.5 821.5 L7.1 810.2 L5.7 798.1 L4.5 785.2 L3.4 771.1 L2.5 755.8 L1.8 738.8 L1.1 719.5 L0.6 697.0 L0.3 669.3 L0.1 631.2 L0.0 512.0 L0.1 392.8 L0.3 354.7 L0.6 327.0 L1.1 304.5 L1.8 285.2 L2.5 268.2 L3.4 252.9 L4.5 238.8 L5.7 225.9 L7.1 213.8 L8.5 202.5 L10.2 191.9 L12.0 181.9 L13.9 172.4 L16.0 163.3 L18.2 154.7 L20.6 146.5 L23.1 138.7 L25.8 131.2 L28.6 124.0 L31.6 117.1 L34.8 110.5 L38.1 104.1 L41.6 98.0 L45.3 92.2 L49.1 86.6 L53.1 81.2 L57.3 76.0 L61.7 71.0 L66.3 66.3 L71.0 61.7 L76.0 57.3 L81.2 53.1 L86.6 49.1 L92.2 45.3 L98.0 41.6 L104.1 38.1 L110.5 34.8 L117.1 31.6 L124.0 28.6 L131.2 25.8 L138.7 23.1 L146.5 20.6 L154.7 18.2 L163.3 16.0 L172.4 13.9 L181.9 12.0 L191.9 10.2 L202.5 8.5 L213.8 7.1 L225.9 5.7 L238.8 4.5 L252.9 3.4 L268.2 2.5 L285.2 1.8 L304.5 1.1 L327.0 0.6 L354.7 0.3 L392.8 0.1 L512.0 0.0 L631.2 0.1 L669.3 0.3 L697.0 0.6 L719.5 1.1 L738.8 1.8 L755.8 2.5 L771.1 3.4 L785.2 4.5 L798.1 5.7 L810.2 7.1 L821.5 8.5 L832.1 10.2 L842.1 12.0 L851.6 13.9 L860.7 16.0 L869.3 18.2 L877.5 20.6 L885.3 23.1 L892.8 25.8 L900.0 28.6 L906.9 31.6 L913.5 34.8 L919.9 38.1 L926.0 41.6 L931.8 45.3 L937.4 49.1 L942.8 53.1 L948.0 57.3 L953.0 61.7 L957.7 66.3 L962.3 71.0 L966.7 76.0 L970.9 81.2 L974.9 86.6 L978.7 92.2 L982.4 98.0 L985.9 104.1 L989.2 110.5 L992.4 117.1 L995.4 124.0 L998.2 131.2 L1000.9 138.7 L1003.4 146.5 L1005.8 154.7 L1008.0 163.3 L1010.1 172.4 L1012.0 181.9 L1013.8 191.9 L1015.5 202.5 L1016.9 213.8 L1018.3 225.9 L1019.5 238.8 L1020.6 252.9 L1021.5 268.2 L1022.2 285.2 L1022.9 304.5 L1023.4 327.0 L1023.7 354.7 L1023.9 392.8Z" fill="url(#ptrg)"/><path class="ptr-tr" d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" pathLength="1000"/><path class="ptr-run" d="M512,332 H632 A180,180 0 0 1 632,692 H392 A180,180 0 0 1 392,332 H512" pathLength="1000"/><circle class="ptr-dot" cx="343.5" cy="338.7" r="58"/></svg></div>
 <button type="button" id="lv-bar" hidden><span class="lv-dot" aria-hidden="true"></span><span id="lv-bar-name">Pass pågår</span><b id="lv-bar-time">0:00</b><span class="chev">›</span></button>
 <div id="tour" hidden><div class="tr-block"></div><div class="tr-hole none"></div>
   <div class="tr-card" role="dialog" aria-modal="true" aria-labelledby="tr-h" aria-describedby="tr-p">
@@ -6729,16 +6734,16 @@ function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FR
 function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
 function fdLogin(el,what){el.innerHTML=`<div class="card fd-login"><h3>${what}</h3><ul class="fd-why"><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9.5" r="2.5"/><path d="M3 19a5.5 5.5 0 0 1 11 0M14.5 15.2A4.5 4.5 0 0 1 21 19"/></svg></span><span><b>Följ dina träningskompisar</b><small>Hitta dem med namn eller kod.</small></span></li><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span><b>Se deras pass och rekord</b><small>Ett inlägg per pass, med tider och övningar.</small></span></li><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.5 1 2.2 2.6L12.6 10H18a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 16.8 20H7"/></svg></span><span><b>Peppa varandra</b><small>Ge tumme upp och skriv en kommentar.</small></span></li></ul><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
 /* Dra nedåt högst upp i flödet för att hämta nya inlägg. */
-(()=>{const MAX=100,TRIG=56,HOLD=56,el=()=>$("#ptr"),view=()=>$("#v-feed");let y0=null,x0=0,dy=0,armed=false,busy=false,on=false;
+(()=>{const MAX=100,TRIG=56,HOLD=56,PTR_V=["hem","feed","vanner","race","logg","stationer","profil"],cur=()=>(location.hash.slice(1)||"hem"),el=()=>$("#ptr"),view=()=>$(".view.on");let y0=null,x0=0,dy=0,armed=false,busy=false,on=false;
   const top=()=>(window.scrollY||document.documentElement.scrollTop||0)<=0;
-  const ok=()=>location.hash==="#feed"&&$("#sheet").hidden&&!busy&&top()&&!document.body.classList.contains("live-on")&&!document.querySelector(".viewer");
+  const ok=()=>PTR_V.includes(cur())&&$("#sheet").hidden&&!GATE_ON&&!busy&&top()&&!document.body.classList.contains("live-on")&&!document.querySelector(".viewer");
   const rub=d=>MAX*(1-Math.exp(-d/140));
-  const place=k=>{const v=view(),p=el();if(v)v.style.transform=k?`translateY(${k}px)`:"";if(p)p.style.top=`calc(env(safe-area-inset-top,0px) + ${60+k/2-14}px)`};
-  const ticks=f=>{const p=el();if(!p)return;const n=Math.round(Math.min(1,f)*12);p.querySelectorAll("line").forEach((l,i)=>{l.style.opacity=i<n?String((i+1)/12*.75+.25):"0"})};
+  const place=k=>{const v=view(),p=el();if(v)v.style.transform=k?`translateY(${k}px)`:"";if(p)p.style.top=`calc(env(safe-area-inset-top,0px) + ${60+k/2-18}px)`};
+  const ticks=f=>{const p=el();if(!p)return;const t=p.querySelector(".ptr-tr");if(t)t.style.strokeDasharray=`${Math.round(Math.min(1,f)*790)} 1000`};
   const pull=d=>{const k=rub(d),p=el(),v=view();if(!p||!v)return;if(!on){on=true;document.documentElement.classList.add("ptr-on");v.classList.add("ptr-view");v.classList.remove("ptr-back");p.classList.remove("ptr-anim")}
     place(k);p.style.opacity=String(Math.min(1,k/28));p.style.transform=`scale(${.7+.3*Math.min(1,k/TRIG)})`;ticks(k/TRIG);
     const a=k>=TRIG;if(a&&!armed)HAPTIC("light");armed=a};
-  const end=()=>{const p=el(),v=view();on=false;armed=false;document.documentElement.classList.remove("ptr-on");if(!p||!v)return;p.classList.add("ptr-anim");v.classList.add("ptr-back");p.classList.remove("ptr-spin");p.style.opacity="0";p.style.transform="scale(.7)";place(0);p.querySelectorAll("line").forEach(l=>{l.style.opacity=""});
+  const end=()=>{const p=el(),v=view();on=false;armed=false;document.documentElement.classList.remove("ptr-on");if(!p||!v)return;p.classList.add("ptr-anim");v.classList.add("ptr-back");p.classList.remove("ptr-spin");p.style.opacity="0";p.style.transform="scale(.7)";place(0);{const t=p.querySelector(".ptr-tr");if(t)t.style.strokeDasharray=""}
     setTimeout(()=>{if(!on){v.classList.remove("ptr-back","ptr-view");v.style.transform=""}},340)};
   document.addEventListener("touchstart",e=>{y0=ok()&&e.touches.length===1?e.touches[0].clientY:null;x0=y0===null?0:e.touches[0].clientX;dy=0},{passive:true});
   document.addEventListener("touchmove",e=>{if(y0===null)return;const t=e.touches[0];dy=t.clientY-y0;
@@ -6747,11 +6752,22 @@ function fdLogin(el,what){el.innerHTML=`<div class="card fd-login"><h3>${what}</
     if(e.cancelable)e.preventDefault();pull(dy)},{passive:false});
   const release=async cancel=>{if(y0===null)return;y0=null;if(!on)return;
     if(cancel||!armed){end();return}
-    const p=el();busy=true;armed=false;p.classList.add("ptr-anim");view().classList.add("ptr-back");place(HOLD);p.style.opacity="1";p.style.transform="scale(1)";p.classList.add("ptr-spin");p.querySelectorAll("line").forEach(l=>{l.style.opacity=""});HAPTIC("medium");
-    const t0=Date.now();try{FRC=null;await renderFeed(true)}catch(x){}
+    const p=el();busy=true;armed=false;p.classList.add("ptr-anim");view().classList.add("ptr-back");place(HOLD);p.style.opacity="1";p.style.transform="scale(1)";p.classList.add("ptr-spin");{const t=p.querySelector(".ptr-tr");if(t)t.style.strokeDasharray=""}HAPTIC("medium");
+    const t0=Date.now();try{await ptrRefresh(cur())}catch(x){}
     await new Promise(r=>setTimeout(r,Math.max(0,600-(Date.now()-t0))));busy=false;end()};
   document.addEventListener("touchend",()=>release(false),{passive:true});
   document.addEventListener("touchcancel",()=>release(true),{passive:true});})();
+/* Dra ned för att uppdatera: hämtar det som kan ha ändrats på servern för fliken du står på */
+async function ptrRefresh(v){FRC=null;FSUG=null;
+  const jobs=[];if(SB&&SBUSER){jobs.push(loadFriends().catch(()=>{}));jobs.push(loadNotis().catch(()=>{}))}
+  if(v==="race")jobs.push(Promise.resolve(loadSims(true)).catch(()=>{}));
+  await Promise.all(jobs);
+  if(v==="feed")await renderFeed(true);
+  else if(v==="vanner")await renderVanner();
+  else if(v==="hem"){renderHome()}
+  else if(v==="logg")renderLog();
+  else if(v==="race"){try{renderTv()}catch(e){}}
+  else if(v==="profil"){try{renderProfile()}catch(e){}}}
 /* Första gången väljer man själv om profilen får visas i förslag. Stängs rutan utan val frågar appen igen nästa gång. */
 function sugNotice(){if(!MYPROF||!("suggestable" in MYPROF)||set.sugAsked)return;if(!$("#sheet").hidden||(typeof ONB_ON!=="undefined"&&ONB_ON)||!set.onboarded){setTimeout(sugNotice,4000);return}
   const choose=async v=>{const {error}=await SB.from("profiles").update({suggestable:v}).eq("user_id",SBUSER.id);if(error){toast("Kunde inte spara. Försök igen.");return}MYPROF.suggestable=v;set.sugAsked=true;saveSet();closeSheet();HAPTIC("success");toast(v?"Din profil kan visas i förslag.":"Din profil visas inte i förslag.")};

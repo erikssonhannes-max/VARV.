@@ -1131,6 +1131,8 @@ a.row{color:inherit;text-decoration:none}
 .so-sbb{height:10px;border-radius:5px;background:var(--hair);overflow:hidden}.so-sbb i{display:block;height:100%;border-radius:5px;background:var(--green);transform-origin:left}
 @media (prefers-reduced-motion:no-preference){.so-sbb i{animation:chGrow 1.1s var(--ease) both}}
 .so-noST{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center}.so-noST .ic{width:44px;height:44px;border-radius:12px;background:var(--card);display:grid;place-items:center;color:var(--ink)}.so-noST b{display:block;font-size:var(--t-body);font-weight:600}.so-noST small{display:block;color:var(--muted);font-size:var(--t-sub);line-height:1.35}
+.fr-chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}.fr-chips .chip{min-height:44px;padding:0 18px;font-size:var(--t-sub);font-weight:600;background:var(--tile);border-color:transparent;color:var(--ink)}.fr-chips .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.vn-more{display:inline-flex;align-items:center;min-height:44px;margin-top:14px;font-weight:600}
 /* Hem: veckans utmaning och vänner i dag */
 .ch{display:grid;gap:14px}
 .ch-top{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center}
@@ -1324,7 +1326,7 @@ a.row{color:inherit;text-decoration:none}
 .sw-card{position:absolute;inset:0;background:var(--seg);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px;text-align:center;transform:translateY(calc(var(--d)*12px)) scale(calc(1 - var(--d)*.05));transition:transform .45s var(--spring),opacity .3s;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .sw-card.top{background:var(--tile);cursor:grab}.sw-card.drag{transition:none;cursor:grabbing}
 .sw-card.out-r{transform:translateX(130%) rotate(18deg)!important;opacity:0}.sw-card.out-l{transform:translateX(-130%) rotate(-18deg)!important;opacity:0}
-.sw-img{width:96px;height:96px;border-radius:50%;background:var(--card);display:grid;place-items:center;font-size:var(--t-num-l);font-weight:700;overflow:hidden;color:var(--ink)}.sw-img img{width:100%;height:100%;object-fit:cover}
+.sw-img{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:var(--t-num-l);font-weight:700;overflow:hidden;color:#fff}.sw-img img{width:100%;height:100%;object-fit:cover}
 .sw-name{font-size:var(--t-head);letter-spacing:-.03em;font-weight:700}.sw-name span{color:var(--muted);font-weight:500;font-size:var(--t-sub);margin-left:4px}
 .sw-why{color:var(--muted);font-size:var(--t-sub);max-width:26ch}
 .sw-tag{position:absolute;top:22px;padding:6px 12px;border-radius:10px;font-weight:600;font-size:var(--t-cap);letter-spacing:.04em;text-transform:uppercase;border:2px solid currentColor;background:var(--tile)}
@@ -2296,7 +2298,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 <!-- ================= VÄNNER ================= -->
 <section class="view" id="v-vanner">
   <div class="wrap">
-    <div class="pagehead"><span class="eyebrow">Gemenskap</span><h1>Vänner.</h1></div>
+    <div class="pagehead"><span class="eyebrow">Gemenskap</span><h1>Vänner.</h1><p>Följ dem du tränar med och peppa varandra.</p></div>
     <div id="vn-req"></div>
     <div class="seg" id="vn-seg" role="group" aria-label="Visa" style="margin-bottom:16px"><button data-vn="friends">Vänner</button><button data-vn="top">Topplista</button><button data-vn="find">Hitta</button></div>
     <div class="vnv" data-v="friends" id="vn-friends"></div>
@@ -2388,7 +2390,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.73 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.74 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2449,7 +2451,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.73";
+const APPVER="1.1.74";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3441,7 +3443,7 @@ function profilePayload(){
   Object.entries(set.bench||{}).forEach(([k,v])=>{if(v&&+v.t>=300&&+v.t<=14400)prs["b:"+k]=Math.round(+v.t)});
   const bt=PRS.race&&PRS.race>=600&&PRS.race<=36000?PRS.race:null;
   return {best_time:bt,best_division:divText().slice(0,60),prs,
-    next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:me?me.s:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
+    next_race:!set.noRace&&set.date&&set.date>=today()?{name:me?me.c:null,country:me?me.n:null,date:set.date,end:me?me.e:null,venue:me&&me.v?me.v:null,div:divText()}:null,
     card:cardPayload(),stats:{wk:weekStart(today()),wv:P.weekVarv,wmin:Math.round(st.now.min||0),sessions:LOGS.length,hours:Math.round(st.total/6)/10,streak:st.streak,week:st.now.n,varv:P.varv,tier:P.tier.n,medals:P.recent.length,since:set.since||null,...chStats()}};
 }
 function syncProfile(){
@@ -6648,9 +6650,8 @@ async function renderFriends(force){
   const waiting=FRQ_OUT.map(r=>r.to_user);
   const kindTxt={lopp:"tävlade",rekord:"satte rekord",pass:"tränade"};
   const frs=set.frs==="race"||set.frs==="sim"?set.frs:"week";
-  el.innerHTML=`<div class="seg fr-seg" role="group" aria-label="Visa">${[["week","Veckan"],["race","Hyrox-lopp"],["sim","Simuleringar"]].map(([k,l])=>`<button data-frs="${k}" aria-pressed="${k===frs}">${l}</button>`).join("")}</div>
+  el.innerHTML=`<div class="chips fr-chips" role="group" aria-label="Visa">${[["week","Veckan"],["race","Hyrox-lopp"],["sim","Simuleringar"]].map(([k,l])=>`<button type="button" class="chip" data-frs="${k}" aria-pressed="${k===frs}">${l}</button>`).join("")}</div>
    <div id="fr-times"${frs==="week"?" hidden":""}>${frs==="week"?"":frTimes(D)}</div><div${frs==="week"?"":" hidden"}>
-   ${FRQ_IN.length?`<a class="card fr-reqcard" href="#notiser"><b>${FRQ_IN.length===1?esc((NAMES[FRQ_IN[0].from_user]||{username:"Någon"}).username)+" vill följa dig":FRQ_IN.length+" vill följa dig"}</b><span class="linkbtn">Svara ›</span></a>`:""}
    ${FRIENDS.length?"":`<div class="card fr-empty"><h3>Hitta någon att följa</h3><p class="small">Sök bland offentliga profiler, eller använd namn och kod. Dela din profil så att andra kan följa dig. Ditt namn och kod är <b style="color:var(--ink)">${esc(handleTxt(MYPROF))}</b>.</p></div>`}
    <div class="sechead"><h2>Den här veckan</h2><span class="small">Pass</span></div>
    <div class="group">${board.map((b,i)=>`<div class="row fr-lb${b.me?" me":""}" data-prof="${esc(b.user_id)}" role="button" tabindex="0" aria-label="Visa ${b.me?"din profil":esc(b.username)+"s profil"}"><span class="fr-rank">${i+1}</span><div class="fr-who">${avImg(b.avatar_url,b.username)}<div><h3>${b.me?"Du":esc(b.username)}</h3><p>${b.min?pgMin(b.min):"Inget pass än"}</p></div></div><b class="fr-v">${b.n}</b></div>`).join("")}</div>
@@ -6660,7 +6661,7 @@ async function renderFriends(force){
      return `<div class="row fr-race" data-prof="${esc(r.u.user_id)}" role="button" tabindex="0">${avImg(r.u.avatar_url,r.u.username)}<div><h3>${r.u.me?"Du":esc(r.u.username)} · ${esc(L.where)}</h3><p>${esc(L.when)}${L.sub?"<br>"+L.sub:""}</p>${same?`<span class="fr-same">Samma lopp som du</span>`:""}</div><span class="fr-days"><b>${d}</b>${d===1?"dag":"dagar"}</span></div>`}).join("")}</div>`
      :`<div class="card"><p class="small">Ingen av er har valt ett lopp än. Välj ditt under Tävla, så syns det här för dina följare.</p></div>`}
    ${waiting.length?`<div class="sechead"><h2>Väntar på svar</h2></div><div class="group">${waiting.map(id=>{const p=NAMES[id]||{username:"Okänd",tag:"0000"};return `<div class="row" data-prof="${esc(id)}" role="button" tabindex="0">${avImg(p.avatar_url,p.username)}<div><h3>${handleHtml(p)}</h3><p>Väntar på godkännande</p></div><span class="chev">›</span></div>`}).join("")}</div>`:""}
-   <div class="fr-acts"><button class="pill block" id="fr-add2">Hitta atleter</button><div class="grid2"><button class="pill ghost" id="fr-link2">Dela min profil</button><button class="pill ghost" id="fr-qr2">Visa QR-kod</button></div></div></div>`;
+   <button type="button" class="linkbtn vn-more" data-vn-go="find">Hitta fler att följa ›</button></div>`;
   const fd=$("#fr-feed");if(fd)fd.onclick=async e=>{const b=e.target.closest("[data-like]");if(!b||b.disabled)return;const id=+b.dataset.like,L=D.likes[id]=D.likes[id]||[],on=L.includes(SBUSER.id);
     b.disabled=true;if(on)L.splice(L.indexOf(SBUSER.id),1);else{L.push(SBUSER.id);HAPTIC("light")}
     b.setAttribute("aria-pressed",!on);b.querySelector("span").textContent=L.length||"";b.classList.toggle("pop",!on);
@@ -6669,7 +6670,7 @@ async function renderFriends(force){
     b.disabled=false};
   el.onclick=e=>{if(e.target.closest("[data-like],a,.fr-like"))return;const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
   el.onkeydown=e=>{if(e.key==="Enter"){const r=e.target.closest&&e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)}};
-  $("#fr-add2").onclick=openAddFriend;$("#fr-link2").onclick=shareFriendLink;$("#fr-qr2").onclick=showFriendQR;
+  
   const top=D.acts[0];if(top){set.frSeen=top.created_at;saveSet()}frDot();
 }
 function frDot(){try{fdDot()}catch(e){}const b=null;if(!b)return;const top=FRC&&FRC.acts&&FRC.acts[0];b.classList.toggle("new",!!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed"))}
@@ -6691,10 +6692,17 @@ async function renderVanner(){const v=["friends","top","find"].includes(set.vnsu
   if(location.hash!=="#vanner")return;
   req.innerHTML=FRQ_IN.length?`<div class="sechead" style="margin-top:0"><h2>Vill följa dig</h2><span class="small">${FRQ_IN.length}</span></div><div class="group" style="margin-bottom:18px">${FRQ_IN.map(r=>{const p=NAMES[r.from_user]||{username:"Någon",tag:"0000"};return `<div class="row nt-req">${avImg(p.avatar_url,p.username)}<div data-prof="${esc(r.from_user)}" role="button" tabindex="0"><h3>${handleHtml(p)}</h3><p>Förfrågan · ${agoTxt(r.created_at)}</p></div><div class="nt-acts"><button class="pill nt-yes" data-yes="${esc(r.from_user)}">Godkänn</button><button class="pill ghost nt-no" data-no="${esc(r.from_user)}" aria-label="Avböj ${esc(p.username)}">Avböj</button></div></div>`}).join("")}</div>`:"";
   req.onclick=async e=>{const b=e.target.closest("button");if(b&&!b.disabled){if(b.dataset.yes){b.disabled=true;await answerFriend(b.dataset.yes,true);renderVanner();return}if(b.dataset.no){b.disabled=true;await answerFriend(b.dataset.no,false);renderVanner();return}}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
-  const back=pals.filter(id=>!FRIENDS.includes(id)),mine=pals.filter(id=>FRIENDS.includes(id));
+  const asking=FRQ_IN.map(r=>r.from_user),back=pals.filter(id=>!FRIENDS.includes(id)&&!asking.includes(id)),mine=pals.filter(id=>FRIENDS.includes(id));
+  let D=null;try{D=await loadFriendData()}catch(e){}if(location.hash!=="#vanner")return;
+  const wk=weekStart(today()),td=today(),vnSub=id=>{const p=D&&D.profs&&D.profs[id],st=(p&&p.stats)||{},out=[];
+    if(id===(MYPROF&&MYPROF.partner_id))out.push("Doubles-partner");
+    const n=st.wk===wk?+st.week||0:0;out.push(n?`${n} pass den här veckan`:"Inget pass den här veckan");
+    const nr=p&&p.next_race;if(nr&&isDay(nr.date)&&nr.date>=td){const d=Math.round((evD(nr.date)-evD(td))/864e5);out.push(`${nr.name||"Lopp"} ${d===0?"i dag":d===1?"i morgon":"om "+d+" d"}`)}
+    return out.join(" · ")};
   const sorted=mine.sort((x,y)=>(y===(MYPROF&&MYPROF.partner_id))-(x===(MYPROF&&MYPROF.partner_id))||String((NAMES[x]||{}).username||"").localeCompare((NAMES[y]||{}).username||"","sv"));
-  $("#vn-friends").innerHTML=pals.length?`${personRows(sorted,id=>id===(MYPROF&&MYPROF.partner_id)?"Din Doubles-partner":"")}
-    ${back.length?`<div class="sechead"><h2>Lägg till som vän</h2></div>${personRows(back,()=>"Följer dig. Lägg till från profilen.")}`:""}`
+  $("#vn-friends").innerHTML=pals.length?`${personRows(sorted,vnSub)}
+    ${back.length?`<div class="sechead"><h2>Följer dig</h2><span class="small">${back.length}</span></div>${personRows(back,()=>"Följ tillbaka från profilen")}`:""}
+    <button type="button" class="linkbtn vn-more" data-vn-find>Hitta fler att följa ›</button>`
     :`<div class="card"><p class="small">Du har inga vänner här än. Hitta någon att träna med.</p><button class="pill block" data-vn-find style="margin-top:12px">Hitta vänner</button></div>`;
   $("#vn-friends").onclick=e=>{if(e.target.closest("[data-vn-find]")){setVnView("find");saveSet();renderVanner();return}const r=e.target.closest("[data-prof]");if(r)viewProfile(r.dataset.prof)};
   if(v==="find")renderFind();if(v==="top")renderFriends()}

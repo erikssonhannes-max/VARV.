@@ -2390,7 +2390,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.74 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.75 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2451,7 +2451,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.74";
+const APPVER="1.1.75";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3079,7 +3079,9 @@ async function addLog(e){
 /* Pass som hämtas utifrån (Strava, Apple Hälsa) döljs i stället för att tas bort, så att de inte kommer tillbaka vid nästa hämtning */
 const isExtId=id=>/^(strava|health)-/.test(String(id||""));
 let HIDDEN=new Set();try{HIDDEN=new Set(JSON.parse(localStorage.getItem("hyrox-hidden")||"[]"))}catch(e){}
-async function updLog(id,f){const l=LOGS.find(x=>x.id===id);if(!l)return false;const n=Object.assign({},l,f,{edited:true});
+/* Eget namn på ett pass. Typen ligger kvar och styr filter och statistik, namnet är bara det som visas. */
+const logName=l=>(l&&String(l.name||"").trim())||(l&&l.type)||"Pass";
+async function updLog(id,f,o){const l=LOGS.find(x=>x.id===id);if(!l)return false;const n=Object.assign({},l,f,o&&o.quiet?{}:{edited:true});Object.keys(n).forEach(k=>{if(n[k]===null)delete n[k]});
   if(mode==="db"&&col){const b=Object.assign({},n);delete b.id;try{await col.doc(id).set(b);return true}catch(err){toast("Kunde inte spara ändringen.");return false}}
   LOGS=LOGS.map(x=>x.id===id?n:x);saveLocal();renderAllData();return true}
 function openEditLog(id){const l=LOGS.find(x=>x.id===id);if(l)openLogger({edit:l})}
@@ -3836,7 +3838,7 @@ async function syncStrava(manual){
     const since=new Date();since.setDate(since.getDate()-56);
     const p=await mcpCall("list_activities",{first:100,range_start:iso(since)+"T00:00:00",ordering:"StartDateLocalDesc"});
     const logs=groupActs((p&&p.activities)||[]).map(groupToLog);let n=0;
-    for(const l of logs){if(HIDDEN.has(l.id))continue;const ex=LOGS.find(x=>x.id===l.id);if(ex&&(ex.edited||(ex.min===l.min&&ex.note===l.note&&ex.type===l.type)))continue;
+    for(const l of logs){if(HIDDEN.has(l.id))continue;const ex=LOGS.find(x=>x.id===l.id);if(ex&&(ex.edited||(ex.min===l.min&&ex.note===l.note&&ex.type===l.type)))continue;if(ex&&ex.name)l.name=ex.name;
       if(mode==="db"&&col){const b=Object.assign({},l);delete b.id;try{await col.doc(l.id).set(b);n++}catch(e){}}
       else{LOGS=LOGS.filter(x=>x.id!==l.id);LOGS.push(l);n++}}
     if(mode!=="db")saveLocal();
@@ -4804,7 +4806,7 @@ function openLogger(o){o=o||{};const ed=o.edit;
   if(LIVE&&!ed&&!o.date){LIVE.open=true;saveLive();renderLive();liveWake();return}
   if(!ed&&!o.type&&!o.stations&&!o.date&&LGDRAFT&&!o.forLive&&!o.fresh&&(!o.kicker||o.kicker===LGDRAFT.kicker)){LG=Object.assign({},LGDRAFT,{draft:true,forLive:!!o.forLive});openSheet(`<div id="lg" class="lg"></div>`,lgMount);return}
   LG={edit:ed?ed.id:null,src:ed?ed.src:null,date:ed?ed.date:(o.date||today()),min:ed?(+ed.min||45):(o.min||45),type:ed?ed.type:(o.type||null),typeSet:!!(ed||o.type),
-    rpe:ed?(ed.rpe||3):3,note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":ed.src==="health"?"Från Apple Hälsa":ed.src==="watch"?"Från klockan":"Pass"):"Nytt pass"),
+    rpe:ed?(ed.rpe||3):3,name:ed?(ed.name||""):(o.name||null),note:ed?(ed.note||""):(o.note||""),plan:o.plan||null,kicker:o.kicker||(ed?(ed.src==="strava"?"Från Strava":ed.src==="health"?"Från Apple Hälsa":ed.src==="watch"?"Från klockan":"Pass"):"Nytt pass"),
     items:ed&&ed.items?JSON.parse(JSON.stringify(ed.items)):[],view:"main",pick:[],q:"",showNote:!!((ed&&ed.note)||o.note),delArm:false,forLive:!!o.forLive};
   if(ed&&!ed.items&&ed.stations)ed.stations.forEach(n=>{const x=EX.find(e=>e.n===n);if(x)LG.items.push(newItem(x,true))});
   if(!ed&&o.type==="Racesimulering"&&(o.stations||[]).length)LG.items=raceSteps(o.stations.map(n=>(EX.find(e=>e.n===n)||{}).id).filter(Boolean));
@@ -4854,6 +4856,9 @@ function lgSyncSums(){$$("#lg .lg-ex").forEach(e=>{const it=LG.items[+e.dataset.
 function lgTogSec(){if(!SBUSER||!TOG.ok||mode!=="db"||LG.edit||!togMates().length)return "";if(!Array.isArray(LG.with))LG.with=[];
   return `<section class="lg-sec tog-sec"><div class="lg-h"><h3>Tränade du med någon?</h3></div><p class="small tog-sub">Välj vem du körde med. Passet hamnar i deras logg och statistik när de säger ja.</p>${togPicker(LG.with)}<p class="small tog-msg" id="lg-togmsg" aria-live="polite">${lgTogMsg()}</p></section>`}
 const lgTogMsg=()=>LG&&Array.isArray(LG.with)&&LG.with.length?`${esc(togList(LG.with))} får frågan när du sparar passet.`:"";
+/* Namnet på passet. Ett förberett pass föreslår sitt eget namn, annars visas typen tills man skriver något. */
+const lgNameVal=()=>LG.name!=null?LG.name:(LG.tplName||"");
+const lgNameField=ty=>`<label class="lbl" for="lg-name">Namn på passet</label><input type="text" id="lg-name" maxlength="40" autocomplete="off" placeholder="${esc(ty||"Pass")}" value="${esc(lgNameVal())}">`;
 function renderLG(){const r=$("#lg");if(!r)return;
   r.classList.toggle("lg-still",!!LG.still);LG.still=false;
   if(LG.view==="pick"){renderPick(r);return}
@@ -4878,13 +4883,13 @@ function renderLG(){const r=$("#lg");if(!r)return;
    <section class="lg-sec"><div class="lg-h"><h3>Övningar</h3>${LG.items.length?`<span class="small">${LG.items.length}</span>`:""}</div>
      ${LG.items.length?exHtml:`<p class="small">${LG.forLive?"Välj övningar, vikter och distanser. Dra i raderna för att ändra ordningen.":"Välj vad du körde. Värdena fylls i från förra gången."}</p>
        ${(set.tpls||[]).length?`<div class="lg-grp">${set.tpls.map(t=>`<div class="lg-tpl"><button type="button" data-tpl="${esc(t.id)}"><b>${esc(t.name)}</b><span class="small">${t.items.length} ${t.items.length===1?"övning":"övningar"}</span></button></div>`).join("")}</div>`:""}
-       <div class="chips"><button type="button" class="divchip" data-quick="race">Fullt Hyrox-lopp</button>${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
+       <div class="chips"><button type="button" class="divchip" data-quick="race">Fullt Hyrox-lopp</button>${last?`<button type="button" class="divchip" data-quick="last">Samma som ${esc(last.name?last.name:last.type.toLowerCase())}, ${new Date(last.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"})}</button>`:""}<button type="button" class="divchip" data-quick="all8">Alla åtta stationer</button><button type="button" class="divchip" data-quick="int">Löpintervaller 5 × 1 km</button></div>`}
      <button type="button" class="pill ghost block" id="lg-open">+ Lägg till övning</button></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">När och hur länge?</span><div class="chips lg-day"><button type="button" class="chip" data-day="${td}" aria-pressed="${LG.date===td}">I dag</button><button type="button" class="chip" data-day="${yd}" aria-pressed="${LG.date===yd}">I går</button>
      <label class="chip lg-dchip" aria-pressed="${other}">${other?esc(dl):"Annat datum"}<input type="date" id="lg-date" max="${td}" value="${esc(LG.date)}" aria-label="Datum"></label></div>
      <div class="lg-step"><button type="button" data-min="-5" aria-label="5 minuter kortare">−</button><label><input type="text" id="lg-minv" inputmode="numeric" value="${LG.min}" aria-label="Minuter"><span>min</span></label><button type="button" data-min="5" aria-label="5 minuter längre">+</button></div></section>
    <section class="lg-sec"${LG.forLive?" hidden":""}><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div></section>
-   <section class="lg-sec"${LG.forLive?" hidden":""}>${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
+   <section class="lg-sec"${LG.forLive?" hidden":""}>${lgNameField(ty)}${LG.showType||!LG.items.length?`<span class="lbl">Typ av pass</span><div class="chips">${TYPES.map(t=>`<button type="button" class="chip" data-type="${esc(t)}" aria-pressed="${t===ty}">${esc(t)}</button>`).join("")}</div>`:`<button type="button" class="linkbtn" data-showtype style="justify-self:start">Typ: ${esc(ty.toLowerCase())} · Ändra</button>`}
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><p class="small" id="lg-sum"${LG.forLive?" hidden":""}>${lgSum()}</p>${LG.showTpl?`<div class="lg-tplform"><input type="text" id="lg-tplname" maxlength="40" placeholder="Namn på passet" value="${esc(LG.tplName||"")}" aria-label="Namn på passet"><button type="button" class="pill ghost" id="lg-tplsave">Spara</button></div>`:""}
      ${LG.forLive?`<button type="button" class="pill block" id="lg-start"${LG.items.length?"":" disabled"}>Kör passet</button>${LG.items.length&&!LG.showTpl?`<button type="button" class="pill ghost block" id="lg-tplopen">Spara till senare</button><button type="button" class="linkbtn" id="lg-share" style="justify-self:center">Dela passet</button>`:""}`:`<button type="button" class="pill block" id="lg-save">${LG.edit?"Spara ändringar":"Spara pass"}</button>${LG.items.length&&!LG.showTpl&&!LG.edit&&!LG.fromLive?`<button type="button" class="linkbtn lg-tplbtn" id="lg-tplopen">Spara för att köra igen</button>`:""}`}
@@ -4926,6 +4931,7 @@ function renderFinish(r){const seen={},rows=[],goals=[],split={r:0,s:0,x:0};let 
    <div class="facts3 fn-facts">${LG.doneP!=null?`<div><small>Genomfört</small><b>${LG.doneP} %</b></div>`:`<div><small>${mix?"Moment":"Övningar"}</small><b>${LG.items.length}</b></div>`}${avg==null?`<div><small>Set</small><b>${LG.items.reduce((a,i)=>a+(i.sets||[]).length,0)}</b></div>`:`<div><small>${mix?"Snitt löpning":"Snitt per övning"}</small><b>${fmt(avg)}</b></div>`}<div><small>Nya rekord</small><b>${prs}</b></div></div>
    ${lgTogSec()}
    ${fnSplit(split,LG.elapsed||0)}${fnGoals(goals)}<div class="card"><span class="lbl">Moment för moment</span><ol class="tl fn-l">${rows.join("")}</ol>${cmp?'<p class="small fn-note">Skillnaden är mot förra gången du gjorde momentet.</p>':""}</div>
+   <section class="lg-sec">${lgNameField(lgType())}</section>
    <section class="lg-sec"><span class="lbl">Hur kändes det?</span><div class="lg-rpe">${[[1,"Lätt"],[2,""],[3,"Lagom"],[4,""],[5,"Max"]].map(([v,t])=>`<button type="button" data-rpe="${v}" aria-pressed="${v===LG.rpe}"><b>${v}</b><span>${t}</span></button>`).join("")}</div>
      ${LG.showNote?`<label class="lbl" for="lg-note">Anteckning</label><textarea id="lg-note" rows="2" maxlength="300" placeholder="Till exempel: tunga ben, bra tempo sista km">${esc(LG.note)}</textarea>`:`<button type="button" class="linkbtn" data-note style="justify-self:start">+ Lägg till anteckning</button>`}</section>
    <div class="lg-foot"><button type="button" class="pill block" id="lg-save">Spara passet</button><div class="grid2"><button type="button" class="pill ghost" id="fn-edit">Ändra värden</button><button type="button" class="pill ghost" id="fn-drop"${LG.dropArm?' style="color:var(--bad)"':""}>${LG.dropArm?"Tryck igen":"Släng passet"}</button></div></div>`}
@@ -5021,6 +5027,7 @@ function lgInput(e){const t=e.target;
   if(t.id==="lg-cn"){if(LG.cx)LG.cx.n=t.value;return}
   if(t.id==="lg-q"){LG.q=t.value;const pos=t.selectionStart;renderLG();const q=$("#lg-q");q.focus();try{q.setSelectionRange(pos,pos)}catch(x){}return}
   if(t.id==="lg-note"){LG.note=t.value;return}
+  if(t.id==="lg-name"){LG.name=t.value;return}
   if(t.id==="lg-minv"){const v=parseInt(t.value,10);if(v>0)LG.min=Math.min(600,v);$("#lg-sum").textContent=lgSum();return}
   if(t.dataset&&t.dataset.f){const it=LG.items[+t.dataset.i],s=it.sets[+t.dataset.j],f=t.dataset.f,v=t.value.trim();
     const j=+t.dataset.j,prev=nz(s[f])?+s[f]:null;
@@ -5037,7 +5044,8 @@ function lgChange(e){if(e.target.id==="lg-allcb"){if(!lgAllOk())return;const A=L
   if(e.target.id==="lg-date"&&e.target.value){LG.date=e.target.value>today()?today():e.target.value;renderLG()}}
 async function saveLG(btn){if(btn.disabled)return;LG.items.forEach(i=>{delete i.spent});
   const items=LG.items.map(i=>({ex:i.ex,n:i.n,k:i.k,w:i.w?1:0,st:i.st?1:0,...(nz(i.sec)?{sec:Math.round(+i.sec)}:{}),sets:(i.sets||[]).map(s=>{const o={};["m","r","c","t","kg"].forEach(f=>{if(nz(s[f]))o[f]=Math.round(+s[f]*10)/10});return o}).filter(s=>Object.keys(s).length)}));
-  const f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};
+  const nm=String(lgNameVal()).trim().replace(/\s+/g," ").slice(0,40),f={date:LG.date||today(),type:lgType(),min:Math.max(1,Math.min(600,LG.min||1)),rpe:LG.rpe,stations:[...new Set(items.filter(i=>i.st).map(i=>i.n))],items,note:(LG.note||"").trim().slice(0,300)};
+  if(nm&&nm!==f.type)f.name=nm;else if(LG.edit)f.name=null;
   btn.disabled=true;
   if(LG.edit){const old=(LOGS.find(x=>x.id===LG.edit)||{}).items;const ok=await updLog(LG.edit,f);btn.disabled=false;if(ok){await fixPRs(old);try{checkPRs(items)}catch(x){}closeSheet();toast("Passet är ändrat")}return}
   const entry=Object.assign(f,{created:Date.now()});if(LG.plan)entry.plan=LG.plan;if(LG.ext){entry.ext=LG.ext;entry.src="health";if(LG.extCreated)entry.created=LG.extCreated}if(LG.fromLive&&LG.elapsed>0)entry.total=LG.elapsed;const bch=!LG.edit&&LG.bench&&LG.benchT?{id:LG.bench,t:LG.benchT}:null;if(bch)entry.bench=bch;
@@ -5310,9 +5318,9 @@ function openLogSheet(){openLogger()}
 /* Passhistoriken: en månad i taget med kalender. Sökningen letar i alla månader. */
 let filt="Alla",HM=null,HD=null,HQ="";
 const histMonth=d=>String(d||"").slice(0,7);
-function histNorm(l){return [l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
+function histNorm(l){return [l.name,l.type,l.note,...(l.items||[]).map(i=>i.n),...(l.stations||[])].filter(Boolean).join(" ").toLowerCase()}
 function histRow(l){const d=new Date(l.date+"T12:00:00"),names=[...new Set((l.items||[]).map(i=>String(i.n).replace(/ \d+$/,"")))],sub=names.length?names.slice(0,3).join(", ")+(names.length>3?` +${names.length-3}`:""):(l.stations||[]).join(", "),wd=d.toLocaleDateString("sv-SE",{weekday:"short"}).replace(".","");
-  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(l.type)}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(l.type)}${l.src==="strava"?'<span class="src">Strava</span>':l.src==="watch"?'<span class="src">Klocka</span>':l.src==="health"?'<span class="src">Hälsa</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
+  return `<div class="row hrow" data-log="${esc(l.id)}" role="button" tabindex="0" aria-label="Visa ${esc(logName(l))}, ${esc(d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"}))}"><div class="badge evd"><b>${d.getDate()}</b><small>${esc(wd)}</small></div><div><h3>${esc(logName(l))}${l.src==="strava"?'<span class="src">Strava</span>':l.src==="watch"?'<span class="src">Klocka</span>':l.src==="health"?'<span class="src">Hälsa</span>':""}</h3><p>${[pgMin(+l.min||0),l.rpe?`känsla ${l.rpe}/5`:""].filter(Boolean).join(" · ")}</p>${sub?`<p class="hist-sub">${esc(sub)}</p>`:""}${(t=>t?`<p class="tog-line">${togFaces((Array.isArray(l.with)?l.with:[]).concat(TOG.out.filter(r=>r.log_id===l.id&&r.status==="pending").map(r=>r.to_user)))}<span>${t}</span></p>`:"")(togLine(l))}</div><span class="chev">›</span></div>`}
 function renderHistCal(){const el=$("#hist-cal");if(!el)return;if(!LOGS.length||HQ){el.innerHTML="";return}
   const [y,m]=HM.split("-").map(Number),first=new Date(y,m-1,1,12),n=new Date(y,m,0).getDate(),lead=(first.getDay()+6)%7,td=today(),oldest=LOGS.reduce((a,l)=>l.date&&l.date<a?l.date:a,td),byDay={};
   LOGS.forEach(l=>{if(histMonth(l.date)===HM&&(filt==="Alla"||l.type===filt))byDay[l.date]=(byDay[l.date]||0)+1});
@@ -5334,7 +5342,7 @@ function renderHist(){const q=HQ.trim().toLowerCase(),types=["Alla",...new Set(L
 /* Ett loggat pass i läsläge */
 function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=new Date(l.date+"T12:00:00"),its=l.items||[],isRace=l.race&&raceLogs().some(x=>x.id===id);
   const rows=its.map(i=>{const t=itemTxt(i),g=t===i.n?"":t.slice(i.n.length+1),own=nz(i.sec)&&!(i.sets||[]).some(x=>nz(x.t));return `<li class="tl-${lvIsRun(i)?"run":i.st?"st":"ot"}"><i aria-hidden="true"></i><b>${esc(i.n)}</b>${g||own?`<span>${esc([g,own?fmt(i.sec):""].filter(Boolean).join(" · "))}</span>`:""}</li>`}).join("");
-  openSheet(`<div><span class="small">${esc(d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</span><h2>${esc(l.type)}</h2></div>
+  openSheet(`<div><span class="small">${esc(d.toLocaleDateString("sv-SE",{weekday:"long",day:"numeric",month:"long",year:"numeric"}))}</span><h2 id="ld-title">${esc(logName(l))}</h2><button type="button" class="linkbtn" id="ld-rn" style="justify-self:start">Byt namn</button></div>
    <div class="facts3"><div><small>Tid</small><b>${pgMin(+l.min||0)}</b></div><div><small>Känsla</small><b>${l.rpe?l.rpe+" av 5":"–"}</b></div><div><small>Övningar</small><b>${its.length||(l.stations||[]).length||"–"}</b></div></div>
    ${l.bench&&+l.bench.t>0?`<p class="muted" style="margin:0">Din tid: <b style="color:var(--ink);font-variant-numeric:tabular-nums">${fmt(l.bench.t)}</b></p>`:""}
    ${l.facts?`<p class="muted" style="margin:0;font-variant-numeric:tabular-nums">${esc(l.facts)}</p>`:""}
@@ -5353,7 +5361,14 @@ function openLogDetail(id){const l=LOGS.find(x=>x.id===id);if(!l)return;const d=
     const sh=$("#ld-share");if(sh)sh.onclick=()=>{closeSheet();setTimeout(()=>openPassShare(id),320)};
     const fd=$("#ld-feed");if(fd)fd.onclick=()=>{closeSheet();set.fdsub="flow";saveSet();location.hash="#feed";setTimeout(()=>{const el=document.querySelector(`.post[data-act="${l.posted}"]`);if(el)el.scrollIntoView({block:"start",behavior:RM()?"auto":"smooth"})},900)};
     const tg=$("#ld-tog");if(tg)tg.onclick=()=>{closeSheet();setTimeout(()=>openTogether(id),320)};
-    $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)}})}
+    $("#ld-edit").onclick=()=>{closeSheet();setTimeout(()=>openEditLog(id),320)};
+    /* Byt namn direkt i passet. Tomt fält ger tillbaka typen som namn. */
+    const rn=$("#ld-rn");rn.onclick=()=>{const h=$("#ld-title"),cur=LOGS.find(x=>x.id===id)||l;
+      h.outerHTML=`<form id="ld-rnf" class="lg-tplform"><input type="text" id="ld-rni" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="${esc(cur.type||"Pass")}" value="${esc(cur.name||"")}" aria-label="Namn på passet"><button type="submit" class="pill ghost">Spara</button></form>`;rn.hidden=true;
+      const f=$("#ld-rnf"),i=$("#ld-rni");i.focus();try{i.select()}catch(e){}
+      f.onsubmit=async e=>{e.preventDefault();const v=i.value.trim().replace(/\s+/g," ").slice(0,40),nm=v&&v!==cur.type?v:null;
+        if((cur.name||null)!==nm&&!(await updLog(id,{name:nm},{quiet:true})))return;
+        const now=Object.assign({},cur,{name:nm});f.outerHTML=`<h2 id="ld-title">${esc(logName(now))}</h2>`;rn.hidden=false;HAPTIC("success");toast(nm?"Passet heter nu "+nm:"Passet har sitt vanliga namn igen")}}})}
 $("#filters").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;filt=c.dataset.f;HD=null;renderHist()};
 $("#hist").addEventListener("keydown",e=>{if((e.key==="Enter"||e.key===" ")&&e.target.dataset&&e.target.dataset.log){e.preventDefault();openLogDetail(e.target.dataset.log)}});
 $("#hist").addEventListener("click",e=>{const r=e.target.closest("[data-log]");if(r)openLogDetail(r.dataset.log)});
@@ -5411,7 +5426,7 @@ function openDay(ds,pre){const td=today(),future=ds>td,logs=LOGS.filter(l=>l.dat
   const st={k:pre||(r?r.k:null),what:r&&r.what||"Promenad",km:r&&r.km||"",min:r&&r.min||""};
   const draw=()=>{$("#dy-active").hidden=st.k!=="active";$$("#dy-seg [data-rk]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.rk===st.k));$("#dy-save").textContent="Spara aktiv vila";$$("#dy-what [data-w]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.w===st.what));$("#dy-save").hidden=st.k!=="active"};
   openSheet(`<div><span class="small">${ds===td?"I dag":"Den här dagen"}</span><h2 class="day-t">${esc(title)}</h2></div>
-   ${logs.length?`<div class="group">${logs.map(l=>`<button class="row nob" data-dlog="${esc(l.id)}"><div><h3>${esc(l.type)}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
+   ${logs.length?`<div class="group">${logs.map(l=>`<button class="row nob" data-dlog="${esc(l.id)}"><div><h3>${esc(logName(l))}</h3><p>${num(l.min)} min</p></div><span class="chev">›</span></button>`).join("")}</div>`:planH}
    <button class="pill block" id="dy-log">Logga pass</button>
    <div class="field"><span class="lbl">${logs.length?"Eller markera vila":"Vilade du?"}</span><div class="dy-rest" id="dy-seg" role="group" aria-label="Vila">
      <button type="button" data-rk="rest"><i class="k-rest" aria-hidden="true"></i><span><b>Vilodag</b><small>Ingen träning. Sparas direkt.</small></span></button>
@@ -7105,7 +7120,7 @@ function passModel(l,recs){const its=l.items||[],rt=raceTotal(l),lopp=!!l.lopp,d
   else rows=its.map(it=>{const t=itemTxt(it),g=t===it.n?"":t.slice(it.n.length+1),own=nz(it.sec)&&!(it.sets||[]).some(x=>nz(x.t)),rec=(it.sets||[]).some(s=>{const p=prOfSet(it,s);return p&&recKeys.has(p.k)&&recs.some(r=>r.k===p.k&&Math.round(r.t)===Math.round(p.t))});
     return {n:it.n,v:[g,own?fmt(it.sec):""].filter(Boolean).join(" · "),c:lvIsRun(it)?"run":it.st?"st":"ot",rec}});
   const stats=[time?["Tid",time]:null,dist?[runM?"Löpning":"Sträcka",kmTxt(dist)]:null,rt?["Stationer","8"]:its.length?["Övningar",String(its.length)]:(l.stations||[]).length?["Stationer",String(l.stations.length)]:null].filter(Boolean);
-  const title=lopp?l.lopp:(l.type||"Pass"),kind=lopp?"lopp":"pass";
+  const title=lopp?l.lopp:logName(l),kind=lopp?"lopp":"pass";
   const eyebrow=[lopp?"Tävling":rt?"Hyrox-simulering":"Träning",d.toLocaleDateString("sv-SE",{day:"numeric",month:"long"})].join(" · ").toUpperCase();
   const sum=[stats.map(s=>s[1]).slice(0,2).join(" · ")].concat(recs.map(r=>`Nytt rekord: ${r.n} ${fmt(r.t)}, ${pctTxt(r)} % snabbare`),rows.map(r=>[r.n,r.v].filter(Boolean).join(" ")));
   let summary="";for(const s of sum){if(!s)continue;if((summary+"\n"+s).length>600)break;summary=summary?summary+"\n"+s:s}

@@ -166,6 +166,7 @@ Belöningar ska kännas som Apple Fitness, inte som ett spel. Inga ord som XP, l
 | --- | --- | --- |
 | **Form** | Ett tal och en kurva för de senaste tio veckorna, plus en streckad linje till loppet om du följer planen | Viktat snitt av träningen de senaste sex veckorna. Hårda pass räknas lite mer. En nedgång visas i grått, aldrig i rött. |
 | **Varv** | Hur mycket du har tränat | Ett varv per tio minuter, högst tolv per pass. Två extra för ett pass från planen och fem extra för ett klarat veckomål. |
+| **Veckomål** | En ring på Hem som fylls mot målet | Användaren väljer själv 1–7 pass i veckan genom att trycka på ringen. |
 | **Nivåer** | Start, Brons, Silver, Guld, Platina, Elit | 0, 50, 150, 350, 700 och 1 200 varv. Nivån sjunker aldrig. |
 | **Utmärkelser** | 38 medaljer i sex familjer: flit och plan, tid, svit, stationer, rekord och lopp, hemliga | Formen visar familjen: cirkel, hexagon, sköld, rundad kvadrat, rosett. Serier byter kant från brons via silver, guld och platina till rosa. Tagen är i färg med glans, inte tagen är grå med en ring som visar hur långt du har kommit. Hemliga visas som ? tills de är tagna. |
 | **Topplista** | Varv denna vecka, flikarna Vänner och Alla | Jämför flit, inte fart. Börjar om på måndag. Du syns bara om du har slagit på reglaget. |
@@ -180,7 +181,7 @@ Aktivitet är en plats för gemenskap, inte ett socialt medium. Det finns ett en
 
 - **Ett pass, ett inlägg.** Tid, sträcka, övningar och passets rekord står i samma inlägg. Rekord läggs aldrig ut för sig.
 - **Bara summeringsbilder.** Flödet och profilerna visar bara inlägg med passbilden. Databasen nekar allt annat (`supabase/endast-passbilder.sql`).
-- **När:** direkt efter passet visas arket "Vill du dela passet?". Väljer man Inte nu går passet att dela senare under Statistik, Pass, i passets ark.
+- **När:** direkt efter passet visas kortet "Passet är sparat." med det passet gav (rekord, veckans utmaning, veckomålet, svit) och knappen Dela passet. Väljer man Klar går passet att dela senare under Statistik, Pass, i passets ark.
 - **Bilden:** 1080 × 1350 (4:5). Bakgrunden är Mörk eller Ljus, med löparbanan uppe till höger, eller en egen bild från kameran eller biblioteket. På en egen bild ligger texten direkt på fotot med en mjuk skugga nedtill, som hos Strava.
 - **Innehåll uppifrån:** logotypen, `eyebrow` med typ och datum, passets namn med punkt, tre siffror (Tid, Löpning eller Sträcka, Övningar), rekorden och sedan övningarna rad för rad.
 - **Rekord är alltid gröna** och står med förbättringen i procent: "▲ 4,2 % snabbare" och förra tiden bredvid.

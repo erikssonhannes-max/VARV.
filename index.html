@@ -2336,7 +2336,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.67 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.68 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2397,7 +2397,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.67";
+const APPVER="1.1.68";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -2894,7 +2894,7 @@ function computeAdapt(base){
   if(PRS.km&&(!set.test||PRS.km<set.test.km-2)){const est=Math.max(55,Math.min(150,Math.round(PRS.km*1.25*8/.5/60)));if(Math.abs(est-set.target)>=3)res.suggest=est}
   return res;
 }
-let PLAN=[],ADAPT=null;const NOPLAN=false;
+let PLAN=[],ADAPT=null;/* Din plan är dold tills vidare. Sätt till false för att visa den igen. */const NOPLAN=true;
 function curWeekIdx(){const t=today();let idx=0;PLAN.forEach((w,i)=>{if(w.start<=t)idx=i});return idx}
 /* Ett loggat pass räknas bara för ett planerat pass: först det det är kopplat till, annars det första av samma typ. Strava-pass har egna namn och matchas på dagen. */
 function sesDone(w,s){const end=wEnd(w.start),inW=LOGS.filter(l=>l.date>=w.start&&l.date<=end),keys=new Set(w.ses.map(x=>x.key+"@"+set.date));
@@ -3891,7 +3891,7 @@ const MIC={
   dbl:{f:mRing(16,24,10)+mRing(32,24,10),s:mRing(16,24,10)+mRing(32,24,10)},
   back:{s:"M14 17a14 14 0 1 1-3 15M13 7v10h10"},
   ny:{s:"M24 6v9M24 33v9M6 24h9M33 24h9M11 11l6 6M31 31l6 6M37 11l-6 6M17 31l-6 6",d:mRing(24,24,3.4)}};
-const MEDALS=[
+const MEDALS_ALL=[
  {id:"first",n:"Första passet",d:"Logga ditt första pass.",f:"flit",i:"start",k:"n",v:1},
  {id:"n10",n:"Tio pass",d:"Logga tio pass.",f:"flit",t:"10",u:"PASS",r:1,k:"n",v:10},
  {id:"n25",n:"25 pass",d:"Logga 25 pass.",f:"flit",t:"25",u:"PASS",r:2,k:"n",v:25},
@@ -3923,7 +3923,8 @@ const MEDALS=[
  {id:"dbl",n:"Dubbelpass",d:"Logga två pass samma dag.",f:"hemlig",i:"dbl",k:"dbl",v:1,h:1},
  {id:"back",n:"Comeback",d:"Kom tillbaka efter minst tre veckors uppehåll.",f:"hemlig",i:"back",k:"back",v:1,h:1},
  {id:"ny",n:"Nyårspass",d:"Träna på nyårsdagen.",f:"hemlig",i:"ny",k:"ny",v:1,h:1}];
-const MGROUPS=[["Flit och plan",["flit"]],["Tid",["tid"]],["Svit",["svit"]],["Stationer",["station"]],["Rekord och lopp",["rekord","lopp"]],["Hemliga",["hemlig"]]];
+const MEDALS=NOPLAN?MEDALS_ALL.filter(m=>m.k!=="plan"):MEDALS_ALL;
+const MGROUPS=[[NOPLAN?"Flit":"Flit och plan",["flit"]],["Tid",["tid"]],["Svit",["svit"]],["Stationer",["station"]],["Rekord och lopp",["rekord","lopp"]],["Hemliga",["hemlig"]]];
 const MTXT={long:"Ett pass på 90 min",sim:"Logga en simulering",race:"Logga ett lopp",goal:"Slå din måltid"};
 const MUNIT={n:["pass","pass"],min:["timme","timmar"],wg:["vecka","veckor"],streak:["vecka i rad","veckor i rad"],st:["station","stationer"],plan:["pass från planen","pass från planen"],pr:["rekord","rekord"]};
 let PROG=null;
@@ -7063,7 +7064,7 @@ const isStandalone=()=>{try{return matchMedia("(display-mode: standalone)").matc
 const pushOK=()=>"serviceWorker" in navigator&&"PushManager" in window&&"Notification" in window;
 function b64u(s){const p="=".repeat((4-s.length%4)%4),b=atob((s+p).replace(/-/g,"+").replace(/_/g,"/"));return Uint8Array.from([...b].map(c=>c.charCodeAt(0)))}
 function pushSchedule(){
-  const td=today(),me=myEvent(),out={plan:!!set.date,race:null,sessions:[],last:null};
+  const td=today(),me=myEvent(),out={plan:NOPLAN||!!set.date,race:null,sessions:[],last:null};
   if(!set.noRace&&set.date&&set.date>=td)out.race={date:me?me.s:set.date,name:me?me.c:"loppet"};
   const lim=new Date(td+"T12:00:00");lim.setDate(lim.getDate()+21);const L=iso(lim);
   if(set.date)PLAN.forEach(w=>w.ses.forEach(s=>{if(s.date>=td&&s.date<=L&&!sesDone(w,s))out.sessions.push({d:s.date,t:s.t,m:s.m})}));
@@ -7101,7 +7102,7 @@ async function pushOff(){
 function renderNotis(){
   const el=$("#pf-push");if(!el)return;if(IS_NATIVE){el.innerHTML=`<p class="small" style="padding:4px 2px">Notiser i appen kommer snart. Tills vidare kan du slå på dem i webbversionen på varvtraining.com.</p>`;return}const on=!!(set.push&&set.push.on),p=pushPrefs();
   el.innerHTML=setSw("pu-on","bell","Notiser",on?"Välj vad du vill få nedan.":"Dagens pass, nedräkning till loppet, nya tävlingar och när de du följer tränar.",on)
-   +(on?`<div class="pu-sub">${swRow("pu-plan","Dagens pass","Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-new","Nya tävlingar","När en ny tävling eller simulering finns i appen.",p.newraces)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
+   +(on?`<div class="pu-sub">${swRow("pu-plan",NOPLAN?"Träningspåminnelser":"Dagens pass",NOPLAN?"En knuff när det har gått några dagar sedan ditt senaste pass.":"Vilket pass som står på tur, och en knuff om du inte har en plan.",p.plan)}${swRow("pu-race","Nedräkning till loppet","Med tips om vad du ska tänka på veckorna innan.",p.race)}${swRow("pu-new","Nya tävlingar","När en ny tävling eller simulering finns i appen.",p.newraces)}${swRow("pu-fr","Följer","När någon du följer tränar eller tävlar.",p.friends)}
      <div class="field"><label for="pu-h">Tid för påminnelser</label><select id="pu-h">${Array.from({length:17},(_,i)=>i+5).map(h=>`<option value="${h}"${h===(+set.hour||8)?" selected":""}>${String(h).padStart(2,"0")}:00</option>`).join("")}</select></div></div>`:"");
   $("#pu-on").onclick=async()=>{const b=$("#pu-on");b.disabled=true;if(on)await pushOff();else await pushOn();b.disabled=false;renderNotis()};
   const tg=(id,k)=>{const b=$(id);if(b)b.onclick=()=>{const pr=pushPrefs();pr[k]=!pr[k];set.push.prefs=pr;saveSet();renderNotis();pushSave(null)}};
@@ -7140,7 +7141,7 @@ function openAbout(){const st={age:set.age||null,height:set.height||null,level:s
   openSheet(`<div><span class="small">En sak till</span><h2>Om dig.</h2><p class="small">Dina svar anpassar måltiden och pulszonerna.</p></div><div style="display:grid;gap:18px">${aboutFields(st)}</div><button class="pill block" id="ab-go">Spara</button>`,()=>{
     aboutBind(st);$("#ab-go").onclick=()=>{if(!aboutOk(st))return;saveAbout(st);saveSet();refreshSettingsUI();renderPlan();renderHome();closeSheet();toast("Planen är uppdaterad.");HAPTIC("success")}})}
 /* ============ Första start: ett steg i taget efter inloggningen ============ */
-const GOALS=[["friends","Träna med vänner","Följ varandra, jämför veckan och peppa varandra."],["race","Träna inför ett lopp","En plan fram till loppdagen med tempo och splittider."],["plan","Få ett träningsschema","Pass vecka för vecka som anpassar sig efter dig."]];
+const GOALS=[["friends","Träna med vänner","Följ varandra, jämför veckan och peppa varandra."],["race","Träna inför ett lopp",NOPLAN?"Nedräkning, måltid, tempo och splittider.":"En plan fram till loppdagen med tempo och splittider."],["plan","Få ett träningsschema","Pass vecka för vecka som anpassar sig efter dig."]].filter(g=>!(NOPLAN&&g[0]==="plan"));
 const GOAL_IC={friends:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><circle cx="17" cy="9" r="2.6"/><path d="M16.5 14.6c2.6.2 4.5 2.1 4.5 4.9"/></svg>`,
   race:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V4"/><path d="M5 4h12l-2.5 4L17 12H5"/></svg>`,
   plan:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4M8 14h3M8 17h6"/></svg>`};
@@ -7291,7 +7292,7 @@ function openOnb(){
     set.weight=st.weight;set.height=st.height;set.vo2=st.vo2;set.rhr=st.rhr;set.maxhr=st.maxhr;set.pace=st.pace?parseRes(st.pace):null;
     set.onboarded=true;saveSet();
     refreshSettingsUI();renderPlan();renderHome();renderPRs();
-    onbClose();HAPTIC("success");toast("Din plan är klar");
+    onbClose();HAPTIC("success");toast(NOPLAN?"Allt är klart":"Din plan är klar");
     if(simInvWaiting())setTimeout(openInvite,450);else if(passWaiting())setTimeout(openSharedPass,450);
     setTimeout(maybeTour,500);
   }
@@ -7603,7 +7604,7 @@ const VIEWS=["hem","stationer","plan","feed","race","logg","vanner","notiser","p
 function route(){
   {const h=location.hash.slice(1);if(h==="race-kal"||h==="race-sim"){set.tsub=h.slice(5);saveSet();history.replaceState(null,"","#race")}}
   const raw=location.hash.slice(1),person=/^u\/[\w-]{1,64}$/.test(raw);
-  const v=person?"person":VIEWS.includes(raw)?raw:"hem";
+  const v=person?"person":VIEWS.includes(raw)&&!(NOPLAN&&raw==="plan")?raw:"hem";
   $$(".view").forEach(s=>s.classList.toggle("on",s.id==="v-"+v));
   $$(".tab").forEach(a=>{if(a.dataset.v===v)a.setAttribute("aria-current","page");else a.removeAttribute("aria-current")});
   closeSheet();try{window.scrollTo(0,0)}catch(e){}if(v==="race"){if(RACE&&!RACE.end)set.tsub="run";renderTv();loadSims()}

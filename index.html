@@ -1164,6 +1164,21 @@ a.row{color:inherit;text-decoration:none}
 .ap-btns{display:grid;gap:10px}
 .hre{margin-top:12px}
 .hre-ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);display:grid;place-items:center;flex:none}
+/* Färg som betyder något: rosa = löpning och loppet, grönt = stationer och avklarat, turkos = vila */
+.h-cd b{color:var(--accent)}
+#h-days{color:var(--accent)}
+#h-pace{color:var(--run)}
+.ch-num b{color:var(--green)}.ch-num b span{color:var(--muted)}
+.ag-c.k-run small{color:var(--run)}.ag-c.k-sta small{color:var(--sta)}.ag-c.k-str small{color:var(--ink)}
+.ag-c.k-run .ag-play{color:var(--run)}.ag-c.k-sta .ag-play{color:var(--sta)}
+#so-km .so-k,#so-pace .so-k{color:var(--run)}#so-km .so-val,#so-pace .so-val{color:var(--run)}
+#so-sta .so-k{color:var(--sta)}
+#so-rest .so-k{color:var(--cyan)}
+#so-est .so-k{color:var(--accent)}
+.fr-days b{color:var(--accent)}
+button.row[data-ev] .amt{color:var(--ink);font-weight:600;font-variant-numeric:tabular-nums}
+.wg-c b{color:var(--green)}.wg-c b small{color:var(--muted)}
+.so-lg>div>b{color:var(--c,var(--ink))}
 /* Hem: veckans utmaning och vänner i dag */
 .ch{display:grid;gap:14px}
 .ch-top{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center}
@@ -2146,8 +2161,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <div class="pagehead"><span class="eyebrow">Banan</span><h1>Stationerna.</h1><p>Tryck på en station för teknik, misstag, regler och övningar.</p></div>
     <div class="oval"><svg id="ovalsvg" viewBox="0 0 560 250" role="img" aria-label="Banan: åtta stationer runt Roxzone"></svg></div>
     <div class="tiles" style="margin-bottom:10px">
-      <div class="tile"><b>8 km</b><span>löpning, 8 varv à 1 km</span></div>
-      <div class="tile"><b>8</b><span>stationer i fast ordning</span></div>
+      <div class="tile"><b style="color:var(--run)">8 km</b><span>löpning, 8 varv à 1 km</span></div>
+      <div class="tile"><b style="color:var(--sta)">8</b><span>stationer i fast ordning</span></div>
       <div class="tile"><b>1:28</b><span>mediantid, Open herr</span></div>
       <div class="tile"><b>1:36</b><span>mediantid, Open dam</span></div>
     </div>
@@ -2427,7 +2442,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.77 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.78 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2488,7 +2503,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.77";
+const APPVER="1.1.78";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -5571,7 +5586,7 @@ function renderAgain(){const box=$("#h-again");if(!box)return;let L=[];try{L=myP
   AGAIN=L;if(!L.length){box.hidden=true;box.innerHTML="";return}box.hidden=false;
   const td=today(),when=d=>{const n=Math.round((evD(td)-evD(d))/864e5);return n===0?"I dag":n===1?"I går":n<7?new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{weekday:"short"}).replace(".",""):new Date(d+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"short"}).replace(".","")};
   box.innerHTML=`<div class="sechead"><h2>Kör igen</h2><button type="button" class="linkbtn" id="ag-all">Alla pass</button></div>
-   <div class="ag-s">${L.map((x,j)=>{const l=x.l,ns=[...new Set(x.its.map(i=>i.n))];return `<button type="button" class="ag-c" data-ag="${j}"><small>Senast ${esc(when(l.date))}${x.n>1?` · ${x.n} gånger`:""}</small><b>${esc(l.type||"Pass")}</b><em>${esc(ns.slice(0,3).join(", ")+(ns.length>3?` och ${ns.length-3} till`:""))}</em><span class="ag-f"><span>${+l.min?pgMin(+l.min):x.its.length+" övningar"}</span><span class="ag-play" aria-hidden="true"><i></i></span></span></button>`}).join("")}</div>`;
+   <div class="ag-s">${L.map((x,j)=>{const l=x.l,ns=[...new Set(x.its.map(i=>i.n))];const kd=soKind(l.type);return `<button type="button" class="ag-c k-${kd}" data-ag="${j}"><small>Senast ${esc(when(l.date))}${x.n>1?` · ${x.n} gånger`:""}</small><b>${esc(l.type||"Pass")}</b><em>${esc(ns.slice(0,3).join(", ")+(ns.length>3?` och ${ns.length-3} till`:""))}</em><span class="ag-f"><span>${+l.min?pgMin(+l.min):x.its.length+" övningar"}</span><span class="ag-play" aria-hidden="true"><i></i></span></span></button>`}).join("")}</div>`;
   box.onclick=e=>{if(e.target.closest("#ag-all")){PRE_F="mine";openPresets();return}const b=e.target.closest("[data-ag]");if(!b)return;const x=AGAIN[+b.dataset.ag];if(!x)return;const l=x.l;HAPTIC("light");
     openPass({name:l.type||"Pass",type:l.type,m:+l.min||0,items:myPassItems(x.its),why:`Senast ${new Date(l.date+"T12:00:00").toLocaleDateString("sv-SE",{day:"numeric",month:"long"})}${x.n>1?`, körd ${x.n} gånger`:""}. Samma övningar, sträckor och vikter som sist.`},"Kör igen")}}
 /* ============ Veckomål ============

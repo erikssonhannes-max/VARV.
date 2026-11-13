@@ -87,7 +87,7 @@ a{-webkit-tap-highlight-color:transparent}
 .pagehead h1{font-size:var(--t-title);letter-spacing:-.045em;line-height:1.05}
 /* VARV.-färger i text: punkten efter rubriker, viktiga ord och siffror. Rosa är varumärket och löpning, grönt stationer och klart, turkos Roxzone. */
 .dot{color:var(--accent)}
-.ac{color:var(--accent);font-weight:600}.ac-g{color:var(--green);font-weight:600}.ac-c{color:var(--cyan);font-weight:600}
+.ac{color:var(--accent);font-weight:600}.wk-n{color:var(--ink);font-weight:600}.ac-g{color:var(--green);font-weight:600}.ac-c{color:var(--cyan);font-weight:600}
 .tx-hot{background:var(--hot);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 .pagehead p{color:var(--muted);max-width:52ch;font-size:var(--t-body)}
 .sechead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin:34px 0 12px}
@@ -414,7 +414,7 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .delta.up{background:color-mix(in srgb,var(--green) 16%,transparent);color:var(--good)}
 .formmsg{font-size:var(--t-sub);line-height:1.45;color:var(--muted);text-wrap:pretty}
 .formsvg{width:100%;height:auto;display:block;overflow:visible}
-.formsvg text{fill:var(--muted);font-size:10.5px;font-family:var(--f)}
+.formsvg text{fill:var(--muted);font-size:var(--t-micro);font-family:var(--f)}
 .formsvg .fv{fill:var(--accent2);font-weight:700;font-size:var(--t-cap)}
 .fline{fill:none;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
 .ffut{fill:none;stroke:var(--accent2);stroke-width:2.4;stroke-dasharray:.1 6;stroke-linecap:round}
@@ -669,9 +669,9 @@ details.week[open] summary .chev{transform:rotate(90deg)}
 .tog-line{display:flex;align-items:center;gap:8px;color:var(--green);font-size:var(--t-cap);font-weight:600;margin-top:4px}
 .tog-line.big{font-size:var(--t-sub);margin:0}
 .tog-faces{display:inline-flex;flex:none}
-.tog-face{width:20px;height:20px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-size:9px;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--tile)}
+.tog-face{width:20px;height:20px;border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-size:var(--t-micro);font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 0 0 2px var(--tile)}
 .tog-face+.tog-face{margin-left:-6px}.tog-face img{width:100%;height:100%;object-fit:cover}
-.tog-line.big .tog-face{width:28px;height:28px;font-size:11px}
+.tog-line.big .tog-face{width:28px;height:28px;font-size:var(--t-cap)}
 .tog-wait{color:var(--muted);font-weight:500}
 .tog-sub{margin-top:-4px}.tog-msg{color:var(--green);font-weight:600;min-height:1.4em}.tog-msg:empty{display:none}
 .tog-card{display:grid;gap:10px;justify-items:start}
@@ -1081,15 +1081,32 @@ a.row{color:inherit;text-decoration:none}
 .pp-card .pf-fw:empty{min-height:8px}
 .pp-bio{max-width:none;text-align:center;margin:0 auto 14px;color:var(--ink);font-size:var(--t-body);line-height:1.45;text-wrap:balance}
 .pp-priv{margin-bottom:12px}
-/* Atletkortet: mörkt kort, namnet i varumärkets gradient */
-.pf-card{background:linear-gradient(160deg,#26262b,#111113);box-shadow:inset 0 0 0 1px rgba(255,255,255,.07),0 18px 40px -24px rgba(0,0,0,.55)}
-.pf-card::after{background:radial-gradient(circle,rgba(255,45,85,.3),transparent 70%)}
-/* Namnet glänser på samma sätt som hälsningen på Hem */
-.pf-card h1{padding-bottom:.08em;background-image:linear-gradient(105deg,rgba(255,170,120,0) 42%,rgba(255,170,120,.9) 50%,rgba(255,170,120,0) 58%),linear-gradient(90deg,#ff2d55,#ff7a3d,#ff4e45,#ff7a3d,#ff2d55);background-size:300% 100%,200% 100%;background-repeat:no-repeat,repeat;background-position:100% 50%,0% 50%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-@media (prefers-reduced-motion:no-preference){.pf-card h1{animation:hellopan 5s linear infinite}}
-.pf-card .pf-rankpill{background:rgba(255,255,255,.1);box-shadow:inset 0 0 0 1px rgba(255,255,255,.14)}
-.pf-card .pf-fw>span{background:rgba(255,255,255,.35)}
+/* Atletkortet: grå tile som resten av appen. Profilbilden är kortets enda heta yta. */
+.pf-card{background:var(--tile);color:var(--ink);box-shadow:none}
+.pf-card::after{display:none}
+.pf-card .pf-mark path{stroke:var(--ink)}.pf-card .pf-mark circle{fill:var(--accent)}
+.pf-track .tr{stroke:color-mix(in srgb,var(--ink) 5%,transparent)}
+.pf-track .st{stroke:color-mix(in srgb,var(--ink) 12%,transparent)}
+.pf-track .arc{stroke:color-mix(in srgb,var(--ink) 22%,transparent)}
+.pf-track .dot{fill:var(--accent);stroke:color-mix(in srgb,var(--accent) 22%,transparent)}
+.pf-card h1{color:var(--ink)}
+.pf-card .pf-ring{box-shadow:0 0 0 2px var(--tile),0 12px 28px -14px var(--glow)}
+.pf-card .pf-cam{background:var(--ink);color:var(--bg)}
+.pf-card .tagchip,.pf-handle{color:var(--muted)}
+.pf-card .tagchip span,.pf-card .tagchip svg,.pf-handle span{color:var(--muted)}
+.pf-card .pf-sub{color:var(--muted)}
+.pf-card .pf-fw{color:var(--muted)}.pf-card .pf-fw b{color:var(--ink)}
+.pf-card .pf-fw>span{background:var(--hair)}
+.pf-card .pf-rankpill{color:var(--ink);background:var(--card);box-shadow:none;-webkit-backdrop-filter:none;backdrop-filter:none}
+.pf-card .pf-rankpill span{color:var(--muted);border-left-color:var(--hair)}
+.pf-card .pf-hx{background:var(--card);box-shadow:none}
+.pf-card .pf-hx>*+*{border-left-color:var(--hair)}
+.pf-card .pf-hx.four>:nth-child(n+3){border-top-color:var(--hair)}
+.pf-card .pf-hx small,.pf-card .pf-hx span,.pf-card .pf-hx b em{color:var(--muted)}
+.pf-card .pf-hx b{color:var(--ink)}
+.pf-card .pf-hx>button:focus-visible{outline-color:var(--accent)}
 /* ============ Feed: inlägg, åtgärder och kommentarer ============ */
+.fd-login{display:grid;gap:16px}.fd-why{list-style:none;margin:0;padding:0;display:grid;gap:14px}.fd-why li{display:grid;grid-template-columns:40px minmax(0,1fr);gap:12px;align-items:center}.fd-why b{display:block;font-size:var(--t-body);font-weight:600}.fd-why small{display:block;font-size:var(--t-sub);color:var(--muted);line-height:1.35}.fd-wi{width:40px;height:40px;border-radius:12px;background:var(--card);color:var(--ink);display:grid;place-items:center}
 .po-cav,.cm-me{border-radius:50%;overflow:hidden;display:grid;place-items:center;color:#fff;font-weight:700;background:linear-gradient(135deg,var(--accent),var(--accent2));flex:none}.po-cav img,.cm-me img{width:100%;height:100%;object-fit:cover}
 #fd-flow .post{margin-bottom:12px;box-shadow:none}
 .post .po-h{padding:14px 16px 10px}
@@ -1748,11 +1765,8 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .back .hero-big,.back .hero .sub,.back .hero .divchip{display:none}
 .back .hello{display:grid;gap:4px}
 #h-msg{color:var(--muted);font-size:var(--t-body);letter-spacing:-.01em;margin:0}
-.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;text-wrap:balance;margin:0;padding-bottom:.08em;color:var(--accent2);
-  background-image:linear-gradient(100deg,var(--accent2) 0%,#ffa066 20%,var(--accent2) 40%,#ff4e45 60%,var(--accent2) 80%,#ffa066 100%);background-size:250% 100%;background-position:0% 50%;
-  -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:greetflow 9s ease-in-out infinite alternate,hellofade .9s var(--ease) both}
-@keyframes greetflow{from{background-position:0% 50%}to{background-position:100% 50%}}
-@keyframes hellopan{0%{background-position:100% 50%,0% 50%}45%{background-position:0% 50%,90% 50%}100%{background-position:0% 50%,200% 50%}}
+.back .hello h1{font-size:var(--t-title);font-weight:700;letter-spacing:-.03em;line-height:1.1;text-wrap:balance;margin:0;padding-bottom:.08em;color:var(--ink);
+  animation:hellofade .9s var(--ease) both}
 @keyframes hellofade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.back .hello h1{animation:none}}
 .back .hello .eyebrow:first-letter{text-transform:uppercase}
@@ -1770,9 +1784,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .wd-legend{display:flex;gap:6px 14px;flex-wrap:wrap;align-items:center;font-size:var(--t-cap);color:var(--muted)}
 .wd-today{display:flex;align-items:center;justify-content:space-between;gap:10px 12px;flex-wrap:wrap;background:var(--card);border-radius:14px;padding:8px 8px 8px 14px;min-height:44px}
 .wd-today[hidden]{display:none}
-.wd-today.ask{display:grid;justify-content:stretch;justify-items:center;gap:10px;padding:12px}
+.wd-today.ask{display:grid;justify-content:stretch;justify-items:start;gap:10px;padding:14px 0 2px;background:none;border-radius:0;box-shadow:inset 0 1px 0 var(--hair)}
 .wd-today.ask .wd-btns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}
-.wd-today.ask .wd-rb{justify-content:center;min-height:44px;padding:0 8px}
+.wd-today.ask .wd-rb{justify-content:center;min-height:44px;padding:0 8px;background:var(--card)}
 .wd-q{display:inline-flex;align-items:center;gap:8px;font-size:var(--t-sub);font-weight:600}
 .wd-q span{font-weight:400}.wd-q b{font-weight:600}
 .wd-q i,.wd-rb i,.dy-rest i{width:10px;height:10px;border-radius:50%;display:block;flex:none}
@@ -1944,7 +1958,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .fd-hi,.ld-si{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent)}
 .fd-hi svg,.ld-si svg{width:20px;height:20px}
 .ld-share.done .ld-si{background:color-mix(in srgb,var(--green) 14%,transparent);color:var(--good)}
-.fd-hint .chev,.ld-share .chev{color:var(--muted);font-size:22px}
+.fd-hint .chev,.ld-share .chev{color:var(--muted);font-size:var(--t-head)}
 /* Arket Dela passet: förhandsvisning och val av bakgrund */
 .ps-prev{position:relative;aspect-ratio:4/5;width:min(100%,380px);justify-self:center;margin:0 auto;border-radius:18px;overflow:hidden;background:var(--tile);display:grid;place-items:center;box-shadow:0 22px 44px -28px rgba(0,0,0,.45)}
 .ps-prev canvas{width:100%;height:100%;display:block}
@@ -1958,7 +1972,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
 .ps-bg:active i{transform:scale(.94)}
 .ps-mork i{background:radial-gradient(circle at 85% 10%,rgba(255,45,85,.55),transparent 60%),#000}
 .ps-ljus i{background:radial-gradient(circle at 85% 10%,rgba(255,45,85,.22),transparent 60%),#fff}
-.ps-mork i::after,.ps-ljus i::after{content:"";width:30px;height:16px;border-radius:9px;border:3px solid #ff2d55;border-left-color:transparent}
+.ps-mork i::after,.ps-ljus i::after{content:"";width:30px;height:16px;border-radius:9px;border:3px solid var(--accent);border-left-color:transparent}
 .ps-bg[aria-pressed="true"]{color:var(--ink);font-weight:600}
 .ps-bg[aria-pressed="true"] i{box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--accent)}
 .ps-add i svg{width:22px;height:22px}
@@ -4244,7 +4258,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
   let h="";
   // Beräknad sluttid
   if(e.none){h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
-    <div class="so-row"><span class="so-big none">–</span></div>
+    <div class="so-row"><span class="so-big none" aria-hidden="true">–:––:––</span></div>
     <p class="so-sub">Gör starttestet, så räknar VARV. ut din sluttid och följer den vecka för vecka.</p>
     <button type="button" class="pill ghost block" data-open="test" style="margin-top:14px;background:var(--card)">Gör starttestet</button></section>`}
   else{const T=Math.round(e.T),d=T-goal,hist=Object.entries(set.estHist||{}).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12).map(([k,v])=>({k,v:Math.round(+v*e.T/e.base)})).filter(p=>p.v>0);
@@ -5317,7 +5331,7 @@ function renderWeekStrip(){const el=$("#h-strip");if(!el)return;
   {const has=k=>!!el.querySelector(".wd."+k);[["k-pass","pass"],["k-rest","rest"],["k-active","active"]].forEach(([c,k])=>{const x=document.querySelector(".weekcard .wd-legend ."+c);if(x)x.parentElement.hidden=!has(k)});
    const lg=document.querySelector(".weekcard .wd-legend");if(lg)lg.hidden=![...lg.children].some(x=>!x.hidden)}
   const st=weekStats().streak;
-  $("#h-weektxt").innerHTML=`<span class="ac">${weekStats().now.n}</span> pass den här veckan`+(st?` · <span class="ac-g">${st} ${st===1?"vecka":"veckor"}</span> i rad`:"");
+  $("#h-weektxt").innerHTML=`<b class="wk-n">${weekStats().now.n}</b> pass den här veckan`+(st?` · <span class="ac-g">${st} ${st===1?"vecka":"veckor"}</span> i rad`:"");
   renderRestPrompt()}
 /* Vila i dag: en fråga direkt i veckokortet, så att man inte behöver veta att dagarna går att trycka på */
 function restTxt(r){if(!r)return "";if(r.k!=="active")return "Vilodag";const x=[r.what||"Aktiv vila",r.km?String(r.km).replace(".",",")+" km":"",r.min?r.min+" min":""].filter(Boolean);return "Aktiv vila · "+x.join(" · ")}
@@ -6550,7 +6564,7 @@ let FSUG=null;
 function setFdView(v){set.fdsub=v;$$("#v-feed .fdv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#fd-seg [data-fd]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.fd===v))}
 function fdDot(){const t=$("#tab-feed");if(!t)return;const top=FRC&&FRC.acts&&FRC.acts.find(a=>SBUSER&&a.user_id!==SBUSER.id);t.hidden=!(top&&(!set.frSeen||top.created_at>set.frSeen)&&location.hash!=="#feed")}
 function fdBig(a){const t=[a.detail,a.title].filter(Boolean).join(" ");const m=t.match(/\d{1,2}:\d{2}(?::\d{2})?/);if(m)return m[0];const n=t.match(/(\d+)\s*min/);if(n)return n[1]+" min";return ""}
-function fdLogin(el,what){el.innerHTML=`<div class="card"><h3>${what}</h3><p class="small">Logga in för att följa andra, se deras pass och ge tumme upp.</p><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
+function fdLogin(el,what){el.innerHTML=`<div class="card fd-login"><h3>${what}</h3><ul class="fd-why"><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8.5" r="3"/><circle cx="16" cy="9.5" r="2.5"/><path d="M3 19a5.5 5.5 0 0 1 11 0M14.5 15.2A4.5 4.5 0 0 1 21 19"/></svg></span><span><b>Följ dina träningskompisar</b><small>Hitta dem med namn eller kod.</small></span></li><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><span><b>Se deras pass och rekord</b><small>Ett inlägg per pass, med tider och övningar.</small></span></li><li><span class="fd-wi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4v-9zM7 11l4-7c1.5 0 2.5 1 2.2 2.6L12.6 10H18a2 2 0 0 1 2 2.3l-1.2 6A2 2 0 0 1 16.8 20H7"/></svg></span><span><b>Peppa varandra</b><small>Ge tumme upp och skriv en kommentar.</small></span></li></ul><button class="pill block" data-fd-login>Logga in</button></div>`;const b=el.querySelector("[data-fd-login]");if(b)b.onclick=()=>openAuth()}
 /* Dra nedåt högst upp i flödet för att hämta nya inlägg. */
 (()=>{const MAX=100,TRIG=56,HOLD=56,el=()=>$("#ptr"),view=()=>$("#v-feed");let y0=null,x0=0,dy=0,armed=false,busy=false,on=false;
   const top=()=>(window.scrollY||document.documentElement.scrollTop||0)<=0;

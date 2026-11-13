@@ -1105,6 +1105,11 @@ a.row{color:inherit;text-decoration:none}
 .pf-card .pf-hx small,.pf-card .pf-hx span,.pf-card .pf-hx b em{color:var(--muted)}
 .pf-card .pf-hx b{color:var(--ink)}
 .pf-card .pf-hx>button:focus-visible{outline-color:var(--accent)}
+.kn-hid{margin-top:8px;justify-self:start;min-height:44px}
+.kn-sr{display:grid;grid-template-columns:minmax(0,1fr) auto auto;gap:10px;align-items:center}
+.kn-sp{all:unset;cursor:pointer;display:flex;align-items:center;gap:12px;min-width:0;min-height:44px}
+.kn-sp b{display:block;font-weight:600;font-size:var(--t-body);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.kn-sp small{display:block;color:var(--muted);font-size:var(--t-cap)}
+.kn-sf{min-height:36px;padding:0 14px;font-size:var(--t-sub);background:var(--seg)}
 /* Hem: veckans utmaning och vänner i dag */
 .ch{display:grid;gap:14px}
 .ch-top{display:grid;grid-template-columns:56px minmax(0,1fr);gap:14px;align-items:center}
@@ -2362,7 +2367,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.69 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.70 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2423,7 +2428,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.69";
+const APPVER="1.1.70";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -6693,13 +6698,29 @@ function knowList(){const skip=set.sugSkip||[],wait=(typeof FRQ_OUT!=="undefined
   (FSUG||[]).filter(p=>+p.common>0).sort((a,b)=>b.common-a.common).forEach(p=>add(p,`${p.common} gemensam${+p.common===1?"":"ma"}`,true));
   if(!out.length&&!FRIENDS.length)(FSUG||[]).forEach(p=>add(p,"Tränar med VARV.",false));
   return out.filter(p=>p.username).slice(0,10)}
-function knowDraw(){const el=$("#fd-know");if(!el)return;const L=knowList();if(!L.length){el.innerHTML=`<section class="kn" aria-label="Kanske känner du"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>Kanske känner du…</p></div><a class="linkbtn" href="#vanner" data-vn-go="find">Hitta vänner</a></div><div class="card"><p class="small">Inga förslag just nu. Bjud in en träningskompis, så dyker fler upp här.</p></div></section>`;return}
+function knowDraw(){const el=$("#fd-know");if(!el)return;const L=knowList();if(!L.length){el.innerHTML=`<section class="kn" aria-label="Kanske känner du"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>Kanske känner du…</p></div><a class="linkbtn" href="#vanner" data-vn-go="find">Hitta vänner</a></div><div class="card"><p class="small">Inga förslag just nu. Bjud in en träningskompis, så dyker fler upp här.</p>${knSkipBtn()}</div></section>`;return}
   el.innerHTML=`<section class="kn" aria-label="Förslag på atleter att följa"><div class="kn-h"><div><h2>VARV. är roligare tillsammans</h2><p>${L[0].kn?"Kanske känner du…":"Atleter att följa"}</p></div><a class="linkbtn" href="#vanner" data-vn-go="find">Se alla</a></div>
-   <div class="kn-s">${L.map(p=>`<article class="kn-c"><button type="button" class="kn-x" data-kn-skip="${esc(p.user_id)}" aria-label="Ta bort förslaget ${esc(p.username)}">✕</button><button type="button" class="kn-p" data-kn-prof="${esc(p.user_id)}">${avImg(p.avatar_url,p.username,"kn-av")}<b>${esc(p.username)}</b><small>${esc(p.why)}</small></button><button type="button" class="pill kn-f" data-kn-follow="${esc(p.user_id)}" aria-label="Följ ${esc(p.username)}">Följ</button></article>`).join("")}</div></section>`}
+   <div class="kn-s">${L.map(p=>`<article class="kn-c"><button type="button" class="kn-x" data-kn-skip="${esc(p.user_id)}" aria-label="Ta bort förslaget ${esc(p.username)}">✕</button><button type="button" class="kn-p" data-kn-prof="${esc(p.user_id)}">${avImg(p.avatar_url,p.username,"kn-av")}<b>${esc(p.username)}</b><small>${esc(p.why)}</small></button><button type="button" class="pill kn-f" data-kn-follow="${esc(p.user_id)}" aria-label="Följ ${esc(p.username)}">Följ</button></article>`).join("")}</div>${knSkipBtn()}</section>`}
+const knSkipped=()=>[...new Set(set.sugSkip||[])].filter(id=>id&&(!SBUSER||id!==SBUSER.id)&&!FRIENDS.includes(id)&&!BLOCKED.includes(id)).reverse();
+function knSkipBtn(){const n=knSkipped().length;return n?`<button type="button" class="linkbtn kn-hid" data-kn-hidden="1">Borttagna förslag (${n})</button>`:""}
+/* Borttagna förslag: se profilen igen eller ta tillbaka förslaget */
+async function openSkipped(){const ids=knSkipped();if(!ids.length)return;
+  const miss=ids.filter(id=>!NAMES[id]||!NAMES[id].username);if(miss.length&&SB){try{const {data:n}=await SB.rpc("varv_names",{p_ids:miss.slice(0,200)});(n||[]).forEach(x=>{NAMES[x.user_id]=Object.assign({},NAMES[x.user_id]||{},x)})}catch(e){}}
+  const wait=(typeof FRQ_OUT!=="undefined"?FRQ_OUT:[]).map(r=>r.to_user);
+  const row=id=>{const p=NAMES[id]||{},nm=p.username||"Okänd atlet";return `<div class="row kn-sr" data-sk-row="${esc(id)}"><button type="button" class="kn-sp" data-sk-prof="${esc(id)}" aria-label="Visa profilen ${esc(nm)}"><span class="rk">${avImg(p.avatar_url,nm,"fr-av")}</span><span><b>${esc(nm)}</b><small>Visa profilen</small></span></button>${wait.includes(id)?`<span class="small">Förfrågan skickad</span>`:`<button type="button" class="pill ghost kn-sf" data-sk-follow="${esc(id)}">Följ</button>`}<button type="button" class="linkbtn" data-sk-back="${esc(id)}">Visa igen</button></div>`};
+  openSheet(`<div><span class="small">Kanske känner du</span><h2>Borttagna förslag</h2></div><p class="muted">De här har du tagit bort från förslagen. Tryck på ett namn för att se profilen, eller Visa igen för att få tillbaka förslaget.</p>
+   <div class="group" id="sk-list">${ids.map(row).join("")}</div><button type="button" class="pill ghost block" id="sk-all">Visa alla igen</button>`,()=>{
+    const back=list=>{set.sugSkip=(set.sugSkip||[]).filter(x=>!list.includes(x));saveSet();knowDraw();try{if(location.hash==="#vanner")renderFind()}catch(e){}};
+    $("#sk-all").onclick=()=>{back(knSkipped());HAPTIC("light");closeSheet();toast("Förslagen är tillbaka")};
+    $("#sk-list").onclick=async e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+      if(d.skProf){viewProfile(d.skProf);return}
+      if(d.skBack){back([d.skBack]);HAPTIC("light");const r=b.closest("[data-sk-row]");if(r)r.remove();if(!knSkipped().length)closeSheet();toast("Förslaget är tillbaka");return}
+      if(d.skFollow){b.disabled=true;HAPTIC("success");await sendFriendRequest(d.skFollow);back([d.skFollow]);const r=b.closest("[data-sk-row]");if(r)r.remove();if(!knSkipped().length)closeSheet()}}})}
 async function renderKnow(force){knowDraw();if(FSUG&&!force)return;try{const {data,error}=await SB.rpc("varv_suggest");if(!error){FSUG=data||[];FSUG.forEach(p=>{NAMES[p.user_id]=Object.assign({},NAMES[p.user_id]||{},p)});knowDraw()}}catch(x){}}
 async function knowClick(e){const b=e.target.closest("button");if(!b)return;const d=b.dataset;
   if(d.knProf){viewProfile(d.knProf);return}
-  if(d.knSkip){set.sugSkip=(set.sugSkip||[]).concat(d.knSkip).slice(-300);saveSet();HAPTIC("light");knowDraw();return}
+  if(d.knHidden){openSkipped();return}
+  if(d.knSkip){const id=d.knSkip;set.sugSkip=(set.sugSkip||[]).concat(id).slice(-300);saveSet();HAPTIC("light");knowDraw();toast("Förslaget är borttaget",{label:"Ångra",action:()=>{set.sugSkip=(set.sugSkip||[]).filter(x=>x!==id);saveSet();knowDraw()}});return}
   if(d.knFollow){b.disabled=true;HAPTIC("success");await sendFriendRequest(d.knFollow);knowDraw()}}
 async function renderFeed(force){
   setFdView("flow");

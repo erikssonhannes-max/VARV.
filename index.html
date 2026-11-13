@@ -1164,10 +1164,20 @@ a.row{color:inherit;text-decoration:none}
 .ap-btns{display:grid;gap:10px}
 .hre{margin-top:12px}
 .hre-ic{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);display:grid;place-items:center;flex:none}
+.h-racebox{padding:0;display:grid;overflow:hidden}
+.h-racelink{display:block;padding:18px 18px 16px;color:inherit;text-decoration:none}
+.h-racelink:active,.h-goalbtn:active{transform:scale(.98);transition:transform .15s var(--ease)}
+.h-goalbtn{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:12px;align-items:center;margin:0 10px 10px;padding:12px 14px;background:var(--card);border-radius:14px;min-height:60px}
+.h-gi{width:40px;height:40px;border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--accent);display:grid;place-items:center}
+.h-gt small{display:block;font-size:var(--t-cap);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--muted)}
+.h-gt b{display:block;font-size:var(--t-num);font-weight:700;letter-spacing:-.04em;line-height:1.1;font-variant-numeric:tabular-nums;color:var(--ink)}
+.h-gt em{font-style:normal;font-size:var(--t-sub);font-weight:600;letter-spacing:0;color:var(--run)}
+.h-gc{color:var(--link);font-size:var(--t-sub);font-weight:600;white-space:nowrap}
+.h-goalbtn span,.h-goalbtn b{line-height:inherit}.h-gt b>span{color:var(--ink);font-size:inherit;line-height:1.1}.h-gt em span{color:inherit;font-size:inherit;line-height:inherit}.h-goalbtn .h-gc{color:var(--link);font-size:var(--t-sub)}.h-goalbtn .h-gi{color:var(--accent)}
+.so-goal{font-size:var(--t-sub);font-weight:600;min-height:32px}
 /* Färg som betyder något: rosa = löpning och loppet, grönt = stationer och avklarat, turkos = vila */
 .h-cd b{color:var(--accent)}
 #h-days{color:var(--accent)}
-#h-pace{color:var(--run)}
 .ch-num b{color:var(--green)}.ch-num b span{color:var(--muted)}
 .ag-c.k-run small{color:var(--run)}.ag-c.k-sta small{color:var(--sta)}.ag-c.k-str small{color:var(--ink)}
 .ag-c.k-run .ag-play{color:var(--run)}.ag-c.k-sta .ag-play{color:var(--sta)}
@@ -2134,9 +2144,9 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     <a class="hfr" id="h-fr" href="#feed" hidden></a>
     <div id="h-ch" hidden></div>
 
-    <div class="sechead"><h2>Ditt lopp</h2><button class="linkbtn" data-open="goal">Ändra</button></div>
+    <div class="sechead"><h2>Ditt lopp</h2><a class="linkbtn" href="#race" data-tv-go="kal">Byt lopp</a></div>
     <div class="tiles">
-      <a class="tile wide tap" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div><div class="h-goal"><span>Måltid <b id="h-target">1:30</b></span><span><b id="h-pace">–</b> /km</span></div></a>
+      <div class="tile wide h-racebox"><a class="h-racelink" id="h-race" href="#race" data-tv-go="run"><div class="countdown"><span class="big" id="h-days">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-racename">dagar kvar</b><br><span id="h-racedate"></span></div></div></a><button type="button" class="h-goalbtn" data-open="goal" aria-label="Ändra din måltid"><span class="h-gi" aria-hidden="true"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg></span><span class="h-gt"><small>Din måltid</small><b><span id="h-target">1:30</span> <em><span id="h-pace">–</span> /km</em></b></span><span class="h-gc">Ändra ›</span></button></div>
       <a class="tile wide tap" id="h-sim" href="#race" data-tv-go="sim" hidden><div class="countdown"><span class="big" id="h-sim-d">–</span><div><b style="font-size:var(--t-body);letter-spacing:-.02em" id="h-sim-t">dagar till simuleringen</b><br><span id="h-sim-p"></span></div></div></a>
     </div>
     <section class="hpc" id="h-plan" hidden aria-label="Din plan">
@@ -2442,7 +2452,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.78 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.79 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2503,7 +2513,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.78";
+const APPVER="1.1.79";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -4359,7 +4369,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
   const e=hxEstimate();try{soSnap(e)}catch(x){}
   let h="";
   // Beräknad sluttid
-  if(e.none){h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
+  if(e.none){h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid</span><button type="button" class="linkbtn so-goal" data-open="goal">Måltid ${fmtHM(set.target)} ›</button></div>
     <div class="so-row"><span class="so-big none" aria-hidden="true">–:––:––</span></div>
     <p class="so-sub">Gör starttestet, så räknar VARV. ut din sluttid och följer den vecka för vecka.</p>
     <button type="button" class="pill ghost block" data-open="test" style="margin-top:14px;background:var(--card)">Gör starttestet</button></section>`}
@@ -4369,7 +4379,7 @@ function renderOverview(){const el=$("#so");if(!el)return;const td=today(),cls=s
     const dTxt=!goal?"":Math.abs(d)<30?"Precis på målet":d<0?`${hxSigned(d)} under målet`:`${hxSigned(d)} från målet`;
     const chTxt=hist.length<2?"Kurvan ritas när du har tränat två veckor med VARV.":Math.abs(ch)<5?`Samma som vecka ${getWeek(first.k)}.`:ch<0?`${fmt(-ch)} snabbare än vecka ${getWeek(first.k)}.`:`${fmt(ch)} långsammare än vecka ${getWeek(first.k)}.`;
     const tot=Math.max(1,e.runs+e.sta+e.rox),pc=v=>Math.round(v/tot*1000)/10,pace=e.runs/8;
-    h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid · ${esc(divText())}</span>${goal?`<span class="small">Mål ${fmt(goal)}</span>`:""}</div>
+    h+=`<section class="so-card" id="so-est" aria-label="Beräknad sluttid"><div class="so-hd"><span class="so-k">Beräknad sluttid · ${esc(divText())}</span><button type="button" class="linkbtn so-goal" data-open="goal">Måltid ${fmtHM(set.target)} ›</button></div>
      <div class="so-row"><span class="so-big">${fmt(T)}</span>${dTxt?`<span class="so-d ${Math.abs(d)<30?"":d<0?"good":"bad"}">${dTxt}</span>`:""}</div>
      <p class="so-sub">${chTxt}</p>
      ${hist.length>=2&&goal?`<div class="so-chart">${soChart(hist,goal,W)}<div class="so-ax"><span>v. ${getWeek(first.k)} · ${fmt(first.v)}</span><span>Nu</span></div></div>`:""}
@@ -4403,7 +4413,7 @@ function renderProgress(){try{renderLoad()}catch(e){}try{renderStats()}catch(e){
 const TOUR=[
  {v:"hem",c:1,h:()=>`Välkommen${pName()?", "+pName().split(" ")[0]:""}.`,p:"Här är en snabb tur genom VARV., i samma ordning som flikarna längst ned. Det tar under en minut, och du kan hoppa över när du vill."},
  {v:"hem",t:"#h-go",h:"Hem: kör igång",p:"Här börjar du: dagens pass, ett förslag, ett färdigt pass eller ditt eget. Under Logga pass lägger du in det du redan har kört."},
- {v:"hem",t:"#h-race",h:"Hem: ditt lopp",p:"Nedräkningen till loppet och din måltid. Tryck för att byta lopp eller ändra måltid."},
+ {v:"hem",t:".h-racebox",h:"Hem: ditt lopp",p:"Nedräkningen till loppet och din måltid. Tryck på måltiden för att ändra den."},
  {v:"stationer",t:'.tab[data-v="stationer"]',h:"Stationer",p:"Nästa flik. Alla åtta stationer med vikter för just din klass, teknik och de vanligaste misstagen."},
  {v:"feed",t:'.tab[data-v="feed"]',h:"Aktivitet",p:"Ditt och dina vänners senaste pass, lopp och rekord. Ge en tumme upp eller skriv en kommentar. Topplistan hittar du under Vänner."},
  {v:"race",t:'.tab[data-v="race"]',h:"Tävla",p:"Hitta lopp i Norden, Europa och resten av världen. På racedagen startar du tidtagningen här, med ljud, röst och vibration."},
@@ -4480,7 +4490,7 @@ $("#pr-add").onclick=()=>{const t=planTimes(),tg={race:t.T,km:t.pace};S.forEach(
 function setLgView(v){set.lgv=v;$$("#v-logg .lgv").forEach(x=>{x.hidden=x.dataset.v!==v});$$("#lg-seg [data-lgv]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lgv===v));if(v==="lopp")try{renderRaceStats(true)}catch(e){}}
 $("#lg-seg").onclick=e=>{const b=e.target.closest("[data-lgv]");if(b){setLgView(b.dataset.lgv);saveSet()}};
 /* Måltiden ändras i ett ark som nås från Hem, Plan och Racedag. Kortet bor i #goal-home och lånas in i arket. */
-function openGoal(){openSheet(`<div><span class="small">Ditt mål</span><h2>Måltid.</h2><p class="small">Dra för att välja tiden du vill gå i mål på. Planen och tempot räknas om direkt.</p></div><div id="goal-slot"></div><button class="pill block" id="goal-ok">Klar</button>`,
+function openGoal(){openSheet(`<div><span class="small">Ditt mål</span><h2>Din måltid.</h2><p class="small">Tiden du drömmer om att gå i mål på. Dra i reglaget, så räknas tempot och den beräknade sluttiden om direkt.</p></div><div id="goal-slot"></div><button class="pill block" id="goal-ok">Klar</button>`,
   ()=>{$("#goal-slot").append($("#goal-card"));$("#p-range").value=set.target;renderSplits();$("#goal-ok").onclick=()=>{saveSet();renderPlan();renderPRs();renderHome();closeSheet();toast("Måltiden är sparad")}})}
 function setPlanEdit(on){if(on)openGoal()}
 document.addEventListener("click",e=>{const a=e.target.closest("[data-lg],[data-plan-edit]");if(!a)return;if(a.dataset.lg)setLgView(a.dataset.lg);if("planEdit" in a.dataset)setPlanEdit(true)});

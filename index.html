@@ -2459,7 +2459,7 @@ body::before{content:"";position:fixed;top:0;left:0;right:0;height:env(safe-area
     </div>
     <input type="file" id="pf-imp-file" accept="application/json,.json" hidden>
     <input type="file" id="pf-av-file" accept="image/jpeg,image/png,image/webp,image/heic" hidden>
-    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.80 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
+    <p class="small" style="text-align:center;margin-top:24px">VARV. version 1.1.81 · Fristående app, ingen koppling till HYROX. HYROX är ett registrerat varumärke som tillhör sin ägare.<br>VARV. ger träningsråd, inte medicinsk rådgivning. Rådfråga läkare vid skada eller sjukdom.</p>
   </div>
 </section>
 </main>
@@ -2520,7 +2520,7 @@ if(IS_NATIVE){document.documentElement.classList.add("native");
   try{const A=window.Capacitor.Plugins.App;if(A)A.addListener("backButton",()=>{const sh=document.getElementById("sheet");
     if(sh&&!sh.hidden){closeSheet();return}if(history.length>1&&location.hash&&location.hash!=="#hem")history.back();else A.exitApp()})}catch(e){}}
 /* ============ Felrapporter ============ */
-const APPVER="1.1.80";
+const APPVER="1.1.81";
 (()=>{let n=0;const C=window.VARV_SUPABASE||{};
   const rep=(msg,src)=>{msg=String(msg||"Okänt fel");if(n++>5||!C.url||!C.anonKey||/ResizeObserver|Script error|Load failed|NetworkError|Failed to fetch|AbortError/i.test(msg))return;
     try{fetch(C.url+"/rest/v1/errors",{method:"POST",keepalive:true,headers:{apikey:C.anonKey,"Content-Type":"application/json",Prefer:"return=minimal"},
@@ -3197,15 +3197,15 @@ async function initSupabase(){
   if(!c){gateDone();return}
   try{if(!window.supabase)await loadScript("vendor/supabase.js")}catch(e){gateDone();return}
   SBGOOGLE=!!c.google;
-  SB=window.supabase.createClient(c.url,c.anonKey,{auth:{flowType:"pkce",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
+  SB=window.supabase.createClient(c.url,c.anonKey,{auth:{flowType:"implicit",persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
   SB.auth.onAuthStateChange((ev,session)=>{
     const u=session&&session.user;
     /* inga andra Supabase-anrop direkt i lyssnaren, därav setTimeout */
     setTimeout(()=>{
       /* Extra skydd utöver inställningen i Supabase: en obekräftad e-post släpps aldrig in. */
       if(u&&!u.email_confirmed_at&&!u.confirmed_at){SB.auth.signOut();toast("Bekräfta din e-post först. Kolla inkorgen.");return}
-      if(ev==="PASSWORD_RECOVERY")openNewPassword();
-      if(u&&GATE_ON){hideGate();closeSheet()}
+      if(ev==="PASSWORD_RECOVERY"){RECOVERING=true;openNewPassword()}
+      if(u&&GATE_ON){hideGate();if(!RECOVERING)closeSheet()}
       if(u&&(!SBUSER||SBUSER.id!==u.id))sbStart(u);
       else if(u)SBUSER=u;
       if(location.hash==="#profil")renderProfile();
@@ -3213,13 +3213,18 @@ async function initSupabase(){
   });
   /* felmeddelanden från länkar i mejl, och städa adressen */
   const q=new URLSearchParams(location.search+"&"+location.hash.replace(/^#/,""));
+  /* Länkar med token_hash fungerar på alla enheter och i alla webbläsare */
+  const th=q.get("token_hash"),tt=q.get("type");
+  if(th&&tt){try{const {error}=await SB.auth.verifyOtp({token_hash:th,type:tt});if(error)toast(sbErr(error))}catch(e){}}
   let sess=null;try{sess=(await SB.auth.getSession()).data.session}catch(e){}
   if(q.get("error_code")==="otp_expired")toast("Länken har gått ut eller redan använts. Be om en ny.");
   else if(q.get("error"))toast("Inloggningen avbröts. Försök igen.");
-  if(q.has("code")||q.has("error")||q.has("access_token")){
+  else if(q.has("code")&&!sess)toast("Länken kunde inte öppnas här. Be om ett nytt mejl.");
+  if(q.has("code")||q.has("error")||q.has("access_token")||th){
     const h=location.hash&&!/[=&]/.test(location.hash)?location.hash:"";
     try{history.replaceState(null,"",location.pathname+h)}catch(e){}if(!h)route();
   }
+  try{if(sess&&sessionStorage.getItem("varv-recovery")){sessionStorage.removeItem("varv-recovery");RECOVERING=true;setTimeout(openNewPassword,300)}}catch(e){}
   if(sess)gateDone();else if(!SBUSER)showGate();
   if(location.hash==="#profil")renderProfile();
   document.addEventListener("visibilitychange",()=>{if(!document.hidden&&SBCOL)SBCOL.refresh().catch(()=>{})});
@@ -3227,7 +3232,7 @@ async function initSupabase(){
 
 async function sbStart(u){
   /* Ett annat konto på samma enhet ska aldrig ärva den förra användarens data */
-  try{const o=localStorage.getItem("varv-owner");if(o&&o!==u.id){wipeLocal();localStorage.setItem("varv-owner",u.id);location.reload();return}localStorage.setItem("varv-owner",u.id)}catch(e){}
+  try{const o=localStorage.getItem("varv-owner");if(o&&o!==u.id){wipeLocal();localStorage.setItem("varv-owner",u.id);if(RECOVERING)try{sessionStorage.setItem("varv-recovery","1")}catch(x){}location.reload();return}localStorage.setItem("varv-owner",u.id)}catch(e){}
   SBUSER=u;SBSETOK=false;const C=sbCollection(u.id);SBCOL=C;
   const md=u.user_metadata||{};MEINFO={name:md.full_name||md.name||"",avatarUrl:md.avatar_url||md.picture||""};
   let remote=null;try{remote=await C.refresh()}catch(e){}
@@ -3336,7 +3341,7 @@ function openAuth(view){
     $("#au-f").onsubmit=e=>{e.preventDefault();busy($("#au-go"),async()=>{
       const em=mail.value.trim();if(!okMail(em)){say("Skriv en giltig e-postadress.",true);mail.focus();return}
       if(reset){say("Skickar…");const {error}=await SB.auth.resetPasswordForEmail(em,{redirectTo:sbRedirect()});
-        if(error)say(sbErr(error),true);else say(`Klart. Öppna länken i mejlet till ${em} på den här enheten.`);return}
+        if(error)say(sbErr(error),true);else say(IS_NATIVE?`Klart. Länken i mejlet till ${em} öppnas i webbläsaren. Välj ett nytt lösenord där och logga sedan in här.`:`Klart. Öppna länken i mejlet till ${em}.`);return}
       const pw=$("#au-pw").value;if(!pw.length){say("Skriv ditt lösenord.",true);$("#au-pw").focus();return}
       say(up?"Skapar konto…":"Loggar in…");
       const {error}=await SB.auth.signInWithPassword({email:em,password:pw});
@@ -3346,7 +3351,7 @@ function openAuth(view){
   });
 }
 function openCode(em){
-  openSheet(`<div><span class="small">Konto</span><h2>Kolla din e-post</h2><p class="small">Har ${esc(em)} ett konto får du ett mejl. Skriv in koden här, eller öppna länken i mejlet på den här enheten.</p></div>
+  openSheet(`<div><span class="small">Konto</span><h2>Kolla din e-post</h2><p class="small">Har ${esc(em)} ett konto får du ett mejl. ${IS_NATIVE?"Skriv in koden från mejlet här.":"Skriv in koden här, eller öppna länken i mejlet."}</p></div>
    <form id="cd-f" novalidate style="display:grid;gap:14px">
      <div class="field"><label for="cd-in">Kod</label><input type="text" id="cd-in" inputmode="numeric" autocomplete="one-time-code" maxlength="10" placeholder="123456"></div>
      <p class="small au-msg" id="cd-msg" role="status" aria-live="polite"></p>
@@ -3376,14 +3381,15 @@ function openNewPassword(){
       const pw=$("#np-in").value;if(pw.length<10||!/[a-zA-Z]/.test(pw)||!/\d/.test(pw)){msg.textContent="Lösenordet behöver minst 10 tecken, med både bokstäver och siffror.";msg.classList.add("bad");return}
       const {error}=await SB.auth.updateUser({password:pw});
       if(error){msg.textContent=sbErr(error);msg.classList.add("bad");return}
-      closeSheet();toast("Lösenordet är ändrat")})};
+      RECOVERING=false;closeSheet();toast("Lösenordet är ändrat");HAPTIC("success")
+      if(!set.onboarded&&!ONB_ON)setTimeout(()=>{if(!set.onboarded&&!ONB_ON)openOnb()},500)})};
   });
 }
 
 /* ============ Kontokrav ============ */
 /* På hemsidan måste man ha ett konto. Porten visas efter startanimationen
    och släpper in först när man är inloggad. I den inbäddade versionen sköts kontot separat. */
-let GATE_ON=false,GATE_RES=null,GATE_MODE="up";
+let GATE_ON=false,GATE_RES=null,GATE_MODE="up",RECOVERING=false;
 const GATE=new Promise(r=>{GATE_RES=r});
 const TERMS_VERSION="2026-11-05";
 function gateDone(){if(GATE_RES){GATE_RES();GATE_RES=null}}
@@ -8075,7 +8081,7 @@ renderComm();renderAvatar();renderEvents();setFdView("flow");
 GATE.then(()=>{const wait=Math.max(400,2300-performance.now());
   if(set.onboarded&&simInvWaiting())setTimeout(openInvite,wait);
   else if(set.onboarded&&passWaiting())setTimeout(openSharedPass,wait);
-  else if(!set.onboarded)setTimeout(()=>{if(!set.onboarded&&!ONB_ON){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openOnb()}},wait);
+  else if(!set.onboarded)setTimeout(()=>{if(!set.onboarded&&!ONB_ON&&!RECOVERING){if(location.hash&&location.hash!=="#hem")location.hash="#hem";openOnb()}},wait);
   else if(!set.toured)setTimeout(maybeTour,Math.max(0,wait-400));
   if(LIVE){renderLive();liveTickStart();if(LIVE.open)liveWake()}});
 bindLive();
